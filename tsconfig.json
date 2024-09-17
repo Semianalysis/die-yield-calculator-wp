@@ -1,0 +1,17 @@
+{
+	"compilerOptions": {
+		"strict": true,
+		"noImplicitAny": true,
+		"module": "es6",
+		"target": "esNext",
+		"jsx": "react",
+		"allowJs": true,
+		"moduleResolution": "node",
+		"sourceMap": true,
+		"allowSyntheticDefaultImports": true,
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"downlevelIteration": true,
+		"resolveJsonModule": true
+	}
+}
