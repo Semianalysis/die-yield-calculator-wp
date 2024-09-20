@@ -2,9 +2,9 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./src/components/App.jsx":
+/***/ "./src/components/App.tsx":
 /*!********************************!*\
-  !*** ./src/components/App.jsx ***!
+  !*** ./src/components/App.tsx ***!
   \********************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -14,9 +14,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__);
-
 
 const PANELSIZES = {
   s300mm: {
@@ -85,10 +82,10 @@ const WAFERSIZES = {
   }
 };
 const STATECOLORS = {
-  good: 'green',
-  defective: 'grey',
-  partial: 'yellow',
-  lost: 'red'
+  good: "green",
+  defective: "grey",
+  partial: "yellow",
+  lost: "red"
 };
 const YIELDMODELS = {
   poisson: {
@@ -105,98 +102,63 @@ const YIELDMODELS = {
     name: "Seeds Model"
   }
 };
-const NumberInput = ({
-  label,
-  value,
-  onChange,
-  onBlur,
-  isDisabled
-}) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
-  className: "input-group",
-  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("label", {
-    children: [label, ":", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("input", {
-      type: "number",
-      disabled: isDisabled,
-      value: value,
-      onChange: e => onChange(e.target.value),
-      onBlur: onBlur,
-      step: "0.01"
-    })]
-  })
-});
-const Checkbox = ({
-  label,
-  onChange,
-  checked
-}) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("label", {
-  className: "checkbox",
-  children: [label, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("input", {
-    type: "checkbox",
-    onChange: onChange,
-    checked: checked
-  })]
-});
-const ShapeSelector = ({
-  shape,
-  setShape
-}) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
-  className: "input-group",
-  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("label", {
-    children: ["Shape:", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("select", {
-      value: shape,
-      onChange: e => setShape(e.target.value),
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("option", {
-        value: "Panel",
-        children: "Panel"
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("option", {
-        value: "Wafer",
-        children: "Wafer"
-      })]
-    })]
-  })
-});
-const ShapeSizeSelector = ({
-  selectedShape,
-  selectedSize,
-  handleSizeChange
-}) => {
-  const sizes = selectedShape === 'Panel' ? PANELSIZES : selectedShape === 'Wafer' ? WAFERSIZES : null;
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
-    children: sizes && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.Fragment, {
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("select", {
-        value: selectedSize,
-        onChange: handleSizeChange,
-        children: Object.keys(sizes).map(key => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("option", {
-          value: key,
-          children: sizes[key].name
-        }, key))
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
-        children: ["Width: ", sizes[selectedSize].waferWidth, " mm, Height: ", sizes[selectedSize].waferHeight, " mm"]
-      })]
-    })
-  });
+const NumberInput = props => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+  className: "input-group"
+}, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", null, props.label, ":", react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
+  type: "number",
+  disabled: props.isDisabled,
+  value: props.value,
+  onChange: props.onChange,
+  onBlur: props.onBlur,
+  step: "0.01"
+})));
+const Checkbox = props => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", {
+  className: "checkbox"
+}, props.label, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
+  type: "checkbox",
+  onChange: props.onChange,
+  checked: props.checked
+}));
+const ShapeSelector = props => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+  className: "input-group"
+}, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", null, "Shape:", react__WEBPACK_IMPORTED_MODULE_0___default().createElement("select", {
+  value: props.shape,
+  onChange: e => props.setShape(e.target.value)
+}, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+  value: "Panel"
+}, "Panel"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+  value: "Wafer"
+}, "Wafer"))));
+const WaferSizeSelect = props => {
+  const sizeInfo = WAFERSIZES[props.selectedSize];
+  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("select", {
+    value: props.selectedSize,
+    onChange: props.handleSizeChange
+  }, Object.entries(WAFERSIZES).map(([key, value]) => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+    key: key,
+    value: key
+  }, value.name))), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, "Width: ", sizeInfo.waferWidth, " mm"));
 };
-const ModelSelector = ({
-  selectedModel,
-  handleModelChange
-}) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
-  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("select", {
-    value: selectedModel,
-    onChange: handleModelChange,
-    children: Object.keys(YIELDMODELS).map(key => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("option", {
-      value: key,
-      children: YIELDMODELS[key].name
-    }, key))
-  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
-    children: ["Model: ", YIELDMODELS[selectedModel].name]
-  })]
-});
-const Calculations = ({
-  calcState
-}) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
-  className: "calculations",
-  children: ["totalDies: ", calcState.totalDies, ", Good Wafers: ", calcState.goodDies, ", Fab Yield: ", calcState.fabYield]
-});
+const PanelSizeSelect = props => {
+  const sizeInfo = PANELSIZES[props.selectedSize];
+  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("select", {
+    value: props.selectedSize,
+    onChange: props.handleSizeChange
+  }, Object.entries(PANELSIZES).map(([key, value]) => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+    key: key,
+    value: key
+  }, value.name))), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, "Width: ", sizeInfo.waferWidth, " mm, Height: ", sizeInfo.waferHeight, " mm"));
+};
+const ModelSelector = props => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("select", {
+  value: props.selectedModel,
+  onChange: props.handleModelChange
+}, Object.entries(YIELDMODELS).map(([key, value]) => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+  key: key,
+  value: key
+}, value.name))), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, "Model: ", YIELDMODELS[props.selectedModel].name));
+const Calculations = props => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+  className: "calculations"
+}, "totalDies: ", props.calcState.totalDies, ", Good Wafers: ", props.calcState.goodDies, ", Fab Yield: ", props.calcState.fabYield);
 function isInsideCircle(x, y, centerX, centerY, radius) {
   return Math.sqrt((x - centerX) ** 2 + (y - centerY) ** 2) <= radius;
 }
@@ -204,7 +166,6 @@ function rectanglesInCircle(diameter, rectWidth, rectHeight) {
   const radius = diameter / 2;
   const centerX = radius;
   const centerY = radius;
-  let count = 0;
   let positions = [];
   for (let x = 0; x <= diameter + rectWidth; x += rectWidth) {
     for (let y = 0; y <= diameter + rectHeight; y += rectHeight) {
@@ -226,210 +187,191 @@ function rectanglesInCircle(diameter, rectWidth, rectHeight) {
           x: x,
           y: y
         });
-        count++;
       }
     }
   }
-  return [count, positions];
+  return positions;
 }
 function getFabYield(defectRate, criticalArea, model) {
   const defects = criticalArea * defectRate / 100;
   switch (model) {
-    case 'poisson':
+    case "poisson":
       return Math.exp(-defects);
-    case 'murph':
+    case "murph":
       return Math.pow((1 - Math.exp(-defects)) / defects, 2);
-    case 'rect':
+    case "rect":
       return (1 - Math.exp(-2 * defects)) / (2 * defects);
     //case ('moore'):
     //  return Math.exp(Math.sqrt(-defects));
-    case 'seeds':
+    case "seeds":
       return 1 / (1 + defects);
     default:
-      console.log('Invalid Model.');
-      return;
+      console.log("Invalid Model.");
+      return 0;
   }
 }
-const evaluateInputs = (dieWidth, dieHeight, criticalArea, defectRate, edgeLoss, scribeHoriz, scribeVert, shape, selectedSize, selectedModel) => {
-  let totalDies = 0;
-  let fabYield = getFabYield(defectRate, criticalArea, selectedModel);
-  let goodDies = 0;
-  let waferWidth = null;
-  let waferHeight = null;
+function evaulatePanelInputs(dieWidth, dieHeight, criticalArea, defectRate, edgeLoss, scribeHoriz, scribeVert, selectedSize, selectedModel) {
   let dies = [];
-  if (shape === 'Panel') {
-    waferWidth = PANELSIZES[selectedSize].waferWidth;
-    waferHeight = PANELSIZES[selectedSize].waferHeight;
-    const adjustedDieWidth = dieWidth + scribeHoriz * 2;
-    const adjustedDieHeight = dieHeight + scribeVert * 2;
-    const diesPerRow = Math.floor(waferWidth / adjustedDieWidth);
-    const diesPerColumn = Math.floor(waferHeight / adjustedDieHeight);
-    const centerHorz = (waferWidth - adjustedDieWidth * diesPerRow) / 2;
-    const centerVert = (waferHeight - adjustedDieHeight * diesPerColumn) / 2;
-    const countWidth = Math.floor(waferWidth / (dieWidth + scribeHoriz * 2));
-    const countHeight = Math.floor(waferHeight / (dieHeight + scribeVert * 2));
-    totalDies = countWidth * countHeight;
-    goodDies = Math.floor(fabYield * totalDies);
-    let dieStates = new Array(totalDies).fill('defective');
-    for (let i = 0; i < goodDies; i++) {
-      dieStates[i] = 'good';
-    }
-    for (let i = dieStates.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [dieStates[i], dieStates[j]] = [dieStates[j], dieStates[i]];
-    }
-    for (let i = 0; i < dieStates.length; i++) {
-      const row = Math.floor(i / diesPerRow);
-      const col = i % diesPerRow;
-      const dieState = dieStates[i];
-      const x = col * adjustedDieWidth + centerHorz;
-      const y = row * adjustedDieHeight + centerVert;
-      const width = dieWidth;
-      const height = dieHeight;
-      dies[i] = {
-        'key': i,
-        'dieState': dieState,
-        'x': x,
-        'y': y,
-        'width': width,
-        'height': height
-      };
-    }
-  } else if (shape === 'Wafer') {
-    waferWidth = WAFERSIZES[selectedSize].waferWidth;
-    let positions;
-    [totalDies, positions] = rectanglesInCircle(waferWidth, dieWidth + scribeHoriz * 2, dieHeight + scribeVert * 2);
-    goodDies = Math.floor(fabYield * totalDies);
-    let dieStates = new Array(totalDies).fill('defective');
-    for (let i = 0; i < goodDies; i++) {
-      dieStates[i] = 'good';
-    }
-    for (let i = dieStates.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [dieStates[i], dieStates[j]] = [dieStates[j], dieStates[i]];
-    }
-    for (let i = 0; i < dieStates.length; i++) {
-      const x = positions[i].x;
-      const y = positions[i].y;
-      const dieState = dieStates[i];
-      const width = dieWidth;
-      const height = dieHeight;
-      const corners = [{
-        x: x,
-        y: y
-      }, {
-        x: x + dieWidth,
-        y: y
-      }, {
-        x: x,
-        y: y + dieHeight
-      }, {
-        x: x + dieWidth,
-        y: y + dieHeight
-      }];
-      let lossCircleRadius = waferWidth - edgeLoss;
-      if (!corners.every(corner => isInsideCircle(corner.x, corner.y, waferWidth / 2, waferWidth / 2, lossCircleRadius))) {
-        dieStates[i] = 'partial';
-      }
-      dies[i] = {
-        'key': i,
-        'dieState': dieState,
-        'x': x,
-        'y': y,
-        'width': width,
-        'height': height
-      };
-    }
+  const fabYield = getFabYield(defectRate, criticalArea, selectedModel);
+  const {
+    waferWidth,
+    waferHeight
+  } = PANELSIZES[selectedSize];
+  const adjustedDieWidth = dieWidth + scribeHoriz * 2;
+  const adjustedDieHeight = dieHeight + scribeVert * 2;
+  const diesPerRow = Math.floor(waferWidth / adjustedDieWidth);
+  const diesPerColumn = Math.floor(waferHeight / adjustedDieHeight);
+  const centerHorz = (waferWidth - adjustedDieWidth * diesPerRow) / 2;
+  const centerVert = (waferHeight - adjustedDieHeight * diesPerColumn) / 2;
+  const countWidth = Math.floor(waferWidth / (dieWidth + scribeHoriz * 2));
+  const countHeight = Math.floor(waferHeight / (dieHeight + scribeVert * 2));
+  const totalDies = countWidth * countHeight;
+  const goodDies = Math.floor(fabYield * totalDies);
+  let dieStates = new Array(totalDies).fill("defective");
+  for (let i = 0; i < goodDies; i++) {
+    dieStates[i] = "good";
+  }
+  for (let i = dieStates.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [dieStates[i], dieStates[j]] = [dieStates[j], dieStates[i]];
+  }
+  for (let i = 0; i < dieStates.length; i++) {
+    const row = Math.floor(i / diesPerRow);
+    const col = i % diesPerRow;
+    const dieState = dieStates[i];
+    const x = col * adjustedDieWidth + centerHorz;
+    const y = row * adjustedDieHeight + centerVert;
+    const width = dieWidth;
+    const height = dieHeight;
+    dies[i] = {
+      "key": i,
+      "dieState": dieState,
+      "x": x,
+      "y": y,
+      "width": width,
+      "height": height
+    };
   }
   return {
-    'dies': dies,
-    'totalDies': totalDies,
-    'goodDies': goodDies,
-    'fabYield': fabYield,
-    'waferWidth': waferWidth,
-    'waferHeight': waferHeight
+    dies,
+    totalDies,
+    goodDies,
+    fabYield,
+    waferWidth,
+    waferHeight
   };
-};
-const Wafer = ({
-  calcState,
-  panelSize,
-  dieHeight,
-  dieWidth,
-  scribeHoriz,
-  scribeVert
-}) => {
-  const dies = calcState.dies;
-  const drawnDies = [];
-  for (let i = 0; i < dies.length; i++) {
-    drawnDies.push(/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(Die, {
-      color: STATECOLORS[dies[i].dieState],
-      x: dies[i].x,
-      y: dies[i].y,
-      width: dies[i].width,
-      height: dies[i].height
-    }, dies[i].key));
+}
+function evaluateWaferInputs(dieWidth, dieHeight, criticalArea, defectRate, edgeLoss, scribeHoriz, scribeVert, selectedSize, selectedModel) {
+  let dies = [];
+  const fabYield = getFabYield(defectRate, criticalArea, selectedModel);
+  const {
+    waferWidth
+  } = WAFERSIZES[selectedSize];
+  let positions = rectanglesInCircle(waferWidth, dieWidth + scribeHoriz * 2, dieHeight + scribeVert * 2);
+  let totalDies = positions.length;
+  const goodDies = Math.floor(fabYield * totalDies);
+  let dieStates = new Array(totalDies).fill("defective");
+  for (let i = 0; i < goodDies; i++) {
+    dieStates[i] = "good";
   }
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("svg", {
-    width: calcState.waferWidth,
-    height: calcState.waferWidth,
-    style: {
-      border: '1px solid black'
-    },
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("circle", {
-      cx: calcState.waferWidth / 2,
-      cy: calcState.waferWidth / 2,
-      r: Math.min(calcState.waferWidth, calcState.waferWidth) / 2,
-      stroke: "black",
-      strokeWidth: "1",
-      fill: "none"
-    }), drawnDies]
-  });
-};
-const Panel = ({
-  calcState
-}) => {
-  const dies = calcState.dies;
-  const drawnDies = [];
-  console.log(dies);
-  for (let i = 0; i < dies.length; i++) {
-    drawnDies.push(/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(Die, {
-      color: STATECOLORS[dies[i].color],
-      x: dies[i].x,
-      y: dies[i].y,
-      width: dies[i].width,
-      height: dies[i].height
-    }, dies[i].key));
+  for (let i = dieStates.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [dieStates[i], dieStates[j]] = [dieStates[j], dieStates[i]];
   }
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("svg", {
-    width: calcState.waferWidth,
-    height: calcState.waferHeight,
+  for (let i = 0; i < dieStates.length; i++) {
+    const x = positions[i].x;
+    const y = positions[i].y;
+    const dieState = dieStates[i];
+    const width = dieWidth;
+    const height = dieHeight;
+    const corners = [{
+      x: x,
+      y: y
+    }, {
+      x: x + dieWidth,
+      y: y
+    }, {
+      x: x,
+      y: y + dieHeight
+    }, {
+      x: x + dieWidth,
+      y: y + dieHeight
+    }];
+    let lossCircleRadius = waferWidth - edgeLoss;
+    if (!corners.every(corner => isInsideCircle(corner.x, corner.y, waferWidth / 2, waferWidth / 2, lossCircleRadius))) {
+      dieStates[i] = "partial";
+    }
+    dies[i] = {
+      "key": i,
+      "dieState": dieState,
+      "x": x,
+      "y": y,
+      "width": width,
+      "height": height
+    };
+  }
+  return {
+    dies,
+    totalDies,
+    goodDies,
+    fabYield,
+    waferWidth
+  };
+}
+const Wafer = props => {
+  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("svg", {
+    width: props.calcState.waferWidth,
+    height: props.calcState.waferWidth,
     style: {
-      border: '1px solid black'
-    },
-    children: drawnDies
-  });
+      border: "1px solid black"
+    }
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("circle", {
+    cx: props.calcState.waferWidth / 2,
+    cy: props.calcState.waferWidth / 2,
+    r: Math.min(props.calcState.waferWidth, props.calcState.waferWidth) / 2,
+    stroke: "black",
+    strokeWidth: "1",
+    fill: "none"
+  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, props.calcState.dies.map(die => react__WEBPACK_IMPORTED_MODULE_0___default().createElement(Die, {
+    key: die.key,
+    color: STATECOLORS[die.dieState],
+    x: die.x,
+    y: die.y,
+    width: die.width,
+    height: die.height
+  }))));
 };
-const Die = ({
-  color,
-  x,
-  y,
-  width,
-  height
-}) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("rect", {
-  x: x,
-  y: y,
-  width: width,
-  height: height,
-  fill: color
+const Panel = props => {
+  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("svg", {
+    width: props.calcState.waferWidth,
+    height: props.calcState.waferHeight,
+    style: {
+      border: "1px solid black"
+    }
+  }, props.calcState.dies.map(die => react__WEBPACK_IMPORTED_MODULE_0___default().createElement(Die, {
+    key: die.key,
+    color: STATECOLORS[die.dieState],
+    x: die.x,
+    y: die.y,
+    width: die.width,
+    height: die.height
+  })));
+};
+const Die = props => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("rect", {
+  x: props.x,
+  y: props.y,
+  width: props.width,
+  height: props.height,
+  fill: props.color
 });
 function App() {
   const [calcState, setCalcState] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
-    'dies': [],
-    'totalDies': 0,
-    'goodDies': 0,
-    'fabYield': 0,
-    'waferWidth:': 0,
-    'waferHeight': 0
+    "dies": [],
+    "totalDies": 0,
+    "goodDies": 0,
+    "fabYield": 0,
+    "waferWidth": 0,
+    "waferHeight": 0
   });
   const [dieWidth, setDieWidth] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(8);
   const [dieHeight, setDieHeight] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(8);
@@ -444,47 +386,48 @@ function App() {
   const [scribeVert, setScribeVert] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(0.1);
   const [transHoriz, setTransHoriz] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(0);
   const [transVert, setTransVert] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(0.1);
-  const [shape, setShape] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)('Panel');
-  const [selectedSize, setSelectedSize] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(Object.keys(PANELSIZES)[0]);
-  const [selectedModel, setSelectedModel] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(Object.keys(YIELDMODELS)[1]);
+  const [shape, setShape] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("Panel");
+  const [panelSize, setPanelSize] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("s300mm");
+  const [waferSize, setWaferSize] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("s300mm");
+  const [selectedModel, setSelectedModel] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("murph");
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     if (maintainAspectRatio) {
       setAspectRatio(dieWidth / dieHeight);
     }
   }, [dieWidth, dieHeight, maintainAspectRatio]);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
-    setCalcState(evaluateInputs(dieWidth, dieHeight, criticalArea, defectRate, edgeLoss, scribeHoriz, scribeVert, shape, selectedSize, selectedModel));
-  }, [dieWidth, dieHeight, criticalArea, defectRate, edgeLoss, scribeHoriz, scribeVert, shape, selectedSize, selectedModel]);
-  const nullOrRound = (setter, value) => {
-    if (value === '') {
-      setter(value);
-    } else {
-      const roundedValue = Math.round(value * 100) / 100;
-      setter(roundedValue);
+    if (shape === "Wafer") {
+      setCalcState(evaluateWaferInputs(dieWidth, dieHeight, criticalArea, defectRate, edgeLoss, scribeHoriz, scribeVert, waferSize, selectedModel));
+    } else if (shape === "Panel") {
+      setCalcState(evaulatePanelInputs(dieWidth, dieHeight, criticalArea, defectRate, edgeLoss, scribeHoriz, scribeVert, panelSize, selectedModel));
     }
+  }, [dieWidth, dieHeight, criticalArea, defectRate, edgeLoss, scribeHoriz, scribeVert, shape, panelSize, waferSize, selectedModel]);
+  const nullOrRound = (setter, value) => {
+    const roundedValue = Math.round(value * 100) / 100;
+    setter(roundedValue);
   };
   const handleBlur = setter => () => {
-    setter(prevValue => prevValue === '' ? 0 : prevValue);
+    setter(prevValue => prevValue);
   };
   const handleDimensionChange = dimension => value => {
-    if (!recticleLimit || dimension === 'dieWidth' && value <= 33 || dimension === 'dieHeight' && value <= 26) {
+    if (!recticleLimit || dimension === "dieWidth" && value <= 33 || dimension === "dieHeight" && value <= 26) {
       if (maintainAspectRatio) {
-        if (dimension === 'dieWidth') {
+        if (dimension === "dieWidth") {
           nullOrRound(setDieWidth, value);
           nullOrRound(setDieHeight, value / aspectRatio);
-        } else if (dimension === 'dieHeight') {
+        } else if (dimension === "dieHeight") {
           nullOrRound(setDieHeight, value);
           nullOrRound(setDieWidth, value * aspectRatio);
         }
       } else {
-        dimension === 'dieWidth' ? setDieWidth(value) : setDieHeight(value);
+        dimension === "dieWidth" ? setDieWidth(value) : setDieHeight(value);
       }
     }
   };
   const handleScribeSizeChange = dimension => value => {
-    if (dimension === 'horiz') {
+    if (dimension === "horiz") {
       nullOrRound(setScribeHoriz, value);
-    } else if (dimension === 'vert') {
+    } else if (dimension === "vert") {
       nullOrRound(setScribeVert, value);
     }
   };
@@ -492,15 +435,18 @@ function App() {
     nullOrRound(setCriticalArea, value);
   };
   const handleDefectRateChange = value => {
+    console.log({
+      value
+    });
     nullOrRound(setDefectRate, value);
   };
   const handleEdgeLossChange = value => {
     nullOrRound(setEdgeLoss, value);
   };
   const handleTransChange = dimension => value => {
-    if (dimension === 'horiz') {
+    if (dimension === "horiz") {
       nullOrRound(setTransHoriz, value);
-    } else if (dimension === 'vert') {
+    } else if (dimension === "vert") {
       nullOrRound(setTransVert, value);
     }
   };
@@ -514,13 +460,11 @@ function App() {
   const handleRecticleLimitChange = event => {
     setRecticleLimit(event.target.checked);
   };
-  const handleShapeChange = event => {
-    setShape(event.target.value);
-  };
   const handleSizeChange = event => {
-    setSelectedSize(event.target.value);
-    if (allCritical) {
-      //setCriticalArea()
+    if (shape === "Panel") {
+      setPanelSize(event.target.value);
+    } else if (shape === "Wafer") {
+      setWaferSize(event.target.value);
     }
   };
   const handleModelChange = event => {
@@ -529,15 +473,15 @@ function App() {
   const numberInputs = [{
     label: "Die Width (mm)",
     value: dieWidth,
-    onChange: handleDimensionChange('dieWidth'),
+    onChange: handleDimensionChange("dieWidth"),
     onBlur: handleBlur(setDieWidth),
-    isDisabled: ''
+    isDisabled: ""
   }, {
     label: "Die Height (mm)",
     value: dieHeight,
-    onChange: handleDimensionChange('dieHeight'),
+    onChange: handleDimensionChange("dieHeight"),
     onBlur: handleBlur(setDieHeight),
-    isDisabled: ''
+    isDisabled: ""
   }, {
     label: "Critical Area (mm²)",
     value: criticalArea,
@@ -549,37 +493,37 @@ function App() {
     value: defectRate,
     onChange: handleDefectRateChange,
     onBlur: handleBlur(setDefectRate),
-    isDisabled: ''
+    isDisabled: ""
   }, {
     label: "Edge Loss (mm)",
     value: edgeLoss,
     onChange: handleEdgeLossChange,
     onBlur: handleBlur(setEdgeLoss),
-    isDisabled: ''
+    isDisabled: ""
   }, {
     label: "Scribe Lines Horiz",
     value: scribeHoriz,
-    onChange: handleScribeSizeChange('horiz'),
+    onChange: handleScribeSizeChange("horiz"),
     onBlur: handleBlur(setScribeHoriz),
-    isDisabled: ''
+    isDisabled: ""
   }, {
     label: "Scribe Lines Vert",
     value: scribeVert,
-    onChange: handleScribeSizeChange('vert'),
+    onChange: handleScribeSizeChange("vert"),
     onBlur: handleBlur(setScribeVert),
-    isDisabled: ''
+    isDisabled: ""
   }, {
     label: "Translation Horiz",
     value: transHoriz,
-    onChange: handleTransChange('horiz'),
+    onChange: handleTransChange("horiz"),
     onBlur: handleBlur(setTransHoriz),
-    isDisabled: ''
+    isDisabled: ""
   }, {
     label: "Translation Vert",
     value: transVert,
-    onChange: handleTransChange('vert'),
+    onChange: handleTransChange("vert"),
     onBlur: handleBlur(setTransVert),
-    isDisabled: ''
+    isDisabled: ""
   }];
   const checkboxes = [{
     label: "Maintain Aspect Ratio",
@@ -595,62 +539,47 @@ function App() {
     checked: allCritical
   }, {
     label: "Centering",
-    onChange: '',
-    checked: ''
+    onChange: () => {},
+    checked: ""
   }];
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
-    className: "calc",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
-      className: "control-panel",
-      children: [numberInputs.map(input => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(NumberInput, {
-        label: input.label,
-        value: input.value,
-        isDisabled: input.isDisabled,
-        onChange: event => {
-          input.onChange(event);
-        }
-      }, input.label)), checkboxes.map(input => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(Checkbox, {
-        label: input.label,
-        onChange: event => {
-          input.onChange(event);
-        },
-        checked: input.checked
-      }, input.label)), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(ShapeSelector, {
-        label: "Shape",
-        shape: shape,
-        setShape: setShape
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(ShapeSizeSelector, {
-        selectedSize: selectedSize,
-        handleSizeChange: handleSizeChange,
-        selectedShape: shape
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(ModelSelector, {
-        label: "Yield Model",
-        selectedModel: selectedModel,
-        handleModelChange: handleModelChange
-      })]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
-      className: "calculations",
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(Calculations, {
-        calcState: calcState
-      })
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
-      children: shape === 'Panel' ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(Panel, {
-        calcState: calcState,
-        panelSize: PANELSIZES[selectedSize],
-        dieHeight: dieHeight,
-        dieWidth: dieHeight,
-        scribeHoriz: scribeHoriz,
-        scribeVert: scribeVert
-      }) : shape === 'Wafer' ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(Wafer, {
-        calcState: calcState,
-        waferSize: WAFERSIZES[selectedSize],
-        dieHeight: dieHeight,
-        dieWidth: dieHeight,
-        scribeHoriz: scribeHoriz,
-        scribeVert: scribeVert
-      }) : null
-    })]
-  });
+  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "calc"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "control-panel"
+  }, numberInputs.map(input => react__WEBPACK_IMPORTED_MODULE_0___default().createElement(NumberInput, {
+    key: input.label,
+    label: input.label,
+    value: input.value,
+    isDisabled: !!input.isDisabled,
+    onChange: event => {
+      input.onChange(parseFloat(event.target.value));
+    }
+  })), checkboxes.map(input => react__WEBPACK_IMPORTED_MODULE_0___default().createElement(Checkbox, {
+    key: input.label,
+    label: input.label,
+    onChange: input.onChange,
+    checked: !!input.checked
+  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ShapeSelector, {
+    shape: shape,
+    setShape: setShape
+  }), shape === "Panel" && react__WEBPACK_IMPORTED_MODULE_0___default().createElement(PanelSizeSelect, {
+    selectedSize: panelSize,
+    handleSizeChange: handleSizeChange
+  }), shape === "Wafer" && react__WEBPACK_IMPORTED_MODULE_0___default().createElement(WaferSizeSelect, {
+    selectedSize: waferSize,
+    handleSizeChange: handleSizeChange
+  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ModelSelector, {
+    selectedModel: selectedModel,
+    handleModelChange: handleModelChange
+  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "calculations"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(Calculations, {
+    calcState: calcState
+  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, shape === "Panel" ? react__WEBPACK_IMPORTED_MODULE_0___default().createElement(Panel, {
+    calcState: calcState
+  }) : shape === "Wafer" ? react__WEBPACK_IMPORTED_MODULE_0___default().createElement(Wafer, {
+    calcState: calcState
+  }) : null));
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (App);
 
@@ -761,7 +690,7 @@ var __webpack_exports__ = {};
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react-dom */ "react-dom");
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _components_App__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/App */ "./src/components/App.jsx");
+/* harmony import */ var _components_App__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/App */ "./src/components/App.tsx");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__);
 
