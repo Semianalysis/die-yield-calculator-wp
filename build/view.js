@@ -475,13 +475,13 @@ function App() {
     value: dieWidth,
     onChange: handleDimensionChange("dieWidth"),
     onBlur: handleBlur(setDieWidth),
-    isDisabled: ""
+    isDisabled: false
   }, {
     label: "Die Height (mm)",
     value: dieHeight,
     onChange: handleDimensionChange("dieHeight"),
     onBlur: handleBlur(setDieHeight),
-    isDisabled: ""
+    isDisabled: false
   }, {
     label: "Critical Area (mm²)",
     value: criticalArea,
@@ -493,37 +493,37 @@ function App() {
     value: defectRate,
     onChange: handleDefectRateChange,
     onBlur: handleBlur(setDefectRate),
-    isDisabled: ""
+    isDisabled: false
   }, {
     label: "Edge Loss (mm)",
     value: edgeLoss,
     onChange: handleEdgeLossChange,
     onBlur: handleBlur(setEdgeLoss),
-    isDisabled: ""
+    isDisabled: false
   }, {
     label: "Scribe Lines Horiz",
     value: scribeHoriz,
     onChange: handleScribeSizeChange("horiz"),
     onBlur: handleBlur(setScribeHoriz),
-    isDisabled: ""
+    isDisabled: false
   }, {
     label: "Scribe Lines Vert",
     value: scribeVert,
     onChange: handleScribeSizeChange("vert"),
     onBlur: handleBlur(setScribeVert),
-    isDisabled: ""
+    isDisabled: false
   }, {
     label: "Translation Horiz",
     value: transHoriz,
     onChange: handleTransChange("horiz"),
     onBlur: handleBlur(setTransHoriz),
-    isDisabled: ""
+    isDisabled: false
   }, {
     label: "Translation Vert",
     value: transVert,
     onChange: handleTransChange("vert"),
     onBlur: handleBlur(setTransVert),
-    isDisabled: ""
+    isDisabled: false
   }];
   const checkboxes = [{
     label: "Maintain Aspect Ratio",
@@ -540,7 +540,7 @@ function App() {
   }, {
     label: "Centering",
     onChange: () => {},
-    checked: ""
+    checked: false
   }];
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "calc"
@@ -550,7 +550,7 @@ function App() {
     key: input.label,
     label: input.label,
     value: input.value,
-    isDisabled: !!input.isDisabled,
+    isDisabled: input.isDisabled,
     onChange: event => {
       input.onChange(parseFloat(event.target.value));
     }
@@ -558,7 +558,7 @@ function App() {
     key: input.label,
     label: input.label,
     onChange: input.onChange,
-    checked: !!input.checked
+    checked: input.checked
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ShapeSelector, {
     shape: shape,
     setShape: setShape
