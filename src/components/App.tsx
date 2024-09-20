@@ -1,5 +1,4 @@
 import React, { useState, useEffect, Dispatch, SetStateAction } from "react";
-import { parse } from "ts-jest";
 
 const PANELSIZES = {
 	s300mm: { name: "300 mm (12 in)", waferHeight: 300, waferWidth: 300 },
