@@ -20,8 +20,6 @@ const WAFERSIZES = {
 	s450mm: { name: "450 mm (18 in)", waferWidth: 450 }
 };
 
-type SizeKey = keyof typeof PANELSIZES | keyof typeof WAFERSIZES;
-
 const STATECOLORS = {
 	good: "green",
 	defective: "grey",
