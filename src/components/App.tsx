@@ -1,4 +1,5 @@
-import React, { useState, useEffect, Dispatch, SetStateAction, ReactEventHandler } from "react";
+import React, { useState, useEffect, Dispatch, SetStateAction } from "react";
+import { parse } from "ts-jest";
 
 const PANELSIZES = {
 	s300mm: { name: "300 mm (12 in)", waferHeight: 300, waferWidth: 300 },
@@ -57,7 +58,7 @@ type CalcState = {
 
 const NumberInput = (props: {
 	label: string,
-	value: number,
+	value: string,
 	onChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
 	isDisabled: boolean
 	onBlur?: () => void,
@@ -217,16 +218,26 @@ function getFabYield(defectRate: number, criticalArea: number, model: keyof type
 }
 
 function evaulatePanelInputs(
-	dieWidth: number,
-	dieHeight: number,
-	criticalArea: number,
-	defectRate: number,
-	edgeLoss: number,
-	scribeHoriz: number,
-	scribeVert: number,
+	inputVals: {
+		dieWidth: number,
+		dieHeight: number,
+		criticalArea: number,
+		defectRate: number,
+		edgeLoss: number,
+		scribeHoriz: number,
+		scribeVert: number
+	},
 	selectedSize: keyof typeof PANELSIZES,
-	selectedModel: keyof typeof YIELDMODELS
-) {
+	selectedModel: keyof typeof YIELDMODELS) {
+	const {
+		dieWidth,
+		dieHeight,
+		criticalArea,
+		defectRate,
+		edgeLoss,
+		scribeHoriz,
+		scribeVert
+	} = inputVals;
 	let dies = [];
 	const fabYield = getFabYield(defectRate, criticalArea, selectedModel);
 	const { waferWidth, waferHeight } = PANELSIZES[selectedSize];
@@ -281,16 +292,28 @@ function evaulatePanelInputs(
 }
 
 function evaluateWaferInputs(
-	dieWidth: number,
-	dieHeight: number,
-	criticalArea: number,
-	defectRate: number,
-	edgeLoss: number,
-	scribeHoriz: number,
-	scribeVert: number,
+	inputVals: {
+		dieWidth: number,
+		dieHeight: number,
+		criticalArea: number,
+		defectRate: number,
+		edgeLoss: number,
+		scribeHoriz: number,
+		scribeVert: number,
+	},
 	selectedSize: keyof typeof WAFERSIZES,
 	selectedModel: keyof typeof YIELDMODELS
 ) {
+	const {
+		dieWidth,
+		dieHeight,
+		criticalArea,
+		defectRate,
+		edgeLoss,
+		scribeHoriz,
+		scribeVert
+	} = inputVals;
+
 	let dies = [];
 	const fabYield = getFabYield(defectRate, criticalArea, selectedModel);
 	const { waferWidth } = WAFERSIZES[selectedSize];
@@ -345,6 +368,11 @@ function evaluateWaferInputs(
 }
 
 const Wafer = (props: { calcState: CalcState }) => {
+	// Bail out if there are too many dies to show
+	if (props.calcState.totalDies > 9999) {
+		return 'Too many dies to visualize';
+	}
+
 	return (
 		<svg width={props.calcState.waferWidth} height={props.calcState.waferWidth} style={{ border: "1px solid black" }}>
 			<circle
@@ -371,6 +399,11 @@ const Wafer = (props: { calcState: CalcState }) => {
 };
 
 const Panel = (props: { calcState: CalcState }) => {
+	// Bail out if there are too many dies to show
+	if (props.calcState.totalDies > 9999) {
+		return 'Too many dies to visualize';
+	}
+
 	return (
 		<svg width={props.calcState.waferWidth} height={props.calcState.waferHeight} style={{ border: "1px solid black" }}>
 			{
@@ -403,64 +436,100 @@ function App() {
 		"waferWidth": 0,
 		"waferHeight": 0
 	});
-	const [dieWidth, setDieWidth] = useState(8);
-	const [dieHeight, setDieHeight] = useState(8);
-	const [aspectRatio, setAspectRatio] = useState(dieWidth / dieHeight);
+	const [dieWidth, setDieWidth] = useState<string>("8");
+	const [dieHeight, setDieHeight] = useState<string>("8");
+	const [aspectRatio, setAspectRatio] = useState<number>(1);
 	const [maintainAspectRatio, setMaintainAspectRatio] = useState(true);
-	const [criticalArea, setCriticalArea] = useState(64);
-	const [defectRate, setDefectRate] = useState(0.1);
-	const [edgeLoss, setEdgeLoss] = useState(0);
+	const [criticalArea, setCriticalArea] = useState<string>("64");
+	const [defectRate, setDefectRate] = useState<string>("0.1");
+	const [edgeLoss, setEdgeLoss] = useState<string>("0");
 	const [allCritical, setAllCritical] = useState(true);
 	const [recticleLimit, setRecticleLimit] = useState(true);
-	const [scribeHoriz, setScribeHoriz] = useState(0.1);
-	const [scribeVert, setScribeVert] = useState(0.1);
-	const [transHoriz, setTransHoriz] = useState(0);
-	const [transVert, setTransVert] = useState(0.1);
+	const [scribeHoriz, setScribeHoriz] = useState<string>("0.1");
+	const [scribeVert, setScribeVert] = useState<string>("0.1");
+	const [transHoriz, setTransHoriz] = useState<string>("0");
+	const [transVert, setTransVert] = useState<string>("0.1");
 	const [shape, setShape] = useState<Shape>("Panel");
 	const [panelSize, setPanelSize] = useState<keyof typeof PANELSIZES>("s300mm");
 	const [waferSize, setWaferSize] = useState<keyof typeof WAFERSIZES>("s300mm");
 	const [selectedModel, setSelectedModel] = useState<keyof typeof YIELDMODELS>("murph");
 
 	useEffect(() => {
-		if (maintainAspectRatio) {
-			setAspectRatio(dieWidth / dieHeight);
+		const dieWidthNum = parseFloat(dieWidth);
+		const dieHeightNum = parseFloat(dieHeight);
+		if (maintainAspectRatio && !isNaN(dieWidthNum) && !isNaN(dieHeightNum)) {
+			setAspectRatio(dieWidthNum / dieHeightNum);
 		}
 	}, [dieWidth, dieHeight, maintainAspectRatio]);
 
 	useEffect(() => {
+		const inputNums = {
+			dieWidth: parseFloat(dieWidth),
+			dieHeight: parseFloat(dieHeight),
+			criticalArea: parseFloat(criticalArea),
+			defectRate: parseFloat(defectRate),
+			edgeLoss: parseFloat(edgeLoss),
+			scribeHoriz: parseFloat(scribeHoriz),
+			scribeVert: parseFloat(scribeVert)
+		};
+
+		// Bail out if we can't use any of the values
+		const invalidValues = Object.values(inputNums).filter(isNaN);
+
+		if (invalidValues.length) {
+			return;
+		}
+
 		if (shape === "Wafer") {
-			setCalcState(evaluateWaferInputs(dieWidth, dieHeight, criticalArea, defectRate, edgeLoss, scribeHoriz, scribeVert, waferSize, selectedModel));
+			setCalcState(evaluateWaferInputs(inputNums, waferSize, selectedModel));
 		} else if (shape === "Panel") {
-			setCalcState(evaulatePanelInputs(dieWidth, dieHeight, criticalArea, defectRate, edgeLoss, scribeHoriz, scribeVert, panelSize, selectedModel));
+			setCalcState(evaulatePanelInputs(inputNums, panelSize, selectedModel));
 		}
 	}, [dieWidth, dieHeight, criticalArea, defectRate, edgeLoss, scribeHoriz, scribeVert, shape, panelSize, waferSize, selectedModel]);
 
-	const nullOrRound = (setter: (val: number) => void, value: number) => {
-		const roundedValue = Math.round(value * 100) / 100;
-		setter(roundedValue);
-	};
+	const nullOrRound = (setter: (val: string) => void, value: string) => {
+		const valFloat = parseFloat(value);
 
-	const handleBlur = (setter: Dispatch<SetStateAction<number>>) => () => {
-		setter((prevValue) => (prevValue));
-	};
-
-	const handleDimensionChange = (dimension: "dieWidth" | "dieHeight") => (value: number) => {
-		if (!recticleLimit || ((dimension === "dieWidth" && value <= 33) || (dimension === "dieHeight" && value <= 26))) {
-			if (maintainAspectRatio) {
-				if (dimension === "dieWidth") {
-					nullOrRound(setDieWidth, value);
-					nullOrRound(setDieHeight, value / aspectRatio);
-				} else if (dimension === "dieHeight") {
-					nullOrRound(setDieHeight, value);
-					nullOrRound(setDieWidth, value * aspectRatio);
-				}
-			} else {
-				dimension === "dieWidth" ? setDieWidth(value) : setDieHeight(value);
-			}
+		if (isNaN(valFloat)) {
+			setter("");
+		} else {
+			const roundedValue = Math.round(valFloat * 100) / 100;
+			setter(roundedValue.toString());
 		}
 	};
 
-	const handleScribeSizeChange = (dimension: string) => (value: number) => {
+	const handleBlur = (setter: Dispatch<SetStateAction<string>>) => () => {
+		setter((prevValue) => (prevValue));
+	};
+
+	const handleDimensionChange = (dimension: "dieWidth" | "dieHeight") => (value: string) => {
+		const valNum = parseFloat(value);
+
+		if (!recticleLimit || ((dimension === "dieWidth" && valNum <= 33) || (dimension === "dieHeight" && valNum <= 26))) {
+			if (dimension === "dieWidth") {
+				nullOrRound(setDieWidth, value);
+
+				if (maintainAspectRatio && aspectRatio) {
+					const height = valNum / aspectRatio;
+
+					if (!isNaN(height)) {
+						nullOrRound(setDieHeight, height.toString());
+					}
+				}
+			} else if (dimension === "dieHeight") {
+				nullOrRound(setDieHeight, value);
+
+				if (maintainAspectRatio && aspectRatio) {
+					nullOrRound(setDieWidth, `${valNum * aspectRatio}`);
+				}
+			}
+		} else {
+			dimension === "dieWidth" ? setDieWidth(value) : setDieHeight(value);
+		}
+
+	};
+
+	const handleScribeSizeChange = (dimension: string) => (value: string) => {
 		if (dimension === "horiz") {
 			nullOrRound(setScribeHoriz, value);
 		} else if (dimension === "vert") {
@@ -468,20 +537,19 @@ function App() {
 		}
 	};
 
-	const handleCriticalAreaChange = (value: number) => {
+	const handleCriticalAreaChange = (value: string) => {
 		nullOrRound(setCriticalArea, value);
 	};
 
-	const handleDefectRateChange = (value: number) => {
-		console.log({ value });
+	const handleDefectRateChange = (value: string) => {
 		nullOrRound(setDefectRate, value);
 	};
 
-	const handleEdgeLossChange = (value: number) => {
+	const handleEdgeLossChange = (value: string) => {
 		nullOrRound(setEdgeLoss, value);
 	};
 
-	const handleTransChange = (dimension: string) => (value: number) => {
+	const handleTransChange = (dimension: string) => (value: string) => {
 		if (dimension === "horiz") {
 			nullOrRound(setTransHoriz, value);
 		} else if (dimension === "vert") {
@@ -494,7 +562,7 @@ function App() {
 	};
 
 	const handleAllCriticalChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setCriticalArea(dieWidth * dieHeight);
+		setCriticalArea(`${parseFloat(dieWidth) * parseFloat(dieHeight)}`);
 		setAllCritical(event.target.checked);
 	};
 
@@ -600,7 +668,7 @@ function App() {
 						value={input.value}
 						isDisabled={input.isDisabled}
 						onChange={(event) => {
-							input.onChange(parseFloat(event.target.value));
+							input.onChange(event.target.value);
 						}}
 					/>
 				))}

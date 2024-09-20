@@ -210,7 +210,16 @@ function getFabYield(defectRate, criticalArea, model) {
       return 0;
   }
 }
-function evaulatePanelInputs(dieWidth, dieHeight, criticalArea, defectRate, edgeLoss, scribeHoriz, scribeVert, selectedSize, selectedModel) {
+function evaulatePanelInputs(inputVals, selectedSize, selectedModel) {
+  const {
+    dieWidth,
+    dieHeight,
+    criticalArea,
+    defectRate,
+    edgeLoss,
+    scribeHoriz,
+    scribeVert
+  } = inputVals;
   let dies = [];
   const fabYield = getFabYield(defectRate, criticalArea, selectedModel);
   const {
@@ -261,7 +270,16 @@ function evaulatePanelInputs(dieWidth, dieHeight, criticalArea, defectRate, edge
     waferHeight
   };
 }
-function evaluateWaferInputs(dieWidth, dieHeight, criticalArea, defectRate, edgeLoss, scribeHoriz, scribeVert, selectedSize, selectedModel) {
+function evaluateWaferInputs(inputVals, selectedSize, selectedModel) {
+  const {
+    dieWidth,
+    dieHeight,
+    criticalArea,
+    defectRate,
+    edgeLoss,
+    scribeHoriz,
+    scribeVert
+  } = inputVals;
   let dies = [];
   const fabYield = getFabYield(defectRate, criticalArea, selectedModel);
   const {
@@ -319,6 +337,10 @@ function evaluateWaferInputs(dieWidth, dieHeight, criticalArea, defectRate, edge
   };
 }
 const Wafer = props => {
+  // Bail out if there are too many dies to show
+  if (props.calcState.totalDies > 9999) {
+    return 'Too many dies to visualize';
+  }
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("svg", {
     width: props.calcState.waferWidth,
     height: props.calcState.waferWidth,
@@ -342,6 +364,10 @@ const Wafer = props => {
   }))));
 };
 const Panel = props => {
+  // Bail out if there are too many dies to show
+  if (props.calcState.totalDies > 9999) {
+    return 'Too many dies to visualize';
+  }
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("svg", {
     width: props.calcState.waferWidth,
     height: props.calcState.waferHeight,
@@ -373,55 +399,82 @@ function App() {
     "waferWidth": 0,
     "waferHeight": 0
   });
-  const [dieWidth, setDieWidth] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(8);
-  const [dieHeight, setDieHeight] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(8);
-  const [aspectRatio, setAspectRatio] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(dieWidth / dieHeight);
+  const [dieWidth, setDieWidth] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("8");
+  const [dieHeight, setDieHeight] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("8");
+  const [aspectRatio, setAspectRatio] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(1);
   const [maintainAspectRatio, setMaintainAspectRatio] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
-  const [criticalArea, setCriticalArea] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(64);
-  const [defectRate, setDefectRate] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(0.1);
-  const [edgeLoss, setEdgeLoss] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(0);
+  const [criticalArea, setCriticalArea] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("64");
+  const [defectRate, setDefectRate] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0.1");
+  const [edgeLoss, setEdgeLoss] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0");
   const [allCritical, setAllCritical] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
   const [recticleLimit, setRecticleLimit] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
-  const [scribeHoriz, setScribeHoriz] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(0.1);
-  const [scribeVert, setScribeVert] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(0.1);
-  const [transHoriz, setTransHoriz] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(0);
-  const [transVert, setTransVert] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(0.1);
+  const [scribeHoriz, setScribeHoriz] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0.1");
+  const [scribeVert, setScribeVert] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0.1");
+  const [transHoriz, setTransHoriz] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0");
+  const [transVert, setTransVert] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0.1");
   const [shape, setShape] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("Panel");
   const [panelSize, setPanelSize] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("s300mm");
   const [waferSize, setWaferSize] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("s300mm");
   const [selectedModel, setSelectedModel] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("murph");
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
-    if (maintainAspectRatio) {
-      setAspectRatio(dieWidth / dieHeight);
+    const dieWidthNum = parseFloat(dieWidth);
+    const dieHeightNum = parseFloat(dieHeight);
+    if (maintainAspectRatio && !isNaN(dieWidthNum) && !isNaN(dieHeightNum)) {
+      setAspectRatio(dieWidthNum / dieHeightNum);
     }
   }, [dieWidth, dieHeight, maintainAspectRatio]);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    const inputNums = {
+      dieWidth: parseFloat(dieWidth),
+      dieHeight: parseFloat(dieHeight),
+      criticalArea: parseFloat(criticalArea),
+      defectRate: parseFloat(defectRate),
+      edgeLoss: parseFloat(edgeLoss),
+      scribeHoriz: parseFloat(scribeHoriz),
+      scribeVert: parseFloat(scribeVert)
+    };
+    // Bail out if we can't use any of the values
+    const invalidValues = Object.values(inputNums).filter(isNaN);
+    if (invalidValues.length) {
+      return;
+    }
     if (shape === "Wafer") {
-      setCalcState(evaluateWaferInputs(dieWidth, dieHeight, criticalArea, defectRate, edgeLoss, scribeHoriz, scribeVert, waferSize, selectedModel));
+      setCalcState(evaluateWaferInputs(inputNums, waferSize, selectedModel));
     } else if (shape === "Panel") {
-      setCalcState(evaulatePanelInputs(dieWidth, dieHeight, criticalArea, defectRate, edgeLoss, scribeHoriz, scribeVert, panelSize, selectedModel));
+      setCalcState(evaulatePanelInputs(inputNums, panelSize, selectedModel));
     }
   }, [dieWidth, dieHeight, criticalArea, defectRate, edgeLoss, scribeHoriz, scribeVert, shape, panelSize, waferSize, selectedModel]);
   const nullOrRound = (setter, value) => {
-    const roundedValue = Math.round(value * 100) / 100;
-    setter(roundedValue);
+    const valFloat = parseFloat(value);
+    if (isNaN(valFloat)) {
+      setter("");
+    } else {
+      const roundedValue = Math.round(valFloat * 100) / 100;
+      setter(roundedValue.toString());
+    }
   };
   const handleBlur = setter => () => {
     setter(prevValue => prevValue);
   };
   const handleDimensionChange = dimension => value => {
-    if (!recticleLimit || dimension === "dieWidth" && value <= 33 || dimension === "dieHeight" && value <= 26) {
-      if (maintainAspectRatio) {
-        if (dimension === "dieWidth") {
-          nullOrRound(setDieWidth, value);
-          nullOrRound(setDieHeight, value / aspectRatio);
-        } else if (dimension === "dieHeight") {
-          nullOrRound(setDieHeight, value);
-          nullOrRound(setDieWidth, value * aspectRatio);
+    const valNum = parseFloat(value);
+    if (!recticleLimit || dimension === "dieWidth" && valNum <= 33 || dimension === "dieHeight" && valNum <= 26) {
+      if (dimension === "dieWidth") {
+        nullOrRound(setDieWidth, value);
+        if (maintainAspectRatio && aspectRatio) {
+          const height = valNum / aspectRatio;
+          if (!isNaN(height)) {
+            nullOrRound(setDieHeight, height.toString());
+          }
         }
-      } else {
-        dimension === "dieWidth" ? setDieWidth(value) : setDieHeight(value);
+      } else if (dimension === "dieHeight") {
+        nullOrRound(setDieHeight, value);
+        if (maintainAspectRatio && aspectRatio) {
+          nullOrRound(setDieWidth, `${valNum * aspectRatio}`);
+        }
       }
+    } else {
+      dimension === "dieWidth" ? setDieWidth(value) : setDieHeight(value);
     }
   };
   const handleScribeSizeChange = dimension => value => {
@@ -435,9 +488,6 @@ function App() {
     nullOrRound(setCriticalArea, value);
   };
   const handleDefectRateChange = value => {
-    console.log({
-      value
-    });
     nullOrRound(setDefectRate, value);
   };
   const handleEdgeLossChange = value => {
@@ -454,7 +504,7 @@ function App() {
     setMaintainAspectRatio(event.target.checked);
   };
   const handleAllCriticalChange = event => {
-    setCriticalArea(dieWidth * dieHeight);
+    setCriticalArea(`${parseFloat(dieWidth) * parseFloat(dieHeight)}`);
     setAllCritical(event.target.checked);
   };
   const handleRecticleLimitChange = event => {
@@ -552,7 +602,7 @@ function App() {
     value: input.value,
     isDisabled: input.isDisabled,
     onChange: event => {
-      input.onChange(parseFloat(event.target.value));
+      input.onChange(event.target.value);
     }
   })), checkboxes.map(input => react__WEBPACK_IMPORTED_MODULE_0___default().createElement(Checkbox, {
     key: input.label,
