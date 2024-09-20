@@ -13,7 +13,9 @@
 		"packages-update": "wp-scripts packages-update",
 		"plugin-zip": "wp-scripts plugin-zip",
 		"start": "wp-scripts start --webpack-copy-php --experimental-modules",
-		"test": "npx jest"
+		"test:types": "tsc --noEmit",
+		"test:unit": "npx jest",
+		"test": "npm run test:types && npm run test:unit"
 	},
 	"devDependencies": {
 		"@testing-library/jest-dom": "^6.5.0",
