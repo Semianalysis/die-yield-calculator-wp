@@ -12,13 +12,24 @@
 		"lint:js": "wp-scripts lint-js",
 		"packages-update": "wp-scripts packages-update",
 		"plugin-zip": "wp-scripts plugin-zip",
-		"start": "wp-scripts start --webpack-copy-php --experimental-modules"
+		"start": "wp-scripts start --webpack-copy-php --experimental-modules",
+		"test:types": "tsc --noEmit",
+		"test:unit": "npx jest",
+		"test": "npm run test:types && npm run test:unit"
 	},
 	"devDependencies": {
+		"@testing-library/jest-dom": "^6.5.0",
+		"@testing-library/react": "^16.0.1",
+		"@testing-library/user-event": "^14.5.2",
+		"@types/jest": "^29.5.13",
 		"@types/react": "^18.3.6",
 		"@wordpress/scripts": "^29.0.0",
 		"fork-ts-checker-webpack-plugin": "^9.0.2",
+		"identity-obj-proxy": "^3.0.0",
+		"jest": "^29.7.0",
+		"jest-environment-jsdom": "^29.7.0",
 		"prettier": "3.3.3",
+		"ts-jest": "^29.2.5",
 		"ts-loader": "^9.5.1"
 	},
 	"dependencies": {
