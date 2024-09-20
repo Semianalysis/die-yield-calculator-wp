@@ -366,8 +366,8 @@ function evaluateWaferInputs(
 	};
 }
 
-const Wafer = (props: { calcState: CalcState }) => {
-	// Bail out if there are too many dies to show
+const WaferCanvas = (props: { calcState: CalcState }) => {
+	// Bail out if there are too many dies to draw, otherwise the browser will hang
 	if (props.calcState.totalDies > 9999) {
 		return 'Too many dies to visualize';
 	}
@@ -397,8 +397,8 @@ const Wafer = (props: { calcState: CalcState }) => {
 	);
 };
 
-const Panel = (props: { calcState: CalcState }) => {
-	// Bail out if there are too many dies to show
+const PanelCanvas = (props: { calcState: CalcState }) => {
+	// Bail out if there are too many dies to draw, otherwise the browser will hang
 	if (props.calcState.totalDies > 9999) {
 		return 'Too many dies to visualize';
 	}
@@ -708,9 +708,9 @@ function App() {
 			</div>
 			<div>
 				{shape === "Panel" ? (
-					<Panel calcState={calcState} />
+					<PanelCanvas calcState={calcState} />
 				) : shape === "Wafer" ? (
-					<Wafer calcState={calcState} />
+					<WaferCanvas calcState={calcState} />
 				) : null}
 			</div>
 

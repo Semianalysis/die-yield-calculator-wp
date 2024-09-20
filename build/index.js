@@ -444,8 +444,8 @@ function evaluateWaferInputs(inputVals, selectedSize, selectedModel) {
     waferWidth
   };
 }
-const Wafer = props => {
-  // Bail out if there are too many dies to show
+const WaferCanvas = props => {
+  // Bail out if there are too many dies to draw, otherwise the browser will hang
   if (props.calcState.totalDies > 9999) {
     return 'Too many dies to visualize';
   }
@@ -471,8 +471,8 @@ const Wafer = props => {
     height: die.height
   }))));
 };
-const Panel = props => {
-  // Bail out if there are too many dies to show
+const PanelCanvas = props => {
+  // Bail out if there are too many dies to draw, otherwise the browser will hang
   if (props.calcState.totalDies > 9999) {
     return 'Too many dies to visualize';
   }
@@ -733,9 +733,9 @@ function App() {
     className: "calculations"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(Calculations, {
     calcState: calcState
-  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, shape === "Panel" ? react__WEBPACK_IMPORTED_MODULE_0___default().createElement(Panel, {
+  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, shape === "Panel" ? react__WEBPACK_IMPORTED_MODULE_0___default().createElement(PanelCanvas, {
     calcState: calcState
-  }) : shape === "Wafer" ? react__WEBPACK_IMPORTED_MODULE_0___default().createElement(Wafer, {
+  }) : shape === "Wafer" ? react__WEBPACK_IMPORTED_MODULE_0___default().createElement(WaferCanvas, {
     calcState: calcState
   }) : null));
 }
