@@ -339,7 +339,7 @@ function evaluateWaferInputs(inputVals, selectedSize, selectedModel) {
 const WaferCanvas = props => {
   // Bail out if there are too many dies to draw, otherwise the browser will hang
   if (props.calcState.totalDies > 9999) {
-    return 'Too many dies to visualize';
+    return "Too many dies to visualize";
   }
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("svg", {
     width: props.calcState.waferWidth,
@@ -366,7 +366,7 @@ const WaferCanvas = props => {
 const PanelCanvas = props => {
   // Bail out if there are too many dies to draw, otherwise the browser will hang
   if (props.calcState.totalDies > 9999) {
-    return 'Too many dies to visualize';
+    return "Too many dies to visualize";
   }
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("svg", {
     width: props.calcState.waferWidth,

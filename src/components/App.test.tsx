@@ -1,6 +1,6 @@
 import React from "react";
 import App from "./App";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 
 describe("App", () => {
@@ -28,5 +28,14 @@ describe("App", () => {
 		const expected = Math.pow(300 / 10, 2);
 
 		expect(screen.queryByText(new RegExp(expected.toString()))).toBeInTheDocument();
+	});
+
+	it("calculates yields for wafer shape", async () => {
+		render(<App />);
+		const user = userEvent.setup();
+		await user.selectOptions(screen.getByRole("combobox", {
+			name: /Shape/
+		}), "Wafer");
+		await waitFor(() => expect(screen.getByText(/977/)).toBeInTheDocument());
 	});
 });
