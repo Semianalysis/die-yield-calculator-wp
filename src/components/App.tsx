@@ -1,4 +1,7 @@
 import React, { useState, useEffect, Dispatch, SetStateAction } from "react";
+import { Checkbox } from "./Checkbox/Checkbox";
+import { NumberInput } from "./NumberInput/NumberInput";
+import { getFabYield, isInsideCircle, rectanglesInCircle } from "../utils/calculations";
 
 const PANELSIZES = {
 	s300mm: { name: "300 mm (12 in)", waferHeight: 300, waferWidth: 300 },
@@ -27,7 +30,7 @@ const STATECOLORS = {
 	lost: "red"
 };
 
-const YIELDMODELS = {
+export const YIELDMODELS = {
 	poisson: { name: "Poisson Model" },
 	murph: { name: "Murphy's Model" },
 	rect: { name: "Rectangular Model" },
@@ -55,37 +58,6 @@ type CalcState = {
 	dies: Array<Die>
 };
 
-const NumberInput = (props: {
-	label: string,
-	value: string,
-	onChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
-	isDisabled: boolean
-	onBlur?: () => void,
-}) => (
-	<div className="input-group">
-		<label>
-			{props.label}:
-			<input
-				type="number"
-				disabled={props.isDisabled}
-				value={props.value}
-				onChange={props.onChange}
-				onBlur={props.onBlur}
-				step="0.01" />
-		</label>
-	</div>
-);
-
-const Checkbox = (props: {
-	label: string,
-	onChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
-	checked: boolean
-}) => (
-	<label className="checkbox">
-		{props.label}
-		<input type="checkbox" onChange={props.onChange} checked={props.checked} />
-	</label>
-);
 
 const ShapeSelector = (props: { shape: Shape, setShape: (value: Shape) => void }) => (
 	<div className="input-group">
@@ -169,52 +141,6 @@ const Calculations = (props: {
 	</div>
 );
 
-function isInsideCircle(x: number, y: number, centerX: number, centerY: number, radius: number) {
-	return Math.sqrt((x - centerX) ** 2 + (y - centerY) ** 2) <= radius;
-}
-
-function rectanglesInCircle(diameter: number, rectWidth: number, rectHeight: number) {
-	const radius = diameter / 2;
-	const centerX = radius;
-	const centerY = radius;
-	let positions = [];
-
-	for (let x = 0; x <= diameter + rectWidth; x += rectWidth) {
-		for (let y = 0; y <= diameter + rectHeight; y += rectHeight) {
-			const corners = [
-				{ x: x, y: y },
-				{ x: x + rectWidth, y: y },
-				{ x: x, y: y + rectHeight },
-				{ x: x + rectWidth, y: y + rectHeight }
-			];
-
-			if (corners.every(corner => isInsideCircle(corner.x, corner.y, centerX, centerY, radius))) {
-				positions.push({ x: x, y: y });
-			}
-		}
-	}
-	return positions;
-}
-
-
-function getFabYield(defectRate: number, criticalArea: number, model: keyof typeof YIELDMODELS) {
-	const defects = criticalArea * defectRate / 100;
-	switch (model) {
-		case ("poisson"):
-			return Math.exp(-defects);
-		case ("murph"):
-			return Math.pow(((1 - Math.exp(-defects)) / defects), 2);
-		case ("rect"):
-			return (1 - Math.exp(-2 * defects)) / (2 * defects);
-		//case ('moore'):
-		//  return Math.exp(Math.sqrt(-defects));
-		case ("seeds"):
-			return 1 / (1 + defects);
-		default:
-			console.log("Invalid Model.");
-			return 0;
-	}
-}
 
 function evaulatePanelInputs(
 	inputVals: {

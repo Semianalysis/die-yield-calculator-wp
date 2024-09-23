@@ -10,10 +10,17 @@
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   YIELDMODELS: () => (/* binding */ YIELDMODELS),
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _Checkbox_Checkbox__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Checkbox/Checkbox */ "./src/components/Checkbox/Checkbox.tsx");
+/* harmony import */ var _NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./NumberInput/NumberInput */ "./src/components/NumberInput/NumberInput.tsx");
+/* harmony import */ var _utils_calculations__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/calculations */ "./src/utils/calculations.ts");
+
+
+
 
 const PANELSIZES = {
   s300mm: {
@@ -102,23 +109,6 @@ const YIELDMODELS = {
     name: "Seeds Model"
   }
 };
-const NumberInput = props => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-  className: "input-group"
-}, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", null, props.label, ":", react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
-  type: "number",
-  disabled: props.isDisabled,
-  value: props.value,
-  onChange: props.onChange,
-  onBlur: props.onBlur,
-  step: "0.01"
-})));
-const Checkbox = props => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", {
-  className: "checkbox"
-}, props.label, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
-  type: "checkbox",
-  onChange: props.onChange,
-  checked: props.checked
-}));
 const ShapeSelector = props => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
   className: "input-group"
 }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", null, "Shape:", react__WEBPACK_IMPORTED_MODULE_0___default().createElement("select", {
@@ -159,57 +149,6 @@ const ModelSelector = props => react__WEBPACK_IMPORTED_MODULE_0___default().crea
 const Calculations = props => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
   className: "calculations"
 }, "totalDies: ", props.calcState.totalDies, ", Good Wafers: ", props.calcState.goodDies, ", Fab Yield: ", props.calcState.fabYield);
-function isInsideCircle(x, y, centerX, centerY, radius) {
-  return Math.sqrt((x - centerX) ** 2 + (y - centerY) ** 2) <= radius;
-}
-function rectanglesInCircle(diameter, rectWidth, rectHeight) {
-  const radius = diameter / 2;
-  const centerX = radius;
-  const centerY = radius;
-  let positions = [];
-  for (let x = 0; x <= diameter + rectWidth; x += rectWidth) {
-    for (let y = 0; y <= diameter + rectHeight; y += rectHeight) {
-      const corners = [{
-        x: x,
-        y: y
-      }, {
-        x: x + rectWidth,
-        y: y
-      }, {
-        x: x,
-        y: y + rectHeight
-      }, {
-        x: x + rectWidth,
-        y: y + rectHeight
-      }];
-      if (corners.every(corner => isInsideCircle(corner.x, corner.y, centerX, centerY, radius))) {
-        positions.push({
-          x: x,
-          y: y
-        });
-      }
-    }
-  }
-  return positions;
-}
-function getFabYield(defectRate, criticalArea, model) {
-  const defects = criticalArea * defectRate / 100;
-  switch (model) {
-    case "poisson":
-      return Math.exp(-defects);
-    case "murph":
-      return Math.pow((1 - Math.exp(-defects)) / defects, 2);
-    case "rect":
-      return (1 - Math.exp(-2 * defects)) / (2 * defects);
-    //case ('moore'):
-    //  return Math.exp(Math.sqrt(-defects));
-    case "seeds":
-      return 1 / (1 + defects);
-    default:
-      console.log("Invalid Model.");
-      return 0;
-  }
-}
 function evaulatePanelInputs(inputVals, selectedSize, selectedModel) {
   const {
     dieWidth,
@@ -221,7 +160,7 @@ function evaulatePanelInputs(inputVals, selectedSize, selectedModel) {
     scribeVert
   } = inputVals;
   let dies = [];
-  const fabYield = getFabYield(defectRate, criticalArea, selectedModel);
+  const fabYield = (0,_utils_calculations__WEBPACK_IMPORTED_MODULE_3__.getFabYield)(defectRate, criticalArea, selectedModel);
   const {
     waferWidth,
     waferHeight
@@ -281,11 +220,11 @@ function evaluateWaferInputs(inputVals, selectedSize, selectedModel) {
     scribeVert
   } = inputVals;
   let dies = [];
-  const fabYield = getFabYield(defectRate, criticalArea, selectedModel);
+  const fabYield = (0,_utils_calculations__WEBPACK_IMPORTED_MODULE_3__.getFabYield)(defectRate, criticalArea, selectedModel);
   const {
     waferWidth
   } = WAFERSIZES[selectedSize];
-  let positions = rectanglesInCircle(waferWidth, dieWidth + scribeHoriz * 2, dieHeight + scribeVert * 2);
+  let positions = (0,_utils_calculations__WEBPACK_IMPORTED_MODULE_3__.rectanglesInCircle)(waferWidth, dieWidth + scribeHoriz * 2, dieHeight + scribeVert * 2);
   let totalDies = positions.length;
   const goodDies = Math.floor(fabYield * totalDies);
   let dieStates = new Array(totalDies).fill("defective");
@@ -316,7 +255,7 @@ function evaluateWaferInputs(inputVals, selectedSize, selectedModel) {
       y: y + dieHeight
     }];
     let lossCircleRadius = waferWidth - edgeLoss;
-    if (!corners.every(corner => isInsideCircle(corner.x, corner.y, waferWidth / 2, waferWidth / 2, lossCircleRadius))) {
+    if (!corners.every(corner => (0,_utils_calculations__WEBPACK_IMPORTED_MODULE_3__.isInsideCircle)(corner.x, corner.y, waferWidth / 2, waferWidth / 2, lossCircleRadius))) {
       dieStates[i] = "partial";
     }
     dies[i] = {
@@ -596,7 +535,7 @@ function App() {
     className: "calc"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "control-panel"
-  }, numberInputs.map(input => react__WEBPACK_IMPORTED_MODULE_0___default().createElement(NumberInput, {
+  }, numberInputs.map(input => react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
     key: input.label,
     label: input.label,
     value: input.value,
@@ -604,7 +543,7 @@ function App() {
     onChange: event => {
       input.onChange(event.target.value);
     }
-  })), checkboxes.map(input => react__WEBPACK_IMPORTED_MODULE_0___default().createElement(Checkbox, {
+  })), checkboxes.map(input => react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Checkbox_Checkbox__WEBPACK_IMPORTED_MODULE_1__.Checkbox, {
     key: input.label,
     label: input.label,
     onChange: input.onChange,
@@ -632,6 +571,125 @@ function App() {
   }) : null));
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (App);
+
+/***/ }),
+
+/***/ "./src/components/Checkbox/Checkbox.tsx":
+/*!**********************************************!*\
+  !*** ./src/components/Checkbox/Checkbox.tsx ***!
+  \**********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Checkbox: () => (/* binding */ Checkbox)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+
+function Checkbox(props) {
+  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", {
+    className: "checkbox"
+  }, props.label, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
+    type: "checkbox",
+    onChange: props.onChange,
+    checked: props.checked
+  }));
+}
+
+/***/ }),
+
+/***/ "./src/components/NumberInput/NumberInput.tsx":
+/*!****************************************************!*\
+  !*** ./src/components/NumberInput/NumberInput.tsx ***!
+  \****************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   NumberInput: () => (/* binding */ NumberInput)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+
+function NumberInput(props) {
+  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "input-group"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", null, props.label, ":", react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
+    type: "number",
+    disabled: props.isDisabled,
+    value: props.value,
+    onChange: props.onChange,
+    onBlur: props.onBlur,
+    step: "0.01"
+  })));
+}
+
+/***/ }),
+
+/***/ "./src/utils/calculations.ts":
+/*!***********************************!*\
+  !*** ./src/utils/calculations.ts ***!
+  \***********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   getFabYield: () => (/* binding */ getFabYield),
+/* harmony export */   isInsideCircle: () => (/* binding */ isInsideCircle),
+/* harmony export */   rectanglesInCircle: () => (/* binding */ rectanglesInCircle)
+/* harmony export */ });
+function isInsideCircle(x, y, centerX, centerY, radius) {
+  return Math.sqrt((x - centerX) ** 2 + (y - centerY) ** 2) <= radius;
+}
+function rectanglesInCircle(diameter, rectWidth, rectHeight) {
+  const radius = diameter / 2;
+  const centerX = radius;
+  const centerY = radius;
+  let positions = [];
+  for (let x = 0; x <= diameter + rectWidth; x += rectWidth) {
+    for (let y = 0; y <= diameter + rectHeight; y += rectHeight) {
+      const corners = [{
+        x: x,
+        y: y
+      }, {
+        x: x + rectWidth,
+        y: y
+      }, {
+        x: x,
+        y: y + rectHeight
+      }, {
+        x: x + rectWidth,
+        y: y + rectHeight
+      }];
+      if (corners.every(corner => isInsideCircle(corner.x, corner.y, centerX, centerY, radius))) {
+        positions.push({
+          x: x,
+          y: y
+        });
+      }
+    }
+  }
+  return positions;
+}
+function getFabYield(defectRate, criticalArea, model) {
+  const defects = criticalArea * defectRate / 100;
+  switch (model) {
+    case "poisson":
+      return Math.exp(-defects);
+    case "murph":
+      return Math.pow((1 - Math.exp(-defects)) / defects, 2);
+    case "rect":
+      return (1 - Math.exp(-2 * defects)) / (2 * defects);
+    //case ('moore'):
+    //  return Math.exp(Math.sqrt(-defects));
+    case "seeds":
+      return 1 / (1 + defects);
+    default:
+      console.log("Invalid Model.");
+      return 0;
+  }
+}
 
 /***/ }),
 
