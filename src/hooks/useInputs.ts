@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { WaferShape } from "../types/wafers";
-import { DiscSizes, PanelSizes } from "../config/sizes";
+import { discSizes, panelSizes } from "../config/sizes";
 import { evaluateDiscInputs, evaluatePanelInputs, InputValues } from "../utils/calculations";
-import { YieldModels } from "../config/yieldModels";
+import { yieldModels } from "../config/yieldModels";
 import { FabResults } from "../types/dies";
 
 /**
@@ -16,10 +16,10 @@ import { FabResults } from "../types/dies";
  */
 export function useInputs(
 	values: InputValues,
-	yieldModel: keyof typeof YieldModels,
+	yieldModel: keyof typeof yieldModels,
 	shape: WaferShape,
-	panelSize: keyof typeof PanelSizes,
-	discSize: keyof typeof DiscSizes
+	panelSize: keyof typeof panelSizes,
+	discSize: keyof typeof discSizes
 ): FabResults {
 	const [results, setResults] = useState<FabResults>({
 		dies: [],

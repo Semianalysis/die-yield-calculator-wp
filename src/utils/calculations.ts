@@ -1,4 +1,4 @@
-import { DiscSizes, PanelSizes, YieldModels } from "../config";
+import { discSizes, panelSizes, yieldModels } from "../config";
 import { FabResults } from "../types";
 
 /**
@@ -53,26 +53,17 @@ export function rectanglesInCircle(diameter: number, rectWidth: number, rectHeig
  * @param criticalArea die area
  * @param model model to calculate the yield
  */
-export function getFabYield(defectRate: number, criticalArea: number, model: keyof typeof YieldModels) {
+export function getFabYield(
+	defectRate: number,
+	criticalArea: number,
+	model: keyof typeof yieldModels
+) {
 	if (!defectRate) {
 		return 1;
 	}
 
 	const defects = criticalArea * defectRate / 100;
-	switch (model) {
-		case ("poisson"):
-			return Math.exp(-defects);
-		case ("murphy"):
-			return Math.pow(((1 - Math.exp(-defects)) / defects), 2);
-		case ("rect"):
-			return (1 - Math.exp(-2 * defects)) / (2 * defects);
-		//case ('moore'):
-		//  return Math.exp(Math.sqrt(-defects));
-		case ("seeds"):
-			return 1 / (1 + defects);
-		default:
-			return 0;
-	}
+	return yieldModels[model].yield(defects);
 }
 
 export type InputValues = {
@@ -87,8 +78,8 @@ export type InputValues = {
 
 export function evaluatePanelInputs(
 	inputVals: InputValues,
-	selectedSize: keyof typeof PanelSizes,
-	selectedModel: keyof typeof YieldModels): FabResults {
+	selectedSize: keyof typeof panelSizes,
+	selectedModel: keyof typeof yieldModels): FabResults {
 	const {
 		dieWidth,
 		dieHeight,
@@ -99,7 +90,7 @@ export function evaluatePanelInputs(
 	} = inputVals;
 	let dies = [];
 	const fabYield = getFabYield(defectRate, criticalArea, selectedModel);
-	const { waferWidth, waferHeight } = PanelSizes[selectedSize];
+	const { waferWidth, waferHeight } = panelSizes[selectedSize];
 	const adjustedDieWidth = dieWidth + scribeHoriz * 2;
 	const adjustedDieHeight = dieHeight + scribeVert * 2;
 
@@ -141,7 +132,7 @@ export function evaluatePanelInputs(
 			x,
 			y,
 			width: dieWidth,
-			height: dieHeight,
+			height: dieHeight
 		};
 	}
 
@@ -157,8 +148,8 @@ export function evaluatePanelInputs(
 
 export function evaluateDiscInputs(
 	inputVals: InputValues,
-	selectedSize: keyof typeof DiscSizes,
-	selectedModel: keyof typeof YieldModels
+	selectedSize: keyof typeof discSizes,
+	selectedModel: keyof typeof yieldModels
 ): FabResults {
 	const {
 		dieWidth,
@@ -172,7 +163,7 @@ export function evaluateDiscInputs(
 
 	let dies = [];
 	const fabYield = getFabYield(defectRate, criticalArea, selectedModel);
-	const { waferWidth } = DiscSizes[selectedSize];
+	const { waferWidth } = discSizes[selectedSize];
 
 	let positions = rectanglesInCircle(waferWidth, dieWidth + scribeHoriz * 2, dieHeight + scribeVert * 2);
 	let totalDies = positions.length;
@@ -214,7 +205,7 @@ export function evaluateDiscInputs(
 			x,
 			y,
 			width: dieWidth,
-			height: dieHeight,
+			height: dieHeight
 		};
 	}
 

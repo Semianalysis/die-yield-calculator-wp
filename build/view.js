@@ -36,21 +36,21 @@ const ShapeSelector = props => react__WEBPACK_IMPORTED_MODULE_0___default().crea
   value: "Disc"
 }, "Wafer"))));
 const DiscSizeSelect = props => {
-  const sizeInfo = _config__WEBPACK_IMPORTED_MODULE_4__.DiscSizes[props.selectedSize];
+  const sizeInfo = _config__WEBPACK_IMPORTED_MODULE_4__.discSizes[props.selectedSize];
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("select", {
     value: props.selectedSize,
     onChange: props.handleSizeChange
-  }, Object.entries(_config__WEBPACK_IMPORTED_MODULE_4__.DiscSizes).map(([key, value]) => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+  }, Object.entries(_config__WEBPACK_IMPORTED_MODULE_4__.discSizes).map(([key, value]) => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
     key: key,
     value: key
   }, value.name))), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, "Width: ", sizeInfo.waferWidth, " mm"));
 };
 const PanelSizeSelect = props => {
-  const sizeInfo = _config__WEBPACK_IMPORTED_MODULE_4__.PanelSizes[props.selectedSize];
+  const sizeInfo = _config__WEBPACK_IMPORTED_MODULE_4__.panelSizes[props.selectedSize];
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("select", {
     value: props.selectedSize,
     onChange: props.handleSizeChange
-  }, Object.entries(_config__WEBPACK_IMPORTED_MODULE_4__.PanelSizes).map(([key, value]) => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+  }, Object.entries(_config__WEBPACK_IMPORTED_MODULE_4__.panelSizes).map(([key, value]) => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
     key: key,
     value: key
   }, value.name))), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, "Width: ", sizeInfo.waferWidth, " mm, Height: ", sizeInfo.waferHeight, " mm"));
@@ -58,10 +58,10 @@ const PanelSizeSelect = props => {
 const ModelSelector = props => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("select", {
   value: props.selectedModel,
   onChange: props.handleModelChange
-}, Object.entries(_config__WEBPACK_IMPORTED_MODULE_4__.YieldModels).map(([key, value]) => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+}, Object.entries(_config__WEBPACK_IMPORTED_MODULE_4__.yieldModels).map(([key, value]) => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
   key: key,
   value: key
-}, value.name))), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, "Model: ", _config__WEBPACK_IMPORTED_MODULE_4__.YieldModels[props.selectedModel].name));
+}, value.name))), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, "Model: ", _config__WEBPACK_IMPORTED_MODULE_4__.yieldModels[props.selectedModel].name));
 const ResultStats = props => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
   className: "calculations"
 }, "totalDies: ", props.results.totalDies, ", Good Wafers: ", props.results.goodDies, ", Fab Yield: ", props.results.fabYield);
@@ -420,9 +420,9 @@ function PanelCanvas(props) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   DiscSizes: () => (/* reexport safe */ _sizes__WEBPACK_IMPORTED_MODULE_0__.DiscSizes),
-/* harmony export */   PanelSizes: () => (/* reexport safe */ _sizes__WEBPACK_IMPORTED_MODULE_0__.PanelSizes),
-/* harmony export */   YieldModels: () => (/* reexport safe */ _yieldModels__WEBPACK_IMPORTED_MODULE_1__.YieldModels)
+/* harmony export */   discSizes: () => (/* reexport safe */ _sizes__WEBPACK_IMPORTED_MODULE_0__.discSizes),
+/* harmony export */   panelSizes: () => (/* reexport safe */ _sizes__WEBPACK_IMPORTED_MODULE_0__.panelSizes),
+/* harmony export */   yieldModels: () => (/* reexport safe */ _yieldModels__WEBPACK_IMPORTED_MODULE_1__.yieldModels)
 /* harmony export */ });
 /* harmony import */ var _sizes__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./sizes */ "./src/config/sizes.ts");
 /* harmony import */ var _yieldModels__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./yieldModels */ "./src/config/yieldModels.ts");
@@ -439,10 +439,13 @@ __webpack_require__.r(__webpack_exports__);
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   DiscSizes: () => (/* binding */ DiscSizes),
-/* harmony export */   PanelSizes: () => (/* binding */ PanelSizes)
+/* harmony export */   discSizes: () => (/* binding */ discSizes),
+/* harmony export */   panelSizes: () => (/* binding */ panelSizes)
 /* harmony export */ });
-const PanelSizes = {
+/**
+ * Available sizes for rectangular wafers
+ */
+const panelSizes = {
   s300mm: {
     name: "300 mm (12 in)",
     waferHeight: 300,
@@ -474,7 +477,10 @@ const PanelSizes = {
     waferWidth: 600
   }
 };
-const DiscSizes = {
+/**
+ * Available sizes for round wafers
+ */
+const discSizes = {
   s51mm: {
     name: "51 mm (2 in)",
     waferWidth: 51
@@ -519,21 +525,28 @@ const DiscSizes = {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   YieldModels: () => (/* binding */ YieldModels)
+/* harmony export */   yieldModels: () => (/* binding */ yieldModels)
 /* harmony export */ });
-const YieldModels = {
+/**
+ * Available mathematical models for calculating yield
+ */
+const yieldModels = {
   poisson: {
-    name: "Poisson Model"
+    name: "Poisson Model",
+    yield: defects => Math.exp(-defects)
   },
   murphy: {
-    name: "Murphy's Model"
+    name: "Murphy's Model",
+    yield: defects => Math.pow((1 - Math.exp(-defects)) / defects, 2)
   },
   rect: {
-    name: "Rectangular Model"
+    name: "Rectangular Model",
+    yield: defects => (1 - Math.exp(-2 * defects)) / (2 * defects)
   },
   //moore: {name: "Moore's Model"},
   seeds: {
-    name: "Seeds Model"
+    name: "Seeds Model",
+    yield: defects => 1 / (1 + defects)
   }
 };
 
@@ -676,20 +689,7 @@ function getFabYield(defectRate, criticalArea, model) {
     return 1;
   }
   const defects = criticalArea * defectRate / 100;
-  switch (model) {
-    case "poisson":
-      return Math.exp(-defects);
-    case "murphy":
-      return Math.pow((1 - Math.exp(-defects)) / defects, 2);
-    case "rect":
-      return (1 - Math.exp(-2 * defects)) / (2 * defects);
-    //case ('moore'):
-    //  return Math.exp(Math.sqrt(-defects));
-    case "seeds":
-      return 1 / (1 + defects);
-    default:
-      return 0;
-  }
+  return _config__WEBPACK_IMPORTED_MODULE_0__.yieldModels[model].yield(defects);
 }
 function evaluatePanelInputs(inputVals, selectedSize, selectedModel) {
   const {
@@ -705,7 +705,7 @@ function evaluatePanelInputs(inputVals, selectedSize, selectedModel) {
   const {
     waferWidth,
     waferHeight
-  } = _config__WEBPACK_IMPORTED_MODULE_0__.PanelSizes[selectedSize];
+  } = _config__WEBPACK_IMPORTED_MODULE_0__.panelSizes[selectedSize];
   const adjustedDieWidth = dieWidth + scribeHoriz * 2;
   const adjustedDieHeight = dieHeight + scribeVert * 2;
   const diesPerRow = Math.floor(waferWidth / adjustedDieWidth);
@@ -762,7 +762,7 @@ function evaluateDiscInputs(inputVals, selectedSize, selectedModel) {
   const fabYield = getFabYield(defectRate, criticalArea, selectedModel);
   const {
     waferWidth
-  } = _config__WEBPACK_IMPORTED_MODULE_0__.DiscSizes[selectedSize];
+  } = _config__WEBPACK_IMPORTED_MODULE_0__.discSizes[selectedSize];
   let positions = rectanglesInCircle(waferWidth, dieWidth + scribeHoriz * 2, dieHeight + scribeVert * 2);
   let totalDies = positions.length;
   const goodDies = Math.floor(fabYield * totalDies);

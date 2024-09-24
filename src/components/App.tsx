@@ -2,7 +2,7 @@ import React, { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { Checkbox } from "./Checkbox/Checkbox";
 import { NumberInput } from "./NumberInput/NumberInput";
 import { useInputs } from "../hooks/useInputs";
-import { PanelSizes, DiscSizes, YieldModels } from "../config";
+import { panelSizes, discSizes, yieldModels } from "../config";
 import { FabResults, WaferShape } from "../types";
 import { DiscCanvas, PanelCanvas } from "./WaferCanvas/WaferCanvas";
 
@@ -19,15 +19,15 @@ const ShapeSelector = (props: { shape: WaferShape, setShape: (value: WaferShape)
 );
 
 const DiscSizeSelect = (props: {
-	selectedSize: keyof typeof DiscSizes,
+	selectedSize: keyof typeof discSizes,
 	handleSizeChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
 }) => {
-	const sizeInfo = DiscSizes[props.selectedSize];
+	const sizeInfo = discSizes[props.selectedSize];
 
 	return (
 		<div>
 			<select value={props.selectedSize} onChange={props.handleSizeChange}>
-				{Object.entries(DiscSizes).map(([key, value]) => (
+				{Object.entries(discSizes).map(([key, value]) => (
 					<option key={key} value={key}>
 						{value.name}
 					</option>
@@ -40,15 +40,15 @@ const DiscSizeSelect = (props: {
 };
 
 const PanelSizeSelect = (props: {
-	selectedSize: keyof typeof PanelSizes,
+	selectedSize: keyof typeof panelSizes,
 	handleSizeChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
 }) => {
-	const sizeInfo = PanelSizes[props.selectedSize];
+	const sizeInfo = panelSizes[props.selectedSize];
 
 	return (
 		<div>
 			<select value={props.selectedSize} onChange={props.handleSizeChange}>
-				{Object.entries(PanelSizes).map(([key, value]) => (
+				{Object.entries(panelSizes).map(([key, value]) => (
 					<option key={key} value={key}>
 						{value.name}
 					</option>
@@ -61,12 +61,12 @@ const PanelSizeSelect = (props: {
 };
 
 const ModelSelector = (props: {
-	selectedModel: keyof typeof YieldModels,
+	selectedModel: keyof typeof yieldModels,
 	handleModelChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
 }) => (
 	<div>
 		<select value={props.selectedModel} onChange={props.handleModelChange}>
-			{Object.entries(YieldModels).map(([key, value]) => (
+			{Object.entries(yieldModels).map(([key, value]) => (
 				<option key={key} value={key}>
 					{value.name}
 				</option>
@@ -74,7 +74,7 @@ const ModelSelector = (props: {
 		</select>
 		{}
 		<div>
-			Model: {YieldModels[props.selectedModel].name}
+			Model: {yieldModels[props.selectedModel].name}
 		</div>
 	</div>
 );
@@ -101,9 +101,9 @@ function App() {
 	const [transHoriz, setTransHoriz] = useState<string>("0");
 	const [transVert, setTransVert] = useState<string>("0.1");
 	const [waferShape, setWaferShape] = useState<WaferShape>("Panel");
-	const [panelSize, setPanelSize] = useState<keyof typeof PanelSizes>("s300mm");
-	const [discSize, setDiscSize] = useState<keyof typeof DiscSizes>("s300mm");
-	const [selectedModel, setSelectedModel] = useState<keyof typeof YieldModels>("murphy");
+	const [panelSize, setPanelSize] = useState<keyof typeof panelSizes>("s300mm");
+	const [discSize, setDiscSize] = useState<keyof typeof discSizes>("s300mm");
+	const [selectedModel, setSelectedModel] = useState<keyof typeof yieldModels>("murphy");
 	const results = useInputs({
 		dieWidth: parseFloat(dieWidth),
 		dieHeight: parseFloat(dieHeight),
@@ -207,14 +207,14 @@ function App() {
 
 	const handleSizeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
 		if (waferShape === "Panel") {
-			setPanelSize(event.target.value as keyof typeof PanelSizes);
+			setPanelSize(event.target.value as keyof typeof panelSizes);
 		} else if (waferShape === "Disc") {
-			setDiscSize(event.target.value as keyof typeof DiscSizes);
+			setDiscSize(event.target.value as keyof typeof discSizes);
 		}
 	};
 
 	const handleModelChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-		setSelectedModel(event.target.value as keyof typeof YieldModels);
+		setSelectedModel(event.target.value as keyof typeof yieldModels);
 	};
 
 	const numberInputs = [

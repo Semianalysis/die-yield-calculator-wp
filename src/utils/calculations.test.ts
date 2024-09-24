@@ -1,5 +1,5 @@
 import { getFabYield, isInsideCircle, rectanglesInCircle } from "./calculations";
-import { YieldModels } from "../config";
+import { yieldModels } from "../config";
 
 describe("Calculations", () => {
 	describe("isInsideCircle", () => {
@@ -26,12 +26,12 @@ describe("Calculations", () => {
 	});
 
 	describe("getFabYield", () => {
-		it.each(Object.keys(YieldModels))("calculates a yield within the expected range for the %s model", (model) => {
-			expect(getFabYield(0.01, 1000, model as keyof typeof YieldModels)).toBeGreaterThan(0.90);
-			expect(getFabYield(0.01, 1000, model as keyof typeof YieldModels)).toBeLessThan(0.91);
+		it.each(Object.keys(yieldModels))("calculates a yield within the expected range for the %s model", (model) => {
+			expect(getFabYield(0.01, 1000, model as keyof typeof yieldModels)).toBeGreaterThan(0.90);
+			expect(getFabYield(0.01, 1000, model as keyof typeof yieldModels)).toBeLessThan(0.91);
 		});
-		it.each(Object.keys(YieldModels))("returns a full yield if the defect rate is 0 for the %s model", (model) => {
-			expect(getFabYield(0, 1000, model as keyof typeof YieldModels)).toEqual(1);
+		it.each(Object.keys(yieldModels))("returns a full yield if the defect rate is 0 for the %s model", (model) => {
+			expect(getFabYield(0, 1000, model as keyof typeof yieldModels)).toEqual(1);
 		});
 	});
 });

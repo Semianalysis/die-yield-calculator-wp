@@ -1,4 +1,7 @@
-export const PanelSizes = {
+/**
+ * Available sizes for rectangular wafers
+ */
+export const panelSizes = {
 	s300mm: { name: "300 mm (12 in)", waferHeight: 300, waferWidth: 300 },
 	s305mm: { name: "305 x 457 mm² (12 x 18 in²)", waferHeight: 305, waferWidth: 457 },
 	s457mmsq: { name: "457 mm² (18 in)", waferHeight: 457, waferWidth: 457 },
@@ -7,7 +10,10 @@ export const PanelSizes = {
 	s600m: { name: "600 mm (24 in)", waferHeight: 600, waferWidth: 600 }
 };
 
-export const DiscSizes = {
+/**
+ * Available sizes for round wafers
+ */
+export const discSizes = {
 	s51mm: { name: "51 mm (2 in)", waferWidth: 51 },
 	s76mm: { name: "76 mm (3 in)", waferWidth: 76 },
 	s100mm: { name: "100 mm (4 in)", waferWidth: 100 },
