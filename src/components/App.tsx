@@ -32,7 +32,7 @@ const STATECOLORS = {
 
 export const YIELDMODELS = {
 	poisson: { name: "Poisson Model" },
-	murph: { name: "Murphy's Model" },
+	murphy: { name: "Murphy's Model" },
 	rect: { name: "Rectangular Model" },
 	//moore: {name: "Moore's Model"},
 	seeds: { name: "Seeds Model" }
@@ -377,7 +377,7 @@ function App() {
 	const [shape, setShape] = useState<Shape>("Panel");
 	const [panelSize, setPanelSize] = useState<keyof typeof PANELSIZES>("s300mm");
 	const [waferSize, setWaferSize] = useState<keyof typeof WAFERSIZES>("s300mm");
-	const [selectedModel, setSelectedModel] = useState<keyof typeof YIELDMODELS>("murph");
+	const [selectedModel, setSelectedModel] = useState<keyof typeof YIELDMODELS>("murphy");
 
 	useEffect(() => {
 		const dieWidthNum = parseFloat(dieWidth);

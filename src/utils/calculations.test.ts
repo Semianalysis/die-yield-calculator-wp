@@ -30,5 +30,8 @@ describe("Calculations", () => {
 			expect(getFabYield(0.01, 1000, model as keyof typeof YIELDMODELS)).toBeGreaterThan(0.90);
 			expect(getFabYield(0.01, 1000, model as keyof typeof YIELDMODELS)).toBeLessThan(0.91);
 		});
+		it.each(Object.keys(YIELDMODELS))("returns a full yield if the defect rate is 0 for the %s model", (model) => {
+			expect(getFabYield(0, 1000, model as keyof typeof YIELDMODELS)).toEqual(1);
+		});
 	});
 });
