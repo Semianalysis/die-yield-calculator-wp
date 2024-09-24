@@ -79,7 +79,8 @@ export type InputValues = {
 export function evaluatePanelInputs(
 	inputVals: InputValues,
 	selectedSize: keyof typeof panelSizes,
-	selectedModel: keyof typeof yieldModels): FabResults {
+	selectedModel: keyof typeof yieldModels
+): FabResults {
 	const {
 		dieWidth,
 		dieHeight,
