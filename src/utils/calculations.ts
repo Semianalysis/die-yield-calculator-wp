@@ -1,4 +1,6 @@
-import {YIELDMODELS} from '../components/App';
+import { DiscSizes, PanelSizes } from "../config/sizes";
+import { YieldModels } from "../config/yieldModels";
+import { FabResults } from "../types/dies";
 
 /**
  * Determine whether a target position (x, y) is inside or outside a circle
@@ -52,7 +54,7 @@ export function rectanglesInCircle(diameter: number, rectWidth: number, rectHeig
  * @param criticalArea die area
  * @param model model to calculate the yield
  */
-export function getFabYield(defectRate: number, criticalArea: number, model: keyof typeof YIELDMODELS) {
+export function getFabYield(defectRate: number, criticalArea: number, model: keyof typeof YieldModels) {
 	if (!defectRate) {
 		return 1;
 	}
@@ -66,10 +68,162 @@ export function getFabYield(defectRate: number, criticalArea: number, model: key
 		case ("rect"):
 			return (1 - Math.exp(-2 * defects)) / (2 * defects);
 		//case ('moore'):
-			//  return Math.exp(Math.sqrt(-defects));
+		//  return Math.exp(Math.sqrt(-defects));
 		case ("seeds"):
 			return 1 / (1 + defects);
 		default:
 			return 0;
 	}
+}
+
+export type InputValues = {
+	dieWidth: number;
+	dieHeight: number;
+	criticalArea: number;
+	defectRate: number;
+	edgeLoss: number;
+	scribeHoriz: number;
+	scribeVert: number;
+};
+
+export function evaluatePanelInputs(
+	inputVals: InputValues,
+	selectedSize: keyof typeof PanelSizes,
+	selectedModel: keyof typeof YieldModels): FabResults {
+	const {
+		dieWidth,
+		dieHeight,
+		criticalArea,
+		defectRate,
+		scribeHoriz,
+		scribeVert
+	} = inputVals;
+	let dies = [];
+	const fabYield = getFabYield(defectRate, criticalArea, selectedModel);
+	const { waferWidth, waferHeight } = PanelSizes[selectedSize];
+	const adjustedDieWidth = dieWidth + scribeHoriz * 2;
+	const adjustedDieHeight = dieHeight + scribeVert * 2;
+
+	const diesPerRow = Math.floor(waferWidth / adjustedDieWidth);
+	const diesPerColumn = Math.floor(waferHeight / adjustedDieHeight);
+
+	const centerHorz = (waferWidth - adjustedDieWidth * diesPerRow) / 2;
+	const centerVert = (waferHeight - adjustedDieHeight * diesPerColumn) / 2;
+
+	const countWidth = Math.floor(waferWidth / (dieWidth + scribeHoriz * 2));
+	const countHeight = Math.floor(waferHeight / (dieHeight + scribeVert * 2));
+
+	const totalDies = countWidth * countHeight;
+
+	const goodDies = Math.floor(fabYield * totalDies);
+
+	let dieStates = new Array(totalDies).fill("defective");
+	for (let i = 0; i < goodDies; i++) {
+		dieStates[i] = "good";
+	}
+
+	for (let i = dieStates.length - 1; i > 0; i--) {
+		const j = Math.floor(Math.random() * (i + 1));
+		[dieStates[i], dieStates[j]] = [dieStates[j], dieStates[i]];
+	}
+
+	for (let i = 0; i < dieStates.length; i++) {
+		const row = Math.floor(i / diesPerRow);
+		const col = i % diesPerRow;
+
+		const dieState = dieStates[i];
+
+		const x = col * adjustedDieWidth + centerHorz;
+		const y = row * adjustedDieHeight + centerVert;
+
+		dies[i] = {
+			key: i,
+			dieState,
+			x,
+			y,
+			width: dieWidth,
+			height: dieHeight,
+		};
+	}
+
+	return {
+		dies,
+		totalDies,
+		goodDies,
+		fabYield,
+		waferWidth,
+		waferHeight
+	};
+}
+
+export function evaluateDiscInputs(
+	inputVals: InputValues,
+	selectedSize: keyof typeof DiscSizes,
+	selectedModel: keyof typeof YieldModels
+): FabResults {
+	const {
+		dieWidth,
+		dieHeight,
+		criticalArea,
+		defectRate,
+		edgeLoss,
+		scribeHoriz,
+		scribeVert
+	} = inputVals;
+
+	let dies = [];
+	const fabYield = getFabYield(defectRate, criticalArea, selectedModel);
+	const { waferWidth } = DiscSizes[selectedSize];
+
+	let positions = rectanglesInCircle(waferWidth, dieWidth + scribeHoriz * 2, dieHeight + scribeVert * 2);
+	let totalDies = positions.length;
+
+	const goodDies = Math.floor(fabYield * totalDies);
+
+	let dieStates = new Array(totalDies).fill("defective");
+	for (let i = 0; i < goodDies; i++) {
+		dieStates[i] = "good";
+	}
+
+	for (let i = dieStates.length - 1; i > 0; i--) {
+		const j = Math.floor(Math.random() * (i + 1));
+		[dieStates[i], dieStates[j]] = [dieStates[j], dieStates[i]];
+	}
+
+	for (let i = 0; i < dieStates.length; i++) {
+		const x = positions[i].x;
+		const y = positions[i].y;
+
+		const dieState = dieStates[i];
+
+		const corners = [
+			{ x: x, y: y },
+			{ x: x + dieWidth, y: y },
+			{ x: x, y: y + dieHeight },
+			{ x: x + dieWidth, y: y + dieHeight }
+		];
+
+		let lossCircleRadius = waferWidth - edgeLoss;
+
+		if (!corners.every(corner => isInsideCircle(corner.x, corner.y, waferWidth / 2, waferWidth / 2, lossCircleRadius))) {
+			dieStates[i] = "partial";
+		}
+
+		dies[i] = {
+			key: i,
+			dieState,
+			x,
+			y,
+			width: dieWidth,
+			height: dieHeight,
+		};
+	}
+
+	return {
+		dies,
+		totalDies,
+		goodDies,
+		fabYield,
+		waferWidth
+	};
 }
