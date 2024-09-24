@@ -1,5 +1,5 @@
 import { getFabYield, isInsideCircle, rectanglesInCircle } from "./calculations";
-import { YieldModels } from "../config/yieldModels";
+import { YieldModels } from "../config";
 
 describe("Calculations", () => {
 	describe("isInsideCircle", () => {

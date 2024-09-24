@@ -1,6 +1,5 @@
-import { DiscSizes, PanelSizes } from "../config/sizes";
-import { YieldModels } from "../config/yieldModels";
-import { FabResults } from "../types/dies";
+import { DiscSizes, PanelSizes, YieldModels } from "../config";
+import { FabResults } from "../types";
 
 /**
  * Determine whether a target position (x, y) is inside or outside a circle

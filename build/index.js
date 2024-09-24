@@ -125,10 +125,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Checkbox_Checkbox__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Checkbox/Checkbox */ "./src/components/Checkbox/Checkbox.tsx");
 /* harmony import */ var _NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./NumberInput/NumberInput */ "./src/components/NumberInput/NumberInput.tsx");
 /* harmony import */ var _hooks_useInputs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../hooks/useInputs */ "./src/hooks/useInputs.ts");
-/* harmony import */ var _config_sizes__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../config/sizes */ "./src/config/sizes.ts");
-/* harmony import */ var _config_yieldModels__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../config/yieldModels */ "./src/config/yieldModels.ts");
-/* harmony import */ var _WaferCanvas_WaferCanvas__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./WaferCanvas/WaferCanvas */ "./src/components/WaferCanvas/WaferCanvas.tsx");
-
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../config */ "./src/config/index.ts");
+/* harmony import */ var _WaferCanvas_WaferCanvas__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./WaferCanvas/WaferCanvas */ "./src/components/WaferCanvas/WaferCanvas.tsx");
 
 
 
@@ -146,21 +144,21 @@ const ShapeSelector = props => react__WEBPACK_IMPORTED_MODULE_0___default().crea
   value: "Disc"
 }, "Wafer"))));
 const DiscSizeSelect = props => {
-  const sizeInfo = _config_sizes__WEBPACK_IMPORTED_MODULE_4__.DiscSizes[props.selectedSize];
+  const sizeInfo = _config__WEBPACK_IMPORTED_MODULE_4__.DiscSizes[props.selectedSize];
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("select", {
     value: props.selectedSize,
     onChange: props.handleSizeChange
-  }, Object.entries(_config_sizes__WEBPACK_IMPORTED_MODULE_4__.DiscSizes).map(([key, value]) => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+  }, Object.entries(_config__WEBPACK_IMPORTED_MODULE_4__.DiscSizes).map(([key, value]) => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
     key: key,
     value: key
   }, value.name))), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, "Width: ", sizeInfo.waferWidth, " mm"));
 };
 const PanelSizeSelect = props => {
-  const sizeInfo = _config_sizes__WEBPACK_IMPORTED_MODULE_4__.PanelSizes[props.selectedSize];
+  const sizeInfo = _config__WEBPACK_IMPORTED_MODULE_4__.PanelSizes[props.selectedSize];
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("select", {
     value: props.selectedSize,
     onChange: props.handleSizeChange
-  }, Object.entries(_config_sizes__WEBPACK_IMPORTED_MODULE_4__.PanelSizes).map(([key, value]) => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+  }, Object.entries(_config__WEBPACK_IMPORTED_MODULE_4__.PanelSizes).map(([key, value]) => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
     key: key,
     value: key
   }, value.name))), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, "Width: ", sizeInfo.waferWidth, " mm, Height: ", sizeInfo.waferHeight, " mm"));
@@ -168,10 +166,10 @@ const PanelSizeSelect = props => {
 const ModelSelector = props => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("select", {
   value: props.selectedModel,
   onChange: props.handleModelChange
-}, Object.entries(_config_yieldModels__WEBPACK_IMPORTED_MODULE_5__.YieldModels).map(([key, value]) => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+}, Object.entries(_config__WEBPACK_IMPORTED_MODULE_4__.YieldModels).map(([key, value]) => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
   key: key,
   value: key
-}, value.name))), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, "Model: ", _config_yieldModels__WEBPACK_IMPORTED_MODULE_5__.YieldModels[props.selectedModel].name));
+}, value.name))), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, "Model: ", _config__WEBPACK_IMPORTED_MODULE_4__.YieldModels[props.selectedModel].name));
 const ResultStats = props => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
   className: "calculations"
 }, "totalDies: ", props.results.totalDies, ", Good Wafers: ", props.results.goodDies, ", Fab Yield: ", props.results.fabYield);
@@ -193,7 +191,7 @@ function App() {
   const [panelSize, setPanelSize] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("s300mm");
   const [discSize, setDiscSize] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("s300mm");
   const [selectedModel, setSelectedModel] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("murphy");
-  const results = (0,_hooks_useInputs__WEBPACK_IMPORTED_MODULE_3__["default"])({
+  const results = (0,_hooks_useInputs__WEBPACK_IMPORTED_MODULE_3__.useInputs)({
     dieWidth: parseFloat(dieWidth),
     dieHeight: parseFloat(dieHeight),
     criticalArea: parseFloat(criticalArea),
@@ -390,9 +388,9 @@ function App() {
     className: "calculations"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ResultStats, {
     results: results
-  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, waferShape === "Panel" && react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_WaferCanvas_WaferCanvas__WEBPACK_IMPORTED_MODULE_6__.PanelCanvas, {
+  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, waferShape === "Panel" && react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_WaferCanvas_WaferCanvas__WEBPACK_IMPORTED_MODULE_5__.PanelCanvas, {
     results: results
-  }), waferShape === "Disc" && react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_WaferCanvas_WaferCanvas__WEBPACK_IMPORTED_MODULE_6__.DiscCanvas, {
+  }), waferShape === "Disc" && react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_WaferCanvas_WaferCanvas__WEBPACK_IMPORTED_MODULE_5__.DiscCanvas, {
     results: results
   })));
 }
@@ -522,6 +520,25 @@ function PanelCanvas(props) {
 
 /***/ }),
 
+/***/ "./src/config/index.ts":
+/*!*****************************!*\
+  !*** ./src/config/index.ts ***!
+  \*****************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   DiscSizes: () => (/* reexport safe */ _sizes__WEBPACK_IMPORTED_MODULE_0__.DiscSizes),
+/* harmony export */   PanelSizes: () => (/* reexport safe */ _sizes__WEBPACK_IMPORTED_MODULE_0__.PanelSizes),
+/* harmony export */   YieldModels: () => (/* reexport safe */ _yieldModels__WEBPACK_IMPORTED_MODULE_1__.YieldModels)
+/* harmony export */ });
+/* harmony import */ var _sizes__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./sizes */ "./src/config/sizes.ts");
+/* harmony import */ var _yieldModels__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./yieldModels */ "./src/config/yieldModels.ts");
+
+
+
+/***/ }),
+
 /***/ "./src/config/sizes.ts":
 /*!*****************************!*\
   !*** ./src/config/sizes.ts ***!
@@ -638,7 +655,7 @@ const YieldModels = {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ useInputs)
+/* harmony export */   useInputs: () => (/* binding */ useInputs)
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
@@ -703,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   isInsideCircle: () => (/* binding */ isInsideCircle),
 /* harmony export */   rectanglesInCircle: () => (/* binding */ rectanglesInCircle)
 /* harmony export */ });
-/* harmony import */ var _config_sizes__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../config/sizes */ "./src/config/sizes.ts");
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../config */ "./src/config/index.ts");
 
 /**
  * Determine whether a target position (x, y) is inside or outside a circle
@@ -796,7 +813,7 @@ function evaluatePanelInputs(inputVals, selectedSize, selectedModel) {
   const {
     waferWidth,
     waferHeight
-  } = _config_sizes__WEBPACK_IMPORTED_MODULE_0__.PanelSizes[selectedSize];
+  } = _config__WEBPACK_IMPORTED_MODULE_0__.PanelSizes[selectedSize];
   const adjustedDieWidth = dieWidth + scribeHoriz * 2;
   const adjustedDieHeight = dieHeight + scribeVert * 2;
   const diesPerRow = Math.floor(waferWidth / adjustedDieWidth);
@@ -853,7 +870,7 @@ function evaluateDiscInputs(inputVals, selectedSize, selectedModel) {
   const fabYield = getFabYield(defectRate, criticalArea, selectedModel);
   const {
     waferWidth
-  } = _config_sizes__WEBPACK_IMPORTED_MODULE_0__.DiscSizes[selectedSize];
+  } = _config__WEBPACK_IMPORTED_MODULE_0__.DiscSizes[selectedSize];
   let positions = rectanglesInCircle(waferWidth, dieWidth + scribeHoriz * 2, dieHeight + scribeVert * 2);
   let totalDies = positions.length;
   const goodDies = Math.floor(fabYield * totalDies);

@@ -14,7 +14,7 @@ import { FabResults } from "../types/dies";
  * @param panelSize chosen size of panel wafer
  * @param discSize chosen size of disc wafer
  */
-export default function useInputs(
+export function useInputs(
 	values: InputValues,
 	yieldModel: keyof typeof YieldModels,
 	shape: WaferShape,

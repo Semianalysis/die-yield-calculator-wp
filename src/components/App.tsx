@@ -1,11 +1,9 @@
 import React, { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { Checkbox } from "./Checkbox/Checkbox";
 import { NumberInput } from "./NumberInput/NumberInput";
-import useInputs from "../hooks/useInputs";
-import { PanelSizes, DiscSizes } from "../config/sizes";
-import { YieldModels } from "../config/yieldModels";
-import { WaferShape } from "../types/wafers";
-import { FabResults } from "../types/dies";
+import { useInputs } from "../hooks/useInputs";
+import { PanelSizes, DiscSizes, YieldModels } from "../config";
+import { FabResults, WaferShape } from "../types";
 import { DiscCanvas, PanelCanvas } from "./WaferCanvas/WaferCanvas";
 
 const ShapeSelector = (props: { shape: WaferShape, setShape: (value: WaferShape) => void }) => (
