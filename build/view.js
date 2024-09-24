@@ -19,6 +19,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _hooks_useInputs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../hooks/useInputs */ "./src/hooks/useInputs.ts");
 /* harmony import */ var _config_sizes__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../config/sizes */ "./src/config/sizes.ts");
 /* harmony import */ var _config_yieldModels__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../config/yieldModels */ "./src/config/yieldModels.ts");
+/* harmony import */ var _WaferCanvas_WaferCanvas__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./WaferCanvas/WaferCanvas */ "./src/components/WaferCanvas/WaferCanvas.tsx");
+
 
 
 
@@ -62,61 +64,9 @@ const ModelSelector = props => react__WEBPACK_IMPORTED_MODULE_0___default().crea
   key: key,
   value: key
 }, value.name))), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, "Model: ", _config_yieldModels__WEBPACK_IMPORTED_MODULE_5__.YieldModels[props.selectedModel].name));
-const Calculations = props => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+const ResultStats = props => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
   className: "calculations"
 }, "totalDies: ", props.results.totalDies, ", Good Wafers: ", props.results.goodDies, ", Fab Yield: ", props.results.fabYield);
-const DiscCanvas = props => {
-  // Bail out if there are too many dies to draw, otherwise the browser will hang
-  if (props.results.totalDies > 9999) {
-    return "Too many dies to visualize";
-  }
-  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("svg", {
-    width: props.results.waferWidth,
-    height: props.results.waferWidth,
-    style: {
-      border: "1px solid black"
-    }
-  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("circle", {
-    cx: props.results.waferWidth / 2,
-    cy: props.results.waferWidth / 2,
-    r: Math.min(props.results.waferWidth, props.results.waferWidth) / 2,
-    stroke: "black",
-    strokeWidth: "1",
-    fill: "none"
-  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, props.results.dies.map(die => react__WEBPACK_IMPORTED_MODULE_0___default().createElement(Die, {
-    ...die
-  }))));
-};
-const PanelCanvas = props => {
-  // Bail out if there are too many dies to draw, otherwise the browser will hang
-  if (props.results.totalDies > 9999) {
-    return "Too many dies to visualize";
-  }
-  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("svg", {
-    width: props.results.waferWidth,
-    height: props.results.waferHeight,
-    style: {
-      border: "1px solid black"
-    }
-  }, props.results.dies.map(die => react__WEBPACK_IMPORTED_MODULE_0___default().createElement(Die, {
-    ...die
-  })));
-};
-const Die = props => {
-  const stateColors = {
-    good: "green",
-    defective: "grey",
-    partial: "yellow",
-    lost: "red"
-  };
-  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("rect", {
-    x: props.x,
-    y: props.y,
-    width: props.width,
-    height: props.height,
-    fill: stateColors[props.dieState]
-  });
-};
 function App() {
   const [dieWidth, setDieWidth] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("8");
   const [dieHeight, setDieHeight] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("8");
@@ -126,7 +76,7 @@ function App() {
   const [defectRate, setDefectRate] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0.1");
   const [edgeLoss, setEdgeLoss] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0");
   const [allCritical, setAllCritical] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
-  const [recticleLimit, setRecticleLimit] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
+  const [reticleLimit, setReticleLimit] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
   const [scribeHoriz, setScribeHoriz] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0.1");
   const [scribeVert, setScribeVert] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0.1");
   const [transHoriz, setTransHoriz] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0");
@@ -165,7 +115,7 @@ function App() {
   };
   const handleDimensionChange = dimension => value => {
     const valNum = parseFloat(value);
-    if (!recticleLimit || dimension === "dieWidth" && valNum <= 33 || dimension === "dieHeight" && valNum <= 26) {
+    if (!reticleLimit || dimension === "dieWidth" && valNum <= 33 || dimension === "dieHeight" && valNum <= 26) {
       if (dimension === "dieWidth") {
         nullOrRound(setDieWidth, value);
         if (maintainAspectRatio && aspectRatio) {
@@ -214,8 +164,8 @@ function App() {
     setCriticalArea(`${parseFloat(dieWidth) * parseFloat(dieHeight)}`);
     setAllCritical(event.target.checked);
   };
-  const handleRecticleLimitChange = event => {
-    setRecticleLimit(event.target.checked);
+  const handleReticleLimitChange = event => {
+    setReticleLimit(event.target.checked);
   };
   const handleSizeChange = event => {
     if (waferShape === "Panel") {
@@ -287,9 +237,9 @@ function App() {
     onChange: handleMaintainAspectRatio,
     checked: maintainAspectRatio
   }, {
-    label: "Recticle Limit",
-    onChange: handleRecticleLimitChange,
-    checked: recticleLimit
+    label: "Reticle Limit",
+    onChange: handleReticleLimitChange,
+    checked: reticleLimit
   }, {
     label: "All Critical",
     onChange: handleAllCriticalChange,
@@ -330,13 +280,13 @@ function App() {
     handleModelChange: handleModelChange
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "calculations"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(Calculations, {
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ResultStats, {
     results: results
-  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, waferShape === "Panel" ? react__WEBPACK_IMPORTED_MODULE_0___default().createElement(PanelCanvas, {
+  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, waferShape === "Panel" && react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_WaferCanvas_WaferCanvas__WEBPACK_IMPORTED_MODULE_6__.PanelCanvas, {
     results: results
-  }) : waferShape === "Disc" ? react__WEBPACK_IMPORTED_MODULE_0___default().createElement(DiscCanvas, {
+  }), waferShape === "Disc" && react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_WaferCanvas_WaferCanvas__WEBPACK_IMPORTED_MODULE_6__.DiscCanvas, {
     results: results
-  }) : null));
+  })));
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (App);
 
@@ -390,6 +340,75 @@ function NumberInput(props) {
     onChange: props.onChange,
     onBlur: props.onBlur,
     step: "0.01"
+  })));
+}
+
+/***/ }),
+
+/***/ "./src/components/WaferCanvas/WaferCanvas.tsx":
+/*!****************************************************!*\
+  !*** ./src/components/WaferCanvas/WaferCanvas.tsx ***!
+  \****************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   DiscCanvas: () => (/* binding */ DiscCanvas),
+/* harmony export */   PanelCanvas: () => (/* binding */ PanelCanvas)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+
+function DieItem(props) {
+  const stateColors = {
+    good: "green",
+    defective: "grey",
+    partial: "yellow",
+    lost: "red"
+  };
+  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("rect", {
+    x: props.x,
+    y: props.y,
+    width: props.width,
+    height: props.height,
+    fill: stateColors[props.dieState]
+  });
+}
+function DiscCanvas(props) {
+  // Bail out if there are too many dies to draw, otherwise the browser will hang
+  if (props.results.totalDies > 9999) {
+    return "Too many dies to visualize";
+  }
+  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("svg", {
+    width: props.results.waferWidth,
+    height: props.results.waferWidth,
+    style: {
+      border: "1px solid black"
+    }
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("circle", {
+    cx: props.results.waferWidth / 2,
+    cy: props.results.waferWidth / 2,
+    r: Math.min(props.results.waferWidth, props.results.waferWidth) / 2,
+    stroke: "black",
+    strokeWidth: "1",
+    fill: "none"
+  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, props.results.dies.map(die => react__WEBPACK_IMPORTED_MODULE_0___default().createElement(DieItem, {
+    ...die
+  }))));
+}
+function PanelCanvas(props) {
+  // Bail out if there are too many dies to draw, otherwise the browser will hang
+  if (props.results.totalDies > 9999) {
+    return "Too many dies to visualize";
+  }
+  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("svg", {
+    width: props.results.waferWidth,
+    height: props.results.waferHeight,
+    style: {
+      border: "1px solid black"
+    }
+  }, props.results.dies.map(die => react__WEBPACK_IMPORTED_MODULE_0___default().createElement(DieItem, {
+    ...die
   })));
 }
 

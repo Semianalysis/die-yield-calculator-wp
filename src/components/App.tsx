@@ -5,7 +5,8 @@ import useInputs from "../hooks/useInputs";
 import { PanelSizes, DiscSizes } from "../config/sizes";
 import { YieldModels } from "../config/yieldModels";
 import { WaferShape } from "../types/wafers";
-import { Die, FabResults } from "../types/dies";
+import { FabResults } from "../types/dies";
+import { DiscCanvas, PanelCanvas } from "./WaferCanvas/WaferCanvas";
 
 const ShapeSelector = (props: { shape: WaferShape, setShape: (value: WaferShape) => void }) => (
 	<div className="input-group">
@@ -80,76 +81,12 @@ const ModelSelector = (props: {
 	</div>
 );
 
-const Calculations = (props: {
-	results: FabResults
-}) => (
+const ResultStats = (props: { results: FabResults }) => (
 	<div className="calculations">
 		totalDies: {props.results.totalDies}, Good Wafers: {props.results.goodDies}, Fab
 		Yield: {props.results.fabYield}
 	</div>
 );
-
-
-const DiscCanvas = (props: { results: FabResults }) => {
-	// Bail out if there are too many dies to draw, otherwise the browser will hang
-	if (props.results.totalDies > 9999) {
-		return "Too many dies to visualize";
-	}
-
-	return (
-		<svg width={props.results.waferWidth} height={props.results.waferWidth} style={{ border: "1px solid black" }}>
-			<circle
-				cx={props.results.waferWidth / 2}
-				cy={props.results.waferWidth / 2}
-				r={Math.min(props.results.waferWidth, props.results.waferWidth) / 2}
-				stroke="black"
-				strokeWidth="1"
-				fill="none" />
-			<>
-				{
-					props.results.dies.map((die) => (<Die {...die} />))
-				}
-			</>
-		</svg>
-	);
-};
-
-const PanelCanvas = (props: { results: FabResults }) => {
-	// Bail out if there are too many dies to draw, otherwise the browser will hang
-	if (props.results.totalDies > 9999) {
-		return "Too many dies to visualize";
-	}
-
-	return (
-		<svg width={props.results.waferWidth} height={props.results.waferHeight} style={{ border: "1px solid black" }}>
-			{
-				props.results.dies.map((die) => (
-					<Die {...die} />
-				))
-			}
-		</svg>
-	);
-};
-
-
-const Die = (props: Die) => {
-	const stateColors = {
-		good: "green",
-		defective: "grey",
-		partial: "yellow",
-		lost: "red"
-	};
-
-	return (
-		<rect
-			x={props.x}
-			y={props.y}
-			width={props.width}
-			height={props.height}
-			fill={stateColors[props.dieState]}
-		/>
-	);
-};
 
 function App() {
 	const [dieWidth, setDieWidth] = useState<string>("8");
@@ -160,7 +97,7 @@ function App() {
 	const [defectRate, setDefectRate] = useState<string>("0.1");
 	const [edgeLoss, setEdgeLoss] = useState<string>("0");
 	const [allCritical, setAllCritical] = useState(true);
-	const [recticleLimit, setRecticleLimit] = useState(true);
+	const [reticleLimit, setReticleLimit] = useState(true);
 	const [scribeHoriz, setScribeHoriz] = useState<string>("0.1");
 	const [scribeVert, setScribeVert] = useState<string>("0.1");
 	const [transHoriz, setTransHoriz] = useState<string>("0");
@@ -205,7 +142,7 @@ function App() {
 	const handleDimensionChange = (dimension: "dieWidth" | "dieHeight") => (value: string) => {
 		const valNum = parseFloat(value);
 
-		if (!recticleLimit || ((dimension === "dieWidth" && valNum <= 33) || (dimension === "dieHeight" && valNum <= 26))) {
+		if (!reticleLimit || ((dimension === "dieWidth" && valNum <= 33) || (dimension === "dieHeight" && valNum <= 26))) {
 			if (dimension === "dieWidth") {
 				nullOrRound(setDieWidth, value);
 
@@ -266,8 +203,8 @@ function App() {
 		setAllCritical(event.target.checked);
 	};
 
-	const handleRecticleLimitChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setRecticleLimit(event.target.checked);
+	const handleReticleLimitChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setReticleLimit(event.target.checked);
 	};
 
 	const handleSizeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -350,7 +287,7 @@ function App() {
 
 	const checkboxes = [
 		{ label: "Maintain Aspect Ratio", onChange: handleMaintainAspectRatio, checked: maintainAspectRatio },
-		{ label: "Recticle Limit", onChange: handleRecticleLimitChange, checked: recticleLimit },
+		{ label: "Reticle Limit", onChange: handleReticleLimitChange, checked: reticleLimit },
 		{ label: "All Critical", onChange: handleAllCriticalChange, checked: allCritical },
 		{
 			label: "Centering", onChange: () => {
@@ -404,15 +341,15 @@ function App() {
 				/>
 			</div>
 			<div className="calculations">
-				<Calculations
-					results={results} />
+				<ResultStats results={results} />
 			</div>
 			<div>
-				{waferShape === "Panel" ? (
+				{waferShape === "Panel" && (
 					<PanelCanvas results={results} />
-				) : waferShape === "Disc" ? (
+				)}
+				{waferShape === "Disc" && (
 					<DiscCanvas results={results} />
-				) : null}
+				)}
 			</div>
 
 		</div>
