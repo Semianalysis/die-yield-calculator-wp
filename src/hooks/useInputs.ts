@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
-import { WaferShape } from "../types/wafers";
-import { discSizes, panelSizes } from "../config/sizes";
+import { FabResults, WaferShape } from "../types";
+import { discSizes, panelSizes, yieldModels } from "../config";
 import { evaluateDiscInputs, evaluatePanelInputs, InputValues } from "../utils/calculations";
-import { yieldModels } from "../config/yieldModels";
-import { FabResults } from "../types/dies";
 
 /**
  * Given the numeric inputs, selected wafer properties, and a yield model, calculate

@@ -1,5 +1,5 @@
 import React from "react";
-import { Die, FabResults } from "../../types/dies";
+import { Die, FabResults } from "../../types";
 
 function DieItem(props: Die) {
 	const stateColors = {
