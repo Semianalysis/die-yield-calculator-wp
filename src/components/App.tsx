@@ -1,114 +1,33 @@
 import React, { useState, useEffect, Dispatch, SetStateAction } from "react";
+import { Checkbox } from "./Checkbox/Checkbox";
+import { NumberInput } from "./NumberInput/NumberInput";
+import { useInputs } from "../hooks/useInputs";
+import { panelSizes, discSizes, yieldModels } from "../config";
+import { FabResults, WaferShape } from "../types";
+import { DiscCanvas, PanelCanvas } from "./WaferCanvas/WaferCanvas";
 
-const PANELSIZES = {
-	s300mm: { name: "300 mm (12 in)", waferHeight: 300, waferWidth: 300 },
-	s305mm: { name: "305 x 457 mm² (12 x 18 in²)", waferHeight: 305, waferWidth: 457 },
-	s457mmsq: { name: "457 mm² (18 in)", waferHeight: 457, waferWidth: 457 },
-	s457x600mm: { name: "457 x 600 mm² (18 x 24 in²)", waferHeight: 457, waferWidth: 600 },
-	s510mm: { name: "510 x 515 mm² (21 in)", waferHeight: 510, waferWidth: 515 },
-	s600m: { name: "600 mm (24 in)", waferHeight: 600, waferWidth: 600 }
-};
-
-const WAFERSIZES = {
-	s51mm: { name: "51 mm (2 in)", waferWidth: 51 },
-	s76mm: { name: "76 mm (3 in)", waferWidth: 76 },
-	s100mm: { name: "100 mm (4 in)", waferWidth: 100 },
-	s125mm: { name: "125 mm (5 in)", waferWidth: 125 },
-	s150mm: { name: "150 mm (6 in)", waferWidth: 150 },
-	s200mm: { name: "200 mm (8 in)", waferWidth: 200 },
-	s300mm: { name: "300 mm (12 in)", waferWidth: 300 },
-	s450mm: { name: "450 mm (18 in)", waferWidth: 450 }
-};
-
-const STATECOLORS = {
-	good: "green",
-	defective: "grey",
-	partial: "yellow",
-	lost: "red"
-};
-
-const YIELDMODELS = {
-	poisson: { name: "Poisson Model" },
-	murph: { name: "Murphy's Model" },
-	rect: { name: "Rectangular Model" },
-	//moore: {name: "Moore's Model"},
-	seeds: { name: "Seeds Model" }
-};
-
-type Shape = "Panel" | "Wafer";
-
-type Die = {
-	x: number,
-	y: number,
-	width: number,
-	height: number,
-	key: number,
-	dieState: keyof typeof STATECOLORS
-};
-
-type CalcState = {
-	totalDies: number,
-	goodDies: number,
-	fabYield: number,
-	waferWidth: number,
-	waferHeight?: number,
-	dies: Array<Die>
-};
-
-const NumberInput = (props: {
-	label: string,
-	value: string,
-	onChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
-	isDisabled: boolean
-	onBlur?: () => void,
-}) => (
-	<div className="input-group">
-		<label>
-			{props.label}:
-			<input
-				type="number"
-				disabled={props.isDisabled}
-				value={props.value}
-				onChange={props.onChange}
-				onBlur={props.onBlur}
-				step="0.01" />
-		</label>
-	</div>
-);
-
-const Checkbox = (props: {
-	label: string,
-	onChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
-	checked: boolean
-}) => (
-	<label className="checkbox">
-		{props.label}
-		<input type="checkbox" onChange={props.onChange} checked={props.checked} />
-	</label>
-);
-
-const ShapeSelector = (props: { shape: Shape, setShape: (value: Shape) => void }) => (
+const ShapeSelector = (props: { shape: WaferShape, setShape: (value: WaferShape) => void }) => (
 	<div className="input-group">
 		<label>
 			Shape:
-			<select value={props.shape} onChange={(e) => props.setShape(e.target.value as Shape)}>
+			<select value={props.shape} onChange={(e) => props.setShape(e.target.value as WaferShape)}>
 				<option value="Panel">Panel</option>
-				<option value="Wafer">Wafer</option>
+				<option value="Disc">Wafer</option>
 			</select>
 		</label>
 	</div>
 );
 
-const WaferSizeSelect = (props: {
-	selectedSize: keyof typeof WAFERSIZES,
+const DiscSizeSelect = (props: {
+	selectedSize: keyof typeof discSizes,
 	handleSizeChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
 }) => {
-	const sizeInfo = WAFERSIZES[props.selectedSize];
+	const sizeInfo = discSizes[props.selectedSize];
 
 	return (
 		<div>
 			<select value={props.selectedSize} onChange={props.handleSizeChange}>
-				{Object.entries(WAFERSIZES).map(([key, value]) => (
+				{Object.entries(discSizes).map(([key, value]) => (
 					<option key={key} value={key}>
 						{value.name}
 					</option>
@@ -121,15 +40,15 @@ const WaferSizeSelect = (props: {
 };
 
 const PanelSizeSelect = (props: {
-	selectedSize: keyof typeof PANELSIZES,
+	selectedSize: keyof typeof panelSizes,
 	handleSizeChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
 }) => {
-	const sizeInfo = PANELSIZES[props.selectedSize];
+	const sizeInfo = panelSizes[props.selectedSize];
 
 	return (
 		<div>
 			<select value={props.selectedSize} onChange={props.handleSizeChange}>
-				{Object.entries(PANELSIZES).map(([key, value]) => (
+				{Object.entries(panelSizes).map(([key, value]) => (
 					<option key={key} value={key}>
 						{value.name}
 					</option>
@@ -142,12 +61,12 @@ const PanelSizeSelect = (props: {
 };
 
 const ModelSelector = (props: {
-	selectedModel: keyof typeof YIELDMODELS,
+	selectedModel: keyof typeof yieldModels,
 	handleModelChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
 }) => (
 	<div>
 		<select value={props.selectedModel} onChange={props.handleModelChange}>
-			{Object.entries(YIELDMODELS).map(([key, value]) => (
+			{Object.entries(yieldModels).map(([key, value]) => (
 				<option key={key} value={key}>
 					{value.name}
 				</option>
@@ -155,286 +74,19 @@ const ModelSelector = (props: {
 		</select>
 		{}
 		<div>
-			Model: {YIELDMODELS[props.selectedModel].name}
+			Model: {yieldModels[props.selectedModel].name}
 		</div>
 	</div>
 );
 
-const Calculations = (props: {
-	calcState: CalcState
-}) => (
+const ResultStats = (props: { results: FabResults }) => (
 	<div className="calculations">
-		totalDies: {props.calcState.totalDies}, Good Wafers: {props.calcState.goodDies}, Fab
-		Yield: {props.calcState.fabYield}
+		totalDies: {props.results.totalDies}, Good Wafers: {props.results.goodDies}, Fab
+		Yield: {props.results.fabYield}
 	</div>
 );
 
-function isInsideCircle(x: number, y: number, centerX: number, centerY: number, radius: number) {
-	return Math.sqrt((x - centerX) ** 2 + (y - centerY) ** 2) <= radius;
-}
-
-function rectanglesInCircle(diameter: number, rectWidth: number, rectHeight: number) {
-	const radius = diameter / 2;
-	const centerX = radius;
-	const centerY = radius;
-	let positions = [];
-
-	for (let x = 0; x <= diameter + rectWidth; x += rectWidth) {
-		for (let y = 0; y <= diameter + rectHeight; y += rectHeight) {
-			const corners = [
-				{ x: x, y: y },
-				{ x: x + rectWidth, y: y },
-				{ x: x, y: y + rectHeight },
-				{ x: x + rectWidth, y: y + rectHeight }
-			];
-
-			if (corners.every(corner => isInsideCircle(corner.x, corner.y, centerX, centerY, radius))) {
-				positions.push({ x: x, y: y });
-			}
-		}
-	}
-	return positions;
-}
-
-
-function getFabYield(defectRate: number, criticalArea: number, model: keyof typeof YIELDMODELS) {
-	const defects = criticalArea * defectRate / 100;
-	switch (model) {
-		case ("poisson"):
-			return Math.exp(-defects);
-		case ("murph"):
-			return Math.pow(((1 - Math.exp(-defects)) / defects), 2);
-		case ("rect"):
-			return (1 - Math.exp(-2 * defects)) / (2 * defects);
-		//case ('moore'):
-		//  return Math.exp(Math.sqrt(-defects));
-		case ("seeds"):
-			return 1 / (1 + defects);
-		default:
-			console.log("Invalid Model.");
-			return 0;
-	}
-}
-
-function evaulatePanelInputs(
-	inputVals: {
-		dieWidth: number,
-		dieHeight: number,
-		criticalArea: number,
-		defectRate: number,
-		edgeLoss: number,
-		scribeHoriz: number,
-		scribeVert: number
-	},
-	selectedSize: keyof typeof PANELSIZES,
-	selectedModel: keyof typeof YIELDMODELS) {
-	const {
-		dieWidth,
-		dieHeight,
-		criticalArea,
-		defectRate,
-		edgeLoss,
-		scribeHoriz,
-		scribeVert
-	} = inputVals;
-	let dies = [];
-	const fabYield = getFabYield(defectRate, criticalArea, selectedModel);
-	const { waferWidth, waferHeight } = PANELSIZES[selectedSize];
-	const adjustedDieWidth = dieWidth + scribeHoriz * 2;
-	const adjustedDieHeight = dieHeight + scribeVert * 2;
-
-	const diesPerRow = Math.floor(waferWidth / adjustedDieWidth);
-	const diesPerColumn = Math.floor(waferHeight / adjustedDieHeight);
-
-	const centerHorz = (waferWidth - adjustedDieWidth * diesPerRow) / 2;
-	const centerVert = (waferHeight - adjustedDieHeight * diesPerColumn) / 2;
-
-	const countWidth = Math.floor(waferWidth / (dieWidth + scribeHoriz * 2));
-	const countHeight = Math.floor(waferHeight / (dieHeight + scribeVert * 2));
-
-	const totalDies = countWidth * countHeight;
-
-	const goodDies = Math.floor(fabYield * totalDies);
-
-	let dieStates = new Array(totalDies).fill("defective");
-	for (let i = 0; i < goodDies; i++) {
-		dieStates[i] = "good";
-	}
-
-	for (let i = dieStates.length - 1; i > 0; i--) {
-		const j = Math.floor(Math.random() * (i + 1));
-		[dieStates[i], dieStates[j]] = [dieStates[j], dieStates[i]];
-	}
-
-	for (let i = 0; i < dieStates.length; i++) {
-		const row = Math.floor(i / diesPerRow);
-		const col = i % diesPerRow;
-
-		const dieState = dieStates[i];
-
-		const x = col * adjustedDieWidth + centerHorz;
-		const y = row * adjustedDieHeight + centerVert;
-		const width = dieWidth;
-		const height = dieHeight;
-
-		dies[i] = { "key": i, "dieState": dieState, "x": x, "y": y, "width": width, "height": height };
-	}
-
-	return {
-		dies,
-		totalDies,
-		goodDies,
-		fabYield,
-		waferWidth,
-		waferHeight
-	};
-}
-
-function evaluateWaferInputs(
-	inputVals: {
-		dieWidth: number,
-		dieHeight: number,
-		criticalArea: number,
-		defectRate: number,
-		edgeLoss: number,
-		scribeHoriz: number,
-		scribeVert: number,
-	},
-	selectedSize: keyof typeof WAFERSIZES,
-	selectedModel: keyof typeof YIELDMODELS
-) {
-	const {
-		dieWidth,
-		dieHeight,
-		criticalArea,
-		defectRate,
-		edgeLoss,
-		scribeHoriz,
-		scribeVert
-	} = inputVals;
-
-	let dies = [];
-	const fabYield = getFabYield(defectRate, criticalArea, selectedModel);
-	const { waferWidth } = WAFERSIZES[selectedSize];
-
-	let positions = rectanglesInCircle(waferWidth, dieWidth + scribeHoriz * 2, dieHeight + scribeVert * 2);
-	let totalDies = positions.length;
-
-	const goodDies = Math.floor(fabYield * totalDies);
-
-	let dieStates = new Array(totalDies).fill("defective");
-	for (let i = 0; i < goodDies; i++) {
-		dieStates[i] = "good";
-	}
-
-	for (let i = dieStates.length - 1; i > 0; i--) {
-		const j = Math.floor(Math.random() * (i + 1));
-		[dieStates[i], dieStates[j]] = [dieStates[j], dieStates[i]];
-	}
-
-	for (let i = 0; i < dieStates.length; i++) {
-		const x = positions[i].x;
-		const y = positions[i].y;
-
-		const dieState = dieStates[i];
-		const width = dieWidth;
-		const height = dieHeight;
-
-		const corners = [
-			{ x: x, y: y },
-			{ x: x + dieWidth, y: y },
-			{ x: x, y: y + dieHeight },
-			{ x: x + dieWidth, y: y + dieHeight }
-		];
-
-		let lossCircleRadius = waferWidth - edgeLoss;
-
-		if (!corners.every(corner => isInsideCircle(corner.x, corner.y, waferWidth / 2, waferWidth / 2, lossCircleRadius))) {
-			dieStates[i] = "partial";
-
-		}
-
-		dies[i] = { "key": i, "dieState": dieState, "x": x, "y": y, "width": width, "height": height };
-	}
-
-	return {
-		dies,
-		totalDies,
-		goodDies,
-		fabYield,
-		waferWidth
-	};
-}
-
-const WaferCanvas = (props: { calcState: CalcState }) => {
-	// Bail out if there are too many dies to draw, otherwise the browser will hang
-	if (props.calcState.totalDies > 9999) {
-		return 'Too many dies to visualize';
-	}
-
-	return (
-		<svg width={props.calcState.waferWidth} height={props.calcState.waferWidth} style={{ border: "1px solid black" }}>
-			<circle
-				cx={props.calcState.waferWidth / 2}
-				cy={props.calcState.waferWidth / 2}
-				r={Math.min(props.calcState.waferWidth, props.calcState.waferWidth) / 2}
-				stroke="black"
-				strokeWidth="1"
-				fill="none" />
-			<>
-				{
-					props.calcState.dies.map((die) => (<Die
-						key={die.key}
-						color={STATECOLORS[die.dieState]}
-						x={die.x}
-						y={die.y}
-						width={die.width}
-						height={die.height}
-					/>))
-				}
-			</>
-		</svg>
-	);
-};
-
-const PanelCanvas = (props: { calcState: CalcState }) => {
-	// Bail out if there are too many dies to draw, otherwise the browser will hang
-	if (props.calcState.totalDies > 9999) {
-		return 'Too many dies to visualize';
-	}
-
-	return (
-		<svg width={props.calcState.waferWidth} height={props.calcState.waferHeight} style={{ border: "1px solid black" }}>
-			{
-				props.calcState.dies.map((die) => (
-					<Die
-						key={die.key}
-						color={STATECOLORS[die.dieState]}
-						x={die.x}
-						y={die.y}
-						width={die.width}
-						height={die.height}
-					/>
-				))
-			}
-		</svg>
-	);
-};
-
-
-const Die = (props: { color: string, x: number, y: number, width: number, height: number }) => (
-	<rect x={props.x} y={props.y} width={props.width} height={props.height} fill={props.color} />
-);
-
 function App() {
-	const [calcState, setCalcState] = useState<CalcState>({
-		"dies": [],
-		"totalDies": 0,
-		"goodDies": 0,
-		"fabYield": 0,
-		"waferWidth": 0,
-		"waferHeight": 0
-	});
 	const [dieWidth, setDieWidth] = useState<string>("8");
 	const [dieHeight, setDieHeight] = useState<string>("8");
 	const [aspectRatio, setAspectRatio] = useState<number>(1);
@@ -443,15 +95,24 @@ function App() {
 	const [defectRate, setDefectRate] = useState<string>("0.1");
 	const [edgeLoss, setEdgeLoss] = useState<string>("0");
 	const [allCritical, setAllCritical] = useState(true);
-	const [recticleLimit, setRecticleLimit] = useState(true);
+	const [reticleLimit, setReticleLimit] = useState(true);
 	const [scribeHoriz, setScribeHoriz] = useState<string>("0.1");
 	const [scribeVert, setScribeVert] = useState<string>("0.1");
 	const [transHoriz, setTransHoriz] = useState<string>("0");
 	const [transVert, setTransVert] = useState<string>("0.1");
-	const [shape, setShape] = useState<Shape>("Panel");
-	const [panelSize, setPanelSize] = useState<keyof typeof PANELSIZES>("s300mm");
-	const [waferSize, setWaferSize] = useState<keyof typeof WAFERSIZES>("s300mm");
-	const [selectedModel, setSelectedModel] = useState<keyof typeof YIELDMODELS>("murph");
+	const [waferShape, setWaferShape] = useState<WaferShape>("Panel");
+	const [panelSize, setPanelSize] = useState<keyof typeof panelSizes>("s300mm");
+	const [discSize, setDiscSize] = useState<keyof typeof discSizes>("s300mm");
+	const [selectedModel, setSelectedModel] = useState<keyof typeof yieldModels>("murphy");
+	const results = useInputs({
+		dieWidth: parseFloat(dieWidth),
+		dieHeight: parseFloat(dieHeight),
+		criticalArea: parseFloat(criticalArea),
+		defectRate: parseFloat(defectRate),
+		edgeLoss: parseFloat(edgeLoss),
+		scribeHoriz: parseFloat(scribeHoriz),
+		scribeVert: parseFloat(scribeVert)
+	}, selectedModel, waferShape, panelSize, discSize);
 
 	useEffect(() => {
 		const dieWidthNum = parseFloat(dieWidth);
@@ -460,31 +121,6 @@ function App() {
 			setAspectRatio(dieWidthNum / dieHeightNum);
 		}
 	}, [dieWidth, dieHeight, maintainAspectRatio]);
-
-	useEffect(() => {
-		const inputNums = {
-			dieWidth: parseFloat(dieWidth),
-			dieHeight: parseFloat(dieHeight),
-			criticalArea: parseFloat(criticalArea),
-			defectRate: parseFloat(defectRate),
-			edgeLoss: parseFloat(edgeLoss),
-			scribeHoriz: parseFloat(scribeHoriz),
-			scribeVert: parseFloat(scribeVert)
-		};
-
-		// Bail out if we can't use any of the values
-		const invalidValues = Object.values(inputNums).filter(isNaN);
-
-		if (invalidValues.length) {
-			return;
-		}
-
-		if (shape === "Wafer") {
-			setCalcState(evaluateWaferInputs(inputNums, waferSize, selectedModel));
-		} else if (shape === "Panel") {
-			setCalcState(evaulatePanelInputs(inputNums, panelSize, selectedModel));
-		}
-	}, [dieWidth, dieHeight, criticalArea, defectRate, edgeLoss, scribeHoriz, scribeVert, shape, panelSize, waferSize, selectedModel]);
 
 	const nullOrRound = (setter: (val: string) => void, value: string) => {
 		const valFloat = parseFloat(value);
@@ -504,7 +140,7 @@ function App() {
 	const handleDimensionChange = (dimension: "dieWidth" | "dieHeight") => (value: string) => {
 		const valNum = parseFloat(value);
 
-		if (!recticleLimit || ((dimension === "dieWidth" && valNum <= 33) || (dimension === "dieHeight" && valNum <= 26))) {
+		if (!reticleLimit || ((dimension === "dieWidth" && valNum <= 33) || (dimension === "dieHeight" && valNum <= 26))) {
 			if (dimension === "dieWidth") {
 				nullOrRound(setDieWidth, value);
 
@@ -565,20 +201,20 @@ function App() {
 		setAllCritical(event.target.checked);
 	};
 
-	const handleRecticleLimitChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setRecticleLimit(event.target.checked);
+	const handleReticleLimitChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setReticleLimit(event.target.checked);
 	};
 
 	const handleSizeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-		if (shape === "Panel") {
-			setPanelSize(event.target.value as keyof typeof PANELSIZES);
-		} else if (shape === "Wafer") {
-			setWaferSize(event.target.value as keyof typeof WAFERSIZES);
+		if (waferShape === "Panel") {
+			setPanelSize(event.target.value as keyof typeof panelSizes);
+		} else if (waferShape === "Disc") {
+			setDiscSize(event.target.value as keyof typeof discSizes);
 		}
 	};
 
 	const handleModelChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-		setSelectedModel(event.target.value as keyof typeof YIELDMODELS);
+		setSelectedModel(event.target.value as keyof typeof yieldModels);
 	};
 
 	const numberInputs = [
@@ -649,7 +285,7 @@ function App() {
 
 	const checkboxes = [
 		{ label: "Maintain Aspect Ratio", onChange: handleMaintainAspectRatio, checked: maintainAspectRatio },
-		{ label: "Recticle Limit", onChange: handleRecticleLimitChange, checked: recticleLimit },
+		{ label: "Reticle Limit", onChange: handleReticleLimitChange, checked: reticleLimit },
 		{ label: "All Critical", onChange: handleAllCriticalChange, checked: allCritical },
 		{
 			label: "Centering", onChange: () => {
@@ -680,20 +316,20 @@ function App() {
 					/>
 				))}
 				<ShapeSelector
-					shape={shape}
-					setShape={setShape}
+					shape={waferShape}
+					setShape={setWaferShape}
 				/>
 				{
-					shape === "Panel" &&
+					waferShape === "Panel" &&
 					<PanelSizeSelect
 						selectedSize={panelSize}
 						handleSizeChange={handleSizeChange}
 					/>
 				}
 				{
-					shape === "Wafer" &&
-					<WaferSizeSelect
-						selectedSize={waferSize}
+					waferShape === "Disc" &&
+					<DiscSizeSelect
+						selectedSize={discSize}
 						handleSizeChange={handleSizeChange}
 					/>
 				}
@@ -703,15 +339,15 @@ function App() {
 				/>
 			</div>
 			<div className="calculations">
-				<Calculations
-					calcState={calcState} />
+				<ResultStats results={results} />
 			</div>
 			<div>
-				{shape === "Panel" ? (
-					<PanelCanvas calcState={calcState} />
-				) : shape === "Wafer" ? (
-					<WaferCanvas calcState={calcState} />
-				) : null}
+				{waferShape === "Panel" && (
+					<PanelCanvas results={results} />
+				)}
+				{waferShape === "Disc" && (
+					<DiscCanvas results={results} />
+				)}
 			</div>
 
 		</div>
