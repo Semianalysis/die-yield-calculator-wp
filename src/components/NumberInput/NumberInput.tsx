@@ -4,7 +4,7 @@ export function NumberInput(props: {
 	label: string,
 	value: string,
 	onChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
-	isDisabled: boolean
+	isDisabled?: boolean
 	onBlur?: () => void,
 }) {
 	return (

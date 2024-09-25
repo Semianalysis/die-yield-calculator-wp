@@ -133,10 +133,6 @@ function App() {
 		}
 	};
 
-	const handleBlur = (setter: Dispatch<SetStateAction<string>>) => () => {
-		setter((prevValue) => (prevValue));
-	};
-
 	const handleDimensionChange = (dimension: "dieWidth" | "dieHeight") => (value: string) => {
 		const valNum = parseFloat(value);
 
@@ -217,82 +213,6 @@ function App() {
 		setSelectedModel(event.target.value as keyof typeof yieldModels);
 	};
 
-	const numberInputs = [
-		{
-			label: "Die Width (mm)",
-			value: dieWidth,
-			onChange: handleDimensionChange("dieWidth"),
-			onBlur: handleBlur(setDieWidth),
-			isDisabled: false
-		},
-		{
-			label: "Die Height (mm)",
-			value: dieHeight,
-			onChange: handleDimensionChange("dieHeight"),
-			onBlur: handleBlur(setDieHeight),
-			isDisabled: false
-		},
-		{
-			label: "Critical Area (mm²)",
-			value: criticalArea,
-			onChange: handleCriticalAreaChange,
-			onBlur: handleBlur(setCriticalArea),
-			isDisabled: allCritical
-		},
-		{
-			label: "Defect Rate (#/cm²)",
-			value: defectRate,
-			onChange: handleDefectRateChange,
-			onBlur: handleBlur(setDefectRate),
-			isDisabled: false
-		},
-		{
-			label: "Edge Loss (mm)",
-			value: edgeLoss,
-			onChange: handleEdgeLossChange,
-			onBlur: handleBlur(setEdgeLoss),
-			isDisabled: false
-		},
-		{
-			label: "Scribe Lines Horiz",
-			value: scribeHoriz,
-			onChange: handleScribeSizeChange("horiz"),
-			onBlur: handleBlur(setScribeHoriz),
-			isDisabled: false
-		},
-		{
-			label: "Scribe Lines Vert",
-			value: scribeVert,
-			onChange: handleScribeSizeChange("vert"),
-			onBlur: handleBlur(setScribeVert),
-			isDisabled: false
-		},
-		{
-			label: "Translation Horiz",
-			value: transHoriz,
-			onChange: handleTransChange("horiz"),
-			onBlur: handleBlur(setTransHoriz),
-			isDisabled: false
-		},
-		{
-			label: "Translation Vert",
-			value: transVert,
-			onChange: handleTransChange("vert"),
-			onBlur: handleBlur(setTransVert),
-			isDisabled: false
-		}
-	];
-
-	const checkboxes = [
-		{ label: "Maintain Aspect Ratio", onChange: handleMaintainAspectRatio, checked: maintainAspectRatio },
-		{ label: "Reticle Limit", onChange: handleReticleLimitChange, checked: reticleLimit },
-		{ label: "All Critical", onChange: handleAllCriticalChange, checked: allCritical },
-		{
-			label: "Centering", onChange: () => {
-			}, checked: false
-		}
-	];
-
 	return (
 		<div className="container">
 			<a href="https://semianalysis.com" target="_blank">
@@ -304,25 +224,29 @@ function App() {
 			</a>
 			<div className="columns">
 				<div className="input">
-					{numberInputs.map(input => (
-						<NumberInput
-							key={input.label}
-							label={input.label}
-							value={input.value}
-							isDisabled={input.isDisabled}
-							onChange={(event) => {
-								input.onChange(event.target.value);
-							}}
-						/>
-					))}
-					{checkboxes.map(input => (
-						<Checkbox
-							key={input.label}
-							label={input.label}
-							onChange={input.onChange}
-							checked={input.checked}
-						/>
-					))}
+					<h2>Die size</h2>
+					<NumberInput
+						label="Die Width (mm)"
+						value={dieWidth}
+						onChange={(event) => {
+							handleDimensionChange("dieWidth")(event.target.value);
+						}}
+					/>
+					<NumberInput
+						label="Die Height (mm)"
+						value={dieHeight}
+						onChange={(event) => {
+							handleDimensionChange("dieHeight")(event.target.value);
+						}}
+						isDisabled={maintainAspectRatio}
+					/>
+					<Checkbox
+						label="Maintain Aspect Ratio"
+						onChange={handleMaintainAspectRatio}
+						checked={maintainAspectRatio}
+					/>
+					<hr />
+					<h2>Wafer</h2>
 					<ShapeSelector
 						shape={waferShape}
 						setShape={setWaferShape}
@@ -341,6 +265,66 @@ function App() {
 							handleSizeChange={handleSizeChange}
 						/>
 					}
+					<Checkbox
+						label="All Critical"
+						onChange={handleAllCriticalChange}
+						checked={allCritical}
+					/>
+					<NumberInput
+						label="Critical Area (mm²)"
+						value={criticalArea}
+						isDisabled={allCritical}
+						onChange={(event) => {
+							handleCriticalAreaChange(event.target.value);
+						}}
+					/>
+					<NumberInput
+						label="Defect Rate (#/cm²)"
+						value={defectRate}
+						onChange={(event) => {
+							handleDefectRateChange(event.target.value);
+						}}
+					/>
+					<NumberInput
+						label="Edge Loss (mm)"
+						value={edgeLoss}
+						onChange={(event) => {
+							handleEdgeLossChange(event.target.value);
+						}}
+					/>
+					<NumberInput
+						label="Scribe Lines Horiz"
+						value={scribeHoriz}
+						onChange={(event) => {
+							handleScribeSizeChange("horiz")(event.target.value);
+						}}
+					/>
+					<NumberInput
+						label="Scribe Lines Vert"
+						value={scribeVert}
+						onChange={(event) => {
+							handleScribeSizeChange("vert")(event.target.value);
+						}}
+					/>
+					<NumberInput
+						label="Translation Horiz"
+						value={transHoriz}
+						onChange={(event) => {
+							handleTransChange("horiz")(event.target.value);
+						}}
+					/>
+					<NumberInput
+						label="Translation Vert"
+						value={transVert}
+						onChange={(event) => {
+							handleTransChange("vert")(event.target.value);
+						}}
+					/>
+					<Checkbox
+						label="Reticle Limit"
+						onChange={handleReticleLimitChange}
+						checked={reticleLimit}
+					/>
 					<ModelSelector
 						selectedModel={selectedModel}
 						handleModelChange={handleModelChange}

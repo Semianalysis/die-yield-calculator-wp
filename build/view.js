@@ -108,9 +108,6 @@ function App() {
       setter(roundedValue.toString());
     }
   };
-  const handleBlur = setter => () => {
-    setter(prevValue => prevValue);
-  };
   const handleDimensionChange = dimension => value => {
     const valNum = parseFloat(value);
     if (!reticleLimit || dimension === "dieWidth" && valNum <= 33 || dimension === "dieHeight" && valNum <= 26) {
@@ -175,78 +172,6 @@ function App() {
   const handleModelChange = event => {
     setSelectedModel(event.target.value);
   };
-  const numberInputs = [{
-    label: "Die Width (mm)",
-    value: dieWidth,
-    onChange: handleDimensionChange("dieWidth"),
-    onBlur: handleBlur(setDieWidth),
-    isDisabled: false
-  }, {
-    label: "Die Height (mm)",
-    value: dieHeight,
-    onChange: handleDimensionChange("dieHeight"),
-    onBlur: handleBlur(setDieHeight),
-    isDisabled: false
-  }, {
-    label: "Critical Area (mm²)",
-    value: criticalArea,
-    onChange: handleCriticalAreaChange,
-    onBlur: handleBlur(setCriticalArea),
-    isDisabled: allCritical
-  }, {
-    label: "Defect Rate (#/cm²)",
-    value: defectRate,
-    onChange: handleDefectRateChange,
-    onBlur: handleBlur(setDefectRate),
-    isDisabled: false
-  }, {
-    label: "Edge Loss (mm)",
-    value: edgeLoss,
-    onChange: handleEdgeLossChange,
-    onBlur: handleBlur(setEdgeLoss),
-    isDisabled: false
-  }, {
-    label: "Scribe Lines Horiz",
-    value: scribeHoriz,
-    onChange: handleScribeSizeChange("horiz"),
-    onBlur: handleBlur(setScribeHoriz),
-    isDisabled: false
-  }, {
-    label: "Scribe Lines Vert",
-    value: scribeVert,
-    onChange: handleScribeSizeChange("vert"),
-    onBlur: handleBlur(setScribeVert),
-    isDisabled: false
-  }, {
-    label: "Translation Horiz",
-    value: transHoriz,
-    onChange: handleTransChange("horiz"),
-    onBlur: handleBlur(setTransHoriz),
-    isDisabled: false
-  }, {
-    label: "Translation Vert",
-    value: transVert,
-    onChange: handleTransChange("vert"),
-    onBlur: handleBlur(setTransVert),
-    isDisabled: false
-  }];
-  const checkboxes = [{
-    label: "Maintain Aspect Ratio",
-    onChange: handleMaintainAspectRatio,
-    checked: maintainAspectRatio
-  }, {
-    label: "Reticle Limit",
-    onChange: handleReticleLimitChange,
-    checked: reticleLimit
-  }, {
-    label: "All Critical",
-    onChange: handleAllCriticalChange,
-    checked: allCritical
-  }, {
-    label: "Centering",
-    onChange: () => {},
-    checked: false
-  }];
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "container"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("a", {
@@ -260,20 +185,24 @@ function App() {
     className: "columns"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "input"
-  }, numberInputs.map(input => react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
-    key: input.label,
-    label: input.label,
-    value: input.value,
-    isDisabled: input.isDisabled,
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", null, "Die size"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
+    label: "Die Width (mm)",
+    value: dieWidth,
     onChange: event => {
-      input.onChange(event.target.value);
+      handleDimensionChange("dieWidth")(event.target.value);
     }
-  })), checkboxes.map(input => react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Checkbox_Checkbox__WEBPACK_IMPORTED_MODULE_1__.Checkbox, {
-    key: input.label,
-    label: input.label,
-    onChange: input.onChange,
-    checked: input.checked
-  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ShapeSelector, {
+  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
+    label: "Die Height (mm)",
+    value: dieHeight,
+    onChange: event => {
+      handleDimensionChange("dieHeight")(event.target.value);
+    },
+    isDisabled: maintainAspectRatio
+  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Checkbox_Checkbox__WEBPACK_IMPORTED_MODULE_1__.Checkbox, {
+    label: "Maintain Aspect Ratio",
+    onChange: handleMaintainAspectRatio,
+    checked: maintainAspectRatio
+  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("hr", null), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", null, "Wafer"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ShapeSelector, {
     shape: waferShape,
     setShape: setWaferShape
   }), waferShape === "Panel" && react__WEBPACK_IMPORTED_MODULE_0___default().createElement(PanelSizeSelect, {
@@ -282,6 +211,57 @@ function App() {
   }), waferShape === "Disc" && react__WEBPACK_IMPORTED_MODULE_0___default().createElement(DiscSizeSelect, {
     selectedSize: discSize,
     handleSizeChange: handleSizeChange
+  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Checkbox_Checkbox__WEBPACK_IMPORTED_MODULE_1__.Checkbox, {
+    label: "All Critical",
+    onChange: handleAllCriticalChange,
+    checked: allCritical
+  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
+    label: "Critical Area (mm\u00B2)",
+    value: criticalArea,
+    isDisabled: allCritical,
+    onChange: event => {
+      handleCriticalAreaChange(event.target.value);
+    }
+  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
+    label: "Defect Rate (#/cm\u00B2)",
+    value: defectRate,
+    onChange: event => {
+      handleDefectRateChange(event.target.value);
+    }
+  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
+    label: "Edge Loss (mm)",
+    value: edgeLoss,
+    onChange: event => {
+      handleEdgeLossChange(event.target.value);
+    }
+  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
+    label: "Scribe Lines Horiz",
+    value: scribeHoriz,
+    onChange: event => {
+      handleScribeSizeChange("horiz")(event.target.value);
+    }
+  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
+    label: "Scribe Lines Vert",
+    value: scribeVert,
+    onChange: event => {
+      handleScribeSizeChange("vert")(event.target.value);
+    }
+  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
+    label: "Translation Horiz",
+    value: transHoriz,
+    onChange: event => {
+      handleTransChange("horiz")(event.target.value);
+    }
+  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
+    label: "Translation Vert",
+    value: transVert,
+    onChange: event => {
+      handleTransChange("vert")(event.target.value);
+    }
+  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Checkbox_Checkbox__WEBPACK_IMPORTED_MODULE_1__.Checkbox, {
+    label: "Reticle Limit",
+    onChange: handleReticleLimitChange,
+    checked: reticleLimit
   }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ModelSelector, {
     selectedModel: selectedModel,
     handleModelChange: handleModelChange
