@@ -248,9 +248,9 @@ function App() {
     checked: false
   }];
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    className: "calc"
+    className: "container"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    className: "control-panel"
+    className: "input"
   }, numberInputs.map(input => react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
     key: input.label,
     label: input.label,
@@ -277,12 +277,12 @@ function App() {
     selectedModel: selectedModel,
     handleModelChange: handleModelChange
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    className: "calculations"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ResultStats, {
-    results: results
-  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, waferShape === "Panel" && react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_WaferCanvas_WaferCanvas__WEBPACK_IMPORTED_MODULE_5__.PanelCanvas, {
+    className: "output"
+  }, waferShape === "Panel" && react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_WaferCanvas_WaferCanvas__WEBPACK_IMPORTED_MODULE_5__.PanelCanvas, {
     results: results
   }), waferShape === "Disc" && react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_WaferCanvas_WaferCanvas__WEBPACK_IMPORTED_MODULE_5__.DiscCanvas, {
+    results: results
+  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ResultStats, {
     results: results
   })));
 }
@@ -378,11 +378,7 @@ function DiscCanvas(props) {
     return "Too many dies to visualize";
   }
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("svg", {
-    width: props.results.waferWidth,
-    height: props.results.waferWidth,
-    style: {
-      border: "1px solid black"
-    }
+    viewBox: `0 0 ${props.results.waferWidth} ${props.results.waferWidth}`
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("circle", {
     cx: props.results.waferWidth / 2,
     cy: props.results.waferWidth / 2,
@@ -400,11 +396,7 @@ function PanelCanvas(props) {
     return "Too many dies to visualize";
   }
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("svg", {
-    width: props.results.waferWidth,
-    height: props.results.waferHeight,
-    style: {
-      border: "1px solid black"
-    }
+    viewBox: `0 0 ${props.results.waferWidth} ${props.results.waferWidth}`
   }, props.results.dies.map(die => react__WEBPACK_IMPORTED_MODULE_0___default().createElement(DieItem, {
     ...die
   })));

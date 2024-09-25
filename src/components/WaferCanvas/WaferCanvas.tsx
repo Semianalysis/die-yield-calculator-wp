@@ -27,7 +27,7 @@ export function DiscCanvas(props: { results: FabResults }) {
 	}
 
 	return (
-		<svg width={props.results.waferWidth} height={props.results.waferWidth} style={{ border: "1px solid black" }}>
+		<svg viewBox={`0 0 ${props.results.waferWidth} ${props.results.waferWidth}`}>
 			<circle
 				cx={props.results.waferWidth / 2}
 				cy={props.results.waferWidth / 2}
@@ -51,7 +51,7 @@ export function PanelCanvas(props: { results: FabResults }) {
 	}
 
 	return (
-		<svg width={props.results.waferWidth} height={props.results.waferHeight} style={{ border: "1px solid black" }}>
+		<svg viewBox={`0 0 ${props.results.waferWidth} ${props.results.waferWidth}`}>
 			{
 				props.results.dies.map((die) => <DieItem {...die} />)
 			}

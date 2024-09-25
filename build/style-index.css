@@ -8,9 +8,22 @@
  * Replace them with your own styles or remove the file completely.
  */
 .wp-block-create-block-die-yield-calculator {
-  background-color: #21759b;
-  color: #fff;
-  padding: 2px;
+  box-sizing: border-box;
+  background-color: #1d1b1e;
+  color: rgb(234, 235, 236);
+  padding: 1em;
+  font-family: Inter, sans-serif;
+}
+.wp-block-create-block-die-yield-calculator .container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  -moz-column-gap: 2em;
+       column-gap: 2em;
+}
+.wp-block-create-block-die-yield-calculator .input {
+  border-radius: 10px;
+  padding: 32px;
+  background-color: #141416;
 }
 
 /*# sourceMappingURL=style-index.css.map*/

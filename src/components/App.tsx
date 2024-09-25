@@ -294,8 +294,8 @@ function App() {
 	];
 
 	return (
-		<div className="calc">
-			<div className="control-panel">
+		<div className="container">
+			<div className="input">
 				{numberInputs.map(input => (
 					<NumberInput
 						key={input.label}
@@ -338,18 +338,15 @@ function App() {
 					handleModelChange={handleModelChange}
 				/>
 			</div>
-			<div className="calculations">
-				<ResultStats results={results} />
-			</div>
-			<div>
+			<div className="output">
 				{waferShape === "Panel" && (
 					<PanelCanvas results={results} />
 				)}
 				{waferShape === "Disc" && (
 					<DiscCanvas results={results} />
 				)}
+				<ResultStats results={results} />
 			</div>
-
 		</div>
 	);
 }
