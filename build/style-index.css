@@ -63,5 +63,26 @@
 .wp-block-create-block-die-yield-calculator .checkbox input[type=checkbox] {
   margin-right: 1em;
 }
+.wp-block-create-block-die-yield-calculator .wafer-canvas {
+  border-top: 1px solid rgba(255, 255, 255, 0.5);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+  background: linear-gradient(135deg, #b88ecb, #8eb4cd 25%, #a0c8c0 50%, #c6b394 75%, #c7908a 100%);
+  background-size: 400% 400%;
+}
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+.wp-block-create-block-die-yield-calculator .wafer-canvas.disc {
+  border-radius: 100%;
+  overflow: hidden;
+}
 
 /*# sourceMappingURL=style-index.css.map*/

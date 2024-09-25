@@ -453,8 +453,8 @@ __webpack_require__.r(__webpack_exports__);
 
 function DieItem(props) {
   const stateColors = {
-    good: "green",
-    defective: "grey",
+    good: "rgba(6,231,6,0.77)",
+    defective: "rgba(151,138,129,0.8)",
     partial: "yellow",
     lost: "red"
   };
@@ -472,17 +472,17 @@ function DiscCanvas(props) {
     return "Too many dies to visualize";
   }
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("svg", {
-    viewBox: `0 0 ${props.results.waferWidth} ${props.results.waferWidth}`
+    viewBox: `0 0 ${props.results.waferWidth} ${props.results.waferWidth}`,
+    className: "wafer-canvas disc"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("circle", {
     cx: props.results.waferWidth / 2,
     cy: props.results.waferWidth / 2,
     r: Math.min(props.results.waferWidth, props.results.waferWidth) / 2,
-    stroke: "black",
-    strokeWidth: "1",
+    stroke: "none",
     fill: "none"
-  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, props.results.dies.map(die => react__WEBPACK_IMPORTED_MODULE_0___default().createElement(DieItem, {
+  }), props.results.dies.map(die => react__WEBPACK_IMPORTED_MODULE_0___default().createElement(DieItem, {
     ...die
-  }))));
+  })));
 }
 function PanelCanvas(props) {
   // Bail out if there are too many dies to draw, otherwise the browser will hang
@@ -490,7 +490,8 @@ function PanelCanvas(props) {
     return "Too many dies to visualize";
   }
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("svg", {
-    viewBox: `0 0 ${props.results.waferWidth} ${props.results.waferWidth}`
+    viewBox: `0 0 ${props.results.waferWidth} ${props.results.waferWidth}`,
+    className: "wafer-canvas"
   }, props.results.dies.map(die => react__WEBPACK_IMPORTED_MODULE_0___default().createElement(DieItem, {
     ...die
   })));
