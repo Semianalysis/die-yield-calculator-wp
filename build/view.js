@@ -30,7 +30,8 @@ const ShapeSelector = props => {
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("fieldset", null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("legend", null, "Shape"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "radio-group"
   }, shapes.map(shape => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", {
-    className: "radio-item"
+    className: "radio-item",
+    key: shape
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
     type: "radio",
     name: "shape",

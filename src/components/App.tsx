@@ -15,7 +15,7 @@ const ShapeSelector = (props: { shape: WaferShape, setShape: (value: WaferShape)
 			<div className="radio-group">
 				{
 					shapes.map((shape) => (
-						<label className="radio-item">
+						<label className="radio-item" key={shape}>
 							<input
 								type="radio"
 								name="shape"
