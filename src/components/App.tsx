@@ -36,7 +36,7 @@ const DiscSizeSelect = (props: {
 	handleSizeChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
 }) => {
 	return (
-		<label>
+		<label className="select">
 			Diameter
 			<select value={props.selectedSize} onChange={props.handleSizeChange}>
 				{Object.entries(discSizes).map(([key, value]) => (
@@ -54,7 +54,7 @@ const PanelSizeSelect = (props: {
 	handleSizeChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
 }) => {
 	return (
-		<label>
+		<label className="select">
 			Dimensions
 			<select value={props.selectedSize} onChange={props.handleSizeChange}>
 				{Object.entries(panelSizes).map(([key, value]) => (
@@ -71,7 +71,7 @@ const ModelSelector = (props: {
 	selectedModel: keyof typeof yieldModels,
 	handleModelChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
 }) => (
-	<label>
+	<label className="select">
 		Yield Calculation Model
 		<select value={props.selectedModel} onChange={props.handleModelChange}>
 			{Object.entries(yieldModels).map(([key, value]) => (

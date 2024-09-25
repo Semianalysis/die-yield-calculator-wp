@@ -39,7 +39,9 @@ const ShapeSelector = props => {
   }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null, shape)))));
 };
 const DiscSizeSelect = props => {
-  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", null, "Diameter", react__WEBPACK_IMPORTED_MODULE_0___default().createElement("select", {
+  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", {
+    className: "select"
+  }, "Diameter", react__WEBPACK_IMPORTED_MODULE_0___default().createElement("select", {
     value: props.selectedSize,
     onChange: props.handleSizeChange
   }, Object.entries(_config__WEBPACK_IMPORTED_MODULE_4__.discSizes).map(([key, value]) => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
@@ -48,7 +50,9 @@ const DiscSizeSelect = props => {
   }, value.name))));
 };
 const PanelSizeSelect = props => {
-  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", null, "Dimensions", react__WEBPACK_IMPORTED_MODULE_0___default().createElement("select", {
+  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", {
+    className: "select"
+  }, "Dimensions", react__WEBPACK_IMPORTED_MODULE_0___default().createElement("select", {
     value: props.selectedSize,
     onChange: props.handleSizeChange
   }, Object.entries(_config__WEBPACK_IMPORTED_MODULE_4__.panelSizes).map(([key, value]) => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
@@ -56,7 +60,9 @@ const PanelSizeSelect = props => {
     value: key
   }, value.name))));
 };
-const ModelSelector = props => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", null, "Yield Calculation Model", react__WEBPACK_IMPORTED_MODULE_0___default().createElement("select", {
+const ModelSelector = props => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", {
+  className: "select"
+}, "Yield Calculation Model", react__WEBPACK_IMPORTED_MODULE_0___default().createElement("select", {
   value: props.selectedModel,
   onChange: props.handleModelChange
 }, Object.entries(_config__WEBPACK_IMPORTED_MODULE_4__.yieldModels).map(([key, value]) => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
@@ -347,8 +353,7 @@ function NumberInput(props) {
     value: props.value,
     onChange: props.onChange,
     onBlur: props.onBlur,
-    step: "0.01",
-    className: "number-input"
+    step: "0.01"
   })));
 }
 

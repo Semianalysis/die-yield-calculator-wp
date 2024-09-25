@@ -18,7 +18,6 @@ export function NumberInput(props: {
 					onChange={props.onChange}
 					onBlur={props.onBlur}
 					step="0.01"
-					className="number-input"
 				/>
 			</label>
 		</div>

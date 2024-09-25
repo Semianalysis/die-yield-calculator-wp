@@ -1,6 +1,7 @@
 /*!***************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[4].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[4].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[4].use[3]!./src/style.scss ***!
   \***************************************************************************************************************************************************************************************************************************************/
+@charset "UTF-8";
 /**
  * The following styles get applied both on the front of your site
  * and in the editor.
@@ -71,7 +72,10 @@
        column-gap: 1em;
   align-items: center;
 }
-.wp-block-create-block-die-yield-calculator .number-input {
+.wp-block-create-block-die-yield-calculator input[type=text],
+.wp-block-create-block-die-yield-calculator input[type=number],
+.wp-block-create-block-die-yield-calculator select,
+.wp-block-create-block-die-yield-calculator textarea {
   width: 100%;
   padding: 15px;
   background-color: transparent;
@@ -81,12 +85,38 @@
   transition: border-color 0.2s ease-in-out;
   margin-bottom: 1em;
 }
-.wp-block-create-block-die-yield-calculator .number-input:hover {
+.wp-block-create-block-die-yield-calculator input[type=text]:hover,
+.wp-block-create-block-die-yield-calculator input[type=number]:hover,
+.wp-block-create-block-die-yield-calculator select:hover,
+.wp-block-create-block-die-yield-calculator textarea:hover {
   border-color: #EAEBEC;
 }
-.wp-block-create-block-die-yield-calculator .number-input:focus {
+.wp-block-create-block-die-yield-calculator input[type=text]:focus,
+.wp-block-create-block-die-yield-calculator input[type=number]:focus,
+.wp-block-create-block-die-yield-calculator select:focus,
+.wp-block-create-block-die-yield-calculator textarea:focus {
   border-color: #F7B041;
   outline: none;
+}
+.wp-block-create-block-die-yield-calculator select {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+}
+.wp-block-create-block-die-yield-calculator .select {
+  position: relative;
+}
+.wp-block-create-block-die-yield-calculator .select::after {
+  content: "▼";
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  font-size: 0.75em;
+  color: #656B72;
+}
+.wp-block-create-block-die-yield-calculator input[type=checkbox],
+.wp-block-create-block-die-yield-calculator input[type=radio] {
+  margin: 0 0.5em 0 0;
 }
 .wp-block-create-block-die-yield-calculator .checkbox {
   margin-bottom: 1em;
@@ -131,9 +161,6 @@
   align-items: center;
   line-height: 1;
   margin: 0 1em 0 0;
-}
-.wp-block-create-block-die-yield-calculator .radio-item input {
-  margin: 0 0.5em 0 0;
 }
 
 /*# sourceMappingURL=style-index.css.map*/

@@ -80,7 +80,10 @@
 		}
 	}
 
-	.number-input {
+	input[type="text"],
+	input[type="number"],
+	select,
+	textarea {
 		width: 100%;
 		padding: 15px;
 		background-color: transparent;
@@ -98,6 +101,28 @@
 			border-color: $color-accent;
 			outline: none;
 		}
+	}
+
+	select {
+		appearance: none;
+	}
+
+	.select {
+		position: relative;
+
+		&::after {
+			content: "▼";
+			position: absolute;
+			right: 1rem;
+			top: 50%;
+			font-size: 0.75em;
+			color: #656B72;
+		}
+	}
+
+	input[type="checkbox"],
+	input[type="radio"] {
+		margin: 0 0.5em 0 0;
 	}
 
 	.checkbox {
@@ -150,7 +175,7 @@
 		margin: 1em 0;
 		display: flex;
 		align-items: center;
-		
+
 	}
 
 	.radio-item {
@@ -158,10 +183,6 @@
 		align-items: center;
 		line-height: 1;
 		margin: 0 1em 0 0;
-
-		input {
-			margin: 0 0.5em 0 0;
-		}
 	}
 }
 
