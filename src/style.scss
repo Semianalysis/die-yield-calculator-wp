@@ -6,7 +6,12 @@
  */
 
 .wp-block-create-block-die-yield-calculator {
-	box-sizing: border-box;
+	$color-accent: #F7B041;
+
+	&, * {
+		box-sizing: border-box;
+	}
+
 	background-color: #1d1b1e;
 	color: rgb(234, 235, 236);
 	padding: 1em;
@@ -22,6 +27,42 @@
 		border-radius: 10px;
 		padding: 32px;
 		background-color: #141416;
+	}
+
+	.input-group {
+		margin-bottom: 1em;
+
+		label {
+			display: block;
+			font-size: .75em;
+		}
+		textarea,
+		input {
+			width: 100%;
+			padding: 15px;
+			background-color: transparent;
+			border: 1px solid #656B72;
+			border-radius: 10px;
+			color: #B4B9BC;
+			transition: border-color 0.2s ease-in-out;
+
+			&:hover {
+				border-color: #EAEBEC;
+			}
+
+			&:focus {
+				border-color: $color-accent;
+				outline: none;
+			}
+		}
+	}
+
+	.checkbox {
+		margin-bottom: 1em;
+
+		input[type="checkbox"] {
+			margin-right: 1em;
+		}
 	}
 }
 

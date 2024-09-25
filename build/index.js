@@ -412,13 +412,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 
 function Checkbox(props) {
-  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", {
+  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "checkbox"
-  }, props.label, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
     type: "checkbox",
     onChange: props.onChange,
     checked: props.checked
-  }));
+  }), props.label));
 }
 
 /***/ }),

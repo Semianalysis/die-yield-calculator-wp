@@ -8,11 +8,13 @@
  * Replace them with your own styles or remove the file completely.
  */
 .wp-block-create-block-die-yield-calculator {
-  box-sizing: border-box;
   background-color: #1d1b1e;
   color: rgb(234, 235, 236);
   padding: 1em;
   font-family: Inter, sans-serif;
+}
+.wp-block-create-block-die-yield-calculator, .wp-block-create-block-die-yield-calculator * {
+  box-sizing: border-box;
 }
 .wp-block-create-block-die-yield-calculator .container {
   display: grid;
@@ -24,6 +26,38 @@
   border-radius: 10px;
   padding: 32px;
   background-color: #141416;
+}
+.wp-block-create-block-die-yield-calculator .input-group {
+  margin-bottom: 1em;
+}
+.wp-block-create-block-die-yield-calculator .input-group label {
+  display: block;
+  font-size: 0.75em;
+}
+.wp-block-create-block-die-yield-calculator .input-group textarea,
+.wp-block-create-block-die-yield-calculator .input-group input {
+  width: 100%;
+  padding: 15px;
+  background-color: transparent;
+  border: 1px solid #656B72;
+  border-radius: 10px;
+  color: #B4B9BC;
+  transition: border-color 0.2s ease-in-out;
+}
+.wp-block-create-block-die-yield-calculator .input-group textarea:hover,
+.wp-block-create-block-die-yield-calculator .input-group input:hover {
+  border-color: #EAEBEC;
+}
+.wp-block-create-block-die-yield-calculator .input-group textarea:focus,
+.wp-block-create-block-die-yield-calculator .input-group input:focus {
+  border-color: #F7B041;
+  outline: none;
+}
+.wp-block-create-block-die-yield-calculator .checkbox {
+  margin-bottom: 1em;
+}
+.wp-block-create-block-die-yield-calculator .checkbox input[type=checkbox] {
+  margin-right: 1em;
 }
 
 /*# sourceMappingURL=style-index.css.map*/

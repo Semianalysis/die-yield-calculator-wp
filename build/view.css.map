@@ -1,0 +1,1 @@
+{"version":3,"file":"view.css","mappings":";;;AAAA;EACC;EACA;EACA;OAAA;AACD;;AAEA;EACC;AACD,C","sources":["webpack://die-yield-calculator-wp/./src/components/App.scss"],"sourcesContent":[".container {\n\tdisplay: grid;\n\tgrid-template-columns: 1fr 1fr;\n\tcolumn-gap: 2em;\n}\n\n* {\n\toutline: 1px solid red;\n}\n"],"names":[],"sourceRoot":""}
