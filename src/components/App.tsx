@@ -233,107 +233,127 @@ function App() {
 			<div className="columns">
 				<div className="input panel">
 					<h2>Die size</h2>
-					<NumberInput
-						label="Die Width (mm)"
-						value={dieWidth}
-						onChange={(event) => {
-							handleDimensionChange("dieWidth")(event.target.value);
-						}}
-					/>
-					<NumberInput
-						label="Die Height (mm)"
-						value={dieHeight}
-						onChange={(event) => {
-							handleDimensionChange("dieHeight")(event.target.value);
-						}}
-						isDisabled={maintainAspectRatio}
-					/>
-					<Checkbox
-						label="Maintain Aspect Ratio"
-						onChange={handleMaintainAspectRatio}
-						checked={maintainAspectRatio}
-					/>
-					<Checkbox
-						label="Reticle Limit (26mm x 33mm)"
-						onChange={handleReticleLimitChange}
-						checked={reticleLimit}
-					/>
-
-					<Checkbox
-						label="All Critical"
-						onChange={handleAllCriticalChange}
-						checked={allCritical}
-					/>
-					<NumberInput
-						label="Critical Area (mm²)"
-						value={criticalArea}
-						isDisabled={allCritical}
-						onChange={(event) => {
-							handleCriticalAreaChange(event.target.value);
-						}}
-					/>
+					<div className="input-row--two-col">
+						<NumberInput
+							label="Width (mm)"
+							value={dieWidth}
+							onChange={(event) => {
+								handleDimensionChange("dieWidth")(event.target.value);
+							}}
+						/>
+						<NumberInput
+							label="Height (mm)"
+							value={dieHeight}
+							onChange={(event) => {
+								handleDimensionChange("dieHeight")(event.target.value);
+							}}
+							isDisabled={maintainAspectRatio}
+						/>
+					</div>
+					<div className="input-row">
+						<Checkbox
+							label="Maintain Aspect Ratio"
+							onChange={handleMaintainAspectRatio}
+							checked={maintainAspectRatio}
+						/>
+						<Checkbox
+							label="Reticle Limit (26mm x 33mm)"
+							onChange={handleReticleLimitChange}
+							checked={reticleLimit}
+						/>
+					</div>
+					<div className="input-row">
+						<Checkbox
+							label="All Critical"
+							onChange={handleAllCriticalChange}
+							checked={allCritical}
+						/>
+					</div>
+					<div className="input-row">
+						<NumberInput
+							label="Critical Area (mm²)"
+							value={criticalArea}
+							isDisabled={allCritical}
+							onChange={(event) => {
+								handleCriticalAreaChange(event.target.value);
+							}}
+						/>
+					</div>
 					<hr />
 					<h2>Wafer</h2>
-					<ShapeSelector
-						shape={waferShape}
-						setShape={setWaferShape}
-					/>
-					{
-						waferShape === "Panel" &&
-						<PanelSizeSelect
-							selectedSize={panelSize}
-							handleSizeChange={handleSizeChange}
+					<div className="input-row">
+						<ShapeSelector
+							shape={waferShape}
+							setShape={setWaferShape}
 						/>
-					}
-					{
-						waferShape === "Disc" &&
-						<DiscSizeSelect
-							selectedSize={discSize}
-							handleSizeChange={handleSizeChange}
+					</div>
+					<div className="input-row">
+						{
+							waferShape === "Panel" &&
+							<PanelSizeSelect
+								selectedSize={panelSize}
+								handleSizeChange={handleSizeChange}
+							/>
+						}
+						{
+							waferShape === "Disc" &&
+							<DiscSizeSelect
+								selectedSize={discSize}
+								handleSizeChange={handleSizeChange}
+							/>
+						}
+					</div>
+					<div className="input-row">
+						<NumberInput
+							label="Defect Rate (#/cm²)"
+							value={defectRate}
+							onChange={(event) => {
+								handleDefectRateChange(event.target.value);
+							}}
 						/>
-					}
-					<NumberInput
-						label="Defect Rate (#/cm²)"
-						value={defectRate}
-						onChange={(event) => {
-							handleDefectRateChange(event.target.value);
-						}}
-					/>
-					<NumberInput
-						label="Edge Loss (mm)"
-						value={edgeLoss}
-						onChange={(event) => {
-							handleEdgeLossChange(event.target.value);
-						}}
-					/>
-					<NumberInput
-						label="Scribe Lines Horiz"
-						value={scribeHoriz}
-						onChange={(event) => {
-							handleScribeSizeChange("horiz")(event.target.value);
-						}}
-					/>
-					<NumberInput
-						label="Scribe Lines Vert"
-						value={scribeVert}
-						onChange={(event) => {
-							handleScribeSizeChange("vert")(event.target.value);
-						}}
-					/>
-					<NumberInput
-						label="Translation Horiz"
-						value={transHoriz}
-						onChange={(event) => {
-							handleTransChange("horiz")(event.target.value);
-						}}
-					/>
-					<NumberInput
-						label="Translation Vert"
-						value={transVert}
-						onChange={(event) => {
-							handleTransChange("vert")(event.target.value);
-						}}
-					/>
+					</div>
+					<div className="input-row">
+						<NumberInput
+							label="Edge Loss (mm)"
+							value={edgeLoss}
+							onChange={(event) => {
+								handleEdgeLossChange(event.target.value);
+							}}
+						/>
+					</div>
+					<div className="input-row--two-col">
+						<NumberInput
+							label="Scribe Lines Horiz"
+							value={scribeHoriz}
+							onChange={(event) => {
+								handleScribeSizeChange("horiz")(event.target.value);
+							}}
+						/>
+						<NumberInput
+							label="Scribe Lines Vert"
+							value={scribeVert}
+							onChange={(event) => {
+								handleScribeSizeChange("vert")(event.target.value);
+							}}
+						/>
+					</div>
+					<div className="input-row--two-col">
+						<NumberInput
+							label="Translation Horiz"
+							value={transHoriz}
+							onChange={(event) => {
+								handleTransChange("horiz")(event.target.value);
+							}}
+						/>
+						<NumberInput
+							label="Translation Vert"
+							value={transVert}
+							onChange={(event) => {
+								handleTransChange("vert")(event.target.value);
+							}}
+						/>
+					</div>
+					<hr />
 					<ModelSelector
 						selectedModel={selectedModel}
 						handleModelChange={handleModelChange}

@@ -8,7 +8,7 @@ export function NumberInput(props: {
 	onBlur?: () => void,
 }) {
 	return (
-		<div className="input-group">
+		<div>
 			<label>
 				{props.label}
 				<input
@@ -17,7 +17,9 @@ export function NumberInput(props: {
 					value={props.value}
 					onChange={props.onChange}
 					onBlur={props.onBlur}
-					step="0.01" />
+					step="0.01"
+					className="number-input"
+				/>
 			</label>
 		</div>
 	);

@@ -175,20 +175,24 @@ function App() {
     className: "columns"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "input panel"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", null, "Die size"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
-    label: "Die Width (mm)",
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", null, "Die size"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "input-row--two-col"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
+    label: "Width (mm)",
     value: dieWidth,
     onChange: event => {
       handleDimensionChange("dieWidth")(event.target.value);
     }
   }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
-    label: "Die Height (mm)",
+    label: "Height (mm)",
     value: dieHeight,
     onChange: event => {
       handleDimensionChange("dieHeight")(event.target.value);
     },
     isDisabled: maintainAspectRatio
-  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Checkbox_Checkbox__WEBPACK_IMPORTED_MODULE_1__.Checkbox, {
+  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "input-row"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Checkbox_Checkbox__WEBPACK_IMPORTED_MODULE_1__.Checkbox, {
     label: "Maintain Aspect Ratio",
     onChange: handleMaintainAspectRatio,
     checked: maintainAspectRatio
@@ -196,39 +200,53 @@ function App() {
     label: "Reticle Limit (26mm x 33mm)",
     onChange: handleReticleLimitChange,
     checked: reticleLimit
-  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Checkbox_Checkbox__WEBPACK_IMPORTED_MODULE_1__.Checkbox, {
+  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "input-row"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Checkbox_Checkbox__WEBPACK_IMPORTED_MODULE_1__.Checkbox, {
     label: "All Critical",
     onChange: handleAllCriticalChange,
     checked: allCritical
-  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
+  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "input-row"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
     label: "Critical Area (mm\u00B2)",
     value: criticalArea,
     isDisabled: allCritical,
     onChange: event => {
       handleCriticalAreaChange(event.target.value);
     }
-  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("hr", null), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", null, "Wafer"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ShapeSelector, {
+  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("hr", null), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", null, "Wafer"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "input-row"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ShapeSelector, {
     shape: waferShape,
     setShape: setWaferShape
-  }), waferShape === "Panel" && react__WEBPACK_IMPORTED_MODULE_0___default().createElement(PanelSizeSelect, {
+  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "input-row"
+  }, waferShape === "Panel" && react__WEBPACK_IMPORTED_MODULE_0___default().createElement(PanelSizeSelect, {
     selectedSize: panelSize,
     handleSizeChange: handleSizeChange
   }), waferShape === "Disc" && react__WEBPACK_IMPORTED_MODULE_0___default().createElement(DiscSizeSelect, {
     selectedSize: discSize,
     handleSizeChange: handleSizeChange
-  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
+  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "input-row"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
     label: "Defect Rate (#/cm\u00B2)",
     value: defectRate,
     onChange: event => {
       handleDefectRateChange(event.target.value);
     }
-  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
+  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "input-row"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
     label: "Edge Loss (mm)",
     value: edgeLoss,
     onChange: event => {
       handleEdgeLossChange(event.target.value);
     }
-  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
+  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "input-row--two-col"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
     label: "Scribe Lines Horiz",
     value: scribeHoriz,
     onChange: event => {
@@ -240,7 +258,9 @@ function App() {
     onChange: event => {
       handleScribeSizeChange("vert")(event.target.value);
     }
-  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
+  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "input-row--two-col"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
     label: "Translation Horiz",
     value: transHoriz,
     onChange: event => {
@@ -252,7 +272,7 @@ function App() {
     onChange: event => {
       handleTransChange("vert")(event.target.value);
     }
-  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ModelSelector, {
+  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("hr", null), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ModelSelector, {
     selectedModel: selectedModel,
     handleModelChange: handleModelChange
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
@@ -317,15 +337,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 
 function NumberInput(props) {
-  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    className: "input-group"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", null, props.label, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
+  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", null, props.label, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
     type: "number",
     disabled: props.isDisabled,
     value: props.value,
     onChange: props.onChange,
     onBlur: props.onBlur,
-    step: "0.01"
+    step: "0.01",
+    className: "number-input"
   })));
 }
 

@@ -57,37 +57,45 @@
 		}
 	}
 
+	label {
+		display: block;
+		font-size: .75em;
+	}
+
 	.output {
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;
 	}
 
-	.input-group {
+	.input-row {
 		margin-bottom: 1em;
 
-		label {
-			display: block;
-			font-size: .75em;
+		&--two-col {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			column-gap: 1em;
+			align-items: center;
 		}
-		textarea,
-		input {
-			width: 100%;
-			padding: 15px;
-			background-color: transparent;
-			border: 1px solid #656B72;
-			border-radius: 10px;
-			color: #B4B9BC;
-			transition: border-color 0.2s ease-in-out;
+	}
 
-			&:hover {
-				border-color: #EAEBEC;
-			}
+	.number-input {
+		width: 100%;
+		padding: 15px;
+		background-color: transparent;
+		border: 1px solid #656B72;
+		border-radius: 10px;
+		color: inherit;
+		transition: border-color 0.2s ease-in-out;
+		margin-bottom: 1em;
 
-			&:focus {
-				border-color: $color-accent;
-				outline: none;
-			}
+		&:hover {
+			border-color: #EAEBEC;
+		}
+
+		&:focus {
+			border-color: $color-accent;
+			outline: none;
 		}
 	}
 
