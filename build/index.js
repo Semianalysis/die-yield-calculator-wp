@@ -143,35 +143,33 @@ const ShapeSelector = props => {
   }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null, shape))));
 };
 const DiscSizeSelect = props => {
-  const sizeInfo = _config__WEBPACK_IMPORTED_MODULE_4__.discSizes[props.selectedSize];
-  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("select", {
+  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", null, "Diameter", react__WEBPACK_IMPORTED_MODULE_0___default().createElement("select", {
     value: props.selectedSize,
     onChange: props.handleSizeChange
   }, Object.entries(_config__WEBPACK_IMPORTED_MODULE_4__.discSizes).map(([key, value]) => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
     key: key,
     value: key
-  }, value.name))), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, "Width: ", sizeInfo.waferWidth, " mm"), ";");
+  }, value.name))));
 };
 const PanelSizeSelect = props => {
-  const sizeInfo = _config__WEBPACK_IMPORTED_MODULE_4__.panelSizes[props.selectedSize];
-  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("select", {
+  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", null, "Dimensions", react__WEBPACK_IMPORTED_MODULE_0___default().createElement("select", {
     value: props.selectedSize,
     onChange: props.handleSizeChange
   }, Object.entries(_config__WEBPACK_IMPORTED_MODULE_4__.panelSizes).map(([key, value]) => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
     key: key,
     value: key
-  }, value.name))), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, "Width: ", sizeInfo.waferWidth, " mm, Height: ", sizeInfo.waferHeight, " mm"));
+  }, value.name))));
 };
-const ModelSelector = props => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("select", {
+const ModelSelector = props => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", null, "Yield Calculation Model", react__WEBPACK_IMPORTED_MODULE_0___default().createElement("select", {
   value: props.selectedModel,
   onChange: props.handleModelChange
 }, Object.entries(_config__WEBPACK_IMPORTED_MODULE_4__.yieldModels).map(([key, value]) => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
   key: key,
   value: key
-}, value.name))), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, "Model: ", _config__WEBPACK_IMPORTED_MODULE_4__.yieldModels[props.selectedModel].name));
-const ResultStats = props => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+}, value.name))));
+const ResultStats = props => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("ul", {
   className: "calculations"
-}, "totalDies: ", props.results.totalDies, ", Good Wafers: ", props.results.goodDies, ", Fab Yield: ", props.results.fabYield);
+}, props.results.waferHeight ? react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", null, "Panel Width: ", props.results.waferWidth, "mm"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", null, "Panel Height: ", props.results.waferHeight, "mm")) : react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", null, "Wafer Diameter: ", props.results.waferWidth, "mm"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", null, "Total Dies: ", props.results.totalDies), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", null, "Good Dies: ", props.results.goodDies), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", null, "Fab Yield: ", props.results.fabYield.toFixed(6)));
 function App() {
   const [dieWidth, setDieWidth] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("8");
   const [dieHeight, setDieHeight] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("8");

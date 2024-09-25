@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Dispatch, SetStateAction } from "react";
+import React, { useState, useEffect } from "react";
 import { Checkbox } from "./Checkbox/Checkbox";
 import { NumberInput } from "./NumberInput/NumberInput";
 import { useInputs } from "../hooks/useInputs";
@@ -33,10 +33,9 @@ const DiscSizeSelect = (props: {
 	selectedSize: keyof typeof discSizes,
 	handleSizeChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
 }) => {
-	const sizeInfo = discSizes[props.selectedSize];
-
 	return (
-		<div>
+		<label>
+			Diameter
 			<select value={props.selectedSize} onChange={props.handleSizeChange}>
 				{Object.entries(discSizes).map(([key, value]) => (
 					<option key={key} value={key}>
@@ -44,22 +43,17 @@ const DiscSizeSelect = (props: {
 					</option>
 				))}
 			</select>
-			<div>Width: {sizeInfo.waferWidth} mm
-			</div>
-			;
-		</div>
-	)
-		;
+		</label>
+	);
 };
 
 const PanelSizeSelect = (props: {
 	selectedSize: keyof typeof panelSizes,
 	handleSizeChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
 }) => {
-	const sizeInfo = panelSizes[props.selectedSize];
-
 	return (
-		<div>
+		<label>
+			Dimensions
 			<select value={props.selectedSize} onChange={props.handleSizeChange}>
 				{Object.entries(panelSizes).map(([key, value]) => (
 					<option key={key} value={key}>
@@ -67,9 +61,7 @@ const PanelSizeSelect = (props: {
 					</option>
 				))}
 			</select>
-			<div>Width: {sizeInfo.waferWidth} mm, Height: {sizeInfo.waferHeight} mm
-			</div>
-		</div>
+		</label>
 	);
 };
 
@@ -77,7 +69,8 @@ const ModelSelector = (props: {
 	selectedModel: keyof typeof yieldModels,
 	handleModelChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
 }) => (
-	<div>
+	<label>
+		Yield Calculation Model
 		<select value={props.selectedModel} onChange={props.handleModelChange}>
 			{Object.entries(yieldModels).map(([key, value]) => (
 				<option key={key} value={key}>
@@ -85,20 +78,27 @@ const ModelSelector = (props: {
 				</option>
 			))}
 		</select>
-		{}
-		<div>
-			Model: {yieldModels[props.selectedModel].name}
-		</div>
-	</div>
+	</label>
 );
 
 const ResultStats = (props: {
 	results: FabResults;
 }) => (
-	<div className="calculations">
-		totalDies: {props.results.totalDies}, Good Wafers: {props.results.goodDies}, Fab
-		Yield: {props.results.fabYield}
-	</div>
+	<ul className="calculations">
+		{
+			props.results.waferHeight ? (
+				<>
+					<li>Panel Width: {props.results.waferWidth}mm</li>
+					<li>Panel Height: {props.results.waferHeight}mm</li>
+				</>
+			) : (
+				<li>Wafer Diameter: {props.results.waferWidth}mm</li>
+			)
+		}
+		<li>Total Dies: {props.results.totalDies}</li>
+		<li>Good Dies: {props.results.goodDies}</li>
+		<li>Fab Yield: {props.results.fabYield.toFixed(6)}</li>
+	</ul>
 );
 
 function App() {
