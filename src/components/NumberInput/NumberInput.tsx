@@ -10,7 +10,7 @@ export function NumberInput(props: {
 	return (
 		<div className="input-group">
 			<label>
-				{props.label}:
+				{props.label}
 				<input
 					type="number"
 					disabled={props.isDisabled}

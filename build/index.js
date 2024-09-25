@@ -357,6 +357,15 @@ function App() {
   }];
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "container"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("a", {
+    href: "https://semianalysis.com",
+    target: "_blank"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("img", {
+    alt: "SemiAnalysis logo",
+    className: "logo",
+    src: "https://semianalysis-production.mystagingwebsite.com/wp-content/uploads/2024/07/logo-300x124.png"
+  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "columns"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "input"
   }, numberInputs.map(input => react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
@@ -392,7 +401,7 @@ function App() {
     results: results
   }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ResultStats, {
     results: results
-  })));
+  }))));
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (App);
 
@@ -439,7 +448,7 @@ __webpack_require__.r(__webpack_exports__);
 function NumberInput(props) {
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "input-group"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", null, props.label, ":", react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", null, props.label, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
     type: "number",
     disabled: props.isDisabled,
     value: props.value,

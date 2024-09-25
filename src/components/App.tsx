@@ -295,57 +295,66 @@ function App() {
 
 	return (
 		<div className="container">
-			<div className="input">
-				{numberInputs.map(input => (
-					<NumberInput
-						key={input.label}
-						label={input.label}
-						value={input.value}
-						isDisabled={input.isDisabled}
-						onChange={(event) => {
-							input.onChange(event.target.value);
-						}}
-					/>
-				))}
-				{checkboxes.map(input => (
-					<Checkbox
-						key={input.label}
-						label={input.label}
-						onChange={input.onChange}
-						checked={input.checked}
-					/>
-				))}
-				<ShapeSelector
-					shape={waferShape}
-					setShape={setWaferShape}
+			<a href="https://semianalysis.com" target="_blank">
+				<img
+					alt="SemiAnalysis logo"
+					className="logo"
+					src="https://semianalysis-production.mystagingwebsite.com/wp-content/uploads/2024/07/logo-300x124.png"
 				/>
-				{
-					waferShape === "Panel" &&
-					<PanelSizeSelect
-						selectedSize={panelSize}
-						handleSizeChange={handleSizeChange}
+			</a>
+			<div className="columns">
+				<div className="input">
+					{numberInputs.map(input => (
+						<NumberInput
+							key={input.label}
+							label={input.label}
+							value={input.value}
+							isDisabled={input.isDisabled}
+							onChange={(event) => {
+								input.onChange(event.target.value);
+							}}
+						/>
+					))}
+					{checkboxes.map(input => (
+						<Checkbox
+							key={input.label}
+							label={input.label}
+							onChange={input.onChange}
+							checked={input.checked}
+						/>
+					))}
+					<ShapeSelector
+						shape={waferShape}
+						setShape={setWaferShape}
 					/>
-				}
-				{
-					waferShape === "Disc" &&
-					<DiscSizeSelect
-						selectedSize={discSize}
-						handleSizeChange={handleSizeChange}
+					{
+						waferShape === "Panel" &&
+						<PanelSizeSelect
+							selectedSize={panelSize}
+							handleSizeChange={handleSizeChange}
+						/>
+					}
+					{
+						waferShape === "Disc" &&
+						<DiscSizeSelect
+							selectedSize={discSize}
+							handleSizeChange={handleSizeChange}
+						/>
+					}
+					<ModelSelector
+						selectedModel={selectedModel}
+						handleModelChange={handleModelChange}
 					/>
-				}
-				<ModelSelector
-					selectedModel={selectedModel}
-					handleModelChange={handleModelChange}
-				/>
-			</div>
-			<div className="output">
-				{waferShape === "Panel" && (
-					<PanelCanvas results={results} />
-				)}
-				{waferShape === "Disc" && (
-					<DiscCanvas results={results} />
-				)}
-				<ResultStats results={results} />
+				</div>
+				<div className="output">
+					{waferShape === "Panel" && (
+						<PanelCanvas results={results} />
+					)}
+					{waferShape === "Disc" && (
+						<DiscCanvas results={results} />
+					)}
+					<ResultStats results={results} />
+				</div>
 			</div>
 		</div>
 	);

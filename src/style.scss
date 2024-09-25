@@ -17,7 +17,12 @@
 	padding: 1em;
 	font-family: Inter, sans-serif;
 
-	.container {
+	.logo {
+		margin-bottom: 1em;
+		width: 120px;
+	}
+
+	.columns {
 		display: grid;
 		grid-template-columns: 1fr 1fr;
 		column-gap: 2em;

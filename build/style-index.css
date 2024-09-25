@@ -16,7 +16,11 @@
 .wp-block-create-block-die-yield-calculator, .wp-block-create-block-die-yield-calculator * {
   box-sizing: border-box;
 }
-.wp-block-create-block-die-yield-calculator .container {
+.wp-block-create-block-die-yield-calculator .logo {
+  margin-bottom: 1em;
+  width: 120px;
+}
+.wp-block-create-block-die-yield-calculator .columns {
   display: grid;
   grid-template-columns: 1fr 1fr;
   -moz-column-gap: 2em;
