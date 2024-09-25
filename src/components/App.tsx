@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Dispatch, SetStateAction } from "react";
+import React, { useState, useEffect } from "react";
 import { Checkbox } from "./Checkbox/Checkbox";
 import { NumberInput } from "./NumberInput/NumberInput";
 import { useInputs } from "../hooks/useInputs";
@@ -6,26 +6,38 @@ import { panelSizes, discSizes, yieldModels } from "../config";
 import { FabResults, WaferShape } from "../types";
 import { DiscCanvas, PanelCanvas } from "./WaferCanvas/WaferCanvas";
 
-const ShapeSelector = (props: { shape: WaferShape, setShape: (value: WaferShape) => void }) => (
-	<div className="input-group">
-		<label>
-			Shape:
-			<select value={props.shape} onChange={(e) => props.setShape(e.target.value as WaferShape)}>
-				<option value="Panel">Panel</option>
-				<option value="Disc">Wafer</option>
-			</select>
-		</label>
-	</div>
-);
+const ShapeSelector = (props: { shape: WaferShape, setShape: (value: WaferShape) => void }) => {
+	const shapes: Array<WaferShape> = ["Disc", "Panel"];
+
+	return (
+		<fieldset>
+			<legend>Shape</legend>
+			<div className="radio-group">
+				{
+					shapes.map((shape) => (
+						<label className="radio-item" key={shape}>
+							<input
+								type="radio"
+								name="shape"
+								checked={props.shape === shape}
+								onChange={(e) => props.setShape(shape)}
+							/>
+							<span>{shape}</span>
+						</label>
+					))
+				}
+			</div>
+		</fieldset>
+	);
+};
 
 const DiscSizeSelect = (props: {
 	selectedSize: keyof typeof discSizes,
 	handleSizeChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
 }) => {
-	const sizeInfo = discSizes[props.selectedSize];
-
 	return (
-		<div>
+		<label className="select">
+			Diameter
 			<select value={props.selectedSize} onChange={props.handleSizeChange}>
 				{Object.entries(discSizes).map(([key, value]) => (
 					<option key={key} value={key}>
@@ -33,9 +45,7 @@ const DiscSizeSelect = (props: {
 					</option>
 				))}
 			</select>
-			<div>Width: {sizeInfo.waferWidth} mm
-			</div>
-		</div>
+		</label>
 	);
 };
 
@@ -43,10 +53,9 @@ const PanelSizeSelect = (props: {
 	selectedSize: keyof typeof panelSizes,
 	handleSizeChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
 }) => {
-	const sizeInfo = panelSizes[props.selectedSize];
-
 	return (
-		<div>
+		<label className="select">
+			Dimensions
 			<select value={props.selectedSize} onChange={props.handleSizeChange}>
 				{Object.entries(panelSizes).map(([key, value]) => (
 					<option key={key} value={key}>
@@ -54,9 +63,7 @@ const PanelSizeSelect = (props: {
 					</option>
 				))}
 			</select>
-			<div>Width: {sizeInfo.waferWidth} mm, Height: {sizeInfo.waferHeight} mm
-			</div>
-		</div>
+		</label>
 	);
 };
 
@@ -64,7 +71,8 @@ const ModelSelector = (props: {
 	selectedModel: keyof typeof yieldModels,
 	handleModelChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
 }) => (
-	<div>
+	<label className="select">
+		Yield Calculation Model
 		<select value={props.selectedModel} onChange={props.handleModelChange}>
 			{Object.entries(yieldModels).map(([key, value]) => (
 				<option key={key} value={key}>
@@ -72,18 +80,27 @@ const ModelSelector = (props: {
 				</option>
 			))}
 		</select>
-		{}
-		<div>
-			Model: {yieldModels[props.selectedModel].name}
-		</div>
-	</div>
+	</label>
 );
 
-const ResultStats = (props: { results: FabResults }) => (
-	<div className="calculations">
-		totalDies: {props.results.totalDies}, Good Wafers: {props.results.goodDies}, Fab
-		Yield: {props.results.fabYield}
-	</div>
+const ResultStats = (props: {
+	results: FabResults;
+}) => (
+	<ul className="calculations">
+		{
+			props.results.waferHeight ? (
+				<>
+					<li>Panel Width: {props.results.waferWidth}mm</li>
+					<li>Panel Height: {props.results.waferHeight}mm</li>
+				</>
+			) : (
+				<li>Wafer Diameter: {props.results.waferWidth}mm</li>
+			)
+		}
+		<li>Total Dies: {props.results.totalDies}</li>
+		<li>Good Dies: {props.results.goodDies}</li>
+		<li>Fab Yield: {props.results.fabYield.toFixed(6)}</li>
+	</ul>
 );
 
 function App() {
@@ -100,7 +117,7 @@ function App() {
 	const [scribeVert, setScribeVert] = useState<string>("0.1");
 	const [transHoriz, setTransHoriz] = useState<string>("0");
 	const [transVert, setTransVert] = useState<string>("0.1");
-	const [waferShape, setWaferShape] = useState<WaferShape>("Panel");
+	const [waferShape, setWaferShape] = useState<WaferShape>("Disc");
 	const [panelSize, setPanelSize] = useState<keyof typeof panelSizes>("s300mm");
 	const [discSize, setDiscSize] = useState<keyof typeof discSizes>("s300mm");
 	const [selectedModel, setSelectedModel] = useState<keyof typeof yieldModels>("murphy");
@@ -131,10 +148,6 @@ function App() {
 			const roundedValue = Math.round(valFloat * 100) / 100;
 			setter(roundedValue.toString());
 		}
-	};
-
-	const handleBlur = (setter: Dispatch<SetStateAction<string>>) => () => {
-		setter((prevValue) => (prevValue));
 	};
 
 	const handleDimensionChange = (dimension: "dieWidth" | "dieHeight") => (value: string) => {
@@ -217,139 +230,161 @@ function App() {
 		setSelectedModel(event.target.value as keyof typeof yieldModels);
 	};
 
-	const numberInputs = [
-		{
-			label: "Die Width (mm)",
-			value: dieWidth,
-			onChange: handleDimensionChange("dieWidth"),
-			onBlur: handleBlur(setDieWidth),
-			isDisabled: false
-		},
-		{
-			label: "Die Height (mm)",
-			value: dieHeight,
-			onChange: handleDimensionChange("dieHeight"),
-			onBlur: handleBlur(setDieHeight),
-			isDisabled: false
-		},
-		{
-			label: "Critical Area (mm²)",
-			value: criticalArea,
-			onChange: handleCriticalAreaChange,
-			onBlur: handleBlur(setCriticalArea),
-			isDisabled: allCritical
-		},
-		{
-			label: "Defect Rate (#/cm²)",
-			value: defectRate,
-			onChange: handleDefectRateChange,
-			onBlur: handleBlur(setDefectRate),
-			isDisabled: false
-		},
-		{
-			label: "Edge Loss (mm)",
-			value: edgeLoss,
-			onChange: handleEdgeLossChange,
-			onBlur: handleBlur(setEdgeLoss),
-			isDisabled: false
-		},
-		{
-			label: "Scribe Lines Horiz",
-			value: scribeHoriz,
-			onChange: handleScribeSizeChange("horiz"),
-			onBlur: handleBlur(setScribeHoriz),
-			isDisabled: false
-		},
-		{
-			label: "Scribe Lines Vert",
-			value: scribeVert,
-			onChange: handleScribeSizeChange("vert"),
-			onBlur: handleBlur(setScribeVert),
-			isDisabled: false
-		},
-		{
-			label: "Translation Horiz",
-			value: transHoriz,
-			onChange: handleTransChange("horiz"),
-			onBlur: handleBlur(setTransHoriz),
-			isDisabled: false
-		},
-		{
-			label: "Translation Vert",
-			value: transVert,
-			onChange: handleTransChange("vert"),
-			onBlur: handleBlur(setTransVert),
-			isDisabled: false
-		}
-	];
-
-	const checkboxes = [
-		{ label: "Maintain Aspect Ratio", onChange: handleMaintainAspectRatio, checked: maintainAspectRatio },
-		{ label: "Reticle Limit", onChange: handleReticleLimitChange, checked: reticleLimit },
-		{ label: "All Critical", onChange: handleAllCriticalChange, checked: allCritical },
-		{
-			label: "Centering", onChange: () => {
-			}, checked: false
-		}
-	];
-
 	return (
-		<div className="calc">
-			<div className="control-panel">
-				{numberInputs.map(input => (
-					<NumberInput
-						key={input.label}
-						label={input.label}
-						value={input.value}
-						isDisabled={input.isDisabled}
-						onChange={(event) => {
-							input.onChange(event.target.value);
-						}}
+		<div className="container">
+			<div className="columns">
+				<div className="input panel">
+					<h2>Die size</h2>
+					<div className="input-row--two-col">
+						<NumberInput
+							label="Width (mm)"
+							value={dieWidth}
+							onChange={(event) => {
+								handleDimensionChange("dieWidth")(event.target.value);
+							}}
+						/>
+						<NumberInput
+							label="Height (mm)"
+							value={dieHeight}
+							onChange={(event) => {
+								handleDimensionChange("dieHeight")(event.target.value);
+							}}
+							isDisabled={maintainAspectRatio}
+						/>
+					</div>
+					<div className="input-row">
+						<Checkbox
+							label="Maintain Aspect Ratio"
+							onChange={handleMaintainAspectRatio}
+							checked={maintainAspectRatio}
+						/>
+						<Checkbox
+							label="Reticle Limit (26mm x 33mm)"
+							onChange={handleReticleLimitChange}
+							checked={reticleLimit}
+						/>
+					</div>
+					<div className="input-row">
+						<Checkbox
+							label="All Critical"
+							onChange={handleAllCriticalChange}
+							checked={allCritical}
+						/>
+					</div>
+					<div className="input-row">
+						<NumberInput
+							label="Critical Area (mm²)"
+							value={criticalArea}
+							isDisabled={allCritical}
+							onChange={(event) => {
+								handleCriticalAreaChange(event.target.value);
+							}}
+						/>
+					</div>
+					<hr />
+					<h2>Wafer</h2>
+					<div className="input-row">
+						<ShapeSelector
+							shape={waferShape}
+							setShape={setWaferShape}
+						/>
+					</div>
+					<div className="input-row">
+						{
+							waferShape === "Panel" &&
+							<PanelSizeSelect
+								selectedSize={panelSize}
+								handleSizeChange={handleSizeChange}
+							/>
+						}
+						{
+							waferShape === "Disc" &&
+							<DiscSizeSelect
+								selectedSize={discSize}
+								handleSizeChange={handleSizeChange}
+							/>
+						}
+					</div>
+					<div className="input-row">
+						<NumberInput
+							label="Defect Rate (#/cm²)"
+							value={defectRate}
+							onChange={(event) => {
+								handleDefectRateChange(event.target.value);
+							}}
+						/>
+					</div>
+					<div className="input-row">
+						<NumberInput
+							label="Edge Loss (mm)"
+							value={edgeLoss}
+							onChange={(event) => {
+								handleEdgeLossChange(event.target.value);
+							}}
+						/>
+					</div>
+					<div className="input-row--two-col">
+						<NumberInput
+							label="Scribe Lines Horiz"
+							value={scribeHoriz}
+							onChange={(event) => {
+								handleScribeSizeChange("horiz")(event.target.value);
+							}}
+						/>
+						<NumberInput
+							label="Scribe Lines Vert"
+							value={scribeVert}
+							onChange={(event) => {
+								handleScribeSizeChange("vert")(event.target.value);
+							}}
+						/>
+					</div>
+					<div className="input-row--two-col">
+						<NumberInput
+							label="Translation Horiz"
+							value={transHoriz}
+							onChange={(event) => {
+								handleTransChange("horiz")(event.target.value);
+							}}
+						/>
+						<NumberInput
+							label="Translation Vert"
+							value={transVert}
+							onChange={(event) => {
+								handleTransChange("vert")(event.target.value);
+							}}
+						/>
+					</div>
+					<hr />
+					<ModelSelector
+						selectedModel={selectedModel}
+						handleModelChange={handleModelChange}
 					/>
-				))}
-				{checkboxes.map(input => (
-					<Checkbox
-						key={input.label}
-						label={input.label}
-						onChange={input.onChange}
-						checked={input.checked}
-					/>
-				))}
-				<ShapeSelector
-					shape={waferShape}
-					setShape={setWaferShape}
-				/>
-				{
-					waferShape === "Panel" &&
-					<PanelSizeSelect
-						selectedSize={panelSize}
-						handleSizeChange={handleSizeChange}
-					/>
-				}
-				{
-					waferShape === "Disc" &&
-					<DiscSizeSelect
-						selectedSize={discSize}
-						handleSizeChange={handleSizeChange}
-					/>
-				}
-				<ModelSelector
-					selectedModel={selectedModel}
-					handleModelChange={handleModelChange}
-				/>
+				</div>
+				<div className="output">
+					<div>
+						{waferShape === "Panel" && (
+							<PanelCanvas results={results} />
+						)}
+						{waferShape === "Disc" && (
+							<DiscCanvas results={results} />
+						)}
+						<div className="panel">
+							<ResultStats results={results} />
+						</div>
+					</div>
+					<a
+						href="https://semianalysis.com"
+						target="_blank"
+						className="logo"
+					>
+						<img
+							alt="SemiAnalysis logo"
+							src="https://semianalysis-production.mystagingwebsite.com/wp-content/uploads/2024/07/logo-300x124.png"
+						/>
+					</a>
+				</div>
 			</div>
-			<div className="calculations">
-				<ResultStats results={results} />
-			</div>
-			<div>
-				{waferShape === "Panel" && (
-					<PanelCanvas results={results} />
-				)}
-				{waferShape === "Disc" && (
-					<DiscCanvas results={results} />
-				)}
-			</div>
-
 		</div>
 	);
 }

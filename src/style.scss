@@ -6,7 +6,183 @@
  */
 
 .wp-block-create-block-die-yield-calculator {
-	background-color: #21759b;
-	color: #fff;
-	padding: 2px;
+	$color-accent: #F7B041;
+
+	background-color: #1d1b1e;
+	color: rgb(234, 235, 236);
+	padding: 1em;
+	font-family: Inter, sans-serif;
+
+	&, * {
+		box-sizing: border-box;
+	}
+
+	h2 {
+		font-weight: 800;
+		line-height: 1.1;
+		font-size: 1.1em;
+		margin: 0 0 0.5em;
+		color: inherit;
+	}
+
+	hr {
+		height: 0;
+		border: none;
+		border-bottom: 1px solid #656b72;
+		margin: 2em 0;
+	}
+
+	.logo {
+		display: block;
+		margin-left: auto;
+
+		img {
+			width: 120px;
+		}
+	}
+
+	.columns {
+		@media (min-width: 768px) {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			column-gap: 2em;
+		}
+	}
+
+	.panel {
+		@media (min-width: 768px) {
+			border-radius: 10px;
+			padding: 32px;
+			background-color: #141416;
+		}
+	}
+
+	label,
+	legend {
+		display: block;
+		font-size: .75em;
+	}
+
+	.output {
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+	}
+
+	.input-row {
+		margin-bottom: 1em;
+
+		&--two-col {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			column-gap: 1em;
+			align-items: center;
+		}
+	}
+
+	input[type="text"],
+	input[type="number"],
+	select,
+	textarea {
+		width: 100%;
+		padding: 15px;
+		background-color: transparent;
+		border: 1px solid #656B72;
+		border-radius: 10px;
+		color: inherit;
+		transition: border-color 0.2s ease-in-out;
+		margin-bottom: 1em;
+
+		&:hover {
+			border-color: #EAEBEC;
+		}
+
+		&:focus {
+			border-color: $color-accent;
+			outline: none;
+		}
+	}
+
+	select {
+		appearance: none;
+	}
+
+	.select {
+		position: relative;
+
+		&::after {
+			content: "▼";
+			position: absolute;
+			right: 1rem;
+			top: 50%;
+			font-size: 0.75em;
+			color: #656B72;
+		}
+	}
+
+	input[type="checkbox"],
+	input[type="radio"] {
+		margin: 0 0.5em 0 0;
+	}
+
+	.checkbox {
+		margin-bottom: 1em;
+
+		input[type="checkbox"] {
+			margin-right: 1em;
+		}
+	}
+
+	.wafer-canvas {
+		margin-bottom: 2em;
+		border-top: 1px solid rgba(255, 255, 255, 0.5);
+		border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+		box-shadow: 0.25em 0.5em 1.5em black;
+		background: linear-gradient(135deg,
+			#b88ecb, /* Purple */
+			#8eb4cd 25%, /* Blue */
+			#a0c8c0 50%, /* Teal */
+			#c6b394 75%, /* Orange/Gold */
+			#c7908a 100% /* Pink/Red */
+		);
+		background-size: 400% 400%;
+		//animation: gradientShift 10s ease infinite;
+
+		@keyframes gradientShift {
+			0% {
+				background-position: 0% 50%;
+			}
+			50% {
+				background-position: 100% 50%;
+			}
+			100% {
+				background-position: 0% 50%;
+			}
+		}
+
+		&.disc {
+			border-radius: 100%;
+			overflow: hidden;
+		}
+	}
+
+	fieldset {
+		padding: 0;
+		border: 0;
+	}
+
+	.radio-group {
+		margin: 1em 0;
+		display: flex;
+		align-items: center;
+
+	}
+
+	.radio-item {
+		display: flex;
+		align-items: center;
+		line-height: 1;
+		margin: 0 1em 0 0;
+	}
 }
+

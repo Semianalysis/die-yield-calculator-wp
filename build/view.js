@@ -25,46 +25,54 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const ShapeSelector = props => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-  className: "input-group"
-}, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", null, "Shape:", react__WEBPACK_IMPORTED_MODULE_0___default().createElement("select", {
-  value: props.shape,
-  onChange: e => props.setShape(e.target.value)
-}, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
-  value: "Panel"
-}, "Panel"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
-  value: "Disc"
-}, "Wafer"))));
+const ShapeSelector = props => {
+  const shapes = ["Disc", "Panel"];
+  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("fieldset", null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("legend", null, "Shape"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "radio-group"
+  }, shapes.map(shape => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", {
+    className: "radio-item",
+    key: shape
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
+    type: "radio",
+    name: "shape",
+    checked: props.shape === shape,
+    onChange: e => props.setShape(shape)
+  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null, shape)))));
+};
 const DiscSizeSelect = props => {
-  const sizeInfo = _config__WEBPACK_IMPORTED_MODULE_4__.discSizes[props.selectedSize];
-  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("select", {
+  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", {
+    className: "select"
+  }, "Diameter", react__WEBPACK_IMPORTED_MODULE_0___default().createElement("select", {
     value: props.selectedSize,
     onChange: props.handleSizeChange
   }, Object.entries(_config__WEBPACK_IMPORTED_MODULE_4__.discSizes).map(([key, value]) => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
     key: key,
     value: key
-  }, value.name))), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, "Width: ", sizeInfo.waferWidth, " mm"));
+  }, value.name))));
 };
 const PanelSizeSelect = props => {
-  const sizeInfo = _config__WEBPACK_IMPORTED_MODULE_4__.panelSizes[props.selectedSize];
-  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("select", {
+  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", {
+    className: "select"
+  }, "Dimensions", react__WEBPACK_IMPORTED_MODULE_0___default().createElement("select", {
     value: props.selectedSize,
     onChange: props.handleSizeChange
   }, Object.entries(_config__WEBPACK_IMPORTED_MODULE_4__.panelSizes).map(([key, value]) => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
     key: key,
     value: key
-  }, value.name))), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, "Width: ", sizeInfo.waferWidth, " mm, Height: ", sizeInfo.waferHeight, " mm"));
+  }, value.name))));
 };
-const ModelSelector = props => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("select", {
+const ModelSelector = props => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", {
+  className: "select"
+}, "Yield Calculation Model", react__WEBPACK_IMPORTED_MODULE_0___default().createElement("select", {
   value: props.selectedModel,
   onChange: props.handleModelChange
 }, Object.entries(_config__WEBPACK_IMPORTED_MODULE_4__.yieldModels).map(([key, value]) => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
   key: key,
   value: key
-}, value.name))), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, "Model: ", _config__WEBPACK_IMPORTED_MODULE_4__.yieldModels[props.selectedModel].name));
-const ResultStats = props => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+}, value.name))));
+const ResultStats = props => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("ul", {
   className: "calculations"
-}, "totalDies: ", props.results.totalDies, ", Good Wafers: ", props.results.goodDies, ", Fab Yield: ", props.results.fabYield);
+}, props.results.waferHeight ? react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", null, "Panel Width: ", props.results.waferWidth, "mm"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", null, "Panel Height: ", props.results.waferHeight, "mm")) : react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", null, "Wafer Diameter: ", props.results.waferWidth, "mm"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", null, "Total Dies: ", props.results.totalDies), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", null, "Good Dies: ", props.results.goodDies), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", null, "Fab Yield: ", props.results.fabYield.toFixed(6)));
 function App() {
   const [dieWidth, setDieWidth] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("8");
   const [dieHeight, setDieHeight] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("8");
@@ -79,7 +87,7 @@ function App() {
   const [scribeVert, setScribeVert] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0.1");
   const [transHoriz, setTransHoriz] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0");
   const [transVert, setTransVert] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0.1");
-  const [waferShape, setWaferShape] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("Panel");
+  const [waferShape, setWaferShape] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("Disc");
   const [panelSize, setPanelSize] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("s300mm");
   const [discSize, setDiscSize] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("s300mm");
   const [selectedModel, setSelectedModel] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("murphy");
@@ -107,9 +115,6 @@ function App() {
       const roundedValue = Math.round(valFloat * 100) / 100;
       setter(roundedValue.toString());
     }
-  };
-  const handleBlur = setter => () => {
-    setter(prevValue => prevValue);
   };
   const handleDimensionChange = dimension => value => {
     const valNum = parseFloat(value);
@@ -175,116 +180,130 @@ function App() {
   const handleModelChange = event => {
     setSelectedModel(event.target.value);
   };
-  const numberInputs = [{
-    label: "Die Width (mm)",
+  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "container"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "columns"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "input panel"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", null, "Die size"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "input-row--two-col"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
+    label: "Width (mm)",
     value: dieWidth,
-    onChange: handleDimensionChange("dieWidth"),
-    onBlur: handleBlur(setDieWidth),
-    isDisabled: false
-  }, {
-    label: "Die Height (mm)",
+    onChange: event => {
+      handleDimensionChange("dieWidth")(event.target.value);
+    }
+  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
+    label: "Height (mm)",
     value: dieHeight,
-    onChange: handleDimensionChange("dieHeight"),
-    onBlur: handleBlur(setDieHeight),
-    isDisabled: false
-  }, {
-    label: "Critical Area (mm²)",
-    value: criticalArea,
-    onChange: handleCriticalAreaChange,
-    onBlur: handleBlur(setCriticalArea),
-    isDisabled: allCritical
-  }, {
-    label: "Defect Rate (#/cm²)",
-    value: defectRate,
-    onChange: handleDefectRateChange,
-    onBlur: handleBlur(setDefectRate),
-    isDisabled: false
-  }, {
-    label: "Edge Loss (mm)",
-    value: edgeLoss,
-    onChange: handleEdgeLossChange,
-    onBlur: handleBlur(setEdgeLoss),
-    isDisabled: false
-  }, {
-    label: "Scribe Lines Horiz",
-    value: scribeHoriz,
-    onChange: handleScribeSizeChange("horiz"),
-    onBlur: handleBlur(setScribeHoriz),
-    isDisabled: false
-  }, {
-    label: "Scribe Lines Vert",
-    value: scribeVert,
-    onChange: handleScribeSizeChange("vert"),
-    onBlur: handleBlur(setScribeVert),
-    isDisabled: false
-  }, {
-    label: "Translation Horiz",
-    value: transHoriz,
-    onChange: handleTransChange("horiz"),
-    onBlur: handleBlur(setTransHoriz),
-    isDisabled: false
-  }, {
-    label: "Translation Vert",
-    value: transVert,
-    onChange: handleTransChange("vert"),
-    onBlur: handleBlur(setTransVert),
-    isDisabled: false
-  }];
-  const checkboxes = [{
+    onChange: event => {
+      handleDimensionChange("dieHeight")(event.target.value);
+    },
+    isDisabled: maintainAspectRatio
+  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "input-row"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Checkbox_Checkbox__WEBPACK_IMPORTED_MODULE_1__.Checkbox, {
     label: "Maintain Aspect Ratio",
     onChange: handleMaintainAspectRatio,
     checked: maintainAspectRatio
-  }, {
-    label: "Reticle Limit",
+  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Checkbox_Checkbox__WEBPACK_IMPORTED_MODULE_1__.Checkbox, {
+    label: "Reticle Limit (26mm x 33mm)",
     onChange: handleReticleLimitChange,
     checked: reticleLimit
-  }, {
+  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "input-row"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Checkbox_Checkbox__WEBPACK_IMPORTED_MODULE_1__.Checkbox, {
     label: "All Critical",
     onChange: handleAllCriticalChange,
     checked: allCritical
-  }, {
-    label: "Centering",
-    onChange: () => {},
-    checked: false
-  }];
-  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    className: "calc"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    className: "control-panel"
-  }, numberInputs.map(input => react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
-    key: input.label,
-    label: input.label,
-    value: input.value,
-    isDisabled: input.isDisabled,
+  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "input-row"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
+    label: "Critical Area (mm\u00B2)",
+    value: criticalArea,
+    isDisabled: allCritical,
     onChange: event => {
-      input.onChange(event.target.value);
+      handleCriticalAreaChange(event.target.value);
     }
-  })), checkboxes.map(input => react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Checkbox_Checkbox__WEBPACK_IMPORTED_MODULE_1__.Checkbox, {
-    key: input.label,
-    label: input.label,
-    onChange: input.onChange,
-    checked: input.checked
-  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ShapeSelector, {
+  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("hr", null), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", null, "Wafer"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "input-row"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ShapeSelector, {
     shape: waferShape,
     setShape: setWaferShape
-  }), waferShape === "Panel" && react__WEBPACK_IMPORTED_MODULE_0___default().createElement(PanelSizeSelect, {
+  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "input-row"
+  }, waferShape === "Panel" && react__WEBPACK_IMPORTED_MODULE_0___default().createElement(PanelSizeSelect, {
     selectedSize: panelSize,
     handleSizeChange: handleSizeChange
   }), waferShape === "Disc" && react__WEBPACK_IMPORTED_MODULE_0___default().createElement(DiscSizeSelect, {
     selectedSize: discSize,
     handleSizeChange: handleSizeChange
-  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ModelSelector, {
+  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "input-row"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
+    label: "Defect Rate (#/cm\u00B2)",
+    value: defectRate,
+    onChange: event => {
+      handleDefectRateChange(event.target.value);
+    }
+  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "input-row"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
+    label: "Edge Loss (mm)",
+    value: edgeLoss,
+    onChange: event => {
+      handleEdgeLossChange(event.target.value);
+    }
+  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "input-row--two-col"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
+    label: "Scribe Lines Horiz",
+    value: scribeHoriz,
+    onChange: event => {
+      handleScribeSizeChange("horiz")(event.target.value);
+    }
+  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
+    label: "Scribe Lines Vert",
+    value: scribeVert,
+    onChange: event => {
+      handleScribeSizeChange("vert")(event.target.value);
+    }
+  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "input-row--two-col"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
+    label: "Translation Horiz",
+    value: transHoriz,
+    onChange: event => {
+      handleTransChange("horiz")(event.target.value);
+    }
+  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
+    label: "Translation Vert",
+    value: transVert,
+    onChange: event => {
+      handleTransChange("vert")(event.target.value);
+    }
+  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("hr", null), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ModelSelector, {
     selectedModel: selectedModel,
     handleModelChange: handleModelChange
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    className: "calculations"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ResultStats, {
-    results: results
-  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, waferShape === "Panel" && react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_WaferCanvas_WaferCanvas__WEBPACK_IMPORTED_MODULE_5__.PanelCanvas, {
+    className: "output"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, waferShape === "Panel" && react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_WaferCanvas_WaferCanvas__WEBPACK_IMPORTED_MODULE_5__.PanelCanvas, {
     results: results
   }), waferShape === "Disc" && react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_WaferCanvas_WaferCanvas__WEBPACK_IMPORTED_MODULE_5__.DiscCanvas, {
     results: results
-  })));
+  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "panel"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ResultStats, {
+    results: results
+  }))), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("a", {
+    href: "https://semianalysis.com",
+    target: "_blank",
+    className: "logo"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("img", {
+    alt: "SemiAnalysis logo",
+    src: "https://semianalysis-production.mystagingwebsite.com/wp-content/uploads/2024/07/logo-300x124.png"
+  })))));
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (App);
 
@@ -304,13 +323,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 
 function Checkbox(props) {
-  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", {
+  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "checkbox"
-  }, props.label, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
     type: "checkbox",
     onChange: props.onChange,
     checked: props.checked
-  }));
+  }), props.label));
 }
 
 /***/ }),
@@ -329,9 +348,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 
 function NumberInput(props) {
-  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    className: "input-group"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", null, props.label, ":", react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
+  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", null, props.label, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
     type: "number",
     disabled: props.isDisabled,
     value: props.value,
@@ -359,8 +376,8 @@ __webpack_require__.r(__webpack_exports__);
 
 function DieItem(props) {
   const stateColors = {
-    good: "green",
-    defective: "grey",
+    good: "rgba(6,231,6,0.77)",
+    defective: "rgba(151,138,129,0.8)",
     partial: "yellow",
     lost: "red"
   };
@@ -378,21 +395,17 @@ function DiscCanvas(props) {
     return "Too many dies to visualize";
   }
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("svg", {
-    width: props.results.waferWidth,
-    height: props.results.waferWidth,
-    style: {
-      border: "1px solid black"
-    }
+    viewBox: `0 0 ${props.results.waferWidth} ${props.results.waferWidth}`,
+    className: "wafer-canvas disc"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("circle", {
     cx: props.results.waferWidth / 2,
     cy: props.results.waferWidth / 2,
     r: Math.min(props.results.waferWidth, props.results.waferWidth) / 2,
-    stroke: "black",
-    strokeWidth: "1",
+    stroke: "none",
     fill: "none"
-  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, props.results.dies.map(die => react__WEBPACK_IMPORTED_MODULE_0___default().createElement(DieItem, {
+  }), props.results.dies.map(die => react__WEBPACK_IMPORTED_MODULE_0___default().createElement(DieItem, {
     ...die
-  }))));
+  })));
 }
 function PanelCanvas(props) {
   // Bail out if there are too many dies to draw, otherwise the browser will hang
@@ -400,11 +413,8 @@ function PanelCanvas(props) {
     return "Too many dies to visualize";
   }
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("svg", {
-    width: props.results.waferWidth,
-    height: props.results.waferHeight,
-    style: {
-      border: "1px solid black"
-    }
+    viewBox: `0 0 ${props.results.waferWidth} ${props.results.waferWidth}`,
+    className: "wafer-canvas"
   }, props.results.dies.map(die => react__WEBPACK_IMPORTED_MODULE_0___default().createElement(DieItem, {
     ...die
   })));

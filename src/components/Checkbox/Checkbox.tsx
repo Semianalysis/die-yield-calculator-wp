@@ -6,9 +6,11 @@ export function Checkbox(props: {
 	checked: boolean
 }) {
 	return (
-		<label className="checkbox">
-			{props.label}
-			<input type="checkbox" onChange={props.onChange} checked={props.checked} />
-		</label>
+		<div className="checkbox">
+			<label>
+				<input type="checkbox" onChange={props.onChange} checked={props.checked} />
+				{props.label}
+			</label>
+		</div>
 	);
 }

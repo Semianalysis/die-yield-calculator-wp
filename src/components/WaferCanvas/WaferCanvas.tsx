@@ -3,8 +3,8 @@ import { Die, FabResults } from "../../types";
 
 function DieItem(props: Die) {
 	const stateColors = {
-		good: "green",
-		defective: "grey",
+		good: "rgba(6,231,6,0.77)",
+		defective: "rgba(151,138,129,0.8)",
 		partial: "yellow",
 		lost: "red"
 	};
@@ -27,19 +27,20 @@ export function DiscCanvas(props: { results: FabResults }) {
 	}
 
 	return (
-		<svg width={props.results.waferWidth} height={props.results.waferWidth} style={{ border: "1px solid black" }}>
+		<svg
+			viewBox={`0 0 ${props.results.waferWidth} ${props.results.waferWidth}`}
+			className="wafer-canvas disc"
+		>
 			<circle
 				cx={props.results.waferWidth / 2}
 				cy={props.results.waferWidth / 2}
 				r={Math.min(props.results.waferWidth, props.results.waferWidth) / 2}
-				stroke="black"
-				strokeWidth="1"
-				fill="none" />
-			<>
-				{
-					props.results.dies.map((die) => (<DieItem {...die} />))
-				}
-			</>
+				stroke="none"
+				fill="none"
+			/>
+			{
+				props.results.dies.map((die) => (<DieItem {...die} />))
+			}
 		</svg>
 	);
 }
@@ -51,7 +52,7 @@ export function PanelCanvas(props: { results: FabResults }) {
 	}
 
 	return (
-		<svg width={props.results.waferWidth} height={props.results.waferHeight} style={{ border: "1px solid black" }}>
+		<svg viewBox={`0 0 ${props.results.waferWidth} ${props.results.waferWidth}`} className="wafer-canvas">
 			{
 				props.results.dies.map((die) => <DieItem {...die} />)
 			}

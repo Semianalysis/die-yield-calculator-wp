@@ -7,9 +7,12 @@ describe("App", () => {
 	it("calculates the correct number of total 10mm dies on a 300mm panel with no scribe lines", async () => {
 		render(<App />);
 		const user = userEvent.setup();
+		await user.click(screen.getByRole("radio", {
+			name: /Panel/
+		}));
 
 		const widthInput = screen.getByRole("spinbutton", {
-			name: /Die Width/
+			name: /Width/
 		});
 		const scribeLinesXInput = screen.getByRole("spinbutton", {
 			name: /Scribe Lines Horiz/
@@ -33,9 +36,9 @@ describe("App", () => {
 	it("calculates yields for wafer shape", async () => {
 		render(<App />);
 		const user = userEvent.setup();
-		await user.selectOptions(screen.getByRole("combobox", {
-			name: /Shape/
-		}), "Wafer");
+		await user.click(screen.getByRole("radio", {
+			name: /Disc/
+		}));
 		await waitFor(() => expect(screen.getByText(/977/)).toBeInTheDocument());
 	});
 });
