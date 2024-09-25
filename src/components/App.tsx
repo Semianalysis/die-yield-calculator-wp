@@ -245,6 +245,11 @@ function App() {
 						onChange={handleMaintainAspectRatio}
 						checked={maintainAspectRatio}
 					/>
+					<Checkbox
+						label="Reticle Limit (26mm x 33mm)"
+						onChange={handleReticleLimitChange}
+						checked={reticleLimit}
+					/>
 					<hr />
 					<h2>Wafer</h2>
 					<ShapeSelector
@@ -319,11 +324,6 @@ function App() {
 						onChange={(event) => {
 							handleTransChange("vert")(event.target.value);
 						}}
-					/>
-					<Checkbox
-						label="Reticle Limit"
-						onChange={handleReticleLimitChange}
-						checked={reticleLimit}
 					/>
 					<ModelSelector
 						selectedModel={selectedModel}

@@ -310,6 +310,10 @@ function App() {
     label: "Maintain Aspect Ratio",
     onChange: handleMaintainAspectRatio,
     checked: maintainAspectRatio
+  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Checkbox_Checkbox__WEBPACK_IMPORTED_MODULE_1__.Checkbox, {
+    label: "Reticle Limit (26mm x 33mm)",
+    onChange: handleReticleLimitChange,
+    checked: reticleLimit
   }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("hr", null), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", null, "Wafer"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ShapeSelector, {
     shape: waferShape,
     setShape: setWaferShape
@@ -366,10 +370,6 @@ function App() {
     onChange: event => {
       handleTransChange("vert")(event.target.value);
     }
-  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Checkbox_Checkbox__WEBPACK_IMPORTED_MODULE_1__.Checkbox, {
-    label: "Reticle Limit",
-    onChange: handleReticleLimitChange,
-    checked: reticleLimit
   }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ModelSelector, {
     selectedModel: selectedModel,
     handleModelChange: handleModelChange
