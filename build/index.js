@@ -279,17 +279,10 @@ function App() {
   };
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "container"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("a", {
-    href: "https://semianalysis.com",
-    target: "_blank"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("img", {
-    alt: "SemiAnalysis logo",
-    className: "logo",
-    src: "https://semianalysis-production.mystagingwebsite.com/wp-content/uploads/2024/07/logo-300x124.png"
-  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "columns"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    className: "input"
+    className: "input panel"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", null, "Die size"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
     label: "Die Width (mm)",
     value: dieWidth,
@@ -372,13 +365,22 @@ function App() {
     handleModelChange: handleModelChange
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "output"
-  }, waferShape === "Panel" && react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_WaferCanvas_WaferCanvas__WEBPACK_IMPORTED_MODULE_5__.PanelCanvas, {
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, waferShape === "Panel" && react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_WaferCanvas_WaferCanvas__WEBPACK_IMPORTED_MODULE_5__.PanelCanvas, {
     results: results
   }), waferShape === "Disc" && react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_WaferCanvas_WaferCanvas__WEBPACK_IMPORTED_MODULE_5__.DiscCanvas, {
     results: results
-  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ResultStats, {
+  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "panel"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ResultStats, {
     results: results
-  }))));
+  }))), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("a", {
+    href: "https://semianalysis.com",
+    target: "_blank",
+    className: "logo"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("img", {
+    alt: "SemiAnalysis logo",
+    src: "https://semianalysis-production.mystagingwebsite.com/wp-content/uploads/2024/07/logo-300x124.png"
+  })))));
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (App);
 

@@ -230,15 +230,8 @@ function App() {
 
 	return (
 		<div className="container">
-			<a href="https://semianalysis.com" target="_blank">
-				<img
-					alt="SemiAnalysis logo"
-					className="logo"
-					src="https://semianalysis-production.mystagingwebsite.com/wp-content/uploads/2024/07/logo-300x124.png"
-				/>
-			</a>
 			<div className="columns">
-				<div className="input">
+				<div className="input panel">
 					<h2>Die size</h2>
 					<NumberInput
 						label="Die Width (mm)"
@@ -347,13 +340,27 @@ function App() {
 					/>
 				</div>
 				<div className="output">
-					{waferShape === "Panel" && (
-						<PanelCanvas results={results} />
-					)}
-					{waferShape === "Disc" && (
-						<DiscCanvas results={results} />
-					)}
-					<ResultStats results={results} />
+					<div>
+						{waferShape === "Panel" && (
+							<PanelCanvas results={results} />
+						)}
+						{waferShape === "Disc" && (
+							<DiscCanvas results={results} />
+						)}
+						<div className="panel">
+							<ResultStats results={results} />
+						</div>
+					</div>
+					<a
+						href="https://semianalysis.com"
+						target="_blank"
+						className="logo"
+					>
+						<img
+							alt="SemiAnalysis logo"
+							src="https://semianalysis-production.mystagingwebsite.com/wp-content/uploads/2024/07/logo-300x124.png"
+						/>
+					</a>
 				</div>
 			</div>
 		</div>

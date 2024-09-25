@@ -30,19 +30,31 @@
   margin: 2em 0;
 }
 .wp-block-create-block-die-yield-calculator .logo {
-  margin-bottom: 1em;
+  display: block;
+  margin-right: auto;
+}
+.wp-block-create-block-die-yield-calculator .logo img {
   width: 120px;
 }
-.wp-block-create-block-die-yield-calculator .columns {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  -moz-column-gap: 2em;
-       column-gap: 2em;
+@media (min-width: 768px) {
+  .wp-block-create-block-die-yield-calculator .columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    -moz-column-gap: 2em;
+         column-gap: 2em;
+  }
 }
-.wp-block-create-block-die-yield-calculator .input {
-  border-radius: 10px;
-  padding: 32px;
-  background-color: #141416;
+@media (min-width: 768px) {
+  .wp-block-create-block-die-yield-calculator .panel {
+    border-radius: 10px;
+    padding: 32px;
+    background-color: #141416;
+  }
+}
+.wp-block-create-block-die-yield-calculator .output {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 .wp-block-create-block-die-yield-calculator .input-group {
   margin-bottom: 1em;
@@ -77,8 +89,10 @@
   margin-left: 1em;
 }
 .wp-block-create-block-die-yield-calculator .wafer-canvas {
+  margin-bottom: 2em;
   border-top: 1px solid rgba(255, 255, 255, 0.5);
   border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+  box-shadow: -0.25em 0.5em 1.5em black;
   background: linear-gradient(-135deg, #b88ecb, #8eb4cd 25%, #a0c8c0 50%, #c6b394 75%, #c7908a 100%);
   background-size: 400% 400%;
 }

@@ -33,20 +33,34 @@
 	font-family: Inter, sans-serif;
 
 	.logo {
-		margin-bottom: 1em;
-		width: 120px;
+		display: block;
+		margin-left: auto;
+
+		img {
+			width: 120px;
+		}
 	}
 
 	.columns {
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		column-gap: 2em;
+		@media (min-width: 768px) {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			column-gap: 2em;
+		}
 	}
 
-	.input {
-		border-radius: 10px;
-		padding: 32px;
-		background-color: #141416;
+	.panel {
+		@media (min-width: 768px) {
+			border-radius: 10px;
+			padding: 32px;
+			background-color: #141416;
+		}
+	}
+
+	.output {
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
 	}
 
 	.input-group {
@@ -86,8 +100,10 @@
 	}
 
 	.wafer-canvas {
+		margin-bottom: 2em;
 		border-top: 1px solid rgba(255, 255, 255, 0.5);
 		border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+		box-shadow: 0.25em 0.5em 1.5em black;
 		background: linear-gradient(135deg,
 			#b88ecb, /* Purple */
 			#8eb4cd 25%, /* Blue */
