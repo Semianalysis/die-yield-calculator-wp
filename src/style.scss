@@ -57,7 +57,8 @@
 		}
 	}
 
-	label {
+	label,
+	legend {
 		display: block;
 		font-size: .75em;
 	}
@@ -137,6 +138,29 @@
 		&.disc {
 			border-radius: 100%;
 			overflow: hidden;
+		}
+	}
+
+	fieldset {
+		padding: 0;
+		border: 0;
+	}
+
+	.radio-group {
+		margin: 1em 0;
+		display: flex;
+		align-items: center;
+		
+	}
+
+	.radio-item {
+		display: flex;
+		align-items: center;
+		line-height: 1;
+		margin: 0 1em 0 0;
+
+		input {
+			margin: 0 0.5em 0 0;
 		}
 	}
 }

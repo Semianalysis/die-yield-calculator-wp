@@ -12,19 +12,21 @@ const ShapeSelector = (props: { shape: WaferShape, setShape: (value: WaferShape)
 	return (
 		<fieldset>
 			<legend>Shape</legend>
-			{
-				shapes.map((shape) => (
-					<label>
-						<input
-							type="radio"
-							name="shape"
-							checked={props.shape === shape}
-							onChange={(e) => props.setShape(shape)}
-						/>
-						<span>{shape}</span>
-					</label>
-				))
-			}
+			<div className="radio-group">
+				{
+					shapes.map((shape) => (
+						<label className="radio-item">
+							<input
+								type="radio"
+								name="shape"
+								checked={props.shape === shape}
+								onChange={(e) => props.setShape(shape)}
+							/>
+							<span>{shape}</span>
+						</label>
+					))
+				}
+			</div>
 		</fieldset>
 	);
 };

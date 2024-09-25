@@ -51,7 +51,8 @@
     background-color: #141416;
   }
 }
-.wp-block-create-block-die-yield-calculator label {
+.wp-block-create-block-die-yield-calculator label,
+.wp-block-create-block-die-yield-calculator legend {
   display: block;
   font-size: 0.75em;
 }
@@ -115,4 +116,22 @@
 .wp-block-create-block-die-yield-calculator .wafer-canvas.disc {
   border-radius: 100%;
   overflow: hidden;
+}
+.wp-block-create-block-die-yield-calculator fieldset {
+  padding: 0;
+  border: 0;
+}
+.wp-block-create-block-die-yield-calculator .radio-group {
+  margin: 1em 0;
+  display: flex;
+  align-items: center;
+}
+.wp-block-create-block-die-yield-calculator .radio-item {
+  display: flex;
+  align-items: center;
+  line-height: 1;
+  margin: 0 0 0 1em;
+}
+.wp-block-create-block-die-yield-calculator .radio-item input {
+  margin: 0 0 0 0.5em;
 }

@@ -135,12 +135,16 @@ __webpack_require__.r(__webpack_exports__);
 
 const ShapeSelector = props => {
   const shapes = ["Disc", "Panel"];
-  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("fieldset", null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("legend", null, "Shape"), shapes.map(shape => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
+  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("fieldset", null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("legend", null, "Shape"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "radio-group"
+  }, shapes.map(shape => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", {
+    className: "radio-item"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
     type: "radio",
     name: "shape",
     checked: props.shape === shape,
     onChange: e => props.setShape(shape)
-  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null, shape))));
+  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null, shape)))));
 };
 const DiscSizeSelect = props => {
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", null, "Diameter", react__WEBPACK_IMPORTED_MODULE_0___default().createElement("select", {
