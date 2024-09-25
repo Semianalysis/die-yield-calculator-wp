@@ -25,16 +25,15 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const ShapeSelector = props => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-  className: "input-group"
-}, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", null, "Shape:", react__WEBPACK_IMPORTED_MODULE_0___default().createElement("select", {
-  value: props.shape,
-  onChange: e => props.setShape(e.target.value)
-}, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
-  value: "Panel"
-}, "Panel"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
-  value: "Disc"
-}, "Wafer"))));
+const ShapeSelector = props => {
+  const shapes = ["Disc", "Panel"];
+  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("fieldset", null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("legend", null, "Shape"), shapes.map(shape => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
+    type: "radio",
+    name: "shape",
+    checked: props.shape === shape,
+    onChange: e => props.setShape(shape)
+  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null, shape))));
+};
 const DiscSizeSelect = props => {
   const sizeInfo = _config__WEBPACK_IMPORTED_MODULE_4__.discSizes[props.selectedSize];
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("select", {
@@ -43,7 +42,7 @@ const DiscSizeSelect = props => {
   }, Object.entries(_config__WEBPACK_IMPORTED_MODULE_4__.discSizes).map(([key, value]) => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
     key: key,
     value: key
-  }, value.name))), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, "Width: ", sizeInfo.waferWidth, " mm"));
+  }, value.name))), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, "Width: ", sizeInfo.waferWidth, " mm"), ";");
 };
 const PanelSizeSelect = props => {
   const sizeInfo = _config__WEBPACK_IMPORTED_MODULE_4__.panelSizes[props.selectedSize];
@@ -79,7 +78,7 @@ function App() {
   const [scribeVert, setScribeVert] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0.1");
   const [transHoriz, setTransHoriz] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0");
   const [transVert, setTransVert] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0.1");
-  const [waferShape, setWaferShape] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("Panel");
+  const [waferShape, setWaferShape] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("Disc");
   const [panelSize, setPanelSize] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("s300mm");
   const [discSize, setDiscSize] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("s300mm");
   const [selectedModel, setSelectedModel] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("murphy");
@@ -206,15 +205,6 @@ function App() {
     label: "Reticle Limit (26mm x 33mm)",
     onChange: handleReticleLimitChange,
     checked: reticleLimit
-  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("hr", null), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", null, "Wafer"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ShapeSelector, {
-    shape: waferShape,
-    setShape: setWaferShape
-  }), waferShape === "Panel" && react__WEBPACK_IMPORTED_MODULE_0___default().createElement(PanelSizeSelect, {
-    selectedSize: panelSize,
-    handleSizeChange: handleSizeChange
-  }), waferShape === "Disc" && react__WEBPACK_IMPORTED_MODULE_0___default().createElement(DiscSizeSelect, {
-    selectedSize: discSize,
-    handleSizeChange: handleSizeChange
   }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Checkbox_Checkbox__WEBPACK_IMPORTED_MODULE_1__.Checkbox, {
     label: "All Critical",
     onChange: handleAllCriticalChange,
@@ -226,6 +216,15 @@ function App() {
     onChange: event => {
       handleCriticalAreaChange(event.target.value);
     }
+  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("hr", null), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", null, "Wafer"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ShapeSelector, {
+    shape: waferShape,
+    setShape: setWaferShape
+  }), waferShape === "Panel" && react__WEBPACK_IMPORTED_MODULE_0___default().createElement(PanelSizeSelect, {
+    selectedSize: panelSize,
+    handleSizeChange: handleSizeChange
+  }), waferShape === "Disc" && react__WEBPACK_IMPORTED_MODULE_0___default().createElement(DiscSizeSelect, {
+    selectedSize: discSize,
+    handleSizeChange: handleSizeChange
   }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
     label: "Defect Rate (#/cm\u00B2)",
     value: defectRate,

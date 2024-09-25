@@ -6,17 +6,28 @@ import { panelSizes, discSizes, yieldModels } from "../config";
 import { FabResults, WaferShape } from "../types";
 import { DiscCanvas, PanelCanvas } from "./WaferCanvas/WaferCanvas";
 
-const ShapeSelector = (props: { shape: WaferShape, setShape: (value: WaferShape) => void }) => (
-	<div className="input-group">
-		<label>
-			Shape:
-			<select value={props.shape} onChange={(e) => props.setShape(e.target.value as WaferShape)}>
-				<option value="Panel">Panel</option>
-				<option value="Disc">Wafer</option>
-			</select>
-		</label>
-	</div>
-);
+const ShapeSelector = (props: { shape: WaferShape, setShape: (value: WaferShape) => void }) => {
+	const shapes: Array<WaferShape> = ["Disc", "Panel"];
+
+	return (
+		<fieldset>
+			<legend>Shape</legend>
+			{
+				shapes.map((shape) => (
+					<label>
+						<input
+							type="radio"
+							name="shape"
+							checked={props.shape === shape}
+							onChange={(e) => props.setShape(shape)}
+						/>
+						<span>{shape}</span>
+					</label>
+				))
+			}
+		</fieldset>
+	);
+};
 
 const DiscSizeSelect = (props: {
 	selectedSize: keyof typeof discSizes,
@@ -35,8 +46,10 @@ const DiscSizeSelect = (props: {
 			</select>
 			<div>Width: {sizeInfo.waferWidth} mm
 			</div>
+			;
 		</div>
-	);
+	)
+		;
 };
 
 const PanelSizeSelect = (props: {
@@ -79,7 +92,9 @@ const ModelSelector = (props: {
 	</div>
 );
 
-const ResultStats = (props: { results: FabResults }) => (
+const ResultStats = (props: {
+	results: FabResults;
+}) => (
 	<div className="calculations">
 		totalDies: {props.results.totalDies}, Good Wafers: {props.results.goodDies}, Fab
 		Yield: {props.results.fabYield}
@@ -100,7 +115,7 @@ function App() {
 	const [scribeVert, setScribeVert] = useState<string>("0.1");
 	const [transHoriz, setTransHoriz] = useState<string>("0");
 	const [transVert, setTransVert] = useState<string>("0.1");
-	const [waferShape, setWaferShape] = useState<WaferShape>("Panel");
+	const [waferShape, setWaferShape] = useState<WaferShape>("Disc");
 	const [panelSize, setPanelSize] = useState<keyof typeof panelSizes>("s300mm");
 	const [discSize, setDiscSize] = useState<keyof typeof discSizes>("s300mm");
 	const [selectedModel, setSelectedModel] = useState<keyof typeof yieldModels>("murphy");
@@ -250,6 +265,20 @@ function App() {
 						onChange={handleReticleLimitChange}
 						checked={reticleLimit}
 					/>
+
+					<Checkbox
+						label="All Critical"
+						onChange={handleAllCriticalChange}
+						checked={allCritical}
+					/>
+					<NumberInput
+						label="Critical Area (mm²)"
+						value={criticalArea}
+						isDisabled={allCritical}
+						onChange={(event) => {
+							handleCriticalAreaChange(event.target.value);
+						}}
+					/>
 					<hr />
 					<h2>Wafer</h2>
 					<ShapeSelector
@@ -270,19 +299,6 @@ function App() {
 							handleSizeChange={handleSizeChange}
 						/>
 					}
-					<Checkbox
-						label="All Critical"
-						onChange={handleAllCriticalChange}
-						checked={allCritical}
-					/>
-					<NumberInput
-						label="Critical Area (mm²)"
-						value={criticalArea}
-						isDisabled={allCritical}
-						onChange={(event) => {
-							handleCriticalAreaChange(event.target.value);
-						}}
-					/>
 					<NumberInput
 						label="Defect Rate (#/cm²)"
 						value={defectRate}
