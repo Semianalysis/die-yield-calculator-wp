@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { Die, FabResults } from "../../types";
+import { Die, FabResults, WaferShape } from "../../types";
 
 function DieMapCanvas(props: { results: FabResults }) {
 	// Don't try and draw too many dies, or performance will suffer too much and the
@@ -56,19 +56,18 @@ function DieMapCanvas(props: { results: FabResults }) {
 	);
 }
 
-export function DiscCanvas(props: { results: FabResults }) {
+/**
+ * Draw a die map onto either a circular or rectangular background, depending on
+ * the shape of the wafer. Dies are drawn using <canvas> and colored according
+ * to their state (good, defective, etc.)
+ */
+export function WaferCanvas(props: {
+	results: FabResults,
+	shape: WaferShape
+}) {
 	return (
-		<div className="wafer-canvas disc">
+		<div className={`wafer-canvas ${props.shape === 'Disc' ? 'disc' : ''}`}>
 			<DieMapCanvas results={props.results} />
 		</div>
 	);
 }
-
-export function PanelCanvas(props: { results: FabResults }) {
-	return (
-		<div className="wafer-canvas">
-			<DieMapCanvas results={props.results} />
-		</div>
-	);
-}
-

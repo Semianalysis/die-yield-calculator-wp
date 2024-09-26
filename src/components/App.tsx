@@ -4,7 +4,7 @@ import { NumberInput } from "./NumberInput/NumberInput";
 import { useInputs } from "../hooks/useInputs";
 import { panelSizes, discSizes, yieldModels } from "../config";
 import { FabResults, WaferShape } from "../types";
-import { DiscCanvas, PanelCanvas } from "./WaferCanvas/WaferCanvas";
+import { WaferCanvas } from "./WaferCanvas/WaferCanvas";
 
 const ShapeSelector = (props: { shape: WaferShape, setShape: (value: WaferShape) => void }) => {
 	const shapes: Array<WaferShape> = ["Disc", "Panel"];
@@ -363,12 +363,7 @@ function App() {
 				</div>
 				<div className="output">
 					<div>
-						{waferShape === "Panel" && (
-							<PanelCanvas results={results} />
-						)}
-						{waferShape === "Disc" && (
-							<DiscCanvas results={results} />
-						)}
+						<WaferCanvas results={results} shape={waferShape} />
 						<div className="panel">
 							<ResultStats results={results} />
 						</div>

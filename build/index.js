@@ -396,10 +396,9 @@ function App() {
     handleModelChange: handleModelChange
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "output"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, waferShape === "Panel" && react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_WaferCanvas_WaferCanvas__WEBPACK_IMPORTED_MODULE_5__.PanelCanvas, {
-    results: results
-  }), waferShape === "Disc" && react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_WaferCanvas_WaferCanvas__WEBPACK_IMPORTED_MODULE_5__.DiscCanvas, {
-    results: results
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_WaferCanvas_WaferCanvas__WEBPACK_IMPORTED_MODULE_5__.WaferCanvas, {
+    results: results,
+    shape: waferShape
   }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "panel"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ResultStats, {
@@ -476,8 +475,7 @@ function NumberInput(props) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   DiscCanvas: () => (/* binding */ DiscCanvas),
-/* harmony export */   PanelCanvas: () => (/* binding */ PanelCanvas)
+/* harmony export */   WaferCanvas: () => (/* binding */ WaferCanvas)
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
@@ -523,16 +521,14 @@ function DieMapCanvas(props) {
     height: props.results.waferHeight
   });
 }
-function DiscCanvas(props) {
+/**
+ * Draw a die map onto either a circular or rectangular background, depending on
+ * the shape of the wafer. Dies are drawn using <canvas> and colored according
+ * to their state (good, defective, etc.)
+ */
+function WaferCanvas(props) {
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    className: "wafer-canvas disc"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(DieMapCanvas, {
-    results: props.results
-  }));
-}
-function PanelCanvas(props) {
-  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    className: "wafer-canvas"
+    className: `wafer-canvas ${props.shape === 'Disc' ? 'disc' : ''}`
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(DieMapCanvas, {
     results: props.results
   }));
