@@ -194,7 +194,7 @@ function App() {
   const [scribeHoriz, setScribeHoriz] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0.1");
   const [scribeVert, setScribeVert] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0.1");
   const [transHoriz, setTransHoriz] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0");
-  const [transVert, setTransVert] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0.1");
+  const [transVert, setTransVert] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0");
   const [waferShape, setWaferShape] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("Disc");
   const [panelSize, setPanelSize] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("s300mm");
   const [discSize, setDiscSize] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("s300mm");
@@ -320,6 +320,20 @@ function App() {
     onChange: handleReticleLimitChange,
     checked: reticleLimit
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "input-row--two-col"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
+    label: "Scribe Lines Horiz",
+    value: scribeHoriz,
+    onChange: event => {
+      handleScribeSizeChange("horiz")(event.target.value);
+    }
+  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
+    label: "Scribe Lines Vert",
+    value: scribeVert,
+    onChange: event => {
+      handleScribeSizeChange("vert")(event.target.value);
+    }
+  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "input-row"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Checkbox_Checkbox__WEBPACK_IMPORTED_MODULE_1__.Checkbox, {
     label: "All Critical",
@@ -366,35 +380,23 @@ function App() {
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "input-row--two-col"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
-    label: "Scribe Lines Horiz",
-    value: scribeHoriz,
-    onChange: event => {
-      handleScribeSizeChange("horiz")(event.target.value);
-    }
-  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
-    label: "Scribe Lines Vert",
-    value: scribeVert,
-    onChange: event => {
-      handleScribeSizeChange("vert")(event.target.value);
-    }
-  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    className: "input-row--two-col"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
-    label: "Translation Horiz",
+    label: "Translation Horizontal (mm)",
     value: transHoriz,
     onChange: event => {
       handleTransChange("horiz")(event.target.value);
     }
   }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
-    label: "Translation Vert",
+    label: "Translation Vertical (mm)",
     value: transVert,
     onChange: event => {
       handleTransChange("vert")(event.target.value);
     }
-  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("hr", null), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ModelSelector, {
+  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("hr", null), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "input-row"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ModelSelector, {
     selectedModel: selectedModel,
     handleModelChange: handleModelChange
-  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+  }))), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "output"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_WaferCanvas_WaferCanvas__WEBPACK_IMPORTED_MODULE_5__.WaferCanvas, {
     results: results,
@@ -455,7 +457,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 
 function NumberInput(props) {
-  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", null, props.label, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
+  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", {
+    className: props.isDisabled ? 'disabled' : ''
+  }, props.label, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
     type: "number",
     disabled: props.isDisabled,
     value: props.value,
