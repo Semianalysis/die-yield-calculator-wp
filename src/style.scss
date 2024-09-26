@@ -60,6 +60,10 @@
 		display: block;
 		font-size: .75em;
 		cursor: pointer;
+
+		&.disabled {
+			color: #B4B9BC;
+		}
 	}
 
 	.output {
@@ -102,6 +106,12 @@
 		&:focus {
 			border-color: $color-accent;
 			outline: none;
+		}
+
+		&:disabled {
+			cursor: not-allowed;
+			border-color: #3e3e41;
+			color: #B4B9BC;
 		}
 	}
 
