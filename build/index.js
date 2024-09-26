@@ -480,7 +480,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 
-const mmToPxScale = 4;
+const mmToPxScale = 3;
 function DieMapCanvas(props) {
   // Don't try and draw too many dies, or performance will suffer too much and the
   // page may hang or crash

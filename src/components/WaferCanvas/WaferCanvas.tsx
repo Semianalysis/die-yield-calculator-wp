@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { Die, FabResults, WaferShape } from "../../types";
 
-const mmToPxScale = 4;
+const mmToPxScale = 3;
 
 function DieMapCanvas(props: { results: FabResults }) {
 	// Don't try and draw too many dies, or performance will suffer too much and the
