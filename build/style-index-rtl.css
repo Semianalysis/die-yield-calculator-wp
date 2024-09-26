@@ -9,9 +9,7 @@
  * Replace them with your own styles or remove the file completely.
  */
 .wp-block-create-block-die-yield-calculator {
-  background-color: #1d1b1e;
   color: rgb(234, 235, 236);
-  padding: 1em;
   font-family: Inter, sans-serif;
 }
 .wp-block-create-block-die-yield-calculator, .wp-block-create-block-die-yield-calculator * {
@@ -61,6 +59,10 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  text-align: center;
+}
+.wp-block-create-block-die-yield-calculator .calculations {
+  text-align: right;
 }
 .wp-block-create-block-die-yield-calculator .input-row {
   margin-bottom: 1em;
@@ -125,6 +127,7 @@
   margin-left: 1em;
 }
 .wp-block-create-block-die-yield-calculator .wafer-canvas {
+  display: inline-block;
   margin-bottom: 2em;
   border-top: 1px solid rgba(255, 255, 255, 0.5);
   border-bottom: 1px solid rgba(0, 0, 0, 0.5);
@@ -146,6 +149,25 @@
 .wp-block-create-block-die-yield-calculator .wafer-canvas.disc {
   border-radius: 100%;
   overflow: hidden;
+}
+.wp-block-create-block-die-yield-calculator .wafer-canvas canvas {
+  max-width: 100%;
+  height: 100%;
+  display: block;
+}
+.wp-block-create-block-die-yield-calculator .wafer-canvas .too-many-dies {
+  position: relative;
+}
+.wp-block-create-block-die-yield-calculator .wafer-canvas .too-many-dies span {
+  display: block;
+  position: absolute;
+  width: 100%;
+  top: 50%;
+  text-align: center;
+  transform: translateY(-50%);
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.5);
+  text-shadow: 0 1px rgba(255, 255, 255, 0.1803921569);
 }
 .wp-block-create-block-die-yield-calculator fieldset {
   padding: 0;
