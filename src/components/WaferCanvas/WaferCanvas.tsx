@@ -1,5 +1,6 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Die, FabResults, WaferShape } from "../../types";
+import Tilt, { OnMoveParams } from "react-parallax-tilt";
 
 const mmToPxScale = 3;
 
@@ -72,9 +73,26 @@ export function WaferCanvas(props: {
 	results: FabResults,
 	shape: WaferShape
 }) {
+	const [tiltX, setTiltX] = useState(0);
+	const [tiltY, setTiltY] = useState(0);
+	function onMove({ tiltAngleXPercentage, tiltAngleYPercentage }: OnMoveParams) {
+		setTiltX(tiltAngleXPercentage);
+		setTiltY(tiltAngleYPercentage);
+	}
+
 	return (
-		<div className={`wafer-canvas ${props.shape === 'Disc' ? 'disc' : ''}`}>
+		<Tilt
+			glareEnable={true}
+			glareMaxOpacity={0.6}
+			scale={1.05}
+			onMove={onMove}
+			style={{
+				backgroundPosition: `${tiltY}% ${tiltX}% `
+			}}
+			className={`wafer-canvas ${props.shape === 'Disc' ? 'disc' : ''}`}
+			glareBorderRadius={props.shape === 'Disc' ? "100%" : undefined}
+		>
 			<DieMapCanvas results={props.results} />
-		</div>
+		</Tilt>
 	);
 }
