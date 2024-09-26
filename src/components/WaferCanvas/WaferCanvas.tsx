@@ -1,6 +1,8 @@
 import React, { useEffect, useRef } from "react";
 import { Die, FabResults, WaferShape } from "../../types";
 
+const mmToPxScale = 4;
+
 function DieMapCanvas(props: { results: FabResults }) {
 	// Don't try and draw too many dies, or performance will suffer too much and the
 	// page may hang or crash
@@ -30,7 +32,12 @@ function DieMapCanvas(props: { results: FabResults }) {
 		// Draw each die onto the canvas
 		props.results.dies.forEach((die) => {
 			context.fillStyle = dieStateColors[die.dieState];
-			context.fillRect(die.x, die.y, die.width, die.height);
+			context.fillRect(
+				mmToPxScale * die.x,
+				mmToPxScale * die.y,
+				mmToPxScale * die.width,
+				mmToPxScale * die.height,
+			);
 		});
 	}, [JSON.stringify(props.results)]);
 
@@ -50,8 +57,8 @@ function DieMapCanvas(props: { results: FabResults }) {
 	return (
 		<canvas
 			ref={canvasEl}
-			width={props.results.waferWidth}
-			height={props.results.waferHeight}
+			width={props.results.waferWidth * mmToPxScale}
+			height={props.results.waferHeight * mmToPxScale}
 		></canvas>
 	);
 }

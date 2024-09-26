@@ -372,6 +372,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 
+const mmToPxScale = 4;
 function DieMapCanvas(props) {
   // Don't try and draw too many dies, or performance will suffer too much and the
   // page may hang or crash
@@ -396,7 +397,7 @@ function DieMapCanvas(props) {
     // Draw each die onto the canvas
     props.results.dies.forEach(die => {
       context.fillStyle = dieStateColors[die.dieState];
-      context.fillRect(die.x, die.y, die.width, die.height);
+      context.fillRect(mmToPxScale * die.x, mmToPxScale * die.y, mmToPxScale * die.width, mmToPxScale * die.height);
     });
   }, [JSON.stringify(props.results)]);
   if (props.results.dies.length > maxDies) {
@@ -409,8 +410,8 @@ function DieMapCanvas(props) {
   }
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("canvas", {
     ref: canvasEl,
-    width: props.results.waferWidth,
-    height: props.results.waferHeight
+    width: props.results.waferWidth * mmToPxScale,
+    height: props.results.waferHeight * mmToPxScale
   });
 }
 /**
