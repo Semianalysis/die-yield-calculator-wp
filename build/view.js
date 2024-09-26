@@ -436,6 +436,7 @@ function WaferCanvas(props) {
     setTiltY(tiltAngleYPercentage);
   }
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_parallax_tilt__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    key: props.shape,
     glareEnable: true,
     glareMaxOpacity: 0.6,
     scale: 1.05,
@@ -444,7 +445,7 @@ function WaferCanvas(props) {
       backgroundPosition: `${tiltY}% ${tiltX}% `
     },
     className: `wafer-canvas ${props.shape === 'Disc' ? 'disc' : ''}`,
-    glareBorderRadius: props.shape === 'Disc' ? "100%" : undefined
+    glareBorderRadius: props.shape === 'Disc' ? "100%" : "0"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(DieMapCanvas, {
     results: props.results
   }));

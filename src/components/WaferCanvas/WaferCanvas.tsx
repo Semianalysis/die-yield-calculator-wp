@@ -82,6 +82,7 @@ export function WaferCanvas(props: {
 
 	return (
 		<Tilt
+			key={props.shape}
 			glareEnable={true}
 			glareMaxOpacity={0.6}
 			scale={1.05}
@@ -90,7 +91,7 @@ export function WaferCanvas(props: {
 				backgroundPosition: `${tiltY}% ${tiltX}% `
 			}}
 			className={`wafer-canvas ${props.shape === 'Disc' ? 'disc' : ''}`}
-			glareBorderRadius={props.shape === 'Disc' ? "100%" : undefined}
+			glareBorderRadius={props.shape === 'Disc' ? "100%" : "0"}
 		>
 			<DieMapCanvas results={props.results} />
 		</Tilt>
