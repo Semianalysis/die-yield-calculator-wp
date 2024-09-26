@@ -9,7 +9,7 @@ export function NumberInput(props: {
 }) {
 	return (
 		<div>
-			<label>
+			<label className={props.isDisabled ? 'disabled' : ''}>
 				{props.label}
 				<input
 					type="number"

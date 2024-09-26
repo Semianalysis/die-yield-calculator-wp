@@ -116,7 +116,7 @@ function App() {
 	const [scribeHoriz, setScribeHoriz] = useState<string>("0.1");
 	const [scribeVert, setScribeVert] = useState<string>("0.1");
 	const [transHoriz, setTransHoriz] = useState<string>("0");
-	const [transVert, setTransVert] = useState<string>("0.1");
+	const [transVert, setTransVert] = useState<string>("0");
 	const [waferShape, setWaferShape] = useState<WaferShape>("Disc");
 	const [panelSize, setPanelSize] = useState<keyof typeof panelSizes>("s300mm");
 	const [discSize, setDiscSize] = useState<keyof typeof discSizes>("s300mm");
@@ -264,6 +264,22 @@ function App() {
 							checked={reticleLimit}
 						/>
 					</div>
+					<div className="input-row--two-col">
+						<NumberInput
+							label="Scribe Lines Horiz"
+							value={scribeHoriz}
+							onChange={(event) => {
+								handleScribeSizeChange("horiz")(event.target.value);
+							}}
+						/>
+						<NumberInput
+							label="Scribe Lines Vert"
+							value={scribeVert}
+							onChange={(event) => {
+								handleScribeSizeChange("vert")(event.target.value);
+							}}
+						/>
+					</div>
 					<div className="input-row">
 						<Checkbox
 							label="All Critical"
@@ -325,30 +341,14 @@ function App() {
 					</div>
 					<div className="input-row--two-col">
 						<NumberInput
-							label="Scribe Lines Horiz"
-							value={scribeHoriz}
-							onChange={(event) => {
-								handleScribeSizeChange("horiz")(event.target.value);
-							}}
-						/>
-						<NumberInput
-							label="Scribe Lines Vert"
-							value={scribeVert}
-							onChange={(event) => {
-								handleScribeSizeChange("vert")(event.target.value);
-							}}
-						/>
-					</div>
-					<div className="input-row--two-col">
-						<NumberInput
-							label="Translation Horiz"
+							label="Translation Horizontal (mm)"
 							value={transHoriz}
 							onChange={(event) => {
 								handleTransChange("horiz")(event.target.value);
 							}}
 						/>
 						<NumberInput
-							label="Translation Vert"
+							label="Translation Vertical (mm)"
 							value={transVert}
 							onChange={(event) => {
 								handleTransChange("vert")(event.target.value);
@@ -356,10 +356,12 @@ function App() {
 						/>
 					</div>
 					<hr />
-					<ModelSelector
-						selectedModel={selectedModel}
-						handleModelChange={handleModelChange}
-					/>
+					<div className="input-row">
+						<ModelSelector
+							selectedModel={selectedModel}
+							handleModelChange={handleModelChange}
+						/>
+					</div>
 				</div>
 				<div className="output">
 					<div>
