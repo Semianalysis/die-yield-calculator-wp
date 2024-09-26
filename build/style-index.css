@@ -147,6 +147,25 @@
   border-radius: 100%;
   overflow: hidden;
 }
+.wp-block-create-block-die-yield-calculator .wafer-canvas canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.wp-block-create-block-die-yield-calculator .wafer-canvas .too-many-dies {
+  position: relative;
+}
+.wp-block-create-block-die-yield-calculator .wafer-canvas .too-many-dies span {
+  display: block;
+  position: absolute;
+  width: 100%;
+  top: 50%;
+  text-align: center;
+  transform: translateY(-50%);
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.5);
+  text-shadow: 0 1px rgba(255, 255, 255, 0.1803921569);
+}
 .wp-block-create-block-die-yield-calculator fieldset {
   padding: 0;
   border: 0;

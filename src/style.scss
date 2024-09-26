@@ -164,6 +164,28 @@
 			border-radius: 100%;
 			overflow: hidden;
 		}
+
+		canvas {
+			width: 100%;
+			height: 100%;
+			display: block;
+		}
+
+		.too-many-dies {
+			position: relative;
+
+			span {
+				display: block;
+				position: absolute;
+				width: 100%;
+				top: 50%;
+				text-align: center;
+				transform: translateY(-50%);
+				line-height: 1;
+				color: rgba(0,0,0,0.5);
+				text-shadow: 0 1px #ffffff2e;
+			}
+		}
 	}
 
 	fieldset {

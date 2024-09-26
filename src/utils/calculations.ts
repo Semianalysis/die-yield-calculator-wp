@@ -215,6 +215,7 @@ export function evaluateDiscInputs(
 		totalDies,
 		goodDies,
 		fabYield,
-		waferWidth
+		waferWidth,
+		waferHeight: waferWidth,
 	};
 }

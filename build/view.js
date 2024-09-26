@@ -374,50 +374,60 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 
-function DieItem(props) {
-  const stateColors = {
+function DieMapCanvas(props) {
+  // Don't try and draw too many dies, or performance will suffer too much and the
+  // page may hang or crash
+  const maxDies = 100000;
+  const canvasEl = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
+  const dieStateColors = {
     good: "rgba(6,231,6,0.77)",
     defective: "rgba(151,138,129,0.8)",
     partial: "yellow",
     lost: "red"
   };
-  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("rect", {
-    x: props.x,
-    y: props.y,
-    width: props.width,
-    height: props.height,
-    fill: stateColors[props.dieState]
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    if (!canvasEl.current || !props.results.dies.length || props.results.dies.length > maxDies) {
+      return;
+    }
+    const context = canvasEl.current.getContext("2d");
+    if (!context) {
+      return;
+    }
+    // Clear the canvas before drawing new die map
+    context.clearRect(0, 0, canvasEl.current.width, canvasEl.current.height);
+    // Draw each die onto the canvas
+    props.results.dies.forEach(die => {
+      context.fillStyle = dieStateColors[die.dieState];
+      context.fillRect(die.x, die.y, die.width, die.height);
+    });
+  }, [JSON.stringify(props.results)]);
+  if (props.results.dies.length > maxDies) {
+    return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      className: "too-many-dies",
+      style: {
+        paddingBottom: `${props.results.waferWidth / props.results.waferHeight * 100}%`
+      }
+    }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null, "Too many dies to visualize"));
+  }
+  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("canvas", {
+    ref: canvasEl,
+    width: props.results.waferWidth,
+    height: props.results.waferHeight
   });
 }
 function DiscCanvas(props) {
-  // Bail out if there are too many dies to draw, otherwise the browser will hang
-  if (props.results.totalDies > 9999) {
-    return "Too many dies to visualize";
-  }
-  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("svg", {
-    viewBox: `0 0 ${props.results.waferWidth} ${props.results.waferWidth}`,
+  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "wafer-canvas disc"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("circle", {
-    cx: props.results.waferWidth / 2,
-    cy: props.results.waferWidth / 2,
-    r: Math.min(props.results.waferWidth, props.results.waferWidth) / 2,
-    stroke: "none",
-    fill: "none"
-  }), props.results.dies.map(die => react__WEBPACK_IMPORTED_MODULE_0___default().createElement(DieItem, {
-    ...die
-  })));
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(DieMapCanvas, {
+    results: props.results
+  }));
 }
 function PanelCanvas(props) {
-  // Bail out if there are too many dies to draw, otherwise the browser will hang
-  if (props.results.totalDies > 9999) {
-    return "Too many dies to visualize";
-  }
-  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("svg", {
-    viewBox: `0 0 ${props.results.waferWidth} ${props.results.waferWidth}`,
+  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "wafer-canvas"
-  }, props.results.dies.map(die => react__WEBPACK_IMPORTED_MODULE_0___default().createElement(DieItem, {
-    ...die
-  })));
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(DieMapCanvas, {
+    results: props.results
+  }));
 }
 
 /***/ }),
@@ -473,8 +483,8 @@ const panelSizes = {
   },
   s457x600mm: {
     name: "457 x 600 mm² (18 x 24 in²)",
-    waferHeight: 457,
-    waferWidth: 600
+    waferWidth: 457,
+    waferHeight: 600
   },
   s510mm: {
     name: "510 x 515 mm² (21 in)",
@@ -819,7 +829,8 @@ function evaluateDiscInputs(inputVals, selectedSize, selectedModel) {
     totalDies,
     goodDies,
     fabYield,
-    waferWidth
+    waferWidth,
+    waferHeight: waferWidth
   };
 }
 
