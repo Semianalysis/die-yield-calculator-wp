@@ -1,6 +1,6 @@
 export type DieState = "good" | "defective" | "partial" | "lost";
 
-export type Die = {
+type Die = {
 	x: number,
 	y: number,
 	width: number,

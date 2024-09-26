@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Die, FabResults, WaferShape } from "../../types";
+import { FabResults, WaferShape } from "../../types";
 import Tilt, { OnMoveParams } from "react-parallax-tilt";
 
 const mmToPxScale = 3;
