@@ -1,7 +1,6 @@
 /*!***************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[4].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[4].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[4].use[3]!./src/style.scss ***!
   \***************************************************************************************************************************************************************************************************************************************/
-@charset "UTF-8";
 /**
  * The following styles get applied both on the front of your site
  * and in the editor.
@@ -129,20 +128,15 @@
   border-radius: 10px;
 }
 .wp-block-create-block-die-yield-calculator select {
+  border-radius: 14px;
+  cursor: pointer;
   -webkit-appearance: none;
      -moz-appearance: none;
           appearance: none;
-}
-.wp-block-create-block-die-yield-calculator .select {
-  position: relative;
-}
-.wp-block-create-block-die-yield-calculator .select::after {
-  content: "▼";
-  position: absolute;
-  left: 1rem;
-  top: 50%;
-  font-size: 0.75em;
-  color: #656B72;
+  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIFVwbG9hZGVkIHRvOiBTVkcgUmVwbywgd3d3LnN2Z3JlcG8uY29tLCBHZW5lcmF0b3I6IFNWRyBSZXBvIE1peGVyIFRvb2xzIC0tPgo8c3ZnIGZpbGw9IiMwMDAwMDAiIGhlaWdodD0iODAwcHgiIHdpZHRoPSI4MDBweCIgdmVyc2lvbj0iMS4xIiBpZD0iTGF5ZXJfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgCgkgdmlld0JveD0iMCAwIDM4Ni4yNTcgMzg2LjI1NyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+Cjxwb2x5Z29uIHBvaW50cz0iMCw5Ni44NzkgMTkzLjEyOSwyODkuMzc5IDM4Ni4yNTcsOTYuODc5ICIgZmlsbD0iI0VBRUJFQyIvPgo8L3N2Zz4=);
+  background-position: left 15px center;
+  background-repeat: no-repeat;
+  background-size: 0.75em;
 }
 .wp-block-create-block-die-yield-calculator input[type=checkbox],
 .wp-block-create-block-die-yield-calculator input[type=radio] {
