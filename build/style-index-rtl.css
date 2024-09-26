@@ -219,7 +219,7 @@
   transition: transform ease-out 0.2s;
 }
 .wp-block-create-block-die-yield-calculator .wafer-canvas:hover {
-  box-shadow: -0.125em 0.25em 4em black;
+  box-shadow: -0.125em 0.25em 4em rgba(0, 0, 0, 0.75);
 }
 .wp-block-create-block-die-yield-calculator .wafer-canvas .too-many-dies {
   position: relative;
