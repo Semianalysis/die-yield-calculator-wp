@@ -88,7 +88,7 @@ function DieDecorativeCanvas(props: { results: FabResults, shape: WaferShape }) 
 
 		context.clearRect(0, 0, canvasEl.current.width, canvasEl.current.height);
 		// Background color
-		context.fillStyle = "rgba(154,154,145,0.55)";
+		context.fillStyle = "rgba(217,217,210,0.76)";
 		// Draw a background rectangle for a panel, or a background circle for a disc
 		if (props.shape === 'Panel') {
 			context.fillRect(0, 0, canvasEl.current.width, canvasEl.current.height);
