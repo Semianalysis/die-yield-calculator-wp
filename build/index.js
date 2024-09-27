@@ -486,7 +486,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_parallax_tilt__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-parallax-tilt */ "./node_modules/react-parallax-tilt/dist/modern/index.js");
 
 
+// How many pixels should be rendered for every mm of wafer size
 const mmToPxScale = 3;
+// Don't try and draw too many dies, or performance will suffer too much and the
+// page may hang or crash
+const maxDies = 100000;
 function DieMapCanvas(props) {
   // Don't try and draw too many dies, or performance will suffer too much and the
   // page may hang or crash
@@ -523,6 +527,42 @@ function DieMapCanvas(props) {
     }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null, "Too many dies to visualize"));
   }
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("canvas", {
+    className: "die-map",
+    ref: canvasEl,
+    width: props.results.waferWidth * mmToPxScale,
+    height: props.results.waferHeight * mmToPxScale
+  });
+}
+function DieDecorativeCanvas(props) {
+  const canvasEl = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    if (!canvasEl.current || !props.results.dies.length || props.results.dies.length > maxDies) {
+      return;
+    }
+    const context = canvasEl.current.getContext("2d");
+    if (!context) {
+      return;
+    }
+    context.clearRect(0, 0, canvasEl.current.width, canvasEl.current.height);
+    // Background color
+    context.fillStyle = "rgba(154,154,145,0.55)";
+    // Draw a background rectangle for a panel, or a background circle for a disc
+    if (props.shape === 'Panel') {
+      context.fillRect(0, 0, canvasEl.current.width, canvasEl.current.height);
+    } else {
+      context.arc(canvasEl.current.width / 2, canvasEl.current.width / 2, canvasEl.current.width / 2, 0, 2 * Math.PI, false);
+      context.fill();
+    }
+    // Cut out each die from the background color the canvas
+    props.results.dies.forEach(die => {
+      context.clearRect(mmToPxScale * die.x, mmToPxScale * die.y, mmToPxScale * die.width, mmToPxScale * die.height);
+    });
+  }, [JSON.stringify(props.results)]);
+  if (props.results.dies.length > maxDies) {
+    return null;
+  }
+  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("canvas", {
+    className: "die-decorative",
     ref: canvasEl,
     width: props.results.waferWidth * mmToPxScale,
     height: props.results.waferHeight * mmToPxScale
@@ -546,16 +586,21 @@ function WaferCanvas(props) {
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_parallax_tilt__WEBPACK_IMPORTED_MODULE_1__["default"], {
     key: props.shape,
     glareEnable: true,
-    glareMaxOpacity: 0.6,
+    glareMaxOpacity: 0.8,
     scale: 1.05,
     onMove: onMove,
-    style: {
-      backgroundPosition: `${tiltY}% ${tiltX}% `
-    },
     className: `wafer-canvas ${props.shape === 'Disc' ? 'disc' : ''}`,
     glareBorderRadius: props.shape === 'Disc' ? "100%" : "0"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(DieMapCanvas, {
     results: props.results
+  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(DieDecorativeCanvas, {
+    results: props.results,
+    shape: props.shape
+  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "mirror-background",
+    style: {
+      backgroundPositionX: `${tiltY / 2 + tiltX / 4}% `
+    }
   }));
 }
 
