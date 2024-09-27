@@ -14,7 +14,9 @@ function DieMapCanvas(props: { results: FabResults }) {
 	// Don't try and draw too many dies, or performance will suffer too much and the
 	// page may hang or crash
 	const maxDies = 100000;
-	const canvasEl = useRef<HTMLCanvasElement>(null);
+	// Draw good and bad dies on separate canvases for parallax effect
+	const goodCanvasEl = useRef<HTMLCanvasElement>(null);
+	const badCanvasEl = useRef<HTMLCanvasElement>(null);
 	const dieStateColors = {
 		good: "rgba(6,231,6,0.77)",
 		defective: "rgba(151,138,129,0.8)",
@@ -23,28 +25,40 @@ function DieMapCanvas(props: { results: FabResults }) {
 	};
 
 	useEffect(() => {
-		if (!canvasEl.current || !props.results.dies.length || props.results.dies.length > maxDies) {
+		if (!goodCanvasEl.current || !badCanvasEl.current || !props.results.dies.length || props.results.dies.length > maxDies) {
 			return;
 		}
 
-		const context = canvasEl.current.getContext("2d");
+		const goodContext = goodCanvasEl.current.getContext("2d");
+		const badContext = badCanvasEl.current.getContext("2d");
 
-		if (!context) {
+		if (!goodContext || !badContext) {
 			return;
 		}
 
-		// Clear the canvas before drawing new die map
-		context.clearRect(0, 0, canvasEl.current.width, canvasEl.current.height);
+		// Clear the canvases before drawing new die map
+		goodContext.clearRect(0, 0, goodCanvasEl.current.width, goodCanvasEl.current.height);
+		badContext.clearRect(0, 0, badCanvasEl.current.width, badCanvasEl.current.height);
 
 		// Draw each die onto the canvas
 		props.results.dies.forEach((die) => {
-			context.fillStyle = dieStateColors[die.dieState];
-			context.fillRect(
-				mmToPxScale * die.x,
-				mmToPxScale * die.y,
-				mmToPxScale * die.width,
-				mmToPxScale * die.height,
-			);
+			if (die.dieState === 'good') {
+				goodContext.fillStyle = dieStateColors.good;
+				goodContext.fillRect(
+					mmToPxScale * die.x,
+					mmToPxScale * die.y,
+					mmToPxScale * die.width,
+					mmToPxScale * die.height,
+				);
+			} else {
+				badContext.fillStyle = dieStateColors[die.dieState];
+				badContext.fillRect(
+					mmToPxScale * die.x,
+					mmToPxScale * die.y,
+					mmToPxScale * die.width,
+					mmToPxScale * die.height,
+				);
+			}
 		});
 	}, [JSON.stringify(props.results)]);
 
@@ -62,12 +76,20 @@ function DieMapCanvas(props: { results: FabResults }) {
 	}
 
 	return (
-		<canvas
-			className="die-map"
-			ref={canvasEl}
-			width={props.results.waferWidth * mmToPxScale}
-			height={props.results.waferHeight * mmToPxScale}
-		></canvas>
+		<>
+			<canvas
+				className="die-map--good"
+				ref={goodCanvasEl}
+				width={props.results.waferWidth * mmToPxScale}
+				height={props.results.waferHeight * mmToPxScale}
+			></canvas>
+			<canvas
+				className="die-map--bad"
+				ref={badCanvasEl}
+				width={props.results.waferWidth * mmToPxScale}
+				height={props.results.waferHeight * mmToPxScale}
+			></canvas>
+		</>
 	);
 }
 
