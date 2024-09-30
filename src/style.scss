@@ -144,7 +144,6 @@
 		-webkit-appearance: none;
 		width: 1.5em;
 		height: 1.5em;
-		cursor: pointer;
 		outline: none;
 		display: inline-block;
 		position: relative;
@@ -207,41 +206,72 @@
 
 	.wafer-canvas {
 		display: inline-block;
+		line-height: 0;
 		margin-bottom: 2em;
-		border-top: 1px solid rgba(255, 255, 255, 0.5);
-		border-bottom: 1px solid rgba(0, 0, 0, 0.5);
 		box-shadow: 0.25em 0.5em 1.5em black;
-		background: linear-gradient(135deg,
-			#b88ecb, /* Purple */
-			#8eb4cd 25%, /* Blue */
-			#a0c8c0 50%, /* Teal */
-			#c6b394 75%, /* Orange/Gold */
-			#c7908a 100% /* Pink/Red */
-		);
-		background-size: 400% 400%;
-		//animation: gradientShift 10s ease infinite;
+		transform-style: preserve-3d;
+		background-color: #b88ecb;
 
-		@keyframes gradientShift {
-			0% {
-				background-position: 0% 50%;
-			}
-			50% {
-				background-position: 100% 50%;
-			}
-			100% {
-				background-position: 0% 50%;
-			}
+		.mirror-background {
+			border-top: 1px solid rgba(255, 255, 255, 0.5);
+			border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+			background-image: linear-gradient(90deg,
+				#b88ecb, /* Purple */
+				#8eb4cd 12.5%, /* Blue */
+				#9ad9cc 40%, /* Teal */
+				#cc9e52 45%, /* Orange/Gold */
+				#e15a4d 50%, /* Pink/Red */
+				#e1b268 56%, /* Orange/Gold */
+				#8fd9ca 64%, /* Teal */
+				#8eb4cd 82.5%, /* Blue */
+				#b88ecb 100% /* Purple */
+			);
+			background-size: 440%;
+			position: absolute;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			left: 0;
+			z-index: -1;
 		}
 
 		&.disc {
-			border-radius: 100%;
-			overflow: hidden;
+			&,
+			.mirror-background {
+				border-radius: 100%;
+				transform: rotate(45deg);
+			}
 		}
 
-		canvas {
+		.die-decorative {
 			max-width: 100%;
-			height: 100%;
-			display: block;
+		}
+
+		.die-map {
+			&,
+			&--good,
+			&--bad {
+				position: absolute;
+				width: 100%;
+				height: 100%;
+				left: 0;
+				top: 0;
+				transition: transform ease-out 0.3s, opacity ease-out 0.3s;
+			}
+		}
+
+		&:hover {
+			box-shadow: 0.125em 0.25em 4em rgba(0, 0, 0, 0.75);
+
+			.die-map--good {
+				transform: translateZ(80px);
+				opacity: 0.3;
+			}
+
+			.die-map--bad {
+				transform: translateZ(60px);
+				opacity: 0.15;
+			}
 		}
 
 		.too-many-dies {
