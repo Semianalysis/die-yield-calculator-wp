@@ -127,6 +127,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _hooks_useInputs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../hooks/useInputs */ "./src/hooks/useInputs.ts");
 /* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../config */ "./src/config/index.ts");
 /* harmony import */ var _WaferCanvas_WaferCanvas__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./WaferCanvas/WaferCanvas */ "./src/components/WaferCanvas/WaferCanvas.tsx");
+/* harmony import */ var _ResultsStats_ResultsStats__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./ResultsStats/ResultsStats */ "./src/components/ResultsStats/ResultsStats.tsx");
+
 
 
 
@@ -178,9 +180,6 @@ const ModelSelector = props => react__WEBPACK_IMPORTED_MODULE_0___default().crea
   key: key,
   value: key
 }, value.name))));
-const ResultStats = props => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("ul", {
-  className: "calculations"
-}, props.results.waferHeight ? react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", null, "Panel Width: ", props.results.waferWidth, "mm"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", null, "Panel Height: ", props.results.waferHeight, "mm")) : react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", null, "Wafer Diameter: ", props.results.waferWidth, "mm"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", null, "Total Dies: ", props.results.totalDies), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", null, "Good Dies: ", props.results.goodDies), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", null, "Fab Yield: ", props.results.fabYield.toFixed(6)));
 function App() {
   const [dieWidth, setDieWidth] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("8");
   const [dieHeight, setDieHeight] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("8");
@@ -391,7 +390,7 @@ function App() {
     onChange: event => {
       handleTransChange("vert")(event.target.value);
     }
-  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("hr", null), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("hr", null), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", null, "Options"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "input-row"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ModelSelector, {
     selectedModel: selectedModel,
@@ -403,8 +402,11 @@ function App() {
     shape: waferShape
   }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "panel"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ResultStats, {
-    results: results
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", null, "Results"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_ResultsStats_ResultsStats__WEBPACK_IMPORTED_MODULE_6__.ResultsStats, {
+    results: results,
+    shape: waferShape,
+    dieWidth: parseFloat(dieWidth),
+    dieHeight: parseFloat(dieHeight)
   }))), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("a", {
     href: "https://semianalysis.com",
     target: "_blank",
@@ -467,6 +469,58 @@ function NumberInput(props) {
     onBlur: props.onBlur,
     step: "0.01"
   })));
+}
+
+/***/ }),
+
+/***/ "./src/components/ResultsStats/ResultsStats.tsx":
+/*!******************************************************!*\
+  !*** ./src/components/ResultsStats/ResultsStats.tsx ***!
+  \******************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ResultsStats: () => (/* binding */ ResultsStats)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+
+function waferAreaCm(shape, widthMM, heightMM) {
+  if (shape === "Panel") {
+    return widthMM * heightMM / 100;
+  }
+  return Math.PI * Math.pow(widthMM / 2, 2) / 100;
+}
+function totalDieAreaCm(dieWidthMM, dieHeightMM, numDies) {
+  return dieWidthMM * dieHeightMM * numDies / 100;
+}
+function ResultsStats(props) {
+  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "results"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("ul", {
+    className: "results__list"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+    className: "result result--total-dies"
+  }, "Total Dies: ", props.results.totalDies), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+    className: "result result--good-dies"
+  }, "Good Dies: ", props.results.goodDies), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+    className: "result result--bad-dies"
+  }, "Defective Dies: ", props.results.totalDies - props.results.goodDies), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+    className: "result result--yield"
+  }, "Fab Yield: ", parseFloat((props.results.fabYield * 100).toFixed(4)), "%")), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("ul", {
+    className: "results__list"
+  }, props.shape === "Panel" ? react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+    className: "result result--panel-width"
+  }, "Panel Width: ", props.results.waferWidth, "mm"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+    className: "result result--panel-height"
+  }, "Panel Height: ", props.results.waferHeight, "mm")) : react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+    className: "result result--panel-diameter"
+  }, "Wafer Diameter: ", props.results.waferWidth, "mm"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+    className: "result result--wafer-area"
+  }, "Wafer Area: ", parseFloat(waferAreaCm(props.shape, props.results.waferWidth, props.results.waferHeight).toFixed(4)), "cm\u00B2"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+    className: "result result--die-area"
+  }, "Total Die Area: ", parseFloat(totalDieAreaCm(props.dieWidth, props.dieHeight, props.results.totalDies).toFixed(4)), "cm\u00B2")));
 }
 
 /***/ }),
@@ -600,7 +654,7 @@ function WaferCanvas(props) {
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_parallax_tilt__WEBPACK_IMPORTED_MODULE_1__["default"], {
     key: props.shape,
     glareEnable: true,
-    glareMaxOpacity: 0.8,
+    glareMaxOpacity: 0.75,
     scale: 1.05,
     onMove: onMove,
     className: `wafer-canvas ${props.shape === 'Disc' ? 'disc' : ''}`,

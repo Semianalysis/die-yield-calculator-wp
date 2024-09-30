@@ -22,13 +22,13 @@ describe("App", () => {
 		});
 
 		await user.clear(widthInput);
-		await user.type(widthInput, "10");
+		await user.type(widthInput, "5");
 		await user.clear(scribeLinesXInput);
 		await user.type(scribeLinesXInput, "0");
 		await user.clear(scribeLinesYInput);
 		await user.type(scribeLinesYInput, "0");
 
-		const expected = Math.pow(300 / 10, 2);
+		const expected = Math.pow(300 / 5, 2);
 
 		expect(screen.queryByText(new RegExp(expected.toString()))).toBeInTheDocument();
 	});
