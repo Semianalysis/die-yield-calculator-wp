@@ -294,11 +294,9 @@
   box-shadow: -0.125em 0.25em 4em rgba(0, 0, 0, 0.75);
 }
 .wp-block-create-block-die-yield-calculator .wafer-canvas:hover .die-map--good {
-  transform: translateZ(40px);
   opacity: 0.3;
 }
 .wp-block-create-block-die-yield-calculator .wafer-canvas:hover .die-map--bad {
-  transform: translateZ(20px);
   opacity: 0.15;
 }
 .wp-block-create-block-die-yield-calculator .wafer-canvas .too-many-dies {
