@@ -171,7 +171,7 @@ export function WaferCanvas(props: {
 		<Tilt
 			key={props.shape}
 			glareEnable={true}
-			glareMaxOpacity={0.8}
+			glareMaxOpacity={0.75}
 			scale={1.05}
 			onMove={onMove}
 			className={`wafer-canvas ${props.shape === 'Disc' ? 'disc' : ''}`}

@@ -7,9 +7,13 @@
 
 .wp-block-create-block-die-yield-calculator {
 	$color-accent: #F7B041;
+	$color-good: rgb(46, 217, 46);
+	$color-defective: rgba(151,138,129);
+	$color-bad: #eb2222;
 
 	color: rgb(234, 235, 236);
 	font-family: Inter, sans-serif;
+	font-size: 14px;
 
 	&, * {
 		box-sizing: border-box;
@@ -18,8 +22,8 @@
 	h2 {
 		font-weight: 800;
 		line-height: 1.1;
-		font-size: 1.1em;
-		margin: 0 0 0.5em;
+		font-size: 1.333333em;
+		margin: 0 0 1em;
 		color: inherit;
 	}
 
@@ -40,14 +44,19 @@
 	}
 
 	.columns {
+		display: grid;
+		grid-template-columns: 1fr;
+		row-gap: 4em;
+
 		@media (min-width: 768px) {
-			display: grid;
 			grid-template-columns: 1fr 1fr;
 			column-gap: 2em;
 		}
 	}
 
 	.panel {
+		text-align: left;
+
 		@media (min-width: 768px) {
 			border-radius: 10px;
 			padding: 32px;
@@ -72,14 +81,75 @@
 		text-align: center;
 	}
 
-	.calculations {
-		text-align: left;
+	.results {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+	}
+
+	.results__list {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+
+	.result {
+		display: flex;
+		align-items: center;
+		margin-bottom: 0.5em;
+
+		&::before {
+			width: 1rem;
+			margin-right: 0.5rem;
+			line-height: 1rem;
+			text-align: center;
+		}
+
+		&--good-dies,
+		&--bad-dies,
+		&--total-dies {
+			&::before {
+				content: "■";
+			}
+		}
+
+		&--good-dies::before {
+			color: $color-good;
+		}
+
+		&--bad-dies::before {
+			color: $color-defective;
+		}
+
+		&--yield::before {
+			content: "◐";
+			font-size: 1.125em;
+		}
+
+		&--panel-width::before {
+			content: "↔";
+		}
+
+		&--panel-height::before {
+			content: "↕";
+		}
+
+		&--panel-diameter::before {
+			content: "⌀";
+			font-size: 1.5em;
+		}
+
+		&--wafer-area::before {
+			content: "◌";
+		}
+
+		&--die-area::before {
+			content: "⬚";
+		}
 	}
 
 	.input-row,
 	.input-row--two-col {
 		margin-bottom: 1rem;
-		font-size: .75em;
 
 		&--two-col {
 			display: grid;
@@ -211,6 +281,7 @@
 		box-shadow: 0.25em 0.5em 1.5em black;
 		transform-style: preserve-3d;
 		background-color: #b88ecb;
+		touch-action: none;
 
 		.mirror-background {
 			border-top: 1px solid rgba(255, 255, 255, 0.5);
@@ -240,6 +311,7 @@
 			.mirror-background {
 				border-radius: 100%;
 				transform: rotate(45deg);
+				overflow: hidden;
 			}
 		}
 
@@ -264,12 +336,12 @@
 			box-shadow: 0.125em 0.25em 4em rgba(0, 0, 0, 0.75);
 
 			.die-map--good {
-				transform: translateZ(80px);
+				transform: translateZ(40px);
 				opacity: 0.3;
 			}
 
 			.die-map--bad {
-				transform: translateZ(60px);
+				transform: translateZ(20px);
 				opacity: 0.15;
 			}
 		}

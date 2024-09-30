@@ -3,8 +3,9 @@ import { Checkbox } from "./Checkbox/Checkbox";
 import { NumberInput } from "./NumberInput/NumberInput";
 import { useInputs } from "../hooks/useInputs";
 import { panelSizes, discSizes, yieldModels } from "../config";
-import { FabResults, WaferShape } from "../types";
+import { WaferShape } from "../types";
 import { WaferCanvas } from "./WaferCanvas/WaferCanvas";
+import { ResultsStats } from "./ResultsStats/ResultsStats";
 
 const ShapeSelector = (props: { shape: WaferShape, setShape: (value: WaferShape) => void }) => {
 	const shapes: Array<WaferShape> = ["Disc", "Panel"];
@@ -81,26 +82,6 @@ const ModelSelector = (props: {
 			))}
 		</select>
 	</label>
-);
-
-const ResultStats = (props: {
-	results: FabResults;
-}) => (
-	<ul className="calculations">
-		{
-			props.results.waferHeight ? (
-				<>
-					<li>Panel Width: {props.results.waferWidth}mm</li>
-					<li>Panel Height: {props.results.waferHeight}mm</li>
-				</>
-			) : (
-				<li>Wafer Diameter: {props.results.waferWidth}mm</li>
-			)
-		}
-		<li>Total Dies: {props.results.totalDies}</li>
-		<li>Good Dies: {props.results.goodDies}</li>
-		<li>Fab Yield: {props.results.fabYield.toFixed(6)}</li>
-	</ul>
 );
 
 function App() {
@@ -356,6 +337,7 @@ function App() {
 						/>
 					</div>
 					<hr />
+					<h2>Options</h2>
 					<div className="input-row">
 						<ModelSelector
 							selectedModel={selectedModel}
@@ -367,7 +349,13 @@ function App() {
 					<div>
 						<WaferCanvas results={results} shape={waferShape} />
 						<div className="panel">
-							<ResultStats results={results} />
+							<h2>Results</h2>
+							<ResultsStats
+								results={results}
+								shape={waferShape}
+								dieWidth={parseFloat(dieWidth)}
+								dieHeight={parseFloat(dieHeight)}
+							/>
 						</div>
 					</div>
 					<a
