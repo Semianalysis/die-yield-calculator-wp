@@ -232,14 +232,19 @@ export function WaferCanvas(props: {
 			className={`wafer-canvas ${props.shape === "Disc" ? "disc" : ""}`}
 			glareBorderRadius={props.shape === "Disc" ? "100%" : "0"}
 		>
-			<DieMapCanvas
-				results={props.results}
-				waferWidth={props.waferWidth}
-				waferHeight={props.waferHeight}
-			/>
+			<div
+				className="mirror-background"
+				style={{
+					backgroundPositionX: `${(tiltY / 2) + (tiltX / 4)}% `
+				}}></div>
 			<DieDecorativeCanvas
 				results={props.results}
 				shape={props.shape}
+				waferWidth={props.waferWidth}
+				waferHeight={props.waferHeight}
+			/>
+			<DieMapCanvas
+				results={props.results}
 				waferWidth={props.waferWidth}
 				waferHeight={props.waferHeight}
 			/>
@@ -249,11 +254,6 @@ export function WaferCanvas(props: {
 				waferHeight={props.waferHeight}
 				shape={props.shape}
 			/>
-			<div
-				className="mirror-background"
-				style={{
-					backgroundPositionX: `${(tiltY / 2) + (tiltX / 4)}% `
-				}}></div>
 		</Tilt>
 	);
 }

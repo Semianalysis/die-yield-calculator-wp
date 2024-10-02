@@ -700,13 +700,18 @@ function WaferCanvas(props) {
     onMove: onMove,
     className: `wafer-canvas ${props.shape === "Disc" ? "disc" : ""}`,
     glareBorderRadius: props.shape === "Disc" ? "100%" : "0"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(DieMapCanvas, {
-    results: props.results,
-    waferWidth: props.waferWidth,
-    waferHeight: props.waferHeight
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "mirror-background",
+    style: {
+      backgroundPositionX: `${tiltY / 2 + tiltX / 4}% `
+    }
   }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(DieDecorativeCanvas, {
     results: props.results,
     shape: props.shape,
+    waferWidth: props.waferWidth,
+    waferHeight: props.waferHeight
+  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(DieMapCanvas, {
+    results: props.results,
     waferWidth: props.waferWidth,
     waferHeight: props.waferHeight
   }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(LossyEdgeMarker, {
@@ -714,11 +719,6 @@ function WaferCanvas(props) {
     waferWidth: props.waferWidth,
     waferHeight: props.waferHeight,
     shape: props.shape
-  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    className: "mirror-background",
-    style: {
-      backgroundPositionX: `${tiltY / 2 + tiltX / 4}% `
-    }
   }));
 }
 

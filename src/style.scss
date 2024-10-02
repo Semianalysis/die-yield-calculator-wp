@@ -314,7 +314,6 @@
 			right: 0;
 			bottom: 0;
 			left: 0;
-			z-index: -1;
 		}
 
 		&.disc {
@@ -328,6 +327,7 @@
 
 		.die-decorative {
 			max-width: 100%;
+			position: relative;
 		}
 
 		.canvas__edge,
@@ -343,12 +343,9 @@
 		&:hover {
 			box-shadow: 0.125em 0.25em 4em rgba(0, 0, 0, 0.75);
 
+			.die-map,
 			.canvas__edge {
 				opacity: 0.2;
-			}
-
-			.die-map {
-				opacity: 0.3;
 			}
 		}
 
