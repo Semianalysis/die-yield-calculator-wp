@@ -71,7 +71,7 @@ export type InputValues = {
 	dieHeight: number;
 	criticalArea: number;
 	defectRate: number;
-	edgeLoss: number;
+	lossyEdgeWidth: number;
 	scribeHoriz: number;
 	scribeVert: number;
 };
@@ -142,8 +142,6 @@ export function evaluatePanelInputs(
 		totalDies,
 		goodDies,
 		fabYield,
-		waferWidth,
-		waferHeight
 	};
 }
 
@@ -157,7 +155,7 @@ export function evaluateDiscInputs(
 		dieHeight,
 		criticalArea,
 		defectRate,
-		edgeLoss,
+		lossyEdgeWidth,
 		scribeHoriz,
 		scribeVert
 	} = inputVals;
@@ -194,7 +192,7 @@ export function evaluateDiscInputs(
 			{ x: x + dieWidth, y: y + dieHeight }
 		];
 
-		let lossCircleRadius = waferWidth - edgeLoss;
+		let lossCircleRadius = waferWidth - lossyEdgeWidth;
 
 		if (!corners.every(corner => isInsideCircle(corner.x, corner.y, waferWidth / 2, waferWidth / 2, lossCircleRadius))) {
 			dieStates[i] = "partial";
@@ -215,7 +213,5 @@ export function evaluateDiscInputs(
 		totalDies,
 		goodDies,
 		fabYield,
-		waferWidth,
-		waferHeight: waferWidth,
 	};
 }

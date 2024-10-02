@@ -282,7 +282,10 @@
 .wp-block-create-block-die-yield-calculator .wafer-canvas .die-decorative {
   max-width: 100%;
 }
-.wp-block-create-block-die-yield-calculator .wafer-canvas .die-map, .wp-block-create-block-die-yield-calculator .wafer-canvas .die-map--good, .wp-block-create-block-die-yield-calculator .wafer-canvas .die-map--bad {
+.wp-block-create-block-die-yield-calculator .wafer-canvas .canvas__edge, .wp-block-create-block-die-yield-calculator .wafer-canvas .canvas__edge--good, .wp-block-create-block-die-yield-calculator .wafer-canvas .canvas__edge--bad,
+.wp-block-create-block-die-yield-calculator .wafer-canvas .die-map,
+.wp-block-create-block-die-yield-calculator .wafer-canvas .die-map--good,
+.wp-block-create-block-die-yield-calculator .wafer-canvas .die-map--bad {
   position: absolute;
   width: 100%;
   height: 100%;

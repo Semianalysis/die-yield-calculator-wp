@@ -26,6 +26,8 @@ export function ResultsStats(props: {
 	shape: WaferShape;
 	dieWidth: number;
 	dieHeight: number;
+	waferWidth: number;
+	waferHeight: number;
 }) {
 	return (
 		<div className="results">
@@ -39,15 +41,15 @@ export function ResultsStats(props: {
 				{
 					props.shape === "Panel" ? (
 						<>
-							<li className="result result--panel-width">Panel Width: {props.results.waferWidth}mm</li>
-							<li className="result result--panel-height">Panel Height: {props.results.waferHeight}mm</li>
+							<li className="result result--panel-width">Panel Width: {props.waferWidth}mm</li>
+							<li className="result result--panel-height">Panel Height: {props.waferHeight}mm</li>
 						</>
 					) : (
-						<li className="result result--panel-diameter">Wafer Diameter: {props.results.waferWidth}mm</li>
+						<li className="result result--panel-diameter">Wafer Diameter: {props.waferWidth}mm</li>
 					)
 				}
 				<li className="result result--wafer-area">Wafer
-					Area: {parseFloat(waferAreaCm(props.shape, props.results.waferWidth, props.results.waferHeight).toFixed(4))}cm²
+					Area: {parseFloat(waferAreaCm(props.shape, props.waferWidth, props.waferHeight).toFixed(4))}cm²
 				</li>
 				<li className="result result--die-area">Total Die
 					Area: {parseFloat(totalDieAreaCm(props.dieWidth, props.dieHeight, props.results.totalDies).toFixed(4))}cm²

@@ -10,7 +10,11 @@ const mmToPxScale = 3;
 const maxDies = 100000;
 
 
-function DieMapCanvas(props: { results: FabResults }) {
+function DieMapCanvas(props: {
+	results: FabResults;
+	waferWidth: number;
+	waferHeight: number;
+}) {
 	// Don't try and draw too many dies, or performance will suffer too much and the
 	// page may hang or crash
 	const maxDies = 100000;
@@ -42,13 +46,13 @@ function DieMapCanvas(props: { results: FabResults }) {
 
 		// Draw each die onto the canvas
 		props.results.dies.forEach((die) => {
-			if (die.dieState === 'good') {
+			if (die.dieState === "good") {
 				goodContext.fillStyle = dieStateColors.good;
 				goodContext.fillRect(
 					mmToPxScale * die.x,
 					mmToPxScale * die.y,
 					mmToPxScale * die.width,
-					mmToPxScale * die.height,
+					mmToPxScale * die.height
 				);
 			} else {
 				badContext.fillStyle = dieStateColors[die.dieState];
@@ -56,7 +60,7 @@ function DieMapCanvas(props: { results: FabResults }) {
 					mmToPxScale * die.x,
 					mmToPxScale * die.y,
 					mmToPxScale * die.width,
-					mmToPxScale * die.height,
+					mmToPxScale * die.height
 				);
 			}
 		});
@@ -67,7 +71,7 @@ function DieMapCanvas(props: { results: FabResults }) {
 			<div
 				className="too-many-dies"
 				style={{
-					paddingBottom: `${props.results.waferWidth / props.results.waferHeight * 100}%`
+					paddingBottom: `${props.waferWidth / props.waferHeight * 100}%`
 				}}
 			>
 				<span>Too many dies to visualize</span>
@@ -80,20 +84,25 @@ function DieMapCanvas(props: { results: FabResults }) {
 			<canvas
 				className="die-map--good"
 				ref={goodCanvasEl}
-				width={props.results.waferWidth * mmToPxScale}
-				height={props.results.waferHeight * mmToPxScale}
+				width={props.waferWidth * mmToPxScale}
+				height={props.waferHeight * mmToPxScale}
 			></canvas>
 			<canvas
 				className="die-map--bad"
 				ref={badCanvasEl}
-				width={props.results.waferWidth * mmToPxScale}
-				height={props.results.waferHeight * mmToPxScale}
+				width={props.waferWidth * mmToPxScale}
+				height={props.waferHeight * mmToPxScale}
 			></canvas>
 		</>
 	);
 }
 
-function DieDecorativeCanvas(props: { results: FabResults, shape: WaferShape }) {
+function DieDecorativeCanvas(props: {
+	results: FabResults;
+	shape: WaferShape;
+	waferWidth: number;
+	waferHeight: number;
+}) {
 
 	const canvasEl = useRef<HTMLCanvasElement>(null);
 
@@ -112,7 +121,7 @@ function DieDecorativeCanvas(props: { results: FabResults, shape: WaferShape }) 
 		// Background color
 		context.fillStyle = "rgba(217,217,210,0.76)";
 		// Draw a background rectangle for a panel, or a background circle for a disc
-		if (props.shape === 'Panel') {
+		if (props.shape === "Panel") {
 			context.fillRect(0, 0, canvasEl.current.width, canvasEl.current.height);
 		} else {
 			context.arc(
@@ -132,7 +141,7 @@ function DieDecorativeCanvas(props: { results: FabResults, shape: WaferShape }) 
 				mmToPxScale * die.x,
 				mmToPxScale * die.y,
 				mmToPxScale * die.width,
-				mmToPxScale * die.height,
+				mmToPxScale * die.height
 			);
 		});
 	}, [JSON.stringify(props.results)]);
@@ -145,8 +154,64 @@ function DieDecorativeCanvas(props: { results: FabResults, shape: WaferShape }) 
 		<canvas
 			className="die-decorative"
 			ref={canvasEl}
-			width={props.results.waferWidth * mmToPxScale}
-			height={props.results.waferHeight * mmToPxScale}
+			width={props.waferWidth * mmToPxScale}
+			height={props.waferHeight * mmToPxScale}
+		></canvas>
+	);
+}
+
+function LossyEdgeMarker(props: {
+	lossyEdgeWidth: number;
+	waferWidth: number;
+	waferHeight: number;
+	shape: WaferShape;
+}) {
+	const canvasEl = useRef<HTMLCanvasElement>(null);
+	const waferWidthPx = props.waferWidth * mmToPxScale;
+	const waferHeightPx = props.waferHeight * mmToPxScale;
+
+	useEffect(() => {
+		if (!canvasEl.current || props.waferWidth === 0) {
+			return;
+		}
+
+		const context = canvasEl.current.getContext("2d");
+
+		if (!context) {
+			return;
+		}
+
+		const lossyEdgeWidthInPx = props.lossyEdgeWidth * mmToPxScale;
+
+		context.lineWidth = 4;
+		context.strokeStyle = "black";
+
+		context.clearRect(0, 0, canvasEl.current.width, canvasEl.current.height);
+
+		if (props.shape === "Disc") {
+			const centerX = waferWidthPx / 2;
+			const centerY = waferHeightPx / 2;
+			const innerRadius = waferWidthPx / 2 - lossyEdgeWidthInPx;
+
+			context.beginPath();
+			context.arc(centerX, centerY, innerRadius, 0, 2 * Math.PI, false);
+			context.stroke();
+		} else if (props.shape === "Panel") {
+			context.strokeRect(
+				lossyEdgeWidthInPx,
+				lossyEdgeWidthInPx,
+				waferWidthPx - (lossyEdgeWidthInPx * 2),
+				waferHeightPx - (lossyEdgeWidthInPx * 2)
+			);
+		}
+	}, [props.lossyEdgeWidth, props.shape, props.waferWidth, props.waferHeight]);
+
+	return (
+		<canvas
+			className="canvas__edge"
+			ref={canvasEl}
+			width={waferWidthPx}
+			height={waferHeightPx}
 		></canvas>
 	);
 }
@@ -157,11 +222,15 @@ function DieDecorativeCanvas(props: { results: FabResults, shape: WaferShape }) 
  * to their state (good, defective, etc.)
  */
 export function WaferCanvas(props: {
-	results: FabResults,
-	shape: WaferShape
+	results: FabResults;
+	lossyEdgeWidth: number;
+	shape: WaferShape;
+	waferWidth: number;
+	waferHeight: number;
 }) {
 	const [tiltX, setTiltX] = useState(0);
 	const [tiltY, setTiltY] = useState(0);
+
 	function onMove({ tiltAngleXPercentage, tiltAngleYPercentage }: OnMoveParams) {
 		setTiltX(tiltAngleXPercentage);
 		setTiltY(tiltAngleYPercentage);
@@ -174,11 +243,26 @@ export function WaferCanvas(props: {
 			glareMaxOpacity={0.75}
 			scale={1.05}
 			onMove={onMove}
-			className={`wafer-canvas ${props.shape === 'Disc' ? 'disc' : ''}`}
-			glareBorderRadius={props.shape === 'Disc' ? "100%" : "0"}
+			className={`wafer-canvas ${props.shape === "Disc" ? "disc" : ""}`}
+			glareBorderRadius={props.shape === "Disc" ? "100%" : "0"}
 		>
-			<DieMapCanvas results={props.results} />
-			<DieDecorativeCanvas results={props.results} shape={props.shape} />
+			<DieMapCanvas
+				results={props.results}
+				waferWidth={props.waferWidth}
+				waferHeight={props.waferHeight}
+			/>
+			<DieDecorativeCanvas
+				results={props.results}
+				shape={props.shape}
+				waferWidth={props.waferWidth}
+				waferHeight={props.waferHeight}
+			/>
+			<LossyEdgeMarker
+				lossyEdgeWidth={props.lossyEdgeWidth}
+				waferWidth={props.waferWidth}
+				waferHeight={props.waferHeight}
+				shape={props.shape}
+			/>
 			<div
 				className="mirror-background"
 				style={{

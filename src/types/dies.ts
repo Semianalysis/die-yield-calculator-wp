@@ -13,7 +13,5 @@ export type FabResults = {
 	totalDies: number,
 	goodDies: number,
 	fabYield: number,
-	waferWidth: number,
-	waferHeight: number,
 	dies: Array<Die>
 };

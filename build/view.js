@@ -79,7 +79,7 @@ function App() {
   const [maintainAspectRatio, setMaintainAspectRatio] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
   const [criticalArea, setCriticalArea] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("64");
   const [defectRate, setDefectRate] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0.1");
-  const [edgeLoss, setEdgeLoss] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0");
+  const [lossyEdgeWidth, setLossyEdgeWidth] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("3");
   const [allCritical, setAllCritical] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
   const [reticleLimit, setReticleLimit] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
   const [scribeHoriz, setScribeHoriz] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0.1");
@@ -95,7 +95,7 @@ function App() {
     dieHeight: parseFloat(dieHeight),
     criticalArea: parseFloat(criticalArea),
     defectRate: parseFloat(defectRate),
-    edgeLoss: parseFloat(edgeLoss),
+    lossyEdgeWidth: parseFloat(lossyEdgeWidth),
     scribeHoriz: parseFloat(scribeHoriz),
     scribeVert: parseFloat(scribeVert)
   }, selectedModel, waferShape, panelSize, discSize);
@@ -150,7 +150,7 @@ function App() {
     nullOrRound(setDefectRate, value);
   };
   const handleEdgeLossChange = value => {
-    nullOrRound(setEdgeLoss, value);
+    nullOrRound(setLossyEdgeWidth, value);
   };
   const handleTransChange = dimension => value => {
     if (dimension === "horiz") {
@@ -264,7 +264,7 @@ function App() {
     className: "input-row"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
     label: "Edge Loss (mm)",
-    value: edgeLoss,
+    value: lossyEdgeWidth,
     onChange: event => {
       handleEdgeLossChange(event.target.value);
     }
@@ -291,14 +291,19 @@ function App() {
     className: "output"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_WaferCanvas_WaferCanvas__WEBPACK_IMPORTED_MODULE_5__.WaferCanvas, {
     results: results,
-    shape: waferShape
+    shape: waferShape,
+    lossyEdgeWidth: parseFloat(lossyEdgeWidth),
+    waferWidth: waferShape === 'Panel' ? _config__WEBPACK_IMPORTED_MODULE_4__.panelSizes[panelSize].waferWidth : _config__WEBPACK_IMPORTED_MODULE_4__.discSizes[discSize].waferWidth,
+    waferHeight: waferShape === 'Panel' ? _config__WEBPACK_IMPORTED_MODULE_4__.panelSizes[panelSize].waferHeight : _config__WEBPACK_IMPORTED_MODULE_4__.discSizes[discSize].waferWidth
   }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "panel"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", null, "Results"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_ResultsStats_ResultsStats__WEBPACK_IMPORTED_MODULE_6__.ResultsStats, {
     results: results,
     shape: waferShape,
     dieWidth: parseFloat(dieWidth),
-    dieHeight: parseFloat(dieHeight)
+    dieHeight: parseFloat(dieHeight),
+    waferWidth: waferShape === 'Panel' ? _config__WEBPACK_IMPORTED_MODULE_4__.panelSizes[panelSize].waferWidth : _config__WEBPACK_IMPORTED_MODULE_4__.discSizes[discSize].waferWidth,
+    waferHeight: waferShape === 'Panel' ? _config__WEBPACK_IMPORTED_MODULE_4__.panelSizes[panelSize].waferHeight : _config__WEBPACK_IMPORTED_MODULE_4__.discSizes[discSize].waferWidth
   }))), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("a", {
     href: "https://semianalysis.com",
     target: "_blank",
@@ -404,13 +409,13 @@ function ResultsStats(props) {
     className: "results__list"
   }, props.shape === "Panel" ? react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--panel-width"
-  }, "Panel Width: ", props.results.waferWidth, "mm"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+  }, "Panel Width: ", props.waferWidth, "mm"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--panel-height"
-  }, "Panel Height: ", props.results.waferHeight, "mm")) : react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+  }, "Panel Height: ", props.waferHeight, "mm")) : react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--panel-diameter"
-  }, "Wafer Diameter: ", props.results.waferWidth, "mm"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+  }, "Wafer Diameter: ", props.waferWidth, "mm"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--wafer-area"
-  }, "Wafer Area: ", parseFloat(waferAreaCm(props.shape, props.results.waferWidth, props.results.waferHeight).toFixed(4)), "cm\u00B2"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+  }, "Wafer Area: ", parseFloat(waferAreaCm(props.shape, props.waferWidth, props.waferHeight).toFixed(4)), "cm\u00B2"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--die-area"
   }, "Total Die Area: ", parseFloat(totalDieAreaCm(props.dieWidth, props.dieHeight, props.results.totalDies).toFixed(4)), "cm\u00B2")));
 }
@@ -464,7 +469,7 @@ function DieMapCanvas(props) {
     badContext.clearRect(0, 0, badCanvasEl.current.width, badCanvasEl.current.height);
     // Draw each die onto the canvas
     props.results.dies.forEach(die => {
-      if (die.dieState === 'good') {
+      if (die.dieState === "good") {
         goodContext.fillStyle = dieStateColors.good;
         goodContext.fillRect(mmToPxScale * die.x, mmToPxScale * die.y, mmToPxScale * die.width, mmToPxScale * die.height);
       } else {
@@ -477,20 +482,20 @@ function DieMapCanvas(props) {
     return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
       className: "too-many-dies",
       style: {
-        paddingBottom: `${props.results.waferWidth / props.results.waferHeight * 100}%`
+        paddingBottom: `${props.waferWidth / props.waferHeight * 100}%`
       }
     }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null, "Too many dies to visualize"));
   }
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("canvas", {
     className: "die-map--good",
     ref: goodCanvasEl,
-    width: props.results.waferWidth * mmToPxScale,
-    height: props.results.waferHeight * mmToPxScale
+    width: props.waferWidth * mmToPxScale,
+    height: props.waferHeight * mmToPxScale
   }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("canvas", {
     className: "die-map--bad",
     ref: badCanvasEl,
-    width: props.results.waferWidth * mmToPxScale,
-    height: props.results.waferHeight * mmToPxScale
+    width: props.waferWidth * mmToPxScale,
+    height: props.waferHeight * mmToPxScale
   }));
 }
 function DieDecorativeCanvas(props) {
@@ -507,7 +512,7 @@ function DieDecorativeCanvas(props) {
     // Background color
     context.fillStyle = "rgba(217,217,210,0.76)";
     // Draw a background rectangle for a panel, or a background circle for a disc
-    if (props.shape === 'Panel') {
+    if (props.shape === "Panel") {
       context.fillRect(0, 0, canvasEl.current.width, canvasEl.current.height);
     } else {
       context.arc(canvasEl.current.width / 2, canvasEl.current.width / 2, canvasEl.current.width / 2, 0, 2 * Math.PI, false);
@@ -524,8 +529,42 @@ function DieDecorativeCanvas(props) {
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("canvas", {
     className: "die-decorative",
     ref: canvasEl,
-    width: props.results.waferWidth * mmToPxScale,
-    height: props.results.waferHeight * mmToPxScale
+    width: props.waferWidth * mmToPxScale,
+    height: props.waferHeight * mmToPxScale
+  });
+}
+function LossyEdgeMarker(props) {
+  const canvasEl = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
+  const waferWidthPx = props.waferWidth * mmToPxScale;
+  const waferHeightPx = props.waferHeight * mmToPxScale;
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    if (!canvasEl.current || props.waferWidth === 0) {
+      return;
+    }
+    const context = canvasEl.current.getContext("2d");
+    if (!context) {
+      return;
+    }
+    const lossyEdgeWidthInPx = props.lossyEdgeWidth * mmToPxScale;
+    context.lineWidth = 4;
+    context.strokeStyle = "black";
+    context.clearRect(0, 0, canvasEl.current.width, canvasEl.current.height);
+    if (props.shape === "Disc") {
+      const centerX = waferWidthPx / 2;
+      const centerY = waferHeightPx / 2;
+      const innerRadius = waferWidthPx / 2 - lossyEdgeWidthInPx;
+      context.beginPath();
+      context.arc(centerX, centerY, innerRadius, 0, 2 * Math.PI, false);
+      context.stroke();
+    } else if (props.shape === "Panel") {
+      context.strokeRect(lossyEdgeWidthInPx, lossyEdgeWidthInPx, waferWidthPx - lossyEdgeWidthInPx * 2, waferHeightPx - lossyEdgeWidthInPx * 2);
+    }
+  }, [props.lossyEdgeWidth, props.shape, props.waferWidth, props.waferHeight]);
+  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("canvas", {
+    className: "canvas__edge",
+    ref: canvasEl,
+    width: waferWidthPx,
+    height: waferHeightPx
   });
 }
 /**
@@ -549,12 +588,21 @@ function WaferCanvas(props) {
     glareMaxOpacity: 0.75,
     scale: 1.05,
     onMove: onMove,
-    className: `wafer-canvas ${props.shape === 'Disc' ? 'disc' : ''}`,
-    glareBorderRadius: props.shape === 'Disc' ? "100%" : "0"
+    className: `wafer-canvas ${props.shape === "Disc" ? "disc" : ""}`,
+    glareBorderRadius: props.shape === "Disc" ? "100%" : "0"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(DieMapCanvas, {
-    results: props.results
+    results: props.results,
+    waferWidth: props.waferWidth,
+    waferHeight: props.waferHeight
   }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(DieDecorativeCanvas, {
     results: props.results,
+    shape: props.shape,
+    waferWidth: props.waferWidth,
+    waferHeight: props.waferHeight
+  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(LossyEdgeMarker, {
+    lossyEdgeWidth: props.lossyEdgeWidth,
+    waferWidth: props.waferWidth,
+    waferHeight: props.waferHeight,
     shape: props.shape
   }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "mirror-background",
@@ -735,16 +783,14 @@ function useInputs(values, yieldModel, shape, panelSize, discSize) {
     dies: [],
     totalDies: 0,
     goodDies: 0,
-    fabYield: 0,
-    waferWidth: 0,
-    waferHeight: 0
+    fabYield: 0
   });
   const {
     dieWidth,
     dieHeight,
     criticalArea,
     defectRate,
-    edgeLoss,
+    lossyEdgeWidth,
     scribeHoriz,
     scribeVert
   } = values;
@@ -759,7 +805,7 @@ function useInputs(values, yieldModel, shape, panelSize, discSize) {
     } else if (shape === "Panel") {
       setResults((0,_utils_calculations__WEBPACK_IMPORTED_MODULE_1__.evaluatePanelInputs)(values, panelSize, yieldModel));
     }
-  }, [dieWidth, dieHeight, criticalArea, defectRate, edgeLoss, scribeHoriz, scribeVert, shape, panelSize, discSize, yieldModel]);
+  }, [dieWidth, dieHeight, criticalArea, defectRate, lossyEdgeWidth, scribeHoriz, scribeVert, shape, panelSize, discSize, yieldModel]);
   return results;
 }
 
@@ -897,9 +943,7 @@ function evaluatePanelInputs(inputVals, selectedSize, selectedModel) {
     dies,
     totalDies,
     goodDies,
-    fabYield,
-    waferWidth,
-    waferHeight
+    fabYield
   };
 }
 function evaluateDiscInputs(inputVals, selectedSize, selectedModel) {
@@ -908,7 +952,7 @@ function evaluateDiscInputs(inputVals, selectedSize, selectedModel) {
     dieHeight,
     criticalArea,
     defectRate,
-    edgeLoss,
+    lossyEdgeWidth,
     scribeHoriz,
     scribeVert
   } = inputVals;
@@ -945,7 +989,7 @@ function evaluateDiscInputs(inputVals, selectedSize, selectedModel) {
       x: x + dieWidth,
       y: y + dieHeight
     }];
-    let lossCircleRadius = waferWidth - edgeLoss;
+    let lossCircleRadius = waferWidth - lossyEdgeWidth;
     if (!corners.every(corner => isInsideCircle(corner.x, corner.y, waferWidth / 2, waferWidth / 2, lossCircleRadius))) {
       dieStates[i] = "partial";
     }
@@ -962,9 +1006,7 @@ function evaluateDiscInputs(inputVals, selectedSize, selectedModel) {
     dies,
     totalDies,
     goodDies,
-    fabYield,
-    waferWidth,
-    waferHeight: waferWidth
+    fabYield
   };
 }
 
