@@ -287,6 +287,8 @@ function App() {
   const handleModelChange = event => {
     setSelectedModel(event.target.value);
   };
+  const waferWidth = waferShape === "Panel" ? _config__WEBPACK_IMPORTED_MODULE_4__.panelSizes[panelSize].waferWidth : _config__WEBPACK_IMPORTED_MODULE_4__.discSizes[discSize].waferWidth;
+  const waferHeight = waferShape === "Panel" ? _config__WEBPACK_IMPORTED_MODULE_4__.panelSizes[panelSize].waferHeight : _config__WEBPACK_IMPORTED_MODULE_4__.discSizes[discSize].waferWidth;
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "container"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
@@ -375,7 +377,8 @@ function App() {
     value: lossyEdgeWidth,
     onChange: event => {
       handleEdgeLossChange(event.target.value);
-    }
+    },
+    max: Math.min(waferWidth, waferHeight) / 2
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "input-row--two-col"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
@@ -401,8 +404,8 @@ function App() {
     results: results,
     shape: waferShape,
     lossyEdgeWidth: parseFloat(lossyEdgeWidth),
-    waferWidth: waferShape === 'Panel' ? _config__WEBPACK_IMPORTED_MODULE_4__.panelSizes[panelSize].waferWidth : _config__WEBPACK_IMPORTED_MODULE_4__.discSizes[discSize].waferWidth,
-    waferHeight: waferShape === 'Panel' ? _config__WEBPACK_IMPORTED_MODULE_4__.panelSizes[panelSize].waferHeight : _config__WEBPACK_IMPORTED_MODULE_4__.discSizes[discSize].waferWidth
+    waferWidth: waferWidth,
+    waferHeight: waferHeight
   }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "panel"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", null, "Results"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_ResultsStats_ResultsStats__WEBPACK_IMPORTED_MODULE_6__.ResultsStats, {
@@ -410,8 +413,8 @@ function App() {
     shape: waferShape,
     dieWidth: parseFloat(dieWidth),
     dieHeight: parseFloat(dieHeight),
-    waferWidth: waferShape === 'Panel' ? _config__WEBPACK_IMPORTED_MODULE_4__.panelSizes[panelSize].waferWidth : _config__WEBPACK_IMPORTED_MODULE_4__.discSizes[discSize].waferWidth,
-    waferHeight: waferShape === 'Panel' ? _config__WEBPACK_IMPORTED_MODULE_4__.panelSizes[panelSize].waferHeight : _config__WEBPACK_IMPORTED_MODULE_4__.discSizes[discSize].waferWidth
+    waferWidth: waferShape === "Panel" ? _config__WEBPACK_IMPORTED_MODULE_4__.panelSizes[panelSize].waferWidth : _config__WEBPACK_IMPORTED_MODULE_4__.discSizes[discSize].waferWidth,
+    waferHeight: waferShape === "Panel" ? _config__WEBPACK_IMPORTED_MODULE_4__.panelSizes[panelSize].waferHeight : _config__WEBPACK_IMPORTED_MODULE_4__.discSizes[discSize].waferWidth
   }))), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("a", {
     href: "https://semianalysis.com",
     target: "_blank",
@@ -472,7 +475,8 @@ function NumberInput(props) {
     value: props.value,
     onChange: props.onChange,
     onBlur: props.onBlur,
-    step: "0.01"
+    step: "0.01",
+    max: props.max
   })));
 }
 

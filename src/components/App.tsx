@@ -211,6 +211,9 @@ function App() {
 		setSelectedModel(event.target.value as keyof typeof yieldModels);
 	};
 
+	const waferWidth = waferShape === "Panel" ? panelSizes[panelSize].waferWidth : discSizes[discSize].waferWidth;
+	const waferHeight = waferShape === "Panel" ? panelSizes[panelSize].waferHeight : discSizes[discSize].waferWidth;
+
 	return (
 		<div className="container">
 			<div className="columns">
@@ -318,6 +321,7 @@ function App() {
 							onChange={(event) => {
 								handleEdgeLossChange(event.target.value);
 							}}
+							max={Math.min(waferWidth, waferHeight) / 2}
 						/>
 					</div>
 					<div className="input-row--two-col">
@@ -351,8 +355,8 @@ function App() {
 							results={results}
 							shape={waferShape}
 							lossyEdgeWidth={parseFloat(lossyEdgeWidth)}
-							waferWidth={waferShape === 'Panel' ? panelSizes[panelSize].waferWidth : discSizes[discSize].waferWidth}
-							waferHeight={waferShape === 'Panel' ? panelSizes[panelSize].waferHeight : discSizes[discSize].waferWidth}
+							waferWidth={waferWidth}
+							waferHeight={waferHeight}
 						/>
 						<div className="panel">
 							<h2>Results</h2>
@@ -361,8 +365,8 @@ function App() {
 								shape={waferShape}
 								dieWidth={parseFloat(dieWidth)}
 								dieHeight={parseFloat(dieHeight)}
-								waferWidth={waferShape === 'Panel' ? panelSizes[panelSize].waferWidth : discSizes[discSize].waferWidth}
-								waferHeight={waferShape === 'Panel' ? panelSizes[panelSize].waferHeight : discSizes[discSize].waferWidth}
+								waferWidth={waferShape === "Panel" ? panelSizes[panelSize].waferWidth : discSizes[discSize].waferWidth}
+								waferHeight={waferShape === "Panel" ? panelSizes[panelSize].waferHeight : discSizes[discSize].waferWidth}
 							/>
 						</div>
 					</div>
