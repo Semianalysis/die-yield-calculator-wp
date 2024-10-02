@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { FabResults, WaferShape } from "../../types";
 import Tilt, { OnMoveParams } from "react-parallax-tilt";
+import { createHatchingCanvasPattern } from "../../utils/canvas";
 
 // How many pixels should be rendered for every mm of wafer size
 const mmToPxScale = 3;
@@ -138,31 +139,6 @@ function DieDecorativeCanvas(props: {
 	);
 }
 
-// Function to create a diagonal hatching pattern
-function createHatchingPattern(context: CanvasRenderingContext2D) {
-	// Create an offscreen canvas to use as the pattern source
-	const patternCanvas = document.createElement("canvas");
-	const patternCtx = patternCanvas.getContext("2d");
-
-	if (!patternCtx) {
-		return null;
-	}
-
-	// Set pattern canvas dimensions (small for tight hatching)
-	patternCanvas.width = 8;  // Size of one diagonal repetition
-	patternCanvas.height = 8;
-
-	// Draw diagonal lines on the pattern canvas
-	patternCtx.beginPath();
-	patternCtx.moveTo(1, patternCanvas.height - 1);   // Start from bottom-left
-	patternCtx.lineTo(patternCanvas.width - 1, 1);   // Draw to top-right
-	patternCtx.strokeStyle = "rgba(90,79,69,0.8)";  // Line color
-	patternCtx.lineWidth = 2;          // Line thickness
-	patternCtx.stroke();               // Apply the stroke
-
-	// Create the pattern from the offscreen canvas
-	return context.createPattern(patternCanvas, "repeat");
-}
 
 function LossyEdgeMarker(props: {
 	lossyEdgeWidth: number;
@@ -188,7 +164,7 @@ function LossyEdgeMarker(props: {
 		const lossyEdgeWidthInPx = props.lossyEdgeWidth * mmToPxScale;
 
 		// Set the pattern as the fill style
-		const pattern = createHatchingPattern(context);
+		const pattern = createHatchingCanvasPattern(context);
 		if (pattern) {
 			context.fillStyle = pattern;
 		}

@@ -550,7 +550,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var react_parallax_tilt__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-parallax-tilt */ "./node_modules/react-parallax-tilt/dist/modern/index.js");
+/* harmony import */ var react_parallax_tilt__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-parallax-tilt */ "./node_modules/react-parallax-tilt/dist/modern/index.js");
+/* harmony import */ var _utils_canvas__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../utils/canvas */ "./src/utils/canvas.ts");
+
 
 
 // How many pixels should be rendered for every mm of wafer size
@@ -635,27 +637,6 @@ function DieDecorativeCanvas(props) {
     height: props.waferHeight * mmToPxScale
   });
 }
-// Function to create a diagonal hatching pattern
-function createHatchingPattern(context) {
-  // Create an offscreen canvas to use as the pattern source
-  const patternCanvas = document.createElement("canvas");
-  const patternCtx = patternCanvas.getContext("2d");
-  if (!patternCtx) {
-    return null;
-  }
-  // Set pattern canvas dimensions (small for tight hatching)
-  patternCanvas.width = 8; // Size of one diagonal repetition
-  patternCanvas.height = 8;
-  // Draw diagonal lines on the pattern canvas
-  patternCtx.beginPath();
-  patternCtx.moveTo(1, patternCanvas.height - 1); // Start from bottom-left
-  patternCtx.lineTo(patternCanvas.width - 1, 1); // Draw to top-right
-  patternCtx.strokeStyle = "rgba(90,79,69,0.8)"; // Line color
-  patternCtx.lineWidth = 2; // Line thickness
-  patternCtx.stroke(); // Apply the stroke
-  // Create the pattern from the offscreen canvas
-  return context.createPattern(patternCanvas, "repeat");
-}
 function LossyEdgeMarker(props) {
   const canvasEl = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
   const waferWidthPx = props.waferWidth * mmToPxScale;
@@ -670,7 +651,7 @@ function LossyEdgeMarker(props) {
     }
     const lossyEdgeWidthInPx = props.lossyEdgeWidth * mmToPxScale;
     // Set the pattern as the fill style
-    const pattern = createHatchingPattern(context);
+    const pattern = (0,_utils_canvas__WEBPACK_IMPORTED_MODULE_1__.createHatchingCanvasPattern)(context);
     if (pattern) {
       context.fillStyle = pattern;
     }
@@ -711,7 +692,7 @@ function WaferCanvas(props) {
     setTiltX(tiltAngleXPercentage);
     setTiltY(tiltAngleYPercentage);
   }
-  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_parallax_tilt__WEBPACK_IMPORTED_MODULE_1__["default"], {
+  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_parallax_tilt__WEBPACK_IMPORTED_MODULE_2__["default"], {
     key: props.shape,
     glareEnable: true,
     glareMaxOpacity: 0.75,
@@ -1208,6 +1189,50 @@ function evaluateDiscInputs(inputVals, selectedSize, selectedModel) {
     lostDies,
     fabYield
   };
+}
+
+/***/ }),
+
+/***/ "./src/utils/canvas.ts":
+/*!*****************************!*\
+  !*** ./src/utils/canvas.ts ***!
+  \*****************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   createHatchingCanvasPattern: () => (/* binding */ createHatchingCanvasPattern)
+/* harmony export */ });
+let pattern = null;
+/**
+ * Create a memoized hatch-effect canvas pattern on the given canvas context
+ * that can be used as a fill.
+ */
+function createHatchingCanvasPattern(context) {
+  if (pattern) {
+    return pattern;
+  }
+  // Create an offscreen canvas to use as the pattern source
+  const patternCanvas = document.createElement("canvas");
+  const patternCtx = patternCanvas.getContext("2d");
+  if (!patternCtx) {
+    return null;
+  }
+  // Set pattern canvas dimensions (small for tight hatching)
+  patternCanvas.width = 8; // Size of one diagonal repetition
+  patternCanvas.height = 8;
+  // Draw diagonal lines on the pattern canvas
+  patternCtx.beginPath();
+  // Start from bottom-left
+  patternCtx.moveTo(1, patternCanvas.height - 1);
+  // Draw to top-right
+  patternCtx.lineTo(patternCanvas.width - 1, 1);
+  patternCtx.strokeStyle = "rgba(90,79,69,0.8)";
+  patternCtx.lineWidth = 2;
+  patternCtx.stroke();
+  // Create the pattern from the offscreen canvas
+  pattern = context.createPattern(patternCanvas, "repeat");
+  return pattern;
 }
 
 /***/ }),
