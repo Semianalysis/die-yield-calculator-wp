@@ -91,7 +91,7 @@ function App() {
 	const [maintainAspectRatio, setMaintainAspectRatio] = useState(true);
 	const [criticalArea, setCriticalArea] = useState<string>("64");
 	const [defectRate, setDefectRate] = useState<string>("0.1");
-	const [edgeLoss, setEdgeLoss] = useState<string>("0");
+	const [lossyEdgeWidth, setLossyEdgeWidth] = useState<string>("3");
 	const [allCritical, setAllCritical] = useState(true);
 	const [reticleLimit, setReticleLimit] = useState(true);
 	const [scribeHoriz, setScribeHoriz] = useState<string>("0.1");
@@ -107,7 +107,7 @@ function App() {
 		dieHeight: parseFloat(dieHeight),
 		criticalArea: parseFloat(criticalArea),
 		defectRate: parseFloat(defectRate),
-		edgeLoss: parseFloat(edgeLoss),
+		lossyEdgeWidth: parseFloat(lossyEdgeWidth),
 		scribeHoriz: parseFloat(scribeHoriz),
 		scribeVert: parseFloat(scribeVert)
 	}, selectedModel, waferShape, panelSize, discSize);
@@ -175,7 +175,7 @@ function App() {
 	};
 
 	const handleEdgeLossChange = (value: string) => {
-		nullOrRound(setEdgeLoss, value);
+		nullOrRound(setLossyEdgeWidth, value);
 	};
 
 	const handleTransChange = (dimension: string) => (value: string) => {
@@ -210,6 +210,9 @@ function App() {
 	const handleModelChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
 		setSelectedModel(event.target.value as keyof typeof yieldModels);
 	};
+
+	const waferWidth = waferShape === "Panel" ? panelSizes[panelSize].waferWidth : discSizes[discSize].waferWidth;
+	const waferHeight = waferShape === "Panel" ? panelSizes[panelSize].waferHeight : discSizes[discSize].waferWidth;
 
 	return (
 		<div className="container">
@@ -314,10 +317,11 @@ function App() {
 					<div className="input-row">
 						<NumberInput
 							label="Edge Loss (mm)"
-							value={edgeLoss}
+							value={lossyEdgeWidth}
 							onChange={(event) => {
 								handleEdgeLossChange(event.target.value);
 							}}
+							max={Math.min(waferWidth, waferHeight) / 2}
 						/>
 					</div>
 					<div className="input-row--two-col">
@@ -347,7 +351,13 @@ function App() {
 				</div>
 				<div className="output">
 					<div>
-						<WaferCanvas results={results} shape={waferShape} />
+						<WaferCanvas
+							results={results}
+							shape={waferShape}
+							lossyEdgeWidth={parseFloat(lossyEdgeWidth)}
+							waferWidth={waferWidth}
+							waferHeight={waferHeight}
+						/>
 						<div className="panel">
 							<h2>Results</h2>
 							<ResultsStats
@@ -355,6 +365,8 @@ function App() {
 								shape={waferShape}
 								dieWidth={parseFloat(dieWidth)}
 								dieHeight={parseFloat(dieHeight)}
+								waferWidth={waferShape === "Panel" ? panelSizes[panelSize].waferWidth : discSizes[discSize].waferWidth}
+								waferHeight={waferShape === "Panel" ? panelSizes[panelSize].waferHeight : discSizes[discSize].waferWidth}
 							/>
 						</div>
 					</div>
