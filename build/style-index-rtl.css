@@ -288,10 +288,8 @@
 .wp-block-create-block-die-yield-calculator .wafer-canvas .die-decorative {
   max-width: 100%;
 }
-.wp-block-create-block-die-yield-calculator .wafer-canvas .canvas__edge, .wp-block-create-block-die-yield-calculator .wafer-canvas .canvas__edge--good, .wp-block-create-block-die-yield-calculator .wafer-canvas .canvas__edge--bad,
-.wp-block-create-block-die-yield-calculator .wafer-canvas .die-map,
-.wp-block-create-block-die-yield-calculator .wafer-canvas .die-map--good,
-.wp-block-create-block-die-yield-calculator .wafer-canvas .die-map--bad {
+.wp-block-create-block-die-yield-calculator .wafer-canvas .canvas__edge,
+.wp-block-create-block-die-yield-calculator .wafer-canvas .die-map {
   position: absolute;
   width: 100%;
   height: 100%;
@@ -302,11 +300,9 @@
 .wp-block-create-block-die-yield-calculator .wafer-canvas:hover {
   box-shadow: -0.125em 0.25em 4em rgba(0, 0, 0, 0.75);
 }
-.wp-block-create-block-die-yield-calculator .wafer-canvas:hover .die-map--good {
+.wp-block-create-block-die-yield-calculator .wafer-canvas:hover .canvas__edge,
+.wp-block-create-block-die-yield-calculator .wafer-canvas:hover .die-map {
   opacity: 0.3;
-}
-.wp-block-create-block-die-yield-calculator .wafer-canvas:hover .die-map--bad {
-  opacity: 0.15;
 }
 .wp-block-create-block-die-yield-calculator .wafer-canvas .too-many-dies {
   position: relative;

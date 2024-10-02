@@ -332,27 +332,20 @@
 
 		.canvas__edge,
 		.die-map {
-			&,
-			&--good,
-			&--bad {
-				position: absolute;
-				width: 100%;
-				height: 100%;
-				left: 0;
-				top: 0;
-				transition: transform ease-out 0.3s, opacity ease-out 0.3s;
-			}
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			left: 0;
+			top: 0;
+			transition: transform ease-out 0.3s, opacity ease-out 0.3s;
 		}
 
 		&:hover {
 			box-shadow: 0.125em 0.25em 4em rgba(0, 0, 0, 0.75);
 
-			.die-map--good {
+			.canvas__edge,
+			.die-map {
 				opacity: 0.3;
-			}
-
-			.die-map--bad {
-				opacity: 0.15;
 			}
 		}
 

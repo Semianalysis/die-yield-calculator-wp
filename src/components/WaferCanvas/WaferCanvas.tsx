@@ -18,9 +18,7 @@ function DieMapCanvas(props: {
 	// Don't try and draw too many dies, or performance will suffer too much and the
 	// page may hang or crash
 	const maxDies = 100000;
-	// Draw good and bad dies on separate canvases for parallax effect
-	const goodCanvasEl = useRef<HTMLCanvasElement>(null);
-	const badCanvasEl = useRef<HTMLCanvasElement>(null);
+	const canvasEl = useRef<HTMLCanvasElement>(null);
 	const dieStateColors = {
 		good: "rgba(6,231,6,0.77)",
 		defective: "rgba(151,138,129,0.8)",
@@ -29,40 +27,28 @@ function DieMapCanvas(props: {
 	};
 
 	useEffect(() => {
-		if (!goodCanvasEl.current || !badCanvasEl.current || !props.results.dies.length || props.results.dies.length > maxDies) {
+		if (!canvasEl.current || !props.results.dies.length || props.results.dies.length > maxDies) {
 			return;
 		}
 
-		const goodContext = goodCanvasEl.current.getContext("2d");
-		const badContext = badCanvasEl.current.getContext("2d");
+		const context = canvasEl.current.getContext("2d");
 
-		if (!goodContext || !badContext) {
+		if (!context) {
 			return;
 		}
 
 		// Clear the canvases before drawing new die map
-		goodContext.clearRect(0, 0, goodCanvasEl.current.width, goodCanvasEl.current.height);
-		badContext.clearRect(0, 0, badCanvasEl.current.width, badCanvasEl.current.height);
+		context.clearRect(0, 0, canvasEl.current.width, canvasEl.current.height);
 
 		// Draw each die onto the canvas
 		props.results.dies.forEach((die) => {
-			if (die.dieState === "good") {
-				goodContext.fillStyle = dieStateColors.good;
-				goodContext.fillRect(
-					mmToPxScale * die.x,
-					mmToPxScale * die.y,
-					mmToPxScale * die.width,
-					mmToPxScale * die.height
-				);
-			} else {
-				badContext.fillStyle = dieStateColors[die.dieState];
-				badContext.fillRect(
-					mmToPxScale * die.x,
-					mmToPxScale * die.y,
-					mmToPxScale * die.width,
-					mmToPxScale * die.height
-				);
-			}
+			context.fillStyle = dieStateColors[die.dieState];
+			context.fillRect(
+				mmToPxScale * die.x,
+				mmToPxScale * die.y,
+				mmToPxScale * die.width,
+				mmToPxScale * die.height
+			);
 		});
 	}, [JSON.stringify(props.results)]);
 
@@ -80,20 +66,12 @@ function DieMapCanvas(props: {
 	}
 
 	return (
-		<>
-			<canvas
-				className="die-map--good"
-				ref={goodCanvasEl}
-				width={props.waferWidth * mmToPxScale}
-				height={props.waferHeight * mmToPxScale}
-			></canvas>
-			<canvas
-				className="die-map--bad"
-				ref={badCanvasEl}
-				width={props.waferWidth * mmToPxScale}
-				height={props.waferHeight * mmToPxScale}
-			></canvas>
-		</>
+		<canvas
+			className="die-map"
+			ref={canvasEl}
+			width={props.waferWidth * mmToPxScale}
+			height={props.waferHeight * mmToPxScale}
+		></canvas>
 	);
 }
 
@@ -178,7 +156,7 @@ function createHatchingPattern(context: CanvasRenderingContext2D) {
 	patternCtx.beginPath();
 	patternCtx.moveTo(1, patternCanvas.height - 1);   // Start from bottom-left
 	patternCtx.lineTo(patternCanvas.width - 1, 1);   // Draw to top-right
-	patternCtx.strokeStyle = "rgba(90,79,69,1)";  // Line color
+	patternCtx.strokeStyle = "rgba(90,79,69,0.8)";  // Line color
 	patternCtx.lineWidth = 2;          // Line thickness
 	patternCtx.stroke();               // Apply the stroke
 
