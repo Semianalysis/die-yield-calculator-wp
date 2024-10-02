@@ -456,8 +456,8 @@ function DieMapCanvas(props) {
   const dieStateColors = {
     good: "rgba(6,231,6,0.77)",
     defective: "rgba(151,138,129,0.8)",
-    partial: "yellow",
-    lost: "red"
+    partial: "rgba(249,249,27,0.8)",
+    lost: "rgba(184,47,35,0.8)"
   };
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     if (!goodCanvasEl.current || !badCanvasEl.current || !props.results.dies.length || props.results.dies.length > maxDies) {
@@ -979,7 +979,6 @@ function evaluateDiscInputs(inputVals, selectedSize, selectedModel) {
   for (let i = 0; i < dieStates.length; i++) {
     const x = positions[i].x;
     const y = positions[i].y;
-    const dieState = dieStates[i];
     const corners = [{
       x: x,
       y: y
@@ -993,13 +992,16 @@ function evaluateDiscInputs(inputVals, selectedSize, selectedModel) {
       x: x + dieWidth,
       y: y + dieHeight
     }];
-    let lossCircleRadius = waferWidth - lossyEdgeWidth;
-    if (!corners.every(corner => isInsideCircle(corner.x, corner.y, waferWidth / 2, waferWidth / 2, lossCircleRadius))) {
+    const radiusInsideLossyEdge = waferWidth / 2 - lossyEdgeWidth;
+    const goodCorners = corners.filter(corner => isInsideCircle(corner.x, corner.y, waferWidth / 2, waferWidth / 2, radiusInsideLossyEdge));
+    if (!goodCorners.length) {
+      dieStates[i] = "lost";
+    } else if (goodCorners.length < 4) {
       dieStates[i] = "partial";
     }
     dies[i] = {
       key: i,
-      dieState,
+      dieState: dieStates[i],
       x,
       y,
       width: dieWidth,

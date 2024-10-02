@@ -183,8 +183,6 @@ export function evaluateDiscInputs(
 		const x = positions[i].x;
 		const y = positions[i].y;
 
-		const dieState = dieStates[i];
-
 		const corners = [
 			{ x: x, y: y },
 			{ x: x + dieWidth, y: y },
@@ -192,15 +190,19 @@ export function evaluateDiscInputs(
 			{ x: x + dieWidth, y: y + dieHeight }
 		];
 
-		let lossCircleRadius = waferWidth - lossyEdgeWidth;
+		const radiusInsideLossyEdge = waferWidth / 2 - lossyEdgeWidth;
 
-		if (!corners.every(corner => isInsideCircle(corner.x, corner.y, waferWidth / 2, waferWidth / 2, lossCircleRadius))) {
+		const goodCorners = corners.filter(corner => isInsideCircle(corner.x, corner.y, waferWidth / 2, waferWidth / 2, radiusInsideLossyEdge));
+
+		if (!goodCorners.length) {
+			dieStates[i] = "lost";
+		} else if (goodCorners.length < 4) {
 			dieStates[i] = "partial";
 		}
 
 		dies[i] = {
 			key: i,
-			dieState,
+			dieState: dieStates[i],
 			x,
 			y,
 			width: dieWidth,
