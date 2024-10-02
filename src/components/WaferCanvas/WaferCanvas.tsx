@@ -160,6 +160,32 @@ function DieDecorativeCanvas(props: {
 	);
 }
 
+// Function to create a diagonal hatching pattern
+function createHatchingPattern(context: CanvasRenderingContext2D) {
+	// Create an offscreen canvas to use as the pattern source
+	const patternCanvas = document.createElement("canvas");
+	const patternCtx = patternCanvas.getContext("2d");
+
+	if (!patternCtx) {
+		return null;
+	}
+
+	// Set pattern canvas dimensions (small for tight hatching)
+	patternCanvas.width = 8;  // Size of one diagonal repetition
+	patternCanvas.height = 8;
+
+	// Draw diagonal lines on the pattern canvas
+	patternCtx.beginPath();
+	patternCtx.moveTo(1, patternCanvas.height - 1);   // Start from bottom-left
+	patternCtx.lineTo(patternCanvas.width - 1, 1);   // Draw to top-right
+	patternCtx.strokeStyle = "rgba(90,79,69,1)";  // Line color
+	patternCtx.lineWidth = 2;          // Line thickness
+	patternCtx.stroke();               // Apply the stroke
+
+	// Create the pattern from the offscreen canvas
+	return context.createPattern(patternCanvas, "repeat");
+}
+
 function LossyEdgeMarker(props: {
 	lossyEdgeWidth: number;
 	waferWidth: number;
@@ -171,7 +197,7 @@ function LossyEdgeMarker(props: {
 	const waferHeightPx = props.waferHeight * mmToPxScale;
 
 	useEffect(() => {
-		if (!canvasEl.current || props.waferWidth === 0) {
+		if (!canvasEl.current || props.waferWidth === 0 || props.lossyEdgeWidth > props.waferWidth / 2) {
 			return;
 		}
 
@@ -183,21 +209,27 @@ function LossyEdgeMarker(props: {
 
 		const lossyEdgeWidthInPx = props.lossyEdgeWidth * mmToPxScale;
 
-		context.lineWidth = 4;
-		context.strokeStyle = "black";
+		// Set the pattern as the fill style
+		const pattern = createHatchingPattern(context);
+		if (pattern) {
+			context.fillStyle = pattern;
+		}
 
 		context.clearRect(0, 0, canvasEl.current.width, canvasEl.current.height);
 
 		if (props.shape === "Disc") {
-			const centerX = waferWidthPx / 2;
-			const centerY = waferHeightPx / 2;
-			const innerRadius = waferWidthPx / 2 - lossyEdgeWidthInPx;
+			const outerRadius = waferWidthPx / 2;
+			const innerRadius = outerRadius - lossyEdgeWidthInPx;
 
 			context.beginPath();
-			context.arc(centerX, centerY, innerRadius, 0, 2 * Math.PI, false);
-			context.stroke();
+			// Outer (wafer edge)
+			context.arc(outerRadius, outerRadius, outerRadius, 0, 2 * Math.PI, false);
+			// Inner (lossy edge)
+			context.arc(outerRadius, outerRadius, innerRadius, 0, 2 * Math.PI, true);
+			context.fill();
 		} else if (props.shape === "Panel") {
-			context.strokeRect(
+			context.fillRect(0, 0, canvasEl.current.width, canvasEl.current.height);
+			context.clearRect(
 				lossyEdgeWidthInPx,
 				lossyEdgeWidthInPx,
 				waferWidthPx - (lossyEdgeWidthInPx * 2),
