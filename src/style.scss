@@ -10,7 +10,7 @@
 	$color-good: rgb(46, 217, 46);
 	$color-defective: rgba(151,138,129);
 	$color-partial: rgba(249,249,27);
-	$color-lost: rgba(184,47,35);
+	$color-lost: rgb(213, 63, 49);
 
 	color: rgb(234, 235, 236);
 	font-family: Inter, sans-serif;
@@ -343,7 +343,10 @@
 		&:hover {
 			box-shadow: 0.125em 0.25em 4em rgba(0, 0, 0, 0.75);
 
-			.canvas__edge,
+			.canvas__edge {
+				opacity: 0.2;
+			}
+
 			.die-map {
 				opacity: 0.3;
 			}

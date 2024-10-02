@@ -106,7 +106,7 @@
   color: rgb(249, 249, 27);
 }
 .wp-block-create-block-die-yield-calculator .result--lost-dies::before {
-  color: rgb(184, 47, 35);
+  color: rgb(213, 63, 49);
 }
 .wp-block-create-block-die-yield-calculator .result--yield::before {
   content: "◐";
@@ -300,7 +300,9 @@
 .wp-block-create-block-die-yield-calculator .wafer-canvas:hover {
   box-shadow: -0.125em 0.25em 4em rgba(0, 0, 0, 0.75);
 }
-.wp-block-create-block-die-yield-calculator .wafer-canvas:hover .canvas__edge,
+.wp-block-create-block-die-yield-calculator .wafer-canvas:hover .canvas__edge {
+  opacity: 0.2;
+}
 .wp-block-create-block-die-yield-calculator .wafer-canvas:hover .die-map {
   opacity: 0.3;
 }

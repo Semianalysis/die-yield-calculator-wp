@@ -566,8 +566,8 @@ function DieMapCanvas(props) {
   const dieStateColors = {
     good: "rgba(6,231,6,0.77)",
     defective: "rgba(151,138,129,0.8)",
-    partial: "rgba(249,249,27,0.8)",
-    lost: "rgba(184,47,35,0.8)"
+    partial: "rgba(249,249,27,0.68)",
+    lost: "rgba(243,81,67,0.68)"
   };
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     if (!canvasEl.current || !props.results.dies.length || props.results.dies.length > maxDies) {
