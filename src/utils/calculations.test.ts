@@ -1,4 +1,4 @@
-import { getFabYield, isInsideCircle, rectanglesInCircle } from "./calculations";
+import { getFabYield, isInsideCircle, rectanglesInCircle, isInsideRectangle } from "./calculations";
 import { yieldModels } from "../config";
 
 describe("Calculations", () => {
@@ -17,6 +17,22 @@ describe("Calculations", () => {
 			expect(isInsideCircle(90, 90, 60, 60, 60)).toBe(true);
 		});
 	});
+
+	describe("isInsideRectangle", () => {
+		it("returns false for coordinates in the corner", () => {
+			expect(isInsideRectangle(0, 0, 5, 5, 60, 60)).toBe(false);
+			expect(isInsideRectangle(0, 70, 5, 5, 60, 60)).toBe(false);
+			expect(isInsideRectangle(70, 0, 5, 5, 60, 60)).toBe(false);
+			expect(isInsideRectangle(70, 70, 5, 5, 60, 60)).toBe(false);
+		});
+
+		it("returns true for coordinates in the center", () => {
+			expect(isInsideRectangle(20, 20, 5, 5, 60, 60)).toBe(true);
+			expect(isInsideRectangle(40, 20, 5, 5, 60, 60)).toBe(true);
+			expect(isInsideRectangle(60, 40, 5, 5, 60, 60)).toBe(true);
+			expect(isInsideRectangle(60, 60, 5, 5, 60, 60)).toBe(true);
+		});
+	})
 
 	describe("rectanglesInCircle", () => {
 		it("calculates the correct number of possible rectangles in a circle", () => {
