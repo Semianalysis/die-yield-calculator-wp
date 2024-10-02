@@ -514,12 +514,16 @@ function ResultsStats(props) {
   }, "Total Dies: ", props.results.totalDies), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--good-dies"
   }, "Good Dies: ", props.results.goodDies), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
-    className: "result result--bad-dies"
-  }, "Defective Dies: ", props.results.totalDies - props.results.goodDies), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
-    className: "result result--yield"
-  }, "Fab Yield: ", parseFloat((props.results.fabYield * 100).toFixed(4)), "%")), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("ul", {
+    className: "result result--defective-dies"
+  }, "Defective Dies: ", props.results.defectiveDies), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+    className: "result result--partial-dies"
+  }, "Partial Dies: ", props.results.partialDies), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+    className: "result result--lost-dies"
+  }, "Lost Dies: ", props.results.lostDies)), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("ul", {
     className: "results__list"
-  }, props.shape === "Panel" ? react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+    className: "result result--yield"
+  }, "Fab Yield: ", parseFloat((props.results.fabYield * 100).toFixed(4)), "%"), props.shape === "Panel" ? react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--panel-width"
   }, "Panel Width: ", props.waferWidth, "mm"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--panel-height"
@@ -895,6 +899,9 @@ function useInputs(values, yieldModel, shape, panelSize, discSize) {
     dies: [],
     totalDies: 0,
     goodDies: 0,
+    defectiveDies: 0,
+    partialDies: 0,
+    lostDies: 0,
     fabYield: 0
   });
   const {
@@ -1016,6 +1023,29 @@ function getFabYield(defectRate, criticalArea, model) {
   const defects = criticalArea * defectRate / 100;
   return _config__WEBPACK_IMPORTED_MODULE_0__.yieldModels[model].yield(defects);
 }
+function getDieStateCounts(dieStates) {
+  let defectiveDies = 0;
+  let partialDies = 0;
+  let lostDies = 0;
+  dieStates.forEach(dieState => {
+    switch (dieState) {
+      case "defective":
+        defectiveDies++;
+        break;
+      case "partial":
+        partialDies++;
+        break;
+      case "lost":
+        lostDies++;
+        break;
+    }
+  });
+  return {
+    defectiveDies,
+    partialDies,
+    lostDies
+  };
+}
 function evaluatePanelInputs(inputVals, selectedSize, selectedModel) {
   const {
     dieWidth,
@@ -1071,8 +1101,16 @@ function evaluatePanelInputs(inputVals, selectedSize, selectedModel) {
       height: dieHeight
     };
   }
+  const {
+    defectiveDies,
+    partialDies,
+    lostDies
+  } = getDieStateCounts(dieStates);
   return {
     dies,
+    defectiveDies,
+    partialDies,
+    lostDies,
     totalDies,
     goodDies,
     fabYield
@@ -1143,10 +1181,18 @@ function evaluateDiscInputs(inputVals, selectedSize, selectedModel) {
       height: dieHeight
     };
   }
+  const {
+    defectiveDies,
+    partialDies,
+    lostDies
+  } = getDieStateCounts(dieStates);
   return {
     dies,
     totalDies,
     goodDies,
+    defectiveDies,
+    partialDies,
+    lostDies,
     fabYield
   };
 }

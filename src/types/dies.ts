@@ -12,6 +12,9 @@ type Die = {
 export type FabResults = {
 	totalDies: number,
 	goodDies: number,
+	defectiveDies: number;
+	lostDies: number;
+	partialDies: number;
 	fabYield: number,
 	dies: Array<Die>
 };

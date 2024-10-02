@@ -23,6 +23,9 @@ export function useInputs(
 		dies: [],
 		totalDies: 0,
 		goodDies: 0,
+		defectiveDies: 0,
+		partialDies: 0,
+		lostDies: 0,
 		fabYield: 0,
 	});
 

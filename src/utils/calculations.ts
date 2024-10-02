@@ -1,5 +1,5 @@
 import { discSizes, panelSizes, yieldModels } from "../config";
-import { FabResults } from "../types";
+import { DieState, FabResults } from "../types";
 import { isInsideAnotherPath } from "fork-ts-checker-webpack-plugin/lib/utils/path/is-inside-another-path";
 
 /**
@@ -92,6 +92,31 @@ export function getFabYield(
 	return yieldModels[model].yield(defects);
 }
 
+function getDieStateCounts(dieStates: Array<DieState>) {
+	let defectiveDies = 0;
+	let partialDies = 0;
+	let lostDies = 0;
+	dieStates.forEach((dieState) => {
+		switch (dieState) {
+			case "defective":
+				defectiveDies++;
+				break;
+			case "partial":
+				partialDies++;
+				break;
+			case "lost":
+				lostDies++;
+				break;
+		}
+	});
+
+	return {
+		defectiveDies,
+		partialDies,
+		lostDies
+	};
+}
+
 export type InputValues = {
 	dieWidth: number;
 	dieHeight: number;
@@ -177,8 +202,17 @@ export function evaluatePanelInputs(
 		};
 	}
 
+	const {
+		defectiveDies,
+		partialDies,
+		lostDies
+	} = getDieStateCounts(dieStates);
+
 	return {
 		dies,
+		defectiveDies,
+		partialDies,
+		lostDies,
 		totalDies,
 		goodDies,
 		fabYield
@@ -273,10 +307,19 @@ export function evaluateDiscInputs(
 		};
 	}
 
+	const {
+		defectiveDies,
+		partialDies,
+		lostDies
+	} = getDieStateCounts(dieStates);
+
 	return {
 		dies,
 		totalDies,
 		goodDies,
+		defectiveDies,
+		partialDies,
+		lostDies,
 		fabYield
 	};
 }

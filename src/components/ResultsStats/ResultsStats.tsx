@@ -34,10 +34,12 @@ export function ResultsStats(props: {
 			<ul className="results__list">
 				<li className="result result--total-dies">Total Dies: {props.results.totalDies}</li>
 				<li className="result result--good-dies">Good Dies: {props.results.goodDies}</li>
-				<li className="result result--bad-dies">Defective Dies: {props.results.totalDies - props.results.goodDies}</li>
-				<li className="result result--yield">Fab Yield: {parseFloat((props.results.fabYield * 100).toFixed(4))}%</li>
+				<li className="result result--defective-dies">Defective Dies: {props.results.defectiveDies}</li>
+				<li className="result result--partial-dies">Partial Dies: {props.results.partialDies}</li>
+				<li className="result result--lost-dies">Lost Dies: {props.results.lostDies}</li>
 			</ul>
 			<ul className="results__list">
+				<li className="result result--yield">Fab Yield: {parseFloat((props.results.fabYield * 100).toFixed(4))}%</li>
 				{
 					props.shape === "Panel" ? (
 						<>
