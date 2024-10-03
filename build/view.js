@@ -245,12 +245,6 @@ function App() {
     onChange: event => {
       handleCriticalAreaChange(event.target.value);
     }
-  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    className: "input-row"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Checkbox_Checkbox__WEBPACK_IMPORTED_MODULE_1__.Checkbox, {
-    label: "Centering",
-    onChange: handleDieCentering,
-    checked: dieCenteringEnabled
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("hr", null), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", null, "Wafer"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "input-row"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ShapeSelector, {
@@ -295,6 +289,12 @@ function App() {
     onChange: event => {
       handleTransChange("vert")(event.target.value);
     }
+  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "input-row"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Checkbox_Checkbox__WEBPACK_IMPORTED_MODULE_1__.Checkbox, {
+    label: "Wafer Centering",
+    onChange: handleDieCentering,
+    checked: dieCenteringEnabled
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("hr", null), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", null, "Options"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "input-row"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ModelSelector, {

@@ -293,13 +293,6 @@ function App() {
 							}}
 						/>
 					</div>
-					<div className="input-row">
-						<Checkbox
-							label="Centering"
-							onChange={handleDieCentering}
-							checked={dieCenteringEnabled}
-						/>
-					</div>
 					<hr />
 					<h2>Wafer</h2>
 					<div className="input-row">
@@ -357,6 +350,13 @@ function App() {
 							onChange={(event) => {
 								handleTransChange("vert")(event.target.value);
 							}}
+						/>
+					</div>
+					<div className="input-row">
+						<Checkbox
+							label="Wafer Centering"
+							onChange={handleDieCentering}
+							checked={dieCenteringEnabled}
 						/>
 					</div>
 					<hr />
