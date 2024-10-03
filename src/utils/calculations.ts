@@ -41,6 +41,8 @@ export function isInsideRectangle(
 	);
 }
 
+type Rectangle = { x: number, y: number };
+
 /**
  * Given a circle with the provided diameter, determine the maximum number of
  * rectangles of a given width and height would fit fully inside it, without
@@ -48,28 +50,56 @@ export function isInsideRectangle(
  * @param diameter size of the circle
  * @param rectWidth width of each rectangle
  * @param rectHeight height of each rectangle
+ * @param centering should the rectangles be symmetrical?
  */
-export function rectanglesInCircle(diameter: number, rectWidth: number, rectHeight: number) {
+export function rectanglesInCircle(
+	diameter: number,
+	rectWidth: number,
+	rectHeight: number,
+	centering: boolean
+): Rectangle[] {
 	const radius = diameter / 2;
-	const centerX = radius;
-	const centerY = radius;
-	let positions = [];
+	const rectangles: Rectangle[] = [];
 
-	for (let x = 0; x <= diameter + rectWidth; x += rectWidth) {
-		for (let y = 0; y <= diameter + rectHeight; y += rectHeight) {
-			const corners = [
-				{ x: x, y: y },
-				{ x: x + rectWidth, y: y },
-				{ x: x, y: y + rectHeight },
-				{ x: x + rectWidth, y: y + rectHeight }
-			];
+	const offsetX = centering ? rectWidth * -0.5 : 0;
+	const offsetY = centering ? rectHeight * -0.5 : 0;
 
-			if (corners.every(corner => isInsideCircle(corner.x, corner.y, centerX, centerY, radius))) {
-				positions.push({ x: x, y: y });
+	let count = 0;
+
+	// Traverse each row, starting at the center
+	for (let y = 0; y <= radius; y += rectHeight) {
+		// Traverse each column, starting at the center
+		for (let x = 0; x <= radius; x += rectWidth) {
+			// Draw four rectangles, one going in each direction (n, e, s, w)
+			for(let i = 0; i < 4; i++) {
+				const rectX = i % 2 === 0 ? x : -x - rectWidth;
+				const rectY = i % 3 === 0 ? y : -y - rectHeight;
+				// Apply the offset - used for centering
+				const offsetRectX = rectX + offsetX;
+				const offsetRectY = rectY + offsetY;
+				const corners = getDieCorners(
+					offsetRectX,
+					offsetRectY,
+					rectWidth,
+					rectHeight
+				);
+				const cornersWithinCircle = corners.filter((corner) => isInsideCircle(corner.x, corner.y, 0, 0, radius))
+
+				// If the rectangle fits within the circle, add it to the result
+				if (cornersWithinCircle.length === 4) {
+					rectangles.push({
+						// Add the radius back to the final coordinates so all are positive integers
+						x: offsetRectX + radius,
+						y: offsetRectY + radius,
+					});
+				}
 			}
 		}
 	}
-	return positions;
+
+	console.log({count})
+
+	return rectangles;
 }
 
 
@@ -252,7 +282,8 @@ function getDieCorners(
 export function evaluateDiscInputs(
 	inputVals: InputValues,
 	selectedSize: keyof typeof discSizes,
-	selectedModel: keyof typeof yieldModels
+	selectedModel: keyof typeof yieldModels,
+	dieCenteringEnabled: boolean,
 ): FabResults {
 	const {
 		dieWidth,
@@ -268,8 +299,15 @@ export function evaluateDiscInputs(
 	const fabYield = getFabYield(defectRate, criticalArea, selectedModel);
 	const { waferWidth } = discSizes[selectedSize];
 
-	let positions = rectanglesInCircle(waferWidth, dieWidth + scribeHoriz * 2, dieHeight + scribeVert * 2);
+	let positions = rectanglesInCircle(
+		waferWidth,
+		dieWidth + scribeHoriz * 2,
+		dieHeight + scribeVert * 2,
+		dieCenteringEnabled
+	);
 	let totalDies = positions.length;
+
+	console.log({totalDies});
 
 	const goodDies = Math.floor(fabYield * totalDies);
 

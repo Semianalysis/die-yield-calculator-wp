@@ -88,6 +88,7 @@ function App() {
 	const [dieWidth, setDieWidth] = useState<string>("8");
 	const [dieHeight, setDieHeight] = useState<string>("8");
 	const [aspectRatio, setAspectRatio] = useState<number>(1);
+	const [dieCenteringEnabled, setDieCenteringEnabled] = useState(false);
 	const [maintainAspectRatio, setMaintainAspectRatio] = useState(true);
 	const [criticalArea, setCriticalArea] = useState<string>("64");
 	const [defectRate, setDefectRate] = useState<string>("0.1");
@@ -102,15 +103,22 @@ function App() {
 	const [panelSize, setPanelSize] = useState<keyof typeof panelSizes>("s300mm");
 	const [discSize, setDiscSize] = useState<keyof typeof discSizes>("s300mm");
 	const [selectedModel, setSelectedModel] = useState<keyof typeof yieldModels>("murphy");
-	const results = useInputs({
-		dieWidth: parseFloat(dieWidth),
-		dieHeight: parseFloat(dieHeight),
-		criticalArea: parseFloat(criticalArea),
-		defectRate: parseFloat(defectRate),
-		lossyEdgeWidth: parseFloat(lossyEdgeWidth),
-		scribeHoriz: parseFloat(scribeHoriz),
-		scribeVert: parseFloat(scribeVert)
-	}, selectedModel, waferShape, panelSize, discSize);
+	const results = useInputs(
+		{
+			dieWidth: parseFloat(dieWidth),
+			dieHeight: parseFloat(dieHeight),
+			criticalArea: parseFloat(criticalArea),
+			defectRate: parseFloat(defectRate),
+			lossyEdgeWidth: parseFloat(lossyEdgeWidth),
+			scribeHoriz: parseFloat(scribeHoriz),
+			scribeVert: parseFloat(scribeVert)
+		},
+		dieCenteringEnabled,
+		selectedModel,
+		waferShape,
+		panelSize,
+		discSize,
+	);
 
 	useEffect(() => {
 		const dieWidthNum = parseFloat(dieWidth);
@@ -199,6 +207,10 @@ function App() {
 		setReticleLimit(event.target.checked);
 	};
 
+	const handleDieCentering = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setDieCenteringEnabled(event.target.checked);
+	};
+
 	const handleSizeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
 		if (waferShape === "Panel") {
 			setPanelSize(event.target.value as keyof typeof panelSizes);
@@ -279,6 +291,13 @@ function App() {
 							onChange={(event) => {
 								handleCriticalAreaChange(event.target.value);
 							}}
+						/>
+					</div>
+					<div className="input-row">
+						<Checkbox
+							label="Die Centering"
+							onChange={handleDieCentering}
+							checked={dieCenteringEnabled}
 						/>
 					</div>
 					<hr />

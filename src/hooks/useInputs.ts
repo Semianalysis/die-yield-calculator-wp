@@ -7,6 +7,7 @@ import { evaluateDiscInputs, evaluatePanelInputs, InputValues } from "../utils/c
  * Given the numeric inputs, selected wafer properties, and a yield model, calculate
  * the expected fabrication results.
  * @param values numeric values provided by the user via inputs
+ * @param dieCenteringEnabled center by die (true) or by wafer (false)
  * @param yieldModel mathematical model for calculating yield
  * @param shape wafer shape
  * @param panelSize chosen size of panel wafer
@@ -14,6 +15,7 @@ import { evaluateDiscInputs, evaluatePanelInputs, InputValues } from "../utils/c
  */
 export function useInputs(
 	values: InputValues,
+	dieCenteringEnabled: boolean,
 	yieldModel: keyof typeof yieldModels,
 	shape: WaferShape,
 	panelSize: keyof typeof panelSizes,
@@ -26,7 +28,7 @@ export function useInputs(
 		defectiveDies: 0,
 		partialDies: 0,
 		lostDies: 0,
-		fabYield: 0,
+		fabYield: 0
 	});
 
 	const {
@@ -36,7 +38,7 @@ export function useInputs(
 		defectRate,
 		lossyEdgeWidth,
 		scribeHoriz,
-		scribeVert,
+		scribeVert
 	} = values;
 
 	useEffect(() => {
@@ -48,11 +50,11 @@ export function useInputs(
 		}
 
 		if (shape === "Disc") {
-			setResults(evaluateDiscInputs(values, discSize, yieldModel));
+			setResults(evaluateDiscInputs(values, discSize, yieldModel, dieCenteringEnabled));
 		} else if (shape === "Panel") {
 			setResults(evaluatePanelInputs(values, panelSize, yieldModel));
 		}
-	}, [dieWidth, dieHeight, criticalArea, defectRate, lossyEdgeWidth, scribeHoriz, scribeVert, shape, panelSize, discSize, yieldModel]);
+	}, [dieWidth, dieHeight, criticalArea, defectRate, lossyEdgeWidth, scribeHoriz, scribeVert, shape, panelSize, discSize, yieldModel, dieCenteringEnabled]);
 
 
 	return results;

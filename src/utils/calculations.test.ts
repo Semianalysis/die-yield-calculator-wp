@@ -36,8 +36,8 @@ describe("Calculations", () => {
 
 	describe("rectanglesInCircle", () => {
 		it("calculates the correct number of possible rectangles in a circle", () => {
-			expect(rectanglesInCircle(100, 10, 10).length).toBe(60);
-			expect(rectanglesInCircle(100, 1, 1).length).toBe(7644);
+			expect(rectanglesInCircle(100, 10, 10, false).length).toBe(60);
+			expect(rectanglesInCircle(100, 1, 1, false).length).toBe(7644);
 		});
 	});
 
