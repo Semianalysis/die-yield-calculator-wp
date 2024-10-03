@@ -177,11 +177,15 @@ export function getFabYield(
 }
 
 function getDieStateCounts(dieStates: Array<DieState>) {
+	let goodDies = 0;
 	let defectiveDies = 0;
 	let partialDies = 0;
 	let lostDies = 0;
 	dieStates.forEach((dieState) => {
 		switch (dieState) {
+			case "good":
+				goodDies++;
+				break;
 			case "defective":
 				defectiveDies++;
 				break;
@@ -195,6 +199,7 @@ function getDieStateCounts(dieStates: Array<DieState>) {
 	});
 
 	return {
+		goodDies,
 		defectiveDies,
 		partialDies,
 		lostDies
@@ -265,11 +270,10 @@ export function evaluatePanelInputs(
 	);
 
 	const totalDies = positions.length;
-
-	const goodDies = Math.floor(fabYield * totalDies);
+	const nonDefectiveDies = Math.floor(fabYield * totalDies);
 
 	let dieStates = new Array(totalDies).fill("defective");
-	for (let i = 0; i < goodDies; i++) {
+	for (let i = 0; i < nonDefectiveDies; i++) {
 		dieStates[i] = "good";
 	}
 
@@ -309,7 +313,8 @@ export function evaluatePanelInputs(
 	const {
 		defectiveDies,
 		partialDies,
-		lostDies
+		lostDies,
+		goodDies
 	} = getDieStateCounts(dieStates);
 
 	return {
@@ -388,10 +393,10 @@ export function evaluateDiscInputs(
 		offsetY
 	);
 	let totalDies = positions.length;
-	const goodDies = Math.floor(fabYield * totalDies);
+	const nonDefectiveDies = Math.floor(fabYield * totalDies);
 
 	let dieStates = new Array(totalDies).fill("defective");
-	for (let i = 0; i < goodDies; i++) {
+	for (let i = 0; i < nonDefectiveDies; i++) {
 		dieStates[i] = "good";
 	}
 
@@ -427,7 +432,8 @@ export function evaluateDiscInputs(
 	const {
 		defectiveDies,
 		partialDies,
-		lostDies
+		lostDies,
+		goodDies,
 	} = getDieStateCounts(dieStates);
 
 	return {

@@ -41,4 +41,39 @@ describe("App", () => {
 		}));
 		await waitFor(() => expect(screen.getByText(/976/)).toBeInTheDocument());
 	});
+
+	it("displays a breakdown of die states whose sum equals the total number of dies", () => {
+		render(<App />);
+
+		// Get the number of dies displayed for each state and the total number of dies.
+		let totalDiesCount = 0;
+		let allStatesCount = 0;
+		[
+			"Total",
+			"Good",
+			"Defective",
+			"Partial",
+			"Lost"
+		].forEach((label) => {
+			const regex = new RegExp(`${label} Dies`);
+			const textNode = screen.getByText(regex).textContent;
+
+			if (textNode) {
+				const countStr = textNode.match(/\d+/)?.[0];
+
+				if (countStr) {
+					const countNum = parseInt(countStr);
+
+					if (label === "Total") {
+						totalDiesCount = countNum;
+					} else {
+						allStatesCount += countNum;
+					}
+				}
+			}
+		});
+
+		expect(totalDiesCount).toBeGreaterThan(0);
+		expect(totalDiesCount).toEqual(allStatesCount);
+	});
 });

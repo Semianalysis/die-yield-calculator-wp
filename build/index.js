@@ -1054,11 +1054,15 @@ function getFabYield(defectRate, criticalArea, model) {
   return _config__WEBPACK_IMPORTED_MODULE_0__.yieldModels[model].yield(defects);
 }
 function getDieStateCounts(dieStates) {
+  let goodDies = 0;
   let defectiveDies = 0;
   let partialDies = 0;
   let lostDies = 0;
   dieStates.forEach(dieState => {
     switch (dieState) {
+      case "good":
+        goodDies++;
+        break;
       case "defective":
         defectiveDies++;
         break;
@@ -1071,6 +1075,7 @@ function getDieStateCounts(dieStates) {
     }
   });
   return {
+    goodDies,
     defectiveDies,
     partialDies,
     lostDies
@@ -1113,9 +1118,9 @@ function evaluatePanelInputs(inputVals, selectedSize, selectedModel, waferCenter
   } = getDieOffset(inputVals, waferCenteringEnabled);
   const positions = rectanglesInRectangle(waferWidth, waferHeight, dieWidth, dieHeight, scribeVert, scribeHoriz, offsetX, offsetY);
   const totalDies = positions.length;
-  const goodDies = Math.floor(fabYield * totalDies);
+  const nonDefectiveDies = Math.floor(fabYield * totalDies);
   let dieStates = new Array(totalDies).fill("defective");
-  for (let i = 0; i < goodDies; i++) {
+  for (let i = 0; i < nonDefectiveDies; i++) {
     dieStates[i] = "good";
   }
   for (let i = dieStates.length - 1; i > 0; i--) {
@@ -1143,7 +1148,8 @@ function evaluatePanelInputs(inputVals, selectedSize, selectedModel, waferCenter
   const {
     defectiveDies,
     partialDies,
-    lostDies
+    lostDies,
+    goodDies
   } = getDieStateCounts(dieStates);
   return {
     dies,
@@ -1195,9 +1201,9 @@ function evaluateDiscInputs(inputVals, selectedSize, selectedModel, waferCenteri
   } = getDieOffset(inputVals, waferCenteringEnabled);
   const positions = rectanglesInCircle(waferWidth, dieWidth, dieHeight, scribeHoriz, scribeVert, offsetX, offsetY);
   let totalDies = positions.length;
-  const goodDies = Math.floor(fabYield * totalDies);
+  const nonDefectiveDies = Math.floor(fabYield * totalDies);
   let dieStates = new Array(totalDies).fill("defective");
-  for (let i = 0; i < goodDies; i++) {
+  for (let i = 0; i < nonDefectiveDies; i++) {
     dieStates[i] = "good";
   }
   for (let i = dieStates.length - 1; i > 0; i--) {
@@ -1227,7 +1233,8 @@ function evaluateDiscInputs(inputVals, selectedSize, selectedModel, waferCenteri
   const {
     defectiveDies,
     partialDies,
-    lostDies
+    lostDies,
+    goodDies
   } = getDieStateCounts(dieStates);
   return {
     dies,
