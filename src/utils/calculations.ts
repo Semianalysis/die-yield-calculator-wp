@@ -1,77 +1,13 @@
 import { discSizes, panelSizes, yieldModels } from "../config";
 import { DieState, FabResults } from "../types";
 import { isInsideAnotherPath } from "fork-ts-checker-webpack-plugin/lib/utils/path/is-inside-another-path";
-
-/**
- * Determine whether a target position (x, y) is inside or outside a circle
- * drawn from a center point (centerX, centerY) and extends outward to a given
- * size (radius)
- * @param x horizontal position of the target
- * @param y vertical position of the target
- * @param centerX horizontal center of the circle
- * @param centerY vertical center of the circle
- * @param radius size of the circle
- */
-export function isInsideCircle(x: number, y: number, centerX: number, centerY: number, radius: number) {
-	return Math.sqrt((x - centerX) ** 2 + (y - centerY) ** 2) <= radius;
-}
-
-/**
- * Determine whether coordinates are inside a rectangle of given coordinates and size
- * @param x horizontal position of the target
- * @param y vertical position of the target
- * @param rectangleX horizontal position of the rectangle top-left corner
- * @param rectangleY vertical position of the rectangle top-left corner
- * @param rectangleWidth
- * @param rectangleHeight
- */
-export function isInsideRectangle(
-	x: number,
-	y: number,
-	rectangleX: number,
-	rectangleY: number,
-	rectangleWidth: number,
-	rectangleHeight: number
-) {
-	return (
-		x > rectangleX &&
-		x < rectangleX + rectangleWidth &&
-		y > rectangleY &&
-		y < rectangleY + rectangleHeight
-	);
-}
-
-/**
- * Given a circle with the provided diameter, determine the maximum number of
- * rectangles of a given width and height would fit fully inside it, without
- * overlapping the edges
- * @param diameter size of the circle
- * @param rectWidth width of each rectangle
- * @param rectHeight height of each rectangle
- */
-export function rectanglesInCircle(diameter: number, rectWidth: number, rectHeight: number) {
-	const radius = diameter / 2;
-	const centerX = radius;
-	const centerY = radius;
-	let positions = [];
-
-	for (let x = 0; x <= diameter + rectWidth; x += rectWidth) {
-		for (let y = 0; y <= diameter + rectHeight; y += rectHeight) {
-			const corners = [
-				{ x: x, y: y },
-				{ x: x + rectWidth, y: y },
-				{ x: x, y: y + rectHeight },
-				{ x: x + rectWidth, y: y + rectHeight }
-			];
-
-			if (corners.every(corner => isInsideCircle(corner.x, corner.y, centerX, centerY, radius))) {
-				positions.push({ x: x, y: y });
-			}
-		}
-	}
-	return positions;
-}
-
+import {
+	getRectCorners,
+	isInsideCircle,
+	isInsideRectangle,
+	rectanglesInCircle,
+	rectanglesInRectangle
+} from "./geometry";
 
 /**
  * Determine the yield based on the provided model
@@ -92,12 +28,20 @@ export function getFabYield(
 	return yieldModels[model].yield(defects);
 }
 
-function getDieStateCounts(dieStates: Array<DieState>) {
+/**
+ * Count the total number of dies for each possible state (good, defective, partial, lost)
+ * @param dieStates array of die state strings
+ */
+export function getDieStateCounts(dieStates: Array<DieState>) {
+	let goodDies = 0;
 	let defectiveDies = 0;
 	let partialDies = 0;
 	let lostDies = 0;
 	dieStates.forEach((dieState) => {
 		switch (dieState) {
+			case "good":
+				goodDies++;
+				break;
 			case "defective":
 				defectiveDies++;
 				break;
@@ -111,6 +55,7 @@ function getDieStateCounts(dieStates: Array<DieState>) {
 	});
 
 	return {
+		goodDies,
 		defectiveDies,
 		partialDies,
 		lostDies
@@ -125,12 +70,37 @@ export type InputValues = {
 	lossyEdgeWidth: number;
 	scribeHoriz: number;
 	scribeVert: number;
+	transHoriz: number;
+	transVert: number;
 };
 
+/**
+ * Get the offset (x, y) to apply to all dies.
+ * @param inputs
+ * @param waferCenteringEnabled center by wafer or by die
+ */
+function getDieOffset(inputs: InputValues, waferCenteringEnabled: boolean) {
+	const dieOffsetX = waferCenteringEnabled ? inputs.scribeHoriz * 0.5 : inputs.dieWidth * -0.5;
+	const dieOffsetY = waferCenteringEnabled ? inputs.scribeVert * 0.5 : inputs.dieHeight * -0.5;
+	return {
+		x: dieOffsetX + inputs.transHoriz,
+		y: dieOffsetY + inputs.transVert
+	};
+}
+
+/**
+ * Use the given inputs to calculate how many dies would fit on the given panel
+ * shaped wafer and what each die's state would be.
+ * @param inputVals
+ * @param selectedSize
+ * @param selectedModel
+ * @param waferCenteringEnabled
+ */
 export function evaluatePanelInputs(
 	inputVals: InputValues,
 	selectedSize: keyof typeof panelSizes,
-	selectedModel: keyof typeof yieldModels
+	selectedModel: keyof typeof yieldModels,
+	waferCenteringEnabled: boolean
 ): FabResults {
 	const {
 		dieWidth,
@@ -139,29 +109,33 @@ export function evaluatePanelInputs(
 		defectRate,
 		scribeHoriz,
 		scribeVert,
-		lossyEdgeWidth
+		lossyEdgeWidth,
 	} = inputVals;
 	let dies = [];
 	const fabYield = getFabYield(defectRate, criticalArea, selectedModel);
 	const { waferWidth, waferHeight } = panelSizes[selectedSize];
-	const adjustedDieWidth = dieWidth + scribeHoriz * 2;
-	const adjustedDieHeight = dieHeight + scribeVert * 2;
 
-	const diesPerRow = Math.floor(waferWidth / adjustedDieWidth);
-	const diesPerColumn = Math.floor(waferHeight / adjustedDieHeight);
+	const {
+		x: offsetX,
+		y: offsetY
+	} = getDieOffset(inputVals, waferCenteringEnabled);
 
-	const centerHorz = (waferWidth - adjustedDieWidth * diesPerRow) / 2;
-	const centerVert = (waferHeight - adjustedDieHeight * diesPerColumn) / 2;
+	const positions = rectanglesInRectangle(
+		waferWidth,
+		waferHeight,
+		dieWidth,
+		dieHeight,
+		scribeVert,
+		scribeHoriz,
+		offsetX,
+		offsetY
+	);
 
-	const countWidth = Math.floor(waferWidth / (dieWidth + scribeHoriz * 2));
-	const countHeight = Math.floor(waferHeight / (dieHeight + scribeVert * 2));
-
-	const totalDies = countWidth * countHeight;
-
-	const goodDies = Math.floor(fabYield * totalDies);
+	const totalDies = positions.length;
+	const nonDefectiveDies = Math.floor(fabYield * totalDies);
 
 	let dieStates = new Array(totalDies).fill("defective");
-	for (let i = 0; i < goodDies; i++) {
+	for (let i = 0; i < nonDefectiveDies; i++) {
 		dieStates[i] = "good";
 	}
 
@@ -171,12 +145,8 @@ export function evaluatePanelInputs(
 	}
 
 	for (let i = 0; i < dieStates.length; i++) {
-		const row = Math.floor(i / diesPerRow);
-		const col = i % diesPerRow;
-		const x = col * adjustedDieWidth + centerHorz;
-		const y = row * adjustedDieHeight + centerVert;
-
-		const corners = getDieCorners(x, y, dieWidth, dieHeight);
+		const position = positions[i];
+		const corners = getRectCorners(position.x, position.y, dieWidth, dieHeight);
 		const goodCorners = corners.filter((corner) => isInsideRectangle(
 			corner.x,
 			corner.y,
@@ -195,8 +165,8 @@ export function evaluatePanelInputs(
 		dies[i] = {
 			key: i,
 			dieState: dieStates[i],
-			x,
-			y,
+			x: position.x,
+			y: position.y,
 			width: dieWidth,
 			height: dieHeight
 		};
@@ -205,7 +175,8 @@ export function evaluatePanelInputs(
 	const {
 		defectiveDies,
 		partialDies,
-		lostDies
+		lostDies,
+		goodDies
 	} = getDieStateCounts(dieStates);
 
 	return {
@@ -219,40 +190,19 @@ export function evaluatePanelInputs(
 	};
 }
 
-function getDieCorners(
-	dieX: number,
-	dieY: number,
-	dieWidth: number,
-	dieHeight: number
-) {
-	return [
-		{
-			// top left
-			x: dieX,
-			y: dieY
-		},
-		{
-			// top right
-			x: dieX + dieWidth,
-			y: dieY
-		},
-		{
-			// bottom left
-			x: dieX,
-			y: dieY + dieHeight
-		},
-		{
-			// bottom right
-			x: dieX + dieWidth,
-			y: dieY + dieHeight
-		}
-	];
-}
-
+/**
+ * Use the given inputs to calculate how many dies would fit on the given disc
+ * shaped wafer and what each die's state would be.
+ * @param inputVals
+ * @param selectedSize
+ * @param selectedModel
+ * @param waferCenteringEnabled
+ */
 export function evaluateDiscInputs(
 	inputVals: InputValues,
 	selectedSize: keyof typeof discSizes,
-	selectedModel: keyof typeof yieldModels
+	selectedModel: keyof typeof yieldModels,
+	waferCenteringEnabled: boolean
 ): FabResults {
 	const {
 		dieWidth,
@@ -268,13 +218,25 @@ export function evaluateDiscInputs(
 	const fabYield = getFabYield(defectRate, criticalArea, selectedModel);
 	const { waferWidth } = discSizes[selectedSize];
 
-	let positions = rectanglesInCircle(waferWidth, dieWidth + scribeHoriz * 2, dieHeight + scribeVert * 2);
-	let totalDies = positions.length;
+	const {
+		x: offsetX,
+		y: offsetY
+	} = getDieOffset(inputVals, waferCenteringEnabled);
 
-	const goodDies = Math.floor(fabYield * totalDies);
+	const positions = rectanglesInCircle(
+		waferWidth,
+		dieWidth,
+		dieHeight,
+		scribeHoriz,
+		scribeVert,
+		offsetX,
+		offsetY
+	);
+	let totalDies = positions.length;
+	const nonDefectiveDies = Math.floor(fabYield * totalDies);
 
 	let dieStates = new Array(totalDies).fill("defective");
-	for (let i = 0; i < goodDies; i++) {
+	for (let i = 0; i < nonDefectiveDies; i++) {
 		dieStates[i] = "good";
 	}
 
@@ -287,7 +249,7 @@ export function evaluateDiscInputs(
 		const x = positions[i].x;
 		const y = positions[i].y;
 
-		const corners = getDieCorners(x, y, dieWidth, dieHeight);
+		const corners = getRectCorners(x, y, dieWidth, dieHeight);
 		const radiusInsideLossyEdge = waferWidth / 2 - lossyEdgeWidth;
 		const goodCorners = corners.filter(corner => isInsideCircle(corner.x, corner.y, waferWidth / 2, waferWidth / 2, radiusInsideLossyEdge));
 
@@ -310,7 +272,8 @@ export function evaluateDiscInputs(
 	const {
 		defectiveDies,
 		partialDies,
-		lostDies
+		lostDies,
+		goodDies,
 	} = getDieStateCounts(dieStates);
 
 	return {

@@ -88,29 +88,39 @@ function App() {
 	const [dieWidth, setDieWidth] = useState<string>("8");
 	const [dieHeight, setDieHeight] = useState<string>("8");
 	const [aspectRatio, setAspectRatio] = useState<number>(1);
+	const [waferCenteringEnabled, setWaferCenteringEnabled] = useState(true);
 	const [maintainAspectRatio, setMaintainAspectRatio] = useState(true);
 	const [criticalArea, setCriticalArea] = useState<string>("64");
 	const [defectRate, setDefectRate] = useState<string>("0.1");
 	const [lossyEdgeWidth, setLossyEdgeWidth] = useState<string>("3");
 	const [allCritical, setAllCritical] = useState(true);
 	const [reticleLimit, setReticleLimit] = useState(true);
-	const [scribeHoriz, setScribeHoriz] = useState<string>("0.1");
-	const [scribeVert, setScribeVert] = useState<string>("0.1");
+	const [scribeHoriz, setScribeHoriz] = useState<string>("0.2");
+	const [scribeVert, setScribeVert] = useState<string>("0.2");
 	const [transHoriz, setTransHoriz] = useState<string>("0");
 	const [transVert, setTransVert] = useState<string>("0");
 	const [waferShape, setWaferShape] = useState<WaferShape>("Disc");
 	const [panelSize, setPanelSize] = useState<keyof typeof panelSizes>("s300mm");
 	const [discSize, setDiscSize] = useState<keyof typeof discSizes>("s300mm");
 	const [selectedModel, setSelectedModel] = useState<keyof typeof yieldModels>("murphy");
-	const results = useInputs({
-		dieWidth: parseFloat(dieWidth),
-		dieHeight: parseFloat(dieHeight),
-		criticalArea: parseFloat(criticalArea),
-		defectRate: parseFloat(defectRate),
-		lossyEdgeWidth: parseFloat(lossyEdgeWidth),
-		scribeHoriz: parseFloat(scribeHoriz),
-		scribeVert: parseFloat(scribeVert)
-	}, selectedModel, waferShape, panelSize, discSize);
+	const results = useInputs(
+		{
+			dieWidth: parseFloat(dieWidth),
+			dieHeight: parseFloat(dieHeight),
+			criticalArea: parseFloat(criticalArea),
+			defectRate: parseFloat(defectRate),
+			lossyEdgeWidth: parseFloat(lossyEdgeWidth),
+			scribeHoriz: parseFloat(scribeHoriz),
+			scribeVert: parseFloat(scribeVert),
+			transHoriz: parseFloat(transHoriz),
+			transVert: parseFloat(transVert),
+		},
+		waferCenteringEnabled,
+		selectedModel,
+		waferShape,
+		panelSize,
+		discSize,
+	);
 
 	useEffect(() => {
 		const dieWidthNum = parseFloat(dieWidth);
@@ -197,6 +207,10 @@ function App() {
 
 	const handleReticleLimitChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setReticleLimit(event.target.checked);
+	};
+
+	const handleWaferCenteringChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setWaferCenteringEnabled(event.target.checked);
 	};
 
 	const handleSizeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -338,6 +352,13 @@ function App() {
 							onChange={(event) => {
 								handleTransChange("vert")(event.target.value);
 							}}
+						/>
+					</div>
+					<div className="input-row">
+						<Checkbox
+							label="Wafer Centering"
+							onChange={handleWaferCenteringChange}
+							checked={waferCenteringEnabled}
 						/>
 					</div>
 					<hr />

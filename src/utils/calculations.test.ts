@@ -1,43 +1,47 @@
-import { getFabYield, isInsideCircle, rectanglesInCircle, isInsideRectangle } from "./calculations";
+import {
+	getDieStateCounts,
+	getFabYield
+} from "./calculations";
 import { yieldModels } from "../config";
+import { DieState } from "../types";
 
 describe("Calculations", () => {
-	describe("isInsideCircle", () => {
-		it("returns false for coordinates in the corner", () => {
-			expect(isInsideCircle(0, 0, 60, 60, 60)).toBe(false);
-			expect(isInsideCircle(0, 120, 60, 60, 60)).toBe(false);
-			expect(isInsideCircle(120, 0, 60, 60, 60)).toBe(false);
-			expect(isInsideCircle(120, 120, 60, 60, 60)).toBe(false);
+	describe("getDieStateCounts", () => {
+		it("counts only \"good\" dies", () => {
+			expect(getDieStateCounts(["good", "good", "good"])).toEqual({
+				goodDies: 3, defectiveDies: 0, partialDies: 0, lostDies: 0
+			});
 		});
 
-		it("returns true for coordinates in the center", () => {
-			expect(isInsideCircle(30, 30, 60, 60, 60)).toBe(true);
-			expect(isInsideCircle(90, 30, 60, 60, 60)).toBe(true);
-			expect(isInsideCircle(30, 90, 60, 60, 60)).toBe(true);
-			expect(isInsideCircle(90, 90, 60, 60, 60)).toBe(true);
-		});
-	});
-
-	describe("isInsideRectangle", () => {
-		it("returns false for coordinates in the corner", () => {
-			expect(isInsideRectangle(0, 0, 5, 5, 60, 60)).toBe(false);
-			expect(isInsideRectangle(0, 70, 5, 5, 60, 60)).toBe(false);
-			expect(isInsideRectangle(70, 0, 5, 5, 60, 60)).toBe(false);
-			expect(isInsideRectangle(70, 70, 5, 5, 60, 60)).toBe(false);
+		it("counts only \"defective\" dies", () => {
+			expect(getDieStateCounts(["defective", "defective"])).toEqual({
+				goodDies: 0, defectiveDies: 2, partialDies: 0, lostDies: 0
+			});
 		});
 
-		it("returns true for coordinates in the center", () => {
-			expect(isInsideRectangle(20, 20, 5, 5, 60, 60)).toBe(true);
-			expect(isInsideRectangle(40, 20, 5, 5, 60, 60)).toBe(true);
-			expect(isInsideRectangle(60, 40, 5, 5, 60, 60)).toBe(true);
-			expect(isInsideRectangle(60, 60, 5, 5, 60, 60)).toBe(true);
+		it("counts mixed die states", () => {
+			expect(getDieStateCounts(["good", "defective", "partial", "lost", "good"])).toEqual({
+				goodDies: 2, defectiveDies: 1, partialDies: 1, lostDies: 1
+			});
 		});
-	})
 
-	describe("rectanglesInCircle", () => {
-		it("calculates the correct number of possible rectangles in a circle", () => {
-			expect(rectanglesInCircle(100, 10, 10).length).toBe(60);
-			expect(rectanglesInCircle(100, 1, 1).length).toBe(7644);
+		it("returns all zeros for empty input", () => {
+			expect(getDieStateCounts([])).toEqual({
+				goodDies: 0, defectiveDies: 0, partialDies: 0, lostDies: 0
+			});
+		});
+
+		it("counts no \"good\" dies", () => {
+			expect(getDieStateCounts(["defective", "partial", "lost"])).toEqual({
+				goodDies: 0, defectiveDies: 1, partialDies: 1, lostDies: 1
+			});
+		});
+
+		it("asserts total die count matches input length", () => {
+			const dieStates: Array<DieState> = ["good", "defective", "partial", "lost", "good"];
+			const counts = getDieStateCounts(dieStates);
+			const totalCount = counts.goodDies + counts.defectiveDies + counts.partialDies + counts.lostDies;
+			expect(totalCount).toBe(dieStates.length);
 		});
 	});
 
