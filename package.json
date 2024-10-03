@@ -5,6 +5,7 @@
 	"author": "SemiAnalysis",
 	"license": "GPL-2.0-or-later",
 	"main": "build/index.js",
+	"files": [ "die-yield-calculator.php", "build" ],
 	"scripts": {
 		"build": "wp-scripts build --webpack-copy-php --experimental-modules",
 		"format": "wp-scripts format",
