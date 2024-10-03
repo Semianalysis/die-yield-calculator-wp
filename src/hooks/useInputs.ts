@@ -31,16 +31,6 @@ export function useInputs(
 		fabYield: 0
 	});
 
-	const {
-		dieWidth,
-		dieHeight,
-		criticalArea,
-		defectRate,
-		lossyEdgeWidth,
-		scribeHoriz,
-		scribeVert
-	} = values;
-
 	useEffect(() => {
 		// Bail out if we can't use any of the values
 		const invalidValues = Object.values(values).filter(isNaN);
@@ -54,7 +44,7 @@ export function useInputs(
 		} else if (shape === "Panel") {
 			setResults(evaluatePanelInputs(values, panelSize, yieldModel, dieCenteringEnabled));
 		}
-	}, [dieWidth, dieHeight, criticalArea, defectRate, lossyEdgeWidth, scribeHoriz, scribeVert, shape, panelSize, discSize, yieldModel, dieCenteringEnabled]);
+	}, [JSON.stringify(values), shape, panelSize, discSize, yieldModel, dieCenteringEnabled]);
 
 
 	return results;

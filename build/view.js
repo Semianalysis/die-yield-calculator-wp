@@ -76,7 +76,7 @@ function App() {
   const [dieWidth, setDieWidth] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("8");
   const [dieHeight, setDieHeight] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("8");
   const [aspectRatio, setAspectRatio] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(1);
-  const [dieCenteringEnabled, setDieCenteringEnabled] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+  const [dieCenteringEnabled, setDieCenteringEnabled] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
   const [maintainAspectRatio, setMaintainAspectRatio] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
   const [criticalArea, setCriticalArea] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("64");
   const [defectRate, setDefectRate] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0.1");
@@ -98,7 +98,9 @@ function App() {
     defectRate: parseFloat(defectRate),
     lossyEdgeWidth: parseFloat(lossyEdgeWidth),
     scribeHoriz: parseFloat(scribeHoriz),
-    scribeVert: parseFloat(scribeVert)
+    scribeVert: parseFloat(scribeVert),
+    transHoriz: parseFloat(transHoriz),
+    transVert: parseFloat(transVert)
   }, dieCenteringEnabled, selectedModel, waferShape, panelSize, discSize);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     const dieWidthNum = parseFloat(dieWidth);
@@ -801,15 +803,6 @@ function useInputs(values, dieCenteringEnabled, yieldModel, shape, panelSize, di
     lostDies: 0,
     fabYield: 0
   });
-  const {
-    dieWidth,
-    dieHeight,
-    criticalArea,
-    defectRate,
-    lossyEdgeWidth,
-    scribeHoriz,
-    scribeVert
-  } = values;
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     // Bail out if we can't use any of the values
     const invalidValues = Object.values(values).filter(isNaN);
@@ -821,7 +814,7 @@ function useInputs(values, dieCenteringEnabled, yieldModel, shape, panelSize, di
     } else if (shape === "Panel") {
       setResults((0,_utils_calculations__WEBPACK_IMPORTED_MODULE_1__.evaluatePanelInputs)(values, panelSize, yieldModel, dieCenteringEnabled));
     }
-  }, [dieWidth, dieHeight, criticalArea, defectRate, lossyEdgeWidth, scribeHoriz, scribeVert, shape, panelSize, discSize, yieldModel, dieCenteringEnabled]);
+  }, [JSON.stringify(values), shape, panelSize, discSize, yieldModel, dieCenteringEnabled]);
   return results;
 }
 
@@ -868,7 +861,7 @@ function isInsideCircle(x, y, centerX, centerY, radius) {
  * @param rectangleHeight
  */
 function isInsideRectangle(x, y, rectangleX, rectangleY, rectangleWidth, rectangleHeight) {
-  return x > rectangleX && x < rectangleX + rectangleWidth && y > rectangleY && y < rectangleY + rectangleHeight;
+  return x >= rectangleX && x <= rectangleX + rectangleWidth && y >= rectangleY && y <= rectangleY + rectangleHeight;
 }
 /**
  * Given a circle with the provided diameter, determine the maximum number of
@@ -884,7 +877,7 @@ function isInsideRectangle(x, y, rectangleX, rectangleY, rectangleWidth, rectang
  */
 function rectanglesInCircle(diameter, rectWidth, rectHeight, gapX, gapY, offsetX, offsetY) {
   const radius = diameter / 2;
-  const rectangles = [];
+  const positions = [];
   // Traverse each row, starting at the center
   for (let y = 0; y <= radius; y += rectHeight + gapY) {
     // Traverse each column, starting at the center
@@ -900,7 +893,7 @@ function rectanglesInCircle(diameter, rectWidth, rectHeight, gapX, gapY, offsetX
         const cornersWithinCircle = corners.filter(corner => isInsideCircle(corner.x, corner.y, 0, 0, radius));
         // If the rectangle fits within the circle, add it to the result
         if (cornersWithinCircle.length === 4) {
-          rectangles.push({
+          positions.push({
             // Add the radius back to the final coordinates so all are positive integers
             x: offsetRectX + radius,
             y: offsetRectY + radius
@@ -909,10 +902,10 @@ function rectanglesInCircle(diameter, rectWidth, rectHeight, gapX, gapY, offsetX
       }
     }
   }
-  return rectangles;
+  return positions;
 }
 function rectanglesInRectangle(outerRectWidth, outerRectHeight, innerRectWidth, innerRectHeight, gapX, gapY, offsetX, offsetY) {
-  const rectangles = [];
+  const positions = [];
   // Traverse each row, starting at the center
   for (let y = 0; y <= outerRectHeight / 2; y += innerRectHeight + gapY) {
     // Traverse each column, starting at the center
@@ -928,7 +921,7 @@ function rectanglesInRectangle(outerRectWidth, outerRectHeight, innerRectWidth, 
         const cornersWithinRectangle = corners.filter(corner => isInsideRectangle(corner.x, corner.y, outerRectWidth * -0.5, outerRectHeight * -0.5, outerRectWidth, outerRectHeight));
         // If the rectangle fits within the circle, add it to the result
         if (cornersWithinRectangle.length === 4) {
-          rectangles.push({
+          positions.push({
             // Add half the width/height back to the final coordinates so all are positive integers
             x: offsetRectX + outerRectWidth / 2,
             y: offsetRectY + outerRectHeight / 2
@@ -937,7 +930,7 @@ function rectanglesInRectangle(outerRectWidth, outerRectHeight, innerRectWidth, 
       }
     }
   }
-  return rectangles;
+  return positions;
 }
 /**
  * Determine the yield based on the provided model
@@ -975,7 +968,20 @@ function getDieStateCounts(dieStates) {
     lostDies
   };
 }
-function evaluatePanelInputs(inputVals, selectedSize, selectedModel, dieCenteringEnabled) {
+/**
+ * Get the offset (x, y) to apply to all dies.
+ * @param inputs
+ * @param waferCenteringEnabled center by wafer or by die
+ */
+function getDieOffset(inputs, waferCenteringEnabled) {
+  const dieOffsetX = waferCenteringEnabled ? inputs.scribeHoriz * 0.5 : inputs.dieWidth * -0.5;
+  const dieOffsetY = waferCenteringEnabled ? inputs.scribeVert * 0.5 : inputs.dieHeight * -0.5;
+  return {
+    x: dieOffsetX + inputs.transHoriz,
+    y: dieOffsetY + inputs.transVert
+  };
+}
+function evaluatePanelInputs(inputVals, selectedSize, selectedModel, waferCenteringEnabled) {
   const {
     dieWidth,
     dieHeight,
@@ -983,7 +989,9 @@ function evaluatePanelInputs(inputVals, selectedSize, selectedModel, dieCenterin
     defectRate,
     scribeHoriz,
     scribeVert,
-    lossyEdgeWidth
+    lossyEdgeWidth,
+    transHoriz,
+    transVert
   } = inputVals;
   let dies = [];
   const fabYield = getFabYield(defectRate, criticalArea, selectedModel);
@@ -991,7 +999,11 @@ function evaluatePanelInputs(inputVals, selectedSize, selectedModel, dieCenterin
     waferWidth,
     waferHeight
   } = _config__WEBPACK_IMPORTED_MODULE_0__.panelSizes[selectedSize];
-  const positions = rectanglesInRectangle(waferWidth, waferHeight, dieWidth, dieHeight, scribeVert, scribeHoriz, dieCenteringEnabled ? scribeHoriz * 0.5 : dieWidth * -0.5, dieCenteringEnabled ? scribeVert * 0.5 : dieHeight * -0.5);
+  const {
+    x: offsetX,
+    y: offsetY
+  } = getDieOffset(inputVals, waferCenteringEnabled);
+  const positions = rectanglesInRectangle(waferWidth, waferHeight, dieWidth, dieHeight, scribeVert, scribeHoriz, offsetX, offsetY);
   const totalDies = positions.length;
   const goodDies = Math.floor(fabYield * totalDies);
   let dieStates = new Array(totalDies).fill("defective");
@@ -1054,7 +1066,7 @@ function getDieCorners(dieX, dieY, dieWidth, dieHeight) {
     y: dieY + dieHeight
   }];
 }
-function evaluateDiscInputs(inputVals, selectedSize, selectedModel, dieCenteringEnabled) {
+function evaluateDiscInputs(inputVals, selectedSize, selectedModel, waferCenteringEnabled) {
   const {
     dieWidth,
     dieHeight,
@@ -1069,7 +1081,11 @@ function evaluateDiscInputs(inputVals, selectedSize, selectedModel, dieCentering
   const {
     waferWidth
   } = _config__WEBPACK_IMPORTED_MODULE_0__.discSizes[selectedSize];
-  const positions = rectanglesInCircle(waferWidth, dieWidth, dieHeight, scribeHoriz, scribeVert, dieCenteringEnabled ? scribeHoriz * 0.5 : dieWidth * -0.5, dieCenteringEnabled ? scribeVert * 0.5 : dieHeight * -0.5);
+  const {
+    x: offsetX,
+    y: offsetY
+  } = getDieOffset(inputVals, waferCenteringEnabled);
+  const positions = rectanglesInCircle(waferWidth, dieWidth, dieHeight, scribeHoriz, scribeVert, offsetX, offsetY);
   let totalDies = positions.length;
   const goodDies = Math.floor(fabYield * totalDies);
   let dieStates = new Array(totalDies).fill("defective");

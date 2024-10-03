@@ -88,7 +88,7 @@ function App() {
 	const [dieWidth, setDieWidth] = useState<string>("8");
 	const [dieHeight, setDieHeight] = useState<string>("8");
 	const [aspectRatio, setAspectRatio] = useState<number>(1);
-	const [dieCenteringEnabled, setDieCenteringEnabled] = useState(false);
+	const [dieCenteringEnabled, setDieCenteringEnabled] = useState(true);
 	const [maintainAspectRatio, setMaintainAspectRatio] = useState(true);
 	const [criticalArea, setCriticalArea] = useState<string>("64");
 	const [defectRate, setDefectRate] = useState<string>("0.1");
@@ -111,7 +111,9 @@ function App() {
 			defectRate: parseFloat(defectRate),
 			lossyEdgeWidth: parseFloat(lossyEdgeWidth),
 			scribeHoriz: parseFloat(scribeHoriz),
-			scribeVert: parseFloat(scribeVert)
+			scribeVert: parseFloat(scribeVert),
+			transHoriz: parseFloat(transHoriz),
+			transVert: parseFloat(transVert),
 		},
 		dieCenteringEnabled,
 		selectedModel,

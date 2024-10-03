@@ -34,14 +34,14 @@ export function isInsideRectangle(
 	rectangleHeight: number
 ) {
 	return (
-		x > rectangleX &&
-		x < rectangleX + rectangleWidth &&
-		y > rectangleY &&
-		y < rectangleY + rectangleHeight
+		x >= rectangleX &&
+		x <= rectangleX + rectangleWidth &&
+		y >= rectangleY &&
+		y <= rectangleY + rectangleHeight
 	);
 }
 
-type Rectangle = { x: number, y: number };
+type Position = { x: number, y: number };
 
 /**
  * Given a circle with the provided diameter, determine the maximum number of
@@ -62,17 +62,17 @@ export function rectanglesInCircle(
 	gapX: number,
 	gapY: number,
 	offsetX: number,
-	offsetY: number,
-): Rectangle[] {
+	offsetY: number
+): Position[] {
 	const radius = diameter / 2;
-	const rectangles: Rectangle[] = [];
+	const positions: Position[] = [];
 
 	// Traverse each row, starting at the center
 	for (let y = 0; y <= radius; y += rectHeight + gapY) {
 		// Traverse each column, starting at the center
 		for (let x = 0; x <= radius; x += rectWidth + gapX) {
 			// Draw four rectangles, one going in each direction (n, e, s, w)
-			for(let i = 0; i < 4; i++) {
+			for (let i = 0; i < 4; i++) {
 				const rectX = i % 2 === 0 ? x : -x - rectWidth - gapX;
 				const rectY = i % 3 === 0 ? y : -y - rectHeight - gapY;
 				// Apply the offset - used for centering
@@ -84,21 +84,21 @@ export function rectanglesInCircle(
 					rectWidth,
 					rectHeight
 				);
-				const cornersWithinCircle = corners.filter((corner) => isInsideCircle(corner.x, corner.y, 0, 0, radius))
+				const cornersWithinCircle = corners.filter((corner) => isInsideCircle(corner.x, corner.y, 0, 0, radius));
 
 				// If the rectangle fits within the circle, add it to the result
 				if (cornersWithinCircle.length === 4) {
-					rectangles.push({
+					positions.push({
 						// Add the radius back to the final coordinates so all are positive integers
 						x: offsetRectX + radius,
-						y: offsetRectY + radius,
+						y: offsetRectY + radius
 					});
 				}
 			}
 		}
 	}
 
-	return rectangles;
+	return positions;
 }
 
 export function rectanglesInRectangle(
@@ -109,16 +109,16 @@ export function rectanglesInRectangle(
 	gapX: number,
 	gapY: number,
 	offsetX: number,
-	offsetY: number,
-): Rectangle[] {
-	const rectangles: Rectangle[] = [];
+	offsetY: number
+): Position[] {
+	const positions: Position[] = [];
 
 	// Traverse each row, starting at the center
 	for (let y = 0; y <= outerRectHeight / 2; y += innerRectHeight + gapY) {
 		// Traverse each column, starting at the center
 		for (let x = 0; x <= outerRectWidth / 2; x += innerRectWidth + gapX) {
 			// Draw four rectangles, one going in each direction (n, e, s, w)
-			for(let i = 0; i < 4; i++) {
+			for (let i = 0; i < 4; i++) {
 				const rectX = i % 2 === 0 ? x : -x - innerRectWidth - gapX;
 				const rectY = i % 3 === 0 ? y : -y - innerRectHeight - gapY;
 				// Apply the offset - used for centering
@@ -137,23 +137,23 @@ export function rectanglesInRectangle(
 						outerRectWidth * -0.5,
 						outerRectHeight * -0.5,
 						outerRectWidth,
-						outerRectHeight,
+						outerRectHeight
 					)
 				);
 
 				// If the rectangle fits within the circle, add it to the result
 				if (cornersWithinRectangle.length === 4) {
-					rectangles.push({
+					positions.push({
 						// Add half the width/height back to the final coordinates so all are positive integers
 						x: offsetRectX + outerRectWidth / 2,
-						y: offsetRectY + outerRectHeight / 2,
+						y: offsetRectY + outerRectHeight / 2
 					});
 				}
 			}
 		}
 	}
 
-	return rectangles;
+	return positions;
 }
 
 
@@ -209,13 +209,29 @@ export type InputValues = {
 	lossyEdgeWidth: number;
 	scribeHoriz: number;
 	scribeVert: number;
+	transHoriz: number;
+	transVert: number;
 };
+
+/**
+ * Get the offset (x, y) to apply to all dies.
+ * @param inputs
+ * @param waferCenteringEnabled center by wafer or by die
+ */
+function getDieOffset(inputs: InputValues, waferCenteringEnabled: boolean): Position {
+	const dieOffsetX = waferCenteringEnabled ? inputs.scribeHoriz * 0.5 : inputs.dieWidth * -0.5;
+	const dieOffsetY = waferCenteringEnabled ? inputs.scribeVert * 0.5 : inputs.dieHeight * -0.5;
+	return {
+		x: dieOffsetX + inputs.transHoriz,
+		y: dieOffsetY + inputs.transVert
+	};
+}
 
 export function evaluatePanelInputs(
 	inputVals: InputValues,
 	selectedSize: keyof typeof panelSizes,
 	selectedModel: keyof typeof yieldModels,
-	dieCenteringEnabled: boolean,
+	waferCenteringEnabled: boolean
 ): FabResults {
 	const {
 		dieWidth,
@@ -224,11 +240,18 @@ export function evaluatePanelInputs(
 		defectRate,
 		scribeHoriz,
 		scribeVert,
-		lossyEdgeWidth
+		lossyEdgeWidth,
+		transHoriz,
+		transVert
 	} = inputVals;
 	let dies = [];
 	const fabYield = getFabYield(defectRate, criticalArea, selectedModel);
 	const { waferWidth, waferHeight } = panelSizes[selectedSize];
+
+	const {
+		x: offsetX,
+		y: offsetY
+	} = getDieOffset(inputVals, waferCenteringEnabled);
 
 	const positions = rectanglesInRectangle(
 		waferWidth,
@@ -237,8 +260,8 @@ export function evaluatePanelInputs(
 		dieHeight,
 		scribeVert,
 		scribeHoriz,
-		dieCenteringEnabled ? scribeHoriz * 0.5 : dieWidth * -0.5,
-		dieCenteringEnabled ? scribeVert * 0.5 : dieHeight * -0.5,
+		offsetX,
+		offsetY
 	);
 
 	const totalDies = positions.length;
@@ -334,7 +357,7 @@ export function evaluateDiscInputs(
 	inputVals: InputValues,
 	selectedSize: keyof typeof discSizes,
 	selectedModel: keyof typeof yieldModels,
-	dieCenteringEnabled: boolean,
+	waferCenteringEnabled: boolean
 ): FabResults {
 	const {
 		dieWidth,
@@ -350,14 +373,19 @@ export function evaluateDiscInputs(
 	const fabYield = getFabYield(defectRate, criticalArea, selectedModel);
 	const { waferWidth } = discSizes[selectedSize];
 
+	const {
+		x: offsetX,
+		y: offsetY
+	} = getDieOffset(inputVals, waferCenteringEnabled);
+
 	const positions = rectanglesInCircle(
 		waferWidth,
 		dieWidth,
 		dieHeight,
 		scribeHoriz,
 		scribeVert,
-		dieCenteringEnabled ? scribeHoriz * 0.5 : dieWidth * -0.5,
-		dieCenteringEnabled ? scribeVert * 0.5 : dieHeight * -0.5,
+		offsetX,
+		offsetY
 	);
 	let totalDies = positions.length;
 	const goodDies = Math.floor(fabYield * totalDies);
