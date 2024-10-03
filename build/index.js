@@ -706,7 +706,10 @@ function WaferCanvas(props) {
     setTiltX(tiltAngleXPercentage);
     setTiltY(tiltAngleYPercentage);
   }
-  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_parallax_tilt__WEBPACK_IMPORTED_MODULE_2__["default"], {
+  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    role: "presentation",
+    "aria-label": "A rendering of a silicon wafer"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_parallax_tilt__WEBPACK_IMPORTED_MODULE_2__["default"], {
     key: props.shape,
     glareEnable: true,
     glareMaxOpacity: 0.75,
@@ -715,7 +718,7 @@ function WaferCanvas(props) {
     className: `wafer-canvas ${props.shape === "Disc" ? "disc" : ""}`,
     glareBorderRadius: props.shape === "Disc" ? "100%" : "0"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    className: "mirror-background",
+    className: "wafer-canvas__mirror-background",
     style: {
       backgroundPositionX: `${tiltY / 2 + tiltX / 4}% `
     }
@@ -733,7 +736,9 @@ function WaferCanvas(props) {
     waferWidth: props.waferWidth,
     waferHeight: props.waferHeight,
     shape: props.shape
-  }));
+  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "wafer-canvas__watermark"
+  })));
 }
 
 /***/ }),

@@ -223,37 +223,40 @@ export function WaferCanvas(props: {
 	}
 
 	return (
-		<Tilt
-			key={props.shape}
-			glareEnable={true}
-			glareMaxOpacity={0.75}
-			scale={1.05}
-			onMove={onMove}
-			className={`wafer-canvas ${props.shape === "Disc" ? "disc" : ""}`}
-			glareBorderRadius={props.shape === "Disc" ? "100%" : "0"}
-		>
-			<div
-				className="mirror-background"
-				style={{
-					backgroundPositionX: `${(tiltY / 2) + (tiltX / 4)}% `
-				}}></div>
-			<DieDecorativeCanvas
-				results={props.results}
-				shape={props.shape}
-				waferWidth={props.waferWidth}
-				waferHeight={props.waferHeight}
-			/>
-			<DieMapCanvas
-				results={props.results}
-				waferWidth={props.waferWidth}
-				waferHeight={props.waferHeight}
-			/>
-			<LossyEdgeMarker
-				lossyEdgeWidth={props.lossyEdgeWidth}
-				waferWidth={props.waferWidth}
-				waferHeight={props.waferHeight}
-				shape={props.shape}
-			/>
-		</Tilt>
+		<div role="presentation" aria-label="A rendering of a silicon wafer">
+			<Tilt
+				key={props.shape}
+				glareEnable={true}
+				glareMaxOpacity={0.75}
+				scale={1.05}
+				onMove={onMove}
+				className={`wafer-canvas ${props.shape === "Disc" ? "disc" : ""}`}
+				glareBorderRadius={props.shape === "Disc" ? "100%" : "0"}
+			>
+				<div
+					className="wafer-canvas__mirror-background"
+					style={{
+						backgroundPositionX: `${(tiltY / 2) + (tiltX / 4)}% `
+					}}></div>
+				<DieDecorativeCanvas
+					results={props.results}
+					shape={props.shape}
+					waferWidth={props.waferWidth}
+					waferHeight={props.waferHeight}
+				/>
+				<DieMapCanvas
+					results={props.results}
+					waferWidth={props.waferWidth}
+					waferHeight={props.waferHeight}
+				/>
+				<LossyEdgeMarker
+					lossyEdgeWidth={props.lossyEdgeWidth}
+					waferWidth={props.waferWidth}
+					waferHeight={props.waferHeight}
+					shape={props.shape}
+				/>
+				<div className="wafer-canvas__watermark"></div>
+			</Tilt>
+		</div>
 	);
 }
