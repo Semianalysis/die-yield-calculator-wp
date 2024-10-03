@@ -30,11 +30,13 @@
   margin: 2em 0;
 }
 .wp-block-create-block-die-yield-calculator .logo {
-  display: block;
-  margin-right: auto;
+  display: none;
 }
-.wp-block-create-block-die-yield-calculator .logo img {
-  width: 120px;
+@media (min-width: 768px) {
+  .wp-block-create-block-die-yield-calculator .logo {
+    display: block;
+    margin: 0 auto 0 0;
+  }
 }
 .wp-block-create-block-die-yield-calculator .columns {
   display: grid;

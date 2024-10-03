@@ -36,11 +36,11 @@
 	}
 
 	.logo {
-		display: block;
-		margin-left: auto;
+		display: none;
 
-		img {
-			width: 120px;
+		@media (min-width: 768px) {
+			display: block;
+			margin: 0 0 0 auto;
 		}
 	}
 
