@@ -882,7 +882,7 @@ function rectanglesInCircle(diameter, rectWidth, rectHeight, gapX, gapY, offsetX
   for (let y = 0; y <= radius; y += rectHeight + gapY) {
     // Traverse each column, starting at the center
     for (let x = 0; x <= radius; x += rectWidth + gapX) {
-      // Draw four rectangles, one going in each direction (n, e, s, w)
+      // Draw four rectangles, one in each quadrant (se, sw, nw, ne)
       for (let i = 0; i < 4; i++) {
         const rectX = i % 2 === 0 ? x : -x - rectWidth - gapX;
         const rectY = i % 3 === 0 ? y : -y - rectHeight - gapY;
@@ -910,7 +910,7 @@ function rectanglesInRectangle(outerRectWidth, outerRectHeight, innerRectWidth, 
   for (let y = 0; y <= outerRectHeight / 2; y += innerRectHeight + gapY) {
     // Traverse each column, starting at the center
     for (let x = 0; x <= outerRectWidth / 2; x += innerRectWidth + gapX) {
-      // Draw four rectangles, one going in each direction (n, e, s, w)
+      // Draw four rectangles, one in each quadrant (se, sw, nw, ne)
       for (let i = 0; i < 4; i++) {
         const rectX = i % 2 === 0 ? x : -x - innerRectWidth - gapX;
         const rectY = i % 3 === 0 ? y : -y - innerRectHeight - gapY;
