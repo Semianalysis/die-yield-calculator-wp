@@ -36,11 +36,11 @@
 	}
 
 	.logo {
-		display: block;
-		margin-left: auto;
+		display: none;
 
-		img {
-			width: 120px;
+		@media (min-width: 768px) {
+			display: block;
+			margin: 0 0 0 auto;
 		}
 	}
 
@@ -286,7 +286,6 @@
 	}
 
 	.wafer-canvas {
-		display: inline-block;
 		line-height: 0;
 		margin-bottom: 2em;
 		box-shadow: 0.25em 0.5em 1.5em black;
@@ -294,7 +293,20 @@
 		background-color: #b88ecb;
 		touch-action: none;
 
-		.mirror-background {
+		.wafer-canvas__watermark {
+			position: absolute;
+			top: 0;
+			left: 0;
+			bottom: 0;
+			right: 0;
+			background-image: url("../src/assets/semianalysis-logo-mark-only.png");
+			background-repeat: no-repeat;
+			background-position: 50% 50%;
+			background-size: 60%;
+			opacity: 0.075;
+		}
+
+		.wafer-canvas__mirror-background {
 			border-top: 1px solid rgba(255, 255, 255, 0.5);
 			border-bottom: 1px solid rgba(0, 0, 0, 0.5);
 			background-image: linear-gradient(90deg,
@@ -316,22 +328,22 @@
 			left: 0;
 		}
 
-		&.disc {
+		&.wafer-canvas--disc {
 			&,
-			.mirror-background {
+			.wafer-canvas__mirror-background {
 				border-radius: 100%;
 				transform: rotate(45deg);
 				overflow: hidden;
 			}
 		}
 
-		.die-decorative {
+		.wafer-canvas__die-decorative {
 			max-width: 100%;
 			position: relative;
 		}
 
-		.canvas__edge,
-		.die-map {
+		.wafer-canvas__edge,
+		.wafer-canvas__die-map {
 			position: absolute;
 			width: 100%;
 			height: 100%;
@@ -343,13 +355,13 @@
 		&:hover {
 			box-shadow: 0.125em 0.25em 4em rgba(0, 0, 0, 0.75);
 
-			.die-map,
-			.canvas__edge {
+			.wafer-canvas__die-map,
+			.wafer-canvas__edge {
 				opacity: 0.2;
 			}
 		}
 
-		.too-many-dies {
+		.wafer-canvas__too-many-dies {
 			position: relative;
 
 			span {

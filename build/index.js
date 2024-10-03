@@ -433,7 +433,9 @@ function App() {
     className: "logo"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("img", {
     alt: "SemiAnalysis logo",
-    src: "https://semianalysis-production.mystagingwebsite.com/wp-content/uploads/2024/07/logo-300x124.png"
+    src: "http://semianalysis-wp-sandbox.local/wp-content/plugins/die-yield-calculator-wp/src/assets/semianalysis-logo-full-360px.png",
+    width: 180,
+    height: 60
   })))));
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (App);
@@ -601,14 +603,14 @@ function DieMapCanvas(props) {
   }, [JSON.stringify(props.results)]);
   if (props.results.dies.length > maxDies) {
     return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-      className: "too-many-dies",
+      className: "wafer-canvas__too-many-dies",
       style: {
         paddingBottom: `${props.waferWidth / props.waferHeight * 100}%`
       }
     }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null, "Too many dies to visualize"));
   }
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("canvas", {
-    className: "die-map",
+    className: "wafer-canvas__die-map",
     ref: canvasEl,
     width: props.waferWidth * mmToPxScale,
     height: props.waferHeight * mmToPxScale
@@ -643,7 +645,7 @@ function DieDecorativeCanvas(props) {
     return null;
   }
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("canvas", {
-    className: "die-decorative",
+    className: "wafer-canvas__die-decorative",
     ref: canvasEl,
     width: props.waferWidth * mmToPxScale,
     height: props.waferHeight * mmToPxScale
@@ -683,7 +685,7 @@ function LossyEdgeMarker(props) {
     }
   }, [props.lossyEdgeWidth, props.shape, props.waferWidth, props.waferHeight]);
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("canvas", {
-    className: "canvas__edge",
+    className: "wafer-canvas__edge",
     ref: canvasEl,
     width: waferWidthPx,
     height: waferHeightPx
@@ -704,16 +706,19 @@ function WaferCanvas(props) {
     setTiltX(tiltAngleXPercentage);
     setTiltY(tiltAngleYPercentage);
   }
-  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_parallax_tilt__WEBPACK_IMPORTED_MODULE_2__["default"], {
+  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    role: "presentation",
+    "aria-label": "A rendering of a silicon wafer"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_parallax_tilt__WEBPACK_IMPORTED_MODULE_2__["default"], {
     key: props.shape,
     glareEnable: true,
     glareMaxOpacity: 0.75,
     scale: 1.05,
     onMove: onMove,
-    className: `wafer-canvas ${props.shape === "Disc" ? "disc" : ""}`,
+    className: `wafer-canvas ${props.shape === "Disc" ? "wafer-canvas--disc" : ""}`,
     glareBorderRadius: props.shape === "Disc" ? "100%" : "0"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    className: "mirror-background",
+    className: "wafer-canvas__mirror-background",
     style: {
       backgroundPositionX: `${tiltY / 2 + tiltX / 4}% `
     }
@@ -731,7 +736,9 @@ function WaferCanvas(props) {
     waferWidth: props.waferWidth,
     waferHeight: props.waferHeight,
     shape: props.shape
-  }));
+  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "wafer-canvas__watermark"
+  })));
 }
 
 /***/ }),

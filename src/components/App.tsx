@@ -398,7 +398,9 @@ function App() {
 					>
 						<img
 							alt="SemiAnalysis logo"
-							src="https://semianalysis-production.mystagingwebsite.com/wp-content/uploads/2024/07/logo-300x124.png"
+							src="http://semianalysis-wp-sandbox.local/wp-content/plugins/die-yield-calculator-wp/src/assets/semianalysis-logo-full-360px.png"
+							width={180}
+							height={60}
 						/>
 					</a>
 				</div>

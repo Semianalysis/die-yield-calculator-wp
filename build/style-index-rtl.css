@@ -30,11 +30,13 @@
   margin: 2em 0;
 }
 .wp-block-create-block-die-yield-calculator .logo {
-  display: block;
-  margin-right: auto;
+  display: none;
 }
-.wp-block-create-block-die-yield-calculator .logo img {
-  width: 120px;
+@media (min-width: 768px) {
+  .wp-block-create-block-die-yield-calculator .logo {
+    display: block;
+    margin: 0 auto 0 0;
+  }
 }
 .wp-block-create-block-die-yield-calculator .columns {
   display: grid;
@@ -259,7 +261,6 @@
   margin-left: 1em;
 }
 .wp-block-create-block-die-yield-calculator .wafer-canvas {
-  display: inline-block;
   line-height: 0;
   margin-bottom: 2em;
   box-shadow: -0.25em 0.5em 1.5em black;
@@ -267,7 +268,19 @@
   background-color: #b88ecb;
   touch-action: none;
 }
-.wp-block-create-block-die-yield-calculator .wafer-canvas .mirror-background {
+.wp-block-create-block-die-yield-calculator .wafer-canvas .wafer-canvas__watermark {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-image: url(images/semianalysis-logo-mark-only.7da88c9a.png);
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  background-size: 60%;
+  opacity: 0.075;
+}
+.wp-block-create-block-die-yield-calculator .wafer-canvas .wafer-canvas__mirror-background {
   border-top: 1px solid rgba(255, 255, 255, 0.5);
   border-bottom: 1px solid rgba(0, 0, 0, 0.5);
   background-image: linear-gradient(-90deg, #b88ecb, #8eb4cd 12.5%, #9ad9cc 40%, #cc9e52 45%, #e15a4d 50%, #e1b268 56%, #8fd9ca 64%, #8eb4cd 82.5%, #b88ecb 100%);
@@ -278,18 +291,18 @@
   bottom: 0;
   right: 0;
 }
-.wp-block-create-block-die-yield-calculator .wafer-canvas.disc,
-.wp-block-create-block-die-yield-calculator .wafer-canvas.disc .mirror-background {
+.wp-block-create-block-die-yield-calculator .wafer-canvas.wafer-canvas--disc,
+.wp-block-create-block-die-yield-calculator .wafer-canvas.wafer-canvas--disc .wafer-canvas__mirror-background {
   border-radius: 100%;
   transform: rotate(-45deg);
   overflow: hidden;
 }
-.wp-block-create-block-die-yield-calculator .wafer-canvas .die-decorative {
+.wp-block-create-block-die-yield-calculator .wafer-canvas .wafer-canvas__die-decorative {
   max-width: 100%;
   position: relative;
 }
-.wp-block-create-block-die-yield-calculator .wafer-canvas .canvas__edge,
-.wp-block-create-block-die-yield-calculator .wafer-canvas .die-map {
+.wp-block-create-block-die-yield-calculator .wafer-canvas .wafer-canvas__edge,
+.wp-block-create-block-die-yield-calculator .wafer-canvas .wafer-canvas__die-map {
   position: absolute;
   width: 100%;
   height: 100%;
@@ -300,14 +313,14 @@
 .wp-block-create-block-die-yield-calculator .wafer-canvas:hover {
   box-shadow: -0.125em 0.25em 4em rgba(0, 0, 0, 0.75);
 }
-.wp-block-create-block-die-yield-calculator .wafer-canvas:hover .die-map,
-.wp-block-create-block-die-yield-calculator .wafer-canvas:hover .canvas__edge {
+.wp-block-create-block-die-yield-calculator .wafer-canvas:hover .wafer-canvas__die-map,
+.wp-block-create-block-die-yield-calculator .wafer-canvas:hover .wafer-canvas__edge {
   opacity: 0.2;
 }
-.wp-block-create-block-die-yield-calculator .wafer-canvas .too-many-dies {
+.wp-block-create-block-die-yield-calculator .wafer-canvas .wafer-canvas__too-many-dies {
   position: relative;
 }
-.wp-block-create-block-die-yield-calculator .wafer-canvas .too-many-dies span {
+.wp-block-create-block-die-yield-calculator .wafer-canvas .wafer-canvas__too-many-dies span {
   display: block;
   position: absolute;
   width: 100%;
