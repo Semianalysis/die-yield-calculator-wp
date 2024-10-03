@@ -938,108 +938,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   evaluateDiscInputs: () => (/* binding */ evaluateDiscInputs),
 /* harmony export */   evaluatePanelInputs: () => (/* binding */ evaluatePanelInputs),
-/* harmony export */   getFabYield: () => (/* binding */ getFabYield),
-/* harmony export */   isInsideCircle: () => (/* binding */ isInsideCircle),
-/* harmony export */   isInsideRectangle: () => (/* binding */ isInsideRectangle),
-/* harmony export */   rectanglesInCircle: () => (/* binding */ rectanglesInCircle),
-/* harmony export */   rectanglesInRectangle: () => (/* binding */ rectanglesInRectangle)
+/* harmony export */   getDieStateCounts: () => (/* binding */ getDieStateCounts),
+/* harmony export */   getFabYield: () => (/* binding */ getFabYield)
 /* harmony export */ });
 /* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../config */ "./src/config/index.ts");
+/* harmony import */ var _geometry__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./geometry */ "./src/utils/geometry.ts");
 
-/**
- * Determine whether a target position (x, y) is inside or outside a circle
- * drawn from a center point (centerX, centerY) and extends outward to a given
- * size (radius)
- * @param x horizontal position of the target
- * @param y vertical position of the target
- * @param centerX horizontal center of the circle
- * @param centerY vertical center of the circle
- * @param radius size of the circle
- */
-function isInsideCircle(x, y, centerX, centerY, radius) {
-  return Math.sqrt((x - centerX) ** 2 + (y - centerY) ** 2) <= radius;
-}
-/**
- * Determine whether coordinates are inside a rectangle of given coordinates and size
- * @param x horizontal position of the target
- * @param y vertical position of the target
- * @param rectangleX horizontal position of the rectangle top-left corner
- * @param rectangleY vertical position of the rectangle top-left corner
- * @param rectangleWidth
- * @param rectangleHeight
- */
-function isInsideRectangle(x, y, rectangleX, rectangleY, rectangleWidth, rectangleHeight) {
-  return x >= rectangleX && x <= rectangleX + rectangleWidth && y >= rectangleY && y <= rectangleY + rectangleHeight;
-}
-/**
- * Given a circle with the provided diameter, determine the maximum number of
- * rectangles of a given width and height would fit fully inside it, without
- * overlapping the edges
- * @param diameter size of the circle
- * @param rectWidth width of each rectangle
- * @param rectHeight height of each rectangle
- * @param gapX horizontal space between each rectangle
- * @param gapY vertical space between each rectangle
- * @param offsetX amount by which to offset each rectangle horizontally
- * @param offsetY amount by which to offset each rectangle vertically
- */
-function rectanglesInCircle(diameter, rectWidth, rectHeight, gapX, gapY, offsetX, offsetY) {
-  const radius = diameter / 2;
-  const positions = [];
-  // Traverse each row, starting at the center
-  for (let y = 0; y <= radius; y += rectHeight + gapY) {
-    // Traverse each column, starting at the center
-    for (let x = 0; x <= radius; x += rectWidth + gapX) {
-      // Draw four rectangles, one in each quadrant (se, sw, nw, ne)
-      for (let i = 0; i < 4; i++) {
-        const rectX = i % 2 === 0 ? x : -x - rectWidth - gapX;
-        const rectY = i % 3 === 0 ? y : -y - rectHeight - gapY;
-        // Apply the offset - used for centering
-        const offsetRectX = rectX + offsetX;
-        const offsetRectY = rectY + offsetY;
-        const corners = getDieCorners(offsetRectX, offsetRectY, rectWidth, rectHeight);
-        const cornersWithinCircle = corners.filter(corner => isInsideCircle(corner.x, corner.y, 0, 0, radius));
-        // If the rectangle fits within the circle, add it to the result
-        if (cornersWithinCircle.length === 4) {
-          positions.push({
-            // Add the radius back to the final coordinates so all are positive integers
-            x: offsetRectX + radius,
-            y: offsetRectY + radius
-          });
-        }
-      }
-    }
-  }
-  return positions;
-}
-function rectanglesInRectangle(outerRectWidth, outerRectHeight, innerRectWidth, innerRectHeight, gapX, gapY, offsetX, offsetY) {
-  const positions = [];
-  // Traverse each row, starting at the center
-  for (let y = 0; y <= outerRectHeight / 2; y += innerRectHeight + gapY) {
-    // Traverse each column, starting at the center
-    for (let x = 0; x <= outerRectWidth / 2; x += innerRectWidth + gapX) {
-      // Draw four rectangles, one in each quadrant (se, sw, nw, ne)
-      for (let i = 0; i < 4; i++) {
-        const rectX = i % 2 === 0 ? x : -x - innerRectWidth - gapX;
-        const rectY = i % 3 === 0 ? y : -y - innerRectHeight - gapY;
-        // Apply the offset - used for centering
-        const offsetRectX = rectX + offsetX;
-        const offsetRectY = rectY + offsetY;
-        const corners = getDieCorners(offsetRectX, offsetRectY, innerRectWidth, innerRectHeight);
-        const cornersWithinRectangle = corners.filter(corner => isInsideRectangle(corner.x, corner.y, outerRectWidth * -0.5, outerRectHeight * -0.5, outerRectWidth, outerRectHeight));
-        // If the rectangle fits within the circle, add it to the result
-        if (cornersWithinRectangle.length === 4) {
-          positions.push({
-            // Add half the width/height back to the final coordinates so all are positive integers
-            x: offsetRectX + outerRectWidth / 2,
-            y: offsetRectY + outerRectHeight / 2
-          });
-        }
-      }
-    }
-  }
-  return positions;
-}
+
 /**
  * Determine the yield based on the provided model
  * @param defectRate decimal representing how many dies will be defective
@@ -1053,6 +958,10 @@ function getFabYield(defectRate, criticalArea, model) {
   const defects = criticalArea * defectRate / 100;
   return _config__WEBPACK_IMPORTED_MODULE_0__.yieldModels[model].yield(defects);
 }
+/**
+ * Count the total number of dies for each possible state (good, defective, partial, lost)
+ * @param dieStates array of die state strings
+ */
 function getDieStateCounts(dieStates) {
   let goodDies = 0;
   let defectiveDies = 0;
@@ -1094,6 +1003,14 @@ function getDieOffset(inputs, waferCenteringEnabled) {
     y: dieOffsetY + inputs.transVert
   };
 }
+/**
+ * Use the given inputs to calculate how many dies would fit on the given panel
+ * shaped wafer and what each die's state would be.
+ * @param inputVals
+ * @param selectedSize
+ * @param selectedModel
+ * @param waferCenteringEnabled
+ */
 function evaluatePanelInputs(inputVals, selectedSize, selectedModel, waferCenteringEnabled) {
   const {
     dieWidth,
@@ -1102,9 +1019,7 @@ function evaluatePanelInputs(inputVals, selectedSize, selectedModel, waferCenter
     defectRate,
     scribeHoriz,
     scribeVert,
-    lossyEdgeWidth,
-    transHoriz,
-    transVert
+    lossyEdgeWidth
   } = inputVals;
   let dies = [];
   const fabYield = getFabYield(defectRate, criticalArea, selectedModel);
@@ -1116,7 +1031,7 @@ function evaluatePanelInputs(inputVals, selectedSize, selectedModel, waferCenter
     x: offsetX,
     y: offsetY
   } = getDieOffset(inputVals, waferCenteringEnabled);
-  const positions = rectanglesInRectangle(waferWidth, waferHeight, dieWidth, dieHeight, scribeVert, scribeHoriz, offsetX, offsetY);
+  const positions = (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.rectanglesInRectangle)(waferWidth, waferHeight, dieWidth, dieHeight, scribeVert, scribeHoriz, offsetX, offsetY);
   const totalDies = positions.length;
   const nonDefectiveDies = Math.floor(fabYield * totalDies);
   let dieStates = new Array(totalDies).fill("defective");
@@ -1129,8 +1044,8 @@ function evaluatePanelInputs(inputVals, selectedSize, selectedModel, waferCenter
   }
   for (let i = 0; i < dieStates.length; i++) {
     const position = positions[i];
-    const corners = getDieCorners(position.x, position.y, dieWidth, dieHeight);
-    const goodCorners = corners.filter(corner => isInsideRectangle(corner.x, corner.y, lossyEdgeWidth, lossyEdgeWidth, waferWidth - lossyEdgeWidth * 2, waferHeight - lossyEdgeWidth * 2));
+    const corners = (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.getRectCorners)(position.x, position.y, dieWidth, dieHeight);
+    const goodCorners = corners.filter(corner => (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.isInsideRectangle)(corner.x, corner.y, lossyEdgeWidth, lossyEdgeWidth, waferWidth - lossyEdgeWidth * 2, waferHeight - lossyEdgeWidth * 2));
     if (!goodCorners.length) {
       dieStates[i] = "lost";
     } else if (goodCorners.length < 4) {
@@ -1161,25 +1076,14 @@ function evaluatePanelInputs(inputVals, selectedSize, selectedModel, waferCenter
     fabYield
   };
 }
-function getDieCorners(dieX, dieY, dieWidth, dieHeight) {
-  return [{
-    // top left
-    x: dieX,
-    y: dieY
-  }, {
-    // top right
-    x: dieX + dieWidth,
-    y: dieY
-  }, {
-    // bottom left
-    x: dieX,
-    y: dieY + dieHeight
-  }, {
-    // bottom right
-    x: dieX + dieWidth,
-    y: dieY + dieHeight
-  }];
-}
+/**
+ * Use the given inputs to calculate how many dies would fit on the given disc
+ * shaped wafer and what each die's state would be.
+ * @param inputVals
+ * @param selectedSize
+ * @param selectedModel
+ * @param waferCenteringEnabled
+ */
 function evaluateDiscInputs(inputVals, selectedSize, selectedModel, waferCenteringEnabled) {
   const {
     dieWidth,
@@ -1199,7 +1103,7 @@ function evaluateDiscInputs(inputVals, selectedSize, selectedModel, waferCenteri
     x: offsetX,
     y: offsetY
   } = getDieOffset(inputVals, waferCenteringEnabled);
-  const positions = rectanglesInCircle(waferWidth, dieWidth, dieHeight, scribeHoriz, scribeVert, offsetX, offsetY);
+  const positions = (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.rectanglesInCircle)(waferWidth, dieWidth, dieHeight, scribeHoriz, scribeVert, offsetX, offsetY);
   let totalDies = positions.length;
   const nonDefectiveDies = Math.floor(fabYield * totalDies);
   let dieStates = new Array(totalDies).fill("defective");
@@ -1213,9 +1117,9 @@ function evaluateDiscInputs(inputVals, selectedSize, selectedModel, waferCenteri
   for (let i = 0; i < dieStates.length; i++) {
     const x = positions[i].x;
     const y = positions[i].y;
-    const corners = getDieCorners(x, y, dieWidth, dieHeight);
+    const corners = (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.getRectCorners)(x, y, dieWidth, dieHeight);
     const radiusInsideLossyEdge = waferWidth / 2 - lossyEdgeWidth;
-    const goodCorners = corners.filter(corner => isInsideCircle(corner.x, corner.y, waferWidth / 2, waferWidth / 2, radiusInsideLossyEdge));
+    const goodCorners = corners.filter(corner => (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.isInsideCircle)(corner.x, corner.y, waferWidth / 2, waferWidth / 2, radiusInsideLossyEdge));
     if (!goodCorners.length) {
       dieStates[i] = "lost";
     } else if (goodCorners.length < 4) {
@@ -1289,6 +1193,156 @@ function createHatchingCanvasPattern(context) {
   // Create the pattern from the offscreen canvas
   pattern = context.createPattern(patternCanvas, "repeat");
   return pattern;
+}
+
+/***/ }),
+
+/***/ "./src/utils/geometry.ts":
+/*!*******************************!*\
+  !*** ./src/utils/geometry.ts ***!
+  \*******************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   getRectCorners: () => (/* binding */ getRectCorners),
+/* harmony export */   isInsideCircle: () => (/* binding */ isInsideCircle),
+/* harmony export */   isInsideRectangle: () => (/* binding */ isInsideRectangle),
+/* harmony export */   rectanglesInCircle: () => (/* binding */ rectanglesInCircle),
+/* harmony export */   rectanglesInRectangle: () => (/* binding */ rectanglesInRectangle)
+/* harmony export */ });
+/**
+ * Calculate the coordinates of all four corners of a rectangle, given a starting
+ * point and its dimensions.
+ * @param x horizontal coordinate of rectangle's top-left corner
+ * @param y vertical coordinate of rectangle's top-left corner
+ * @param width width of rectangle
+ * @param height height of rectangle
+ */
+function getRectCorners(x, y, width, height) {
+  return [{
+    // top left
+    x: x,
+    y: y
+  }, {
+    // top right
+    x: x + width,
+    y: y
+  }, {
+    // bottom left
+    x: x,
+    y: y + height
+  }, {
+    // bottom right
+    x: x + width,
+    y: y + height
+  }];
+}
+/**
+ * Determine whether a target position (x, y) is inside or outside a circle
+ * drawn from a center point (centerX, centerY) and extends outward to a given
+ * size (radius)
+ * @param x horizontal position of the target
+ * @param y vertical position of the target
+ * @param centerX horizontal center of the circle
+ * @param centerY vertical center of the circle
+ * @param radius size of the circle
+ */
+function isInsideCircle(x, y, centerX, centerY, radius) {
+  return Math.sqrt((x - centerX) ** 2 + (y - centerY) ** 2) <= radius;
+}
+/**
+ * Determine whether coordinates are inside a rectangle of given coordinates and size
+ * @param x horizontal position of the target
+ * @param y vertical position of the target
+ * @param rectangleX horizontal position of the rectangle top-left corner
+ * @param rectangleY vertical position of the rectangle top-left corner
+ * @param rectangleWidth
+ * @param rectangleHeight
+ */
+function isInsideRectangle(x, y, rectangleX, rectangleY, rectangleWidth, rectangleHeight) {
+  return x >= rectangleX && x <= rectangleX + rectangleWidth && y >= rectangleY && y <= rectangleY + rectangleHeight;
+}
+/**
+ * Given a circle with the provided diameter, determine the maximum number of
+ * rectangles of a given width and height would fit fully inside it, without
+ * overlapping the edges
+ * @param diameter size of the circle
+ * @param rectWidth width of each rectangle
+ * @param rectHeight height of each rectangle
+ * @param gapX horizontal space between each rectangle
+ * @param gapY vertical space between each rectangle
+ * @param offsetX amount by which to offset each rectangle horizontally
+ * @param offsetY amount by which to offset each rectangle vertically
+ */
+function rectanglesInCircle(diameter, rectWidth, rectHeight, gapX, gapY, offsetX, offsetY) {
+  const radius = diameter / 2;
+  const positions = [];
+  // Traverse each row, starting at the center
+  for (let y = 0; y <= radius; y += rectHeight + gapY) {
+    // Traverse each column, starting at the center
+    for (let x = 0; x <= radius; x += rectWidth + gapX) {
+      // Draw four rectangles, one in each quadrant (se, sw, nw, ne)
+      for (let i = 0; i < 4; i++) {
+        const rectX = i % 2 === 0 ? x : -x - rectWidth - gapX;
+        const rectY = i % 3 === 0 ? y : -y - rectHeight - gapY;
+        // Apply the offset - used for centering
+        const offsetRectX = rectX + offsetX;
+        const offsetRectY = rectY + offsetY;
+        const corners = getRectCorners(offsetRectX, offsetRectY, rectWidth, rectHeight);
+        const cornersWithinCircle = corners.filter(corner => isInsideCircle(corner.x, corner.y, 0, 0, radius));
+        // If the rectangle fits within the circle, add it to the result
+        if (cornersWithinCircle.length === 4) {
+          positions.push({
+            // Add the radius back to the final coordinates so all are positive integers
+            x: offsetRectX + radius,
+            y: offsetRectY + radius
+          });
+        }
+      }
+    }
+  }
+  return positions;
+}
+/**
+ * Given a rectangle with the provided dimensions, determine the maximum number of
+ * smaller rectangles of a given width and height would fit fully inside it.
+ * @param outerRectWidth width of the big rectangle
+ * @param outerRectHeight height of the big rectangle
+ * @param innerRectWidth width of each smaller rectangle
+ * @param innerRectHeight height of each smaller rectangle
+ * @param gapX horizontal space between each rectangle
+ * @param gapY vertical space between each rectangle
+ * @param offsetX amount by which to offset each rectangle horizontally
+ * @param offsetY amount by which to offset each rectangle vertically
+ */
+function rectanglesInRectangle(outerRectWidth, outerRectHeight, innerRectWidth, innerRectHeight, gapX, gapY, offsetX, offsetY) {
+  const positions = [];
+  // Traverse each row, starting at the center
+  for (let y = 0; y <= outerRectHeight / 2; y += innerRectHeight + gapY) {
+    // Traverse each column, starting at the center
+    for (let x = 0; x <= outerRectWidth / 2; x += innerRectWidth + gapX) {
+      // Draw four rectangles, one in each quadrant (se, sw, nw, ne)
+      for (let i = 0; i < 4; i++) {
+        const rectX = i % 2 === 0 ? x : -x - innerRectWidth - gapX;
+        const rectY = i % 3 === 0 ? y : -y - innerRectHeight - gapY;
+        // Apply the offset - used for centering
+        const offsetRectX = rectX + offsetX;
+        const offsetRectY = rectY + offsetY;
+        const corners = getRectCorners(offsetRectX, offsetRectY, innerRectWidth, innerRectHeight);
+        const cornersWithinRectangle = corners.filter(corner => isInsideRectangle(corner.x, corner.y, outerRectWidth * -0.5, outerRectHeight * -0.5, outerRectWidth, outerRectHeight));
+        // If the rectangle fits within the circle, add it to the result
+        if (cornersWithinRectangle.length === 4) {
+          positions.push({
+            // Add half the width/height back to the final coordinates so all are positive integers
+            x: offsetRectX + outerRectWidth / 2,
+            y: offsetRectY + outerRectHeight / 2
+          });
+        }
+      }
+    }
+  }
+  return positions;
 }
 
 /***/ }),
