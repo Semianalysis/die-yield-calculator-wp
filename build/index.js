@@ -927,7 +927,7 @@ function useInputs(values, dieCenteringEnabled, yieldModel, shape, panelSize, di
     if (shape === "Disc") {
       setResults((0,_utils_calculations__WEBPACK_IMPORTED_MODULE_1__.evaluateDiscInputs)(values, discSize, yieldModel, dieCenteringEnabled));
     } else if (shape === "Panel") {
-      setResults((0,_utils_calculations__WEBPACK_IMPORTED_MODULE_1__.evaluatePanelInputs)(values, panelSize, yieldModel));
+      setResults((0,_utils_calculations__WEBPACK_IMPORTED_MODULE_1__.evaluatePanelInputs)(values, panelSize, yieldModel, dieCenteringEnabled));
     }
   }, [dieWidth, dieHeight, criticalArea, defectRate, lossyEdgeWidth, scribeHoriz, scribeVert, shape, panelSize, discSize, yieldModel, dieCenteringEnabled]);
   return results;
@@ -948,7 +948,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   getFabYield: () => (/* binding */ getFabYield),
 /* harmony export */   isInsideCircle: () => (/* binding */ isInsideCircle),
 /* harmony export */   isInsideRectangle: () => (/* binding */ isInsideRectangle),
-/* harmony export */   rectanglesInCircle: () => (/* binding */ rectanglesInCircle)
+/* harmony export */   rectanglesInCircle: () => (/* binding */ rectanglesInCircle),
+/* harmony export */   rectanglesInRectangle: () => (/* binding */ rectanglesInRectangle)
 /* harmony export */ });
 /* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../config */ "./src/config/index.ts");
 
@@ -992,7 +993,6 @@ function isInsideRectangle(x, y, rectangleX, rectangleY, rectangleWidth, rectang
 function rectanglesInCircle(diameter, rectWidth, rectHeight, gapX, gapY, offsetX, offsetY) {
   const radius = diameter / 2;
   const rectangles = [];
-  let count = 0;
   // Traverse each row, starting at the center
   for (let y = 0; y <= radius; y += rectHeight + gapY) {
     // Traverse each column, starting at the center
@@ -1012,6 +1012,34 @@ function rectanglesInCircle(diameter, rectWidth, rectHeight, gapX, gapY, offsetX
             // Add the radius back to the final coordinates so all are positive integers
             x: offsetRectX + radius,
             y: offsetRectY + radius
+          });
+        }
+      }
+    }
+  }
+  return rectangles;
+}
+function rectanglesInRectangle(outerRectWidth, outerRectHeight, innerRectWidth, innerRectHeight, gapX, gapY, offsetX, offsetY) {
+  const rectangles = [];
+  // Traverse each row, starting at the center
+  for (let y = 0; y <= outerRectHeight / 2; y += innerRectHeight + gapY) {
+    // Traverse each column, starting at the center
+    for (let x = 0; x <= outerRectWidth / 2; x += innerRectWidth + gapX) {
+      // Draw four rectangles, one going in each direction (n, e, s, w)
+      for (let i = 0; i < 4; i++) {
+        const rectX = i % 2 === 0 ? x : -x - innerRectWidth - gapX;
+        const rectY = i % 3 === 0 ? y : -y - innerRectHeight - gapY;
+        // Apply the offset - used for centering
+        const offsetRectX = rectX + offsetX;
+        const offsetRectY = rectY + offsetY;
+        const corners = getDieCorners(offsetRectX, offsetRectY, innerRectWidth, innerRectHeight);
+        const cornersWithinRectangle = corners.filter(corner => isInsideRectangle(corner.x, corner.y, outerRectWidth * -0.5, outerRectHeight * -0.5, outerRectWidth, outerRectHeight));
+        // If the rectangle fits within the circle, add it to the result
+        if (cornersWithinRectangle.length === 4) {
+          rectangles.push({
+            // Add half the width/height back to the final coordinates so all are positive integers
+            x: offsetRectX + outerRectWidth / 2,
+            y: offsetRectY + outerRectHeight / 2
           });
         }
       }
@@ -1055,7 +1083,7 @@ function getDieStateCounts(dieStates) {
     lostDies
   };
 }
-function evaluatePanelInputs(inputVals, selectedSize, selectedModel) {
+function evaluatePanelInputs(inputVals, selectedSize, selectedModel, dieCenteringEnabled) {
   const {
     dieWidth,
     dieHeight,
@@ -1071,15 +1099,8 @@ function evaluatePanelInputs(inputVals, selectedSize, selectedModel) {
     waferWidth,
     waferHeight
   } = _config__WEBPACK_IMPORTED_MODULE_0__.panelSizes[selectedSize];
-  const adjustedDieWidth = dieWidth + scribeHoriz * 2;
-  const adjustedDieHeight = dieHeight + scribeVert * 2;
-  const diesPerRow = Math.floor(waferWidth / adjustedDieWidth);
-  const diesPerColumn = Math.floor(waferHeight / adjustedDieHeight);
-  const centerHorz = (waferWidth - adjustedDieWidth * diesPerRow) / 2;
-  const centerVert = (waferHeight - adjustedDieHeight * diesPerColumn) / 2;
-  const countWidth = Math.floor(waferWidth / (dieWidth + scribeHoriz * 2));
-  const countHeight = Math.floor(waferHeight / (dieHeight + scribeVert * 2));
-  const totalDies = countWidth * countHeight;
+  const positions = rectanglesInRectangle(waferWidth, waferHeight, dieWidth, dieHeight, scribeVert, scribeHoriz, dieCenteringEnabled ? scribeHoriz * 0.5 : dieWidth * -0.5, dieCenteringEnabled ? scribeVert * 0.5 : dieHeight * -0.5);
+  const totalDies = positions.length;
   const goodDies = Math.floor(fabYield * totalDies);
   let dieStates = new Array(totalDies).fill("defective");
   for (let i = 0; i < goodDies; i++) {
@@ -1090,11 +1111,8 @@ function evaluatePanelInputs(inputVals, selectedSize, selectedModel) {
     [dieStates[i], dieStates[j]] = [dieStates[j], dieStates[i]];
   }
   for (let i = 0; i < dieStates.length; i++) {
-    const row = Math.floor(i / diesPerRow);
-    const col = i % diesPerRow;
-    const x = col * adjustedDieWidth + centerHorz;
-    const y = row * adjustedDieHeight + centerVert;
-    const corners = getDieCorners(x, y, dieWidth, dieHeight);
+    const position = positions[i];
+    const corners = getDieCorners(position.x, position.y, dieWidth, dieHeight);
     const goodCorners = corners.filter(corner => isInsideRectangle(corner.x, corner.y, lossyEdgeWidth, lossyEdgeWidth, waferWidth - lossyEdgeWidth * 2, waferHeight - lossyEdgeWidth * 2));
     if (!goodCorners.length) {
       dieStates[i] = "lost";
@@ -1104,8 +1122,8 @@ function evaluatePanelInputs(inputVals, selectedSize, selectedModel) {
     dies[i] = {
       key: i,
       dieState: dieStates[i],
-      x,
-      y,
+      x: position.x,
+      y: position.y,
       width: dieWidth,
       height: dieHeight
     };
@@ -1159,7 +1177,7 @@ function evaluateDiscInputs(inputVals, selectedSize, selectedModel, dieCentering
   const {
     waferWidth
   } = _config__WEBPACK_IMPORTED_MODULE_0__.discSizes[selectedSize];
-  let positions = rectanglesInCircle(waferWidth, dieWidth, dieHeight, scribeHoriz, scribeVert, dieCenteringEnabled ? scribeHoriz * 0.5 : dieWidth * -0.5, dieCenteringEnabled ? scribeVert * 0.5 : dieHeight * -0.5);
+  const positions = rectanglesInCircle(waferWidth, dieWidth, dieHeight, scribeHoriz, scribeVert, dieCenteringEnabled ? scribeHoriz * 0.5 : dieWidth * -0.5, dieCenteringEnabled ? scribeVert * 0.5 : dieHeight * -0.5);
   let totalDies = positions.length;
   const goodDies = Math.floor(fabYield * totalDies);
   let dieStates = new Array(totalDies).fill("defective");

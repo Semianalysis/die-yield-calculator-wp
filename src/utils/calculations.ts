@@ -67,8 +67,6 @@ export function rectanglesInCircle(
 	const radius = diameter / 2;
 	const rectangles: Rectangle[] = [];
 
-	let count = 0;
-
 	// Traverse each row, starting at the center
 	for (let y = 0; y <= radius; y += rectHeight + gapY) {
 		// Traverse each column, starting at the center
@@ -94,6 +92,61 @@ export function rectanglesInCircle(
 						// Add the radius back to the final coordinates so all are positive integers
 						x: offsetRectX + radius,
 						y: offsetRectY + radius,
+					});
+				}
+			}
+		}
+	}
+
+	return rectangles;
+}
+
+export function rectanglesInRectangle(
+	outerRectWidth: number,
+	outerRectHeight: number,
+	innerRectWidth: number,
+	innerRectHeight: number,
+	gapX: number,
+	gapY: number,
+	offsetX: number,
+	offsetY: number,
+): Rectangle[] {
+	const rectangles: Rectangle[] = [];
+
+	// Traverse each row, starting at the center
+	for (let y = 0; y <= outerRectHeight / 2; y += innerRectHeight + gapY) {
+		// Traverse each column, starting at the center
+		for (let x = 0; x <= outerRectWidth / 2; x += innerRectWidth + gapX) {
+			// Draw four rectangles, one going in each direction (n, e, s, w)
+			for(let i = 0; i < 4; i++) {
+				const rectX = i % 2 === 0 ? x : -x - innerRectWidth - gapX;
+				const rectY = i % 3 === 0 ? y : -y - innerRectHeight - gapY;
+				// Apply the offset - used for centering
+				const offsetRectX = rectX + offsetX;
+				const offsetRectY = rectY + offsetY;
+				const corners = getDieCorners(
+					offsetRectX,
+					offsetRectY,
+					innerRectWidth,
+					innerRectHeight
+				);
+				const cornersWithinRectangle = corners.filter(
+					(corner) => isInsideRectangle(
+						corner.x,
+						corner.y,
+						outerRectWidth * -0.5,
+						outerRectHeight * -0.5,
+						outerRectWidth,
+						outerRectHeight,
+					)
+				);
+
+				// If the rectangle fits within the circle, add it to the result
+				if (cornersWithinRectangle.length === 4) {
+					rectangles.push({
+						// Add half the width/height back to the final coordinates so all are positive integers
+						x: offsetRectX + outerRectWidth / 2,
+						y: offsetRectY + outerRectHeight / 2,
 					});
 				}
 			}
@@ -161,7 +214,8 @@ export type InputValues = {
 export function evaluatePanelInputs(
 	inputVals: InputValues,
 	selectedSize: keyof typeof panelSizes,
-	selectedModel: keyof typeof yieldModels
+	selectedModel: keyof typeof yieldModels,
+	dieCenteringEnabled: boolean,
 ): FabResults {
 	const {
 		dieWidth,
@@ -175,19 +229,19 @@ export function evaluatePanelInputs(
 	let dies = [];
 	const fabYield = getFabYield(defectRate, criticalArea, selectedModel);
 	const { waferWidth, waferHeight } = panelSizes[selectedSize];
-	const adjustedDieWidth = dieWidth + scribeHoriz * 2;
-	const adjustedDieHeight = dieHeight + scribeVert * 2;
 
-	const diesPerRow = Math.floor(waferWidth / adjustedDieWidth);
-	const diesPerColumn = Math.floor(waferHeight / adjustedDieHeight);
+	const positions = rectanglesInRectangle(
+		waferWidth,
+		waferHeight,
+		dieWidth,
+		dieHeight,
+		scribeVert,
+		scribeHoriz,
+		dieCenteringEnabled ? scribeHoriz * 0.5 : dieWidth * -0.5,
+		dieCenteringEnabled ? scribeVert * 0.5 : dieHeight * -0.5,
+	);
 
-	const centerHorz = (waferWidth - adjustedDieWidth * diesPerRow) / 2;
-	const centerVert = (waferHeight - adjustedDieHeight * diesPerColumn) / 2;
-
-	const countWidth = Math.floor(waferWidth / (dieWidth + scribeHoriz * 2));
-	const countHeight = Math.floor(waferHeight / (dieHeight + scribeVert * 2));
-
-	const totalDies = countWidth * countHeight;
+	const totalDies = positions.length;
 
 	const goodDies = Math.floor(fabYield * totalDies);
 
@@ -202,12 +256,8 @@ export function evaluatePanelInputs(
 	}
 
 	for (let i = 0; i < dieStates.length; i++) {
-		const row = Math.floor(i / diesPerRow);
-		const col = i % diesPerRow;
-		const x = col * adjustedDieWidth + centerHorz;
-		const y = row * adjustedDieHeight + centerVert;
-
-		const corners = getDieCorners(x, y, dieWidth, dieHeight);
+		const position = positions[i];
+		const corners = getDieCorners(position.x, position.y, dieWidth, dieHeight);
 		const goodCorners = corners.filter((corner) => isInsideRectangle(
 			corner.x,
 			corner.y,
@@ -226,8 +276,8 @@ export function evaluatePanelInputs(
 		dies[i] = {
 			key: i,
 			dieState: dieStates[i],
-			x,
-			y,
+			x: position.x,
+			y: position.y,
 			width: dieWidth,
 			height: dieHeight
 		};
@@ -300,7 +350,7 @@ export function evaluateDiscInputs(
 	const fabYield = getFabYield(defectRate, criticalArea, selectedModel);
 	const { waferWidth } = discSizes[selectedSize];
 
-	let positions = rectanglesInCircle(
+	const positions = rectanglesInCircle(
 		waferWidth,
 		dieWidth,
 		dieHeight,

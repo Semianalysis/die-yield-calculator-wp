@@ -52,7 +52,7 @@ export function useInputs(
 		if (shape === "Disc") {
 			setResults(evaluateDiscInputs(values, discSize, yieldModel, dieCenteringEnabled));
 		} else if (shape === "Panel") {
-			setResults(evaluatePanelInputs(values, panelSize, yieldModel));
+			setResults(evaluatePanelInputs(values, panelSize, yieldModel, dieCenteringEnabled));
 		}
 	}, [dieWidth, dieHeight, criticalArea, defectRate, lossyEdgeWidth, scribeHoriz, scribeVert, shape, panelSize, discSize, yieldModel, dieCenteringEnabled]);
 
