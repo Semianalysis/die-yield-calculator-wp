@@ -295,6 +295,7 @@
 .wp-block-create-block-die-yield-calculator .wafer-canvas.wafer-canvas--disc .wafer-canvas__mirror-background {
   border-radius: 100%;
   transform: rotate(45deg);
+  overflow: hidden;
 }
 .wp-block-create-block-die-yield-calculator .wafer-canvas .wafer-canvas__die-decorative {
   max-width: 100%;

@@ -333,6 +333,7 @@
 			.wafer-canvas__mirror-background {
 				border-radius: 100%;
 				transform: rotate(45deg);
+				overflow: hidden;
 			}
 		}
 
