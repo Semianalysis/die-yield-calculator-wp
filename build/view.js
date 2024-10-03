@@ -76,7 +76,7 @@ function App() {
   const [dieWidth, setDieWidth] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("8");
   const [dieHeight, setDieHeight] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("8");
   const [aspectRatio, setAspectRatio] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(1);
-  const [dieCenteringEnabled, setDieCenteringEnabled] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
+  const [waferCenteringEnabled, setWaferCenteringEnabled] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
   const [maintainAspectRatio, setMaintainAspectRatio] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
   const [criticalArea, setCriticalArea] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("64");
   const [defectRate, setDefectRate] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0.1");
@@ -101,7 +101,7 @@ function App() {
     scribeVert: parseFloat(scribeVert),
     transHoriz: parseFloat(transHoriz),
     transVert: parseFloat(transVert)
-  }, dieCenteringEnabled, selectedModel, waferShape, panelSize, discSize);
+  }, waferCenteringEnabled, selectedModel, waferShape, panelSize, discSize);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     const dieWidthNum = parseFloat(dieWidth);
     const dieHeightNum = parseFloat(dieHeight);
@@ -172,8 +172,8 @@ function App() {
   const handleReticleLimitChange = event => {
     setReticleLimit(event.target.checked);
   };
-  const handleDieCentering = event => {
-    setDieCenteringEnabled(event.target.checked);
+  const handleWaferCenteringChange = event => {
+    setWaferCenteringEnabled(event.target.checked);
   };
   const handleSizeChange = event => {
     if (waferShape === "Panel") {
@@ -295,8 +295,8 @@ function App() {
     className: "input-row"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Checkbox_Checkbox__WEBPACK_IMPORTED_MODULE_1__.Checkbox, {
     label: "Wafer Centering",
-    onChange: handleDieCentering,
-    checked: dieCenteringEnabled
+    onChange: handleWaferCenteringChange,
+    checked: waferCenteringEnabled
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("hr", null), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", null, "Options"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "input-row"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ModelSelector, {
@@ -787,13 +787,13 @@ __webpack_require__.r(__webpack_exports__);
  * Given the numeric inputs, selected wafer properties, and a yield model, calculate
  * the expected fabrication results.
  * @param values numeric values provided by the user via inputs
- * @param dieCenteringEnabled center by die (true) or by wafer (false)
+ * @param waferCenteringEnabled center by wafer (true) or by die (false)
  * @param yieldModel mathematical model for calculating yield
  * @param shape wafer shape
  * @param panelSize chosen size of panel wafer
  * @param discSize chosen size of disc wafer
  */
-function useInputs(values, dieCenteringEnabled, yieldModel, shape, panelSize, discSize) {
+function useInputs(values, waferCenteringEnabled, yieldModel, shape, panelSize, discSize) {
   const [results, setResults] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
     dies: [],
     totalDies: 0,
@@ -810,11 +810,11 @@ function useInputs(values, dieCenteringEnabled, yieldModel, shape, panelSize, di
       return;
     }
     if (shape === "Disc") {
-      setResults((0,_utils_calculations__WEBPACK_IMPORTED_MODULE_1__.evaluateDiscInputs)(values, discSize, yieldModel, dieCenteringEnabled));
+      setResults((0,_utils_calculations__WEBPACK_IMPORTED_MODULE_1__.evaluateDiscInputs)(values, discSize, yieldModel, waferCenteringEnabled));
     } else if (shape === "Panel") {
-      setResults((0,_utils_calculations__WEBPACK_IMPORTED_MODULE_1__.evaluatePanelInputs)(values, panelSize, yieldModel, dieCenteringEnabled));
+      setResults((0,_utils_calculations__WEBPACK_IMPORTED_MODULE_1__.evaluatePanelInputs)(values, panelSize, yieldModel, waferCenteringEnabled));
     }
-  }, [JSON.stringify(values), shape, panelSize, discSize, yieldModel, dieCenteringEnabled]);
+  }, [JSON.stringify(values), shape, panelSize, discSize, yieldModel, waferCenteringEnabled]);
   return results;
 }
 

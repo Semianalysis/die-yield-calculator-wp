@@ -88,7 +88,7 @@ function App() {
 	const [dieWidth, setDieWidth] = useState<string>("8");
 	const [dieHeight, setDieHeight] = useState<string>("8");
 	const [aspectRatio, setAspectRatio] = useState<number>(1);
-	const [dieCenteringEnabled, setDieCenteringEnabled] = useState(true);
+	const [waferCenteringEnabled, setWaferCenteringEnabled] = useState(true);
 	const [maintainAspectRatio, setMaintainAspectRatio] = useState(true);
 	const [criticalArea, setCriticalArea] = useState<string>("64");
 	const [defectRate, setDefectRate] = useState<string>("0.1");
@@ -115,7 +115,7 @@ function App() {
 			transHoriz: parseFloat(transHoriz),
 			transVert: parseFloat(transVert),
 		},
-		dieCenteringEnabled,
+		waferCenteringEnabled,
 		selectedModel,
 		waferShape,
 		panelSize,
@@ -209,8 +209,8 @@ function App() {
 		setReticleLimit(event.target.checked);
 	};
 
-	const handleDieCentering = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setDieCenteringEnabled(event.target.checked);
+	const handleWaferCenteringChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setWaferCenteringEnabled(event.target.checked);
 	};
 
 	const handleSizeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -357,8 +357,8 @@ function App() {
 					<div className="input-row">
 						<Checkbox
 							label="Wafer Centering"
-							onChange={handleDieCentering}
-							checked={dieCenteringEnabled}
+							onChange={handleWaferCenteringChange}
+							checked={waferCenteringEnabled}
 						/>
 					</div>
 					<hr />

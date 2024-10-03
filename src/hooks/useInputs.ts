@@ -7,7 +7,7 @@ import { evaluateDiscInputs, evaluatePanelInputs, InputValues } from "../utils/c
  * Given the numeric inputs, selected wafer properties, and a yield model, calculate
  * the expected fabrication results.
  * @param values numeric values provided by the user via inputs
- * @param dieCenteringEnabled center by die (true) or by wafer (false)
+ * @param waferCenteringEnabled center by wafer (true) or by die (false)
  * @param yieldModel mathematical model for calculating yield
  * @param shape wafer shape
  * @param panelSize chosen size of panel wafer
@@ -15,7 +15,7 @@ import { evaluateDiscInputs, evaluatePanelInputs, InputValues } from "../utils/c
  */
 export function useInputs(
 	values: InputValues,
-	dieCenteringEnabled: boolean,
+	waferCenteringEnabled: boolean,
 	yieldModel: keyof typeof yieldModels,
 	shape: WaferShape,
 	panelSize: keyof typeof panelSizes,
@@ -40,11 +40,11 @@ export function useInputs(
 		}
 
 		if (shape === "Disc") {
-			setResults(evaluateDiscInputs(values, discSize, yieldModel, dieCenteringEnabled));
+			setResults(evaluateDiscInputs(values, discSize, yieldModel, waferCenteringEnabled));
 		} else if (shape === "Panel") {
-			setResults(evaluatePanelInputs(values, panelSize, yieldModel, dieCenteringEnabled));
+			setResults(evaluatePanelInputs(values, panelSize, yieldModel, waferCenteringEnabled));
 		}
-	}, [JSON.stringify(values), shape, panelSize, discSize, yieldModel, dieCenteringEnabled]);
+	}, [JSON.stringify(values), shape, panelSize, discSize, yieldModel, waferCenteringEnabled]);
 
 
 	return results;
