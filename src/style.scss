@@ -305,7 +305,6 @@
 			background-position: 50% 50%;
 			background-size: 60%;
 			opacity: 0.075;
-			transition: transform ease-out 0.1s;
 		}
 
 		.wafer-canvas__mirror-background {
@@ -359,10 +358,6 @@
 			.die-map,
 			.canvas__edge {
 				opacity: 0.2;
-			}
-
-			.wafer-canvas__watermark {
-				transform: translateZ(40px);
 			}
 		}
 
