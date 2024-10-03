@@ -95,8 +95,8 @@ function App() {
 	const [lossyEdgeWidth, setLossyEdgeWidth] = useState<string>("3");
 	const [allCritical, setAllCritical] = useState(true);
 	const [reticleLimit, setReticleLimit] = useState(true);
-	const [scribeHoriz, setScribeHoriz] = useState<string>("0.1");
-	const [scribeVert, setScribeVert] = useState<string>("0.1");
+	const [scribeHoriz, setScribeHoriz] = useState<string>("0.2");
+	const [scribeVert, setScribeVert] = useState<string>("0.2");
 	const [transHoriz, setTransHoriz] = useState<string>("0");
 	const [transVert, setTransVert] = useState<string>("0");
 	const [waferShape, setWaferShape] = useState<WaferShape>("Disc");
@@ -295,7 +295,7 @@ function App() {
 					</div>
 					<div className="input-row">
 						<Checkbox
-							label="Die Centering"
+							label="Centering"
 							onChange={handleDieCentering}
 							checked={dieCenteringEnabled}
 						/>

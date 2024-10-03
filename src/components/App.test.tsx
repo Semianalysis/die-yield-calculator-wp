@@ -39,6 +39,6 @@ describe("App", () => {
 		await user.click(screen.getByRole("radio", {
 			name: /Disc/
 		}));
-		await waitFor(() => expect(screen.getByText(/977/)).toBeInTheDocument());
+		await waitFor(() => expect(screen.getByText(/973/)).toBeInTheDocument());
 	});
 });

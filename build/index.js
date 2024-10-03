@@ -191,8 +191,8 @@ function App() {
   const [lossyEdgeWidth, setLossyEdgeWidth] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("3");
   const [allCritical, setAllCritical] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
   const [reticleLimit, setReticleLimit] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
-  const [scribeHoriz, setScribeHoriz] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0.1");
-  const [scribeVert, setScribeVert] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0.1");
+  const [scribeHoriz, setScribeHoriz] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0.2");
+  const [scribeVert, setScribeVert] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0.2");
   const [transHoriz, setTransHoriz] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0");
   const [transVert, setTransVert] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0");
   const [waferShape, setWaferShape] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("Disc");
@@ -356,7 +356,7 @@ function App() {
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "input-row"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Checkbox_Checkbox__WEBPACK_IMPORTED_MODULE_1__.Checkbox, {
-    label: "Die Centering",
+    label: "Centering",
     onChange: handleDieCentering,
     checked: dieCenteringEnabled
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("hr", null), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", null, "Wafer"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
@@ -984,22 +984,23 @@ function isInsideRectangle(x, y, rectangleX, rectangleY, rectangleWidth, rectang
  * @param diameter size of the circle
  * @param rectWidth width of each rectangle
  * @param rectHeight height of each rectangle
- * @param centering should the rectangles be symmetrical?
+ * @param gapX horizontal space between each rectangle
+ * @param gapY vertical space between each rectangle
+ * @param offsetX amount by which to offset each rectangle horizontally
+ * @param offsetY amount by which to offset each rectangle vertically
  */
-function rectanglesInCircle(diameter, rectWidth, rectHeight, centering) {
+function rectanglesInCircle(diameter, rectWidth, rectHeight, gapX, gapY, offsetX, offsetY) {
   const radius = diameter / 2;
   const rectangles = [];
-  const offsetX = centering ? rectWidth * -0.5 : 0;
-  const offsetY = centering ? rectHeight * -0.5 : 0;
   let count = 0;
   // Traverse each row, starting at the center
-  for (let y = 0; y <= radius; y += rectHeight) {
+  for (let y = 0; y <= radius; y += rectHeight + gapY) {
     // Traverse each column, starting at the center
-    for (let x = 0; x <= radius; x += rectWidth) {
+    for (let x = 0; x <= radius; x += rectWidth + gapX) {
       // Draw four rectangles, one going in each direction (n, e, s, w)
       for (let i = 0; i < 4; i++) {
-        const rectX = i % 2 === 0 ? x : -x - rectWidth;
-        const rectY = i % 3 === 0 ? y : -y - rectHeight;
+        const rectX = i % 2 === 0 ? x : -x - rectWidth - gapX;
+        const rectY = i % 3 === 0 ? y : -y - rectHeight - gapY;
         // Apply the offset - used for centering
         const offsetRectX = rectX + offsetX;
         const offsetRectY = rectY + offsetY;
@@ -1016,9 +1017,6 @@ function rectanglesInCircle(diameter, rectWidth, rectHeight, centering) {
       }
     }
   }
-  console.log({
-    count
-  });
   return rectangles;
 }
 /**
@@ -1161,11 +1159,8 @@ function evaluateDiscInputs(inputVals, selectedSize, selectedModel, dieCentering
   const {
     waferWidth
   } = _config__WEBPACK_IMPORTED_MODULE_0__.discSizes[selectedSize];
-  let positions = rectanglesInCircle(waferWidth, dieWidth + scribeHoriz * 2, dieHeight + scribeVert * 2, dieCenteringEnabled);
+  let positions = rectanglesInCircle(waferWidth, dieWidth, dieHeight, scribeHoriz, scribeVert, dieCenteringEnabled ? scribeHoriz * 0.5 : dieWidth * -0.5, dieCenteringEnabled ? scribeVert * 0.5 : dieHeight * -0.5);
   let totalDies = positions.length;
-  console.log({
-    totalDies
-  });
   const goodDies = Math.floor(fabYield * totalDies);
   let dieStates = new Array(totalDies).fill("defective");
   for (let i = 0; i < goodDies; i++) {

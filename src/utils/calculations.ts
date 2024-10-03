@@ -50,30 +50,33 @@ type Rectangle = { x: number, y: number };
  * @param diameter size of the circle
  * @param rectWidth width of each rectangle
  * @param rectHeight height of each rectangle
- * @param centering should the rectangles be symmetrical?
+ * @param gapX horizontal space between each rectangle
+ * @param gapY vertical space between each rectangle
+ * @param offsetX amount by which to offset each rectangle horizontally
+ * @param offsetY amount by which to offset each rectangle vertically
  */
 export function rectanglesInCircle(
 	diameter: number,
 	rectWidth: number,
 	rectHeight: number,
-	centering: boolean
+	gapX: number,
+	gapY: number,
+	offsetX: number,
+	offsetY: number,
 ): Rectangle[] {
 	const radius = diameter / 2;
 	const rectangles: Rectangle[] = [];
 
-	const offsetX = centering ? rectWidth * -0.5 : 0;
-	const offsetY = centering ? rectHeight * -0.5 : 0;
-
 	let count = 0;
 
 	// Traverse each row, starting at the center
-	for (let y = 0; y <= radius; y += rectHeight) {
+	for (let y = 0; y <= radius; y += rectHeight + gapY) {
 		// Traverse each column, starting at the center
-		for (let x = 0; x <= radius; x += rectWidth) {
+		for (let x = 0; x <= radius; x += rectWidth + gapX) {
 			// Draw four rectangles, one going in each direction (n, e, s, w)
 			for(let i = 0; i < 4; i++) {
-				const rectX = i % 2 === 0 ? x : -x - rectWidth;
-				const rectY = i % 3 === 0 ? y : -y - rectHeight;
+				const rectX = i % 2 === 0 ? x : -x - rectWidth - gapX;
+				const rectY = i % 3 === 0 ? y : -y - rectHeight - gapY;
 				// Apply the offset - used for centering
 				const offsetRectX = rectX + offsetX;
 				const offsetRectY = rectY + offsetY;
@@ -96,8 +99,6 @@ export function rectanglesInCircle(
 			}
 		}
 	}
-
-	console.log({count})
 
 	return rectangles;
 }
@@ -301,14 +302,14 @@ export function evaluateDiscInputs(
 
 	let positions = rectanglesInCircle(
 		waferWidth,
-		dieWidth + scribeHoriz * 2,
-		dieHeight + scribeVert * 2,
-		dieCenteringEnabled
+		dieWidth,
+		dieHeight,
+		scribeHoriz,
+		scribeVert,
+		dieCenteringEnabled ? scribeHoriz * 0.5 : dieWidth * -0.5,
+		dieCenteringEnabled ? scribeVert * 0.5 : dieHeight * -0.5,
 	);
 	let totalDies = positions.length;
-
-	console.log({totalDies});
-
 	const goodDies = Math.floor(fabYield * totalDies);
 
 	let dieStates = new Array(totalDies).fill("defective");
