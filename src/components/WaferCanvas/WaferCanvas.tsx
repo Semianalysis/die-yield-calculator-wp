@@ -56,7 +56,7 @@ function DieMapCanvas(props: {
 	if (props.results.dies.length > maxDies) {
 		return (
 			<div
-				className="too-many-dies"
+				className="wafer-canvas__too-many-dies"
 				style={{
 					paddingBottom: `${props.waferWidth / props.waferHeight * 100}%`
 				}}
@@ -68,7 +68,7 @@ function DieMapCanvas(props: {
 
 	return (
 		<canvas
-			className="die-map"
+			className="wafer-canvas__die-map"
 			ref={canvasEl}
 			width={props.waferWidth * mmToPxScale}
 			height={props.waferHeight * mmToPxScale}
@@ -131,7 +131,7 @@ function DieDecorativeCanvas(props: {
 
 	return (
 		<canvas
-			className="die-decorative"
+			className="wafer-canvas__die-decorative"
 			ref={canvasEl}
 			width={props.waferWidth * mmToPxScale}
 			height={props.waferHeight * mmToPxScale}
@@ -194,7 +194,7 @@ function LossyEdgeMarker(props: {
 
 	return (
 		<canvas
-			className="canvas__edge"
+			className="wafer-canvas__edge"
 			ref={canvasEl}
 			width={waferWidthPx}
 			height={waferHeightPx}
@@ -230,7 +230,7 @@ export function WaferCanvas(props: {
 				glareMaxOpacity={0.75}
 				scale={1.05}
 				onMove={onMove}
-				className={`wafer-canvas ${props.shape === "Disc" ? "disc" : ""}`}
+				className={`wafer-canvas ${props.shape === "Disc" ? "wafer-canvas--disc" : ""}`}
 				glareBorderRadius={props.shape === "Disc" ? "100%" : "0"}
 			>
 				<div
