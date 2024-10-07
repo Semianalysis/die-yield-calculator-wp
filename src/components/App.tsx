@@ -6,6 +6,7 @@ import { panelSizes, discSizes, yieldModels } from "../config";
 import { WaferShape } from "../types";
 import { WaferCanvas } from "./WaferCanvas/WaferCanvas";
 import { ResultsStats } from "./ResultsStats/ResultsStats";
+import semiAnalysisLogo from "../assets/semianalysis-logo-full-360px.png";
 
 const ShapeSelector = (props: { shape: WaferShape, setShape: (value: WaferShape) => void }) => {
 	const shapes: Array<WaferShape> = ["Disc", "Panel"];
@@ -398,7 +399,7 @@ function App() {
 					>
 						<img
 							alt="SemiAnalysis logo"
-							src="http://semianalysis-wp-sandbox.local/wp-content/plugins/die-yield-calculator-wp/src/assets/semianalysis-logo-full-360px.png"
+							src={semiAnalysisLogo}
 							width={180}
 							height={60}
 						/>
