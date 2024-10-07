@@ -19,7 +19,10 @@ export const yieldModels : {
 		name: "Rectangular Model",
 		yield: (defects) => (1 - Math.exp(-2 * defects)) / (2 * defects)
 	},
-	//moore: {name: "Moore's Model"},
+	moore: {
+		name: "Moore's Model",
+		yield: (defects) => Math.exp(-Math.sqrt(defects)),
+	},
 	seeds: {
 		name: "Seeds Model",
 		yield: (defects) => 1 / (1 + defects)
