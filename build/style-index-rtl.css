@@ -261,6 +261,7 @@
   margin-left: 1em;
 }
 .wp-block-create-block-die-yield-calculator .wafer-canvas {
+  display: inline-block;
   line-height: 0;
   margin-bottom: 2em;
   box-shadow: -0.25em 0.5em 1.5em black;

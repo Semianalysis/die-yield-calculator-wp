@@ -95,6 +95,7 @@ function App() {
 	const [defectRate, setDefectRate] = useState<string>("0.1");
 	const [lossyEdgeWidth, setLossyEdgeWidth] = useState<string>("3");
 	const [allCritical, setAllCritical] = useState(true);
+	const [highNA, setHighNA] = useState(false);
 	const [reticleLimit, setReticleLimit] = useState(true);
 	const [scribeHoriz, setScribeHoriz] = useState<string>("0.2");
 	const [scribeVert, setScribeVert] = useState<string>("0.2");
@@ -123,6 +124,25 @@ function App() {
 		discSize,
 	);
 
+	const waferWidth = waferShape === 'Panel' ? panelSizes[panelSize].waferWidth : discSizes[discSize].waferWidth;
+	const waferHeight = waferShape === 'Panel' ? panelSizes[panelSize].waferHeight : discSizes[discSize].waferWidth;
+
+	// Derive max die width/height based on reticle controls. Fall back to wafer dimensions / 2 as a sane max
+	const maxDieWidth = reticleLimit ? highNA ? 16.5 : 33 : waferWidth / 4;
+	const maxDieHeight = reticleLimit ? 26 : waferHeight / 4;
+
+	useEffect(() => {
+		if (dieWidth > maxDieWidth) {
+			setDieWidth(maxDieWidth.toString());
+		}
+	}, [maxDieWidth]);
+
+	useEffect(() => {
+		if (dieHeight > maxDieHeight) {
+			setDieHeight(maxDieHeight.toString());
+		}
+	}, [maxDieHeight]);
+
 	useEffect(() => {
 		const dieWidthNum = parseFloat(dieWidth);
 		const dieHeightNum = parseFloat(dieHeight);
@@ -142,31 +162,26 @@ function App() {
 		}
 	};
 
-	const handleDimensionChange = (dimension: "dieWidth" | "dieHeight") => (value: string) => {
-		const valNum = parseFloat(value);
+	const handleDieWidthChange = (value: string) => {
+		const inputValNum = parseFloat(value);
+		const newVal = maxDieWidth ? Math.min(maxDieWidth, inputValNum) : inputValNum;
+		nullOrRound(setDieWidth, newVal.toString());
 
-		if (!reticleLimit || ((dimension === "dieWidth" && valNum <= 33) || (dimension === "dieHeight" && valNum <= 26))) {
-			if (dimension === "dieWidth") {
-				nullOrRound(setDieWidth, value);
+		console.log({aspectRatio});
 
-				if (maintainAspectRatio && aspectRatio) {
-					const height = valNum / aspectRatio;
-
-					if (!isNaN(height)) {
-						nullOrRound(setDieHeight, height.toString());
-					}
-				}
-			} else if (dimension === "dieHeight") {
-				nullOrRound(setDieHeight, value);
-
-				if (maintainAspectRatio && aspectRatio) {
-					nullOrRound(setDieWidth, `${valNum * aspectRatio}`);
-				}
-			}
-		} else {
-			dimension === "dieWidth" ? setDieWidth(value) : setDieHeight(value);
+		if (maintainAspectRatio) {
+			nullOrRound(setDieHeight, `${newVal * aspectRatio}`);
 		}
+	};
 
+	const handleDieHeightChange = (value: string) => {
+		const inputValNum = parseFloat(value);
+		const newVal = maxDieHeight ? Math.min(maxDieHeight, inputValNum) : inputValNum;
+		nullOrRound(setDieHeight, newVal.toString());
+
+		if (maintainAspectRatio) {
+			nullOrRound(setDieWidth, `${newVal * aspectRatio}`);
+		}
 	};
 
 	const handleScribeSizeChange = (dimension: string) => (value: string) => {
@@ -201,6 +216,10 @@ function App() {
 		setMaintainAspectRatio(event.target.checked);
 	};
 
+	const handleHighNAChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setHighNA(event.target.checked);
+	};
+
 	const handleAllCriticalChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setCriticalArea(`${parseFloat(dieWidth) * parseFloat(dieHeight)}`);
 		setAllCritical(event.target.checked);
@@ -226,9 +245,6 @@ function App() {
 		setSelectedModel(event.target.value as keyof typeof yieldModels);
 	};
 
-	const waferWidth = waferShape === "Panel" ? panelSizes[panelSize].waferWidth : discSizes[discSize].waferWidth;
-	const waferHeight = waferShape === "Panel" ? panelSizes[panelSize].waferHeight : discSizes[discSize].waferWidth;
-
 	return (
 		<div className="container">
 			<div className="columns">
@@ -239,16 +255,15 @@ function App() {
 							label="Width (mm)"
 							value={dieWidth}
 							onChange={(event) => {
-								handleDimensionChange("dieWidth")(event.target.value);
+								handleDieWidthChange(event.target.value);
 							}}
 						/>
 						<NumberInput
 							label="Height (mm)"
 							value={dieHeight}
 							onChange={(event) => {
-								handleDimensionChange("dieHeight")(event.target.value);
+								handleDieHeightChange(event.target.value);
 							}}
-							isDisabled={maintainAspectRatio}
 						/>
 					</div>
 					<div className="input-row">
@@ -261,6 +276,11 @@ function App() {
 							label="Reticle Limit (26mm x 33mm)"
 							onChange={handleReticleLimitChange}
 							checked={reticleLimit}
+						/>
+						<Checkbox
+							label="High-NA"
+							onChange={handleHighNAChange}
+							checked={highNA}
 						/>
 					</div>
 					<div className="input-row--two-col">
