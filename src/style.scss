@@ -378,9 +378,24 @@
 		}
 	}
 
-	.tsmc-logo svg {
-		width: 100%;
-		height: auto;
+	.tsmc-logo {
+		position: relative;
+		padding-bottom: 100%;
+		margin-bottom: 2em;
+		border-radius: 100%;
+		overflow: hidden;
+
+		.glare-wrapper {
+			height: 95.6% !important;
+		}
+
+		svg {
+			width: 100%;
+			height: auto;
+			position: absolute;
+			top: 0;
+			left: 0;
+		}
 	}
 
 	fieldset {

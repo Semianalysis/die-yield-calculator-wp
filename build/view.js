@@ -1125,8 +1125,7 @@ function WaferCanvas(props) {
       glareEnable: true,
       glareMaxOpacity: 0.75,
       scale: 1.05,
-      className: "tsmc-logo",
-      glareBorderRadius: "100%"
+      className: "tsmc-logo"
     }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_assets_tsmc_logo_svg__WEBPACK_IMPORTED_MODULE_2__.ReactComponent, null));
   }
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {

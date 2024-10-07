@@ -331,9 +331,22 @@
   color: rgba(0, 0, 0, 0.5);
   text-shadow: 0 1px rgba(255, 255, 255, 0.1803921569);
 }
+.wp-block-create-block-die-yield-calculator .tsmc-logo {
+  position: relative;
+  padding-bottom: 100%;
+  margin-bottom: 2em;
+  border-radius: 100%;
+  overflow: hidden;
+}
+.wp-block-create-block-die-yield-calculator .tsmc-logo .glare-wrapper {
+  height: 95.6% !important;
+}
 .wp-block-create-block-die-yield-calculator .tsmc-logo svg {
   width: 100%;
   height: auto;
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 .wp-block-create-block-die-yield-calculator fieldset {
   padding: 0;

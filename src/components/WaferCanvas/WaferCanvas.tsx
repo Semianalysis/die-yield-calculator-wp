@@ -262,7 +262,6 @@ export function WaferCanvas(props: {
 				glareMaxOpacity={0.75}
 				scale={1.05}
 				className="tsmc-logo"
-				glareBorderRadius="100%"
 			>
 				<TSMCLogo />
 			</Tilt>
