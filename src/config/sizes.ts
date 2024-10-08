@@ -1,4 +1,9 @@
 /**
+ * Smallest die edge we will calculate, in mm
+ */
+export const minDieEdge = 0.2;
+
+/**
  * Available sizes for rectangular wafers
  */
 export const panelSizes = {

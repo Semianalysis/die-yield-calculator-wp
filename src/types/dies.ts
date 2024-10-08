@@ -9,7 +9,7 @@ type Die = {
 	dieState: DieState
 };
 
-export type FabResults = {
+export type FabResults = null | {
 	totalDies: number,
 	goodDies: number,
 	defectiveDies: number;

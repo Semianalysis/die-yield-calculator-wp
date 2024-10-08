@@ -13,5 +13,6 @@ module.exports = {
 	},
 	transform: {
 		'^.+\\.(ts|tsx)?$': 'ts-jest',
+		"^.+\\.(png|svg)$": "jest-transform-stub"
 	},
 };

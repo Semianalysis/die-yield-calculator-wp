@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { FabResults, WaferShape } from "../../types";
 import Tilt, { OnMoveParams } from "react-parallax-tilt";
 import { createHatchingCanvasPattern } from "../../utils/canvas";
+import { ReactComponent as TSMCLogo } from '../../assets/tsmc-logo.svg';
 
 // How many pixels should be rendered for every mm of wafer size
 const mmToPxScale = 3;
@@ -9,7 +10,6 @@ const mmToPxScale = 3;
 // Don't try and draw too many dies, or performance will suffer too much and the
 // page may hang or crash
 const maxDies = 100000;
-
 
 function DieMapCanvas(props: {
 	results: FabResults;
@@ -28,7 +28,7 @@ function DieMapCanvas(props: {
 	};
 
 	useEffect(() => {
-		if (!canvasEl.current || !props.results.dies.length || props.results.dies.length > maxDies) {
+		if (!canvasEl.current) {
 			return;
 		}
 
@@ -40,6 +40,10 @@ function DieMapCanvas(props: {
 
 		// Clear the canvases before drawing new die map
 		context.clearRect(0, 0, canvasEl.current.width, canvasEl.current.height);
+
+		if (!props.results || props.results.dies.length > maxDies) {
+			return;
+		}
 
 		// Draw each die onto the canvas
 		props.results.dies.forEach((die) => {
@@ -53,14 +57,17 @@ function DieMapCanvas(props: {
 		});
 	}, [JSON.stringify(props.results)]);
 
+	if (props.results === null) {
+		return (
+			<div className="wafer-canvas__message--error" role="status">
+				<span>Invalid input(s) provided</span>
+			</div>
+		);
+	}
+
 	if (props.results.dies.length > maxDies) {
 		return (
-			<div
-				className="wafer-canvas__too-many-dies"
-				style={{
-					paddingBottom: `${props.waferWidth / props.waferHeight * 100}%`
-				}}
-			>
+			<div className="wafer-canvas__message" role="status">
 				<span>Too many dies to visualize</span>
 			</div>
 		);
@@ -86,13 +93,19 @@ function DieDecorativeCanvas(props: {
 	const canvasEl = useRef<HTMLCanvasElement>(null);
 
 	useEffect(() => {
-		if (!canvasEl.current || !props.results.dies.length || props.results.dies.length > maxDies) {
+		if (!canvasEl.current) {
 			return;
 		}
 
 		const context = canvasEl.current.getContext("2d");
 
 		if (!context) {
+			return;
+		}
+
+		context.clearRect(0, 0, canvasEl.current.width, canvasEl.current.height);
+
+		if (!props.results || props.results.dies.length > maxDies) {
 			return;
 		}
 
@@ -124,10 +137,6 @@ function DieDecorativeCanvas(props: {
 			);
 		});
 	}, [JSON.stringify(props.results)]);
-
-	if (props.results.dies.length > maxDies) {
-		return null;
-	}
 
 	return (
 		<canvas
@@ -213,6 +222,7 @@ export function WaferCanvas(props: {
 	shape: WaferShape;
 	waferWidth: number;
 	waferHeight: number;
+	easterEggEnabled: boolean;
 }) {
 	const [tiltX, setTiltX] = useState(0);
 	const [tiltY, setTiltY] = useState(0);
@@ -220,6 +230,19 @@ export function WaferCanvas(props: {
 	function onMove({ tiltAngleXPercentage, tiltAngleYPercentage }: OnMoveParams) {
 		setTiltX(tiltAngleXPercentage);
 		setTiltY(tiltAngleYPercentage);
+	}
+
+	if (props.easterEggEnabled) {
+		return (
+			<Tilt
+				glareEnable={true}
+				glareMaxOpacity={0.75}
+				scale={1.05}
+				className="tsmc-logo"
+			>
+				<TSMCLogo />
+			</Tilt>
+		);
 	}
 
 	return (

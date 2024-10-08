@@ -1,7 +1,21 @@
 import { useEffect, useState } from "react";
 import { FabResults, WaferShape } from "../types";
-import { discSizes, panelSizes, yieldModels } from "../config";
+import { discSizes, panelSizes, yieldModels, minDieEdge } from "../config";
 import { evaluateDiscInputs, evaluatePanelInputs, InputValues } from "../utils/calculations";
+
+const validPositiveInteger = (value: number) => !isNaN(value) && value >= 0;
+
+const validations : { [k in keyof InputValues] : (inputs: InputValues) => boolean } = {
+	dieWidth: ({ dieWidth }) => !isNaN(dieWidth) && dieWidth >= minDieEdge,
+	dieHeight: ({ dieHeight }) => !isNaN(dieHeight) && dieHeight >= minDieEdge,
+	criticalArea: ({criticalArea, dieHeight, dieWidth}) => !isNaN(criticalArea) && criticalArea >= 0 && criticalArea <= dieWidth * dieHeight,
+	defectRate: ({ defectRate }) => validPositiveInteger(defectRate),
+	lossyEdgeWidth: ({lossyEdgeWidth}) => validPositiveInteger(lossyEdgeWidth),
+	scribeHoriz: ({scribeHoriz}) => validPositiveInteger(scribeHoriz),
+	scribeVert: ({scribeVert}) => validPositiveInteger(scribeVert),
+	transHoriz: ({transHoriz}) => !isNaN(transHoriz),
+	transVert: ({transVert}) => !isNaN(transVert),
+}
 
 /**
  * Given the numeric inputs, selected wafer properties, and a yield model, calculate
@@ -20,32 +34,23 @@ export function useInputs(
 	shape: WaferShape,
 	panelSize: keyof typeof panelSizes,
 	discSize: keyof typeof discSizes
-): FabResults {
-	const [results, setResults] = useState<FabResults>({
-		dies: [],
-		totalDies: 0,
-		goodDies: 0,
-		defectiveDies: 0,
-		partialDies: 0,
-		lostDies: 0,
-		fabYield: 0
-	});
+) {
+	const [results, setResults] = useState<FabResults>(null);
 
 	useEffect(() => {
-		// Bail out if we can't use any of the values
-		const invalidValues = Object.values(values).filter(isNaN);
+		// Reset to defaults if we can't use one or more values
+		const invalidValues = Object.keys(validations).filter((validation) => !validations[validation as keyof typeof validations](values));
 
 		if (invalidValues.length) {
-			return;
-		}
-
-		if (shape === "Disc") {
-			setResults(evaluateDiscInputs(values, discSize, yieldModel, waferCenteringEnabled));
-		} else if (shape === "Panel") {
-			setResults(evaluatePanelInputs(values, panelSize, yieldModel, waferCenteringEnabled));
+			setResults(null);
+		} else {
+			if (shape === "Disc") {
+				setResults(evaluateDiscInputs(values, discSize, yieldModel, waferCenteringEnabled));
+			} else if (shape === "Panel") {
+				setResults(evaluatePanelInputs(values, panelSize, yieldModel, waferCenteringEnabled));
+			}
 		}
 	}, [JSON.stringify(values), shape, panelSize, discSize, yieldModel, waferCenteringEnabled]);
-
 
 	return results;
 }

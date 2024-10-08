@@ -76,4 +76,41 @@ describe("App", () => {
 		expect(totalDiesCount).toBeGreaterThan(0);
 		expect(totalDiesCount).toEqual(allStatesCount);
 	});
+
+	it('automatically adjusts the other die dimension input when one is changed with maintain aspect ratio on', async () => {
+		render(<App />);
+		const user = userEvent.setup();
+		const maintainAspectRatioCheckbox = screen.getByRole("checkbox", { name: /Aspect Ratio/});
+		const dieWidthInput = screen.getByRole("spinbutton", {name: /Width/});
+		const dieHeightInput = screen.getByRole("spinbutton", {name: /Height/});
+
+		// Aspect ratio on by default
+		expect(maintainAspectRatioCheckbox).toBeChecked();
+
+		// Type a new value in width, height automatically updates
+		await user.clear(dieWidthInput);
+		await user.type(dieWidthInput, "14.5");
+		expect(dieHeightInput).toHaveDisplayValue("14.5");
+
+		// .. and vice versa
+		await user.clear(dieHeightInput);
+		await user.type(dieHeightInput, "2");
+		expect(dieHeightInput).toHaveDisplayValue("2");
+
+		// Turn aspect ratio off
+		await user.click(maintainAspectRatioCheckbox);
+		expect(maintainAspectRatioCheckbox).not.toBeChecked();
+
+		// Now assert we can enter a height without width updating
+		await user.clear(dieHeightInput);
+		await user.type(dieHeightInput, "13");
+		expect(dieHeightInput).toHaveDisplayValue("13");
+		expect(dieWidthInput).toHaveDisplayValue("2");
+
+		// ...and a width value without height updating
+		await user.clear(dieWidthInput);
+		await user.type(dieWidthInput, "9");
+		expect(dieWidthInput).toHaveDisplayValue("9");
+		expect(dieHeightInput).toHaveDisplayValue("13");
+	});
 });
