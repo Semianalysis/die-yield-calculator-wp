@@ -8,6 +8,7 @@ import { WaferCanvas } from "./WaferCanvas/WaferCanvas";
 import { ResultsStats } from "./ResultsStats/ResultsStats";
 import semiAnalysisLogo from "../assets/semianalysis-logo-full-360px.png";
 import { useEasterEgg } from "../hooks/useEasterEgg";
+import { JumpToResults } from "./JumpToResults/JumpToResults";
 
 const ShapeSelector = (props: { shape: WaferShape, setShape: (value: WaferShape) => void }) => {
 	const shapes: Array<WaferShape> = ["Disc", "Panel"];
@@ -167,6 +168,7 @@ function App() {
 		discSize
 	);
 	const easterEggEnabled = useEasterEgg();
+	const outputRef = useRef<HTMLDivElement>(null);
 
 	const waferWidth = waferShape === "Panel"
 		? panelSizes[panelSize].waferWidth
@@ -400,8 +402,9 @@ function App() {
 							handleModelChange={(event) => setSelectedModel(event.target.value as keyof typeof yieldModels)}
 						/>
 					</div>
+					<JumpToResults outputRef={outputRef} />
 				</div>
-				<div className="output">
+				<div className="output" ref={outputRef}>
 					<div>
 						<WaferCanvas
 							results={results}

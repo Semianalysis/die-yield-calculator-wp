@@ -513,6 +513,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ResultsStats_ResultsStats__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./ResultsStats/ResultsStats */ "./src/components/ResultsStats/ResultsStats.tsx");
 /* harmony import */ var _assets_semianalysis_logo_full_360px_png__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../assets/semianalysis-logo-full-360px.png */ "./src/assets/semianalysis-logo-full-360px.png");
 /* harmony import */ var _hooks_useEasterEgg__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../hooks/useEasterEgg */ "./src/hooks/useEasterEgg.ts");
+/* harmony import */ var _JumpToResults_JumpToResults__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./JumpToResults/JumpToResults */ "./src/components/JumpToResults/JumpToResults.tsx");
+
 
 
 
@@ -629,6 +631,7 @@ function App() {
     transVert: parseFloat(transVert)
   }, waferCenteringEnabled, selectedModel, waferShape, panelSize, discSize);
   const easterEggEnabled = (0,_hooks_useEasterEgg__WEBPACK_IMPORTED_MODULE_8__.useEasterEgg)();
+  const outputRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
   const waferWidth = waferShape === "Panel" ? _config__WEBPACK_IMPORTED_MODULE_4__.panelSizes[panelSize].waferWidth : _config__WEBPACK_IMPORTED_MODULE_4__.discSizes[discSize].waferWidth;
   const waferHeight = waferShape === "Panel" ? _config__WEBPACK_IMPORTED_MODULE_4__.panelSizes[panelSize].waferHeight : _config__WEBPACK_IMPORTED_MODULE_4__.discSizes[discSize].waferWidth;
   // Derive max die width/height based on whether reticle limit is set.
@@ -806,8 +809,11 @@ function App() {
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ModelSelector, {
     selectedModel: selectedModel,
     handleModelChange: event => setSelectedModel(event.target.value)
-  }))), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    className: "output"
+  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_JumpToResults_JumpToResults__WEBPACK_IMPORTED_MODULE_9__.JumpToResults, {
+    outputRef: outputRef
+  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "output",
+    ref: outputRef
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_WaferCanvas_WaferCanvas__WEBPACK_IMPORTED_MODULE_5__.WaferCanvas, {
     results: results,
     shape: waferShape,
@@ -861,6 +867,62 @@ function Checkbox(props) {
     checked: props.checked,
     disabled: props.disabled
   }), props.label));
+}
+
+/***/ }),
+
+/***/ "./src/components/JumpToResults/JumpToResults.tsx":
+/*!********************************************************!*\
+  !*** ./src/components/JumpToResults/JumpToResults.tsx ***!
+  \********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   JumpToResults: () => (/* binding */ JumpToResults)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+
+function JumpToResults({
+  outputRef
+}) {
+  const [isVisible, setIsVisible] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    const handleIntersection = entries => {
+      entries.forEach(entry => {
+        // Update state based on visibility of the output element
+        setIsVisible(!entry.isIntersecting);
+      });
+    };
+    const observer = new IntersectionObserver(handleIntersection, {
+      root: null,
+      // Use the viewport as the root
+      threshold: 0 // Trigger when the element is not visible
+    });
+    if (outputRef.current) {
+      observer.observe(outputRef.current); // Start observing the output element
+    }
+    // Clean up observer on component unmount
+    return () => {
+      if (outputRef.current) {
+        observer.unobserve(outputRef.current);
+      }
+    };
+  }, [outputRef]);
+  const scrollToOutput = () => {
+    if (outputRef.current) {
+      outputRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  };
+  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
+    type: "button",
+    className: isVisible ? 'jump-to-results' : 'jump-to-results--hidden',
+    onClick: scrollToOutput
+  }, "Jump to Results");
 }
 
 /***/ }),
