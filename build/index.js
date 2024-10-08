@@ -673,17 +673,42 @@ const ModelSelector = props => react__WEBPACK_IMPORTED_MODULE_0___default().crea
   key: key,
   value: key
 }, value.name))));
+/**
+ * Get the maximum possible die size based on whether reticle limiting is enabled
+ * and what the aspect ratio is, if any, falling back to a % of wafer dimensions
+ * as a sane default
+ */
+function getDieMaxDimensions(reticleLimit, waferWidth, waferHeight, maintainAspectRatio, aspectRatio) {
+  // 26mm x 33mm is the current industry max reticle size
+  const boundingSquareWidth = reticleLimit ? 26 : waferWidth / 4;
+  const boundingSquareHeight = reticleLimit ? 33 : waferHeight / 4;
+  if (!maintainAspectRatio) {
+    return {
+      width: boundingSquareWidth,
+      height: boundingSquareHeight
+    };
+  }
+  return {
+    width: Math.min(boundingSquareWidth, boundingSquareHeight * aspectRatio),
+    height: Math.min(boundingSquareHeight, boundingSquareWidth / aspectRatio)
+  };
+}
+/**
+ * Round a numeric string and return its rounded string for display purposes,
+ * stripped of any trailing zeroes
+ */
+function getDisplayValue(value) {
+  return parseFloat(parseFloat(value).toFixed(4)).toString();
+}
 function App() {
   const [dieWidth, setDieWidth] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("8");
   const [dieHeight, setDieHeight] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("8");
-  const [aspectRatio, setAspectRatio] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(1);
   const [waferCenteringEnabled, setWaferCenteringEnabled] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
   const [maintainAspectRatio, setMaintainAspectRatio] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
   const [criticalArea, setCriticalArea] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("64");
   const [defectRate, setDefectRate] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0.1");
   const [lossyEdgeWidth, setLossyEdgeWidth] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("3");
   const [allCritical, setAllCritical] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
-  const [highNA, setHighNA] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
   const [reticleLimit, setReticleLimit] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
   const [scribeHoriz, setScribeHoriz] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0.2");
   const [scribeVert, setScribeVert] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0.2");
@@ -693,6 +718,7 @@ function App() {
   const [panelSize, setPanelSize] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("s300mm");
   const [discSize, setDiscSize] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("s300mm");
   const [selectedModel, setSelectedModel] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("murphy");
+  const aspectRatio = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(parseFloat(dieWidth) / parseFloat(dieHeight));
   const results = (0,_hooks_useInputs__WEBPACK_IMPORTED_MODULE_3__.useInputs)({
     dieWidth: parseFloat(dieWidth),
     dieHeight: parseFloat(dieHeight),
@@ -704,84 +730,61 @@ function App() {
     transHoriz: parseFloat(transHoriz),
     transVert: parseFloat(transVert)
   }, waferCenteringEnabled, selectedModel, waferShape, panelSize, discSize);
-  const waferWidth = waferShape === 'Panel' ? _config__WEBPACK_IMPORTED_MODULE_4__.panelSizes[panelSize].waferWidth : _config__WEBPACK_IMPORTED_MODULE_4__.discSizes[discSize].waferWidth;
-  const waferHeight = waferShape === 'Panel' ? _config__WEBPACK_IMPORTED_MODULE_4__.panelSizes[panelSize].waferHeight : _config__WEBPACK_IMPORTED_MODULE_4__.discSizes[discSize].waferWidth;
-  // Derive max die width/height based on reticle controls. Fall back to wafer dimensions / 2 as a sane max
-  const maxDieWidth = reticleLimit ? highNA ? 16.5 : 33 : waferWidth / 4;
-  const maxDieHeight = reticleLimit ? 26 : waferHeight / 4;
+  const waferWidth = waferShape === "Panel" ? _config__WEBPACK_IMPORTED_MODULE_4__.panelSizes[panelSize].waferWidth : _config__WEBPACK_IMPORTED_MODULE_4__.discSizes[discSize].waferWidth;
+  const waferHeight = waferShape === "Panel" ? _config__WEBPACK_IMPORTED_MODULE_4__.panelSizes[panelSize].waferHeight : _config__WEBPACK_IMPORTED_MODULE_4__.discSizes[discSize].waferWidth;
+  // Derive max die width/height based on whether reticle limit is set.
+  // Fall back to wafer dimensions / 4 as a sane max.
+  const {
+    width: maxDieWidth,
+    height: maxDieHeight
+  } = getDieMaxDimensions(reticleLimit, waferWidth, waferHeight, maintainAspectRatio, aspectRatio.current);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
-    if (dieWidth > maxDieWidth) {
+    if (parseFloat(dieWidth) > maxDieWidth) {
       setDieWidth(maxDieWidth.toString());
     }
   }, [maxDieWidth]);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
-    if (dieHeight > maxDieHeight) {
+    if (parseFloat(dieHeight) > maxDieHeight) {
       setDieHeight(maxDieHeight.toString());
     }
   }, [maxDieHeight]);
-  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
-    const dieWidthNum = parseFloat(dieWidth);
-    const dieHeightNum = parseFloat(dieHeight);
-    if (maintainAspectRatio && !isNaN(dieWidthNum) && !isNaN(dieHeightNum)) {
-      setAspectRatio(dieWidthNum / dieHeightNum);
-    }
-  }, [dieWidth, dieHeight, maintainAspectRatio]);
-  const nullOrRound = (setter, value) => {
-    const valFloat = parseFloat(value);
-    if (isNaN(valFloat)) {
-      setter("");
-    } else {
-      const roundedValue = Math.round(valFloat * 100) / 100;
-      setter(roundedValue.toString());
-    }
-  };
   const handleDieWidthChange = value => {
     const inputValNum = parseFloat(value);
-    const newVal = maxDieWidth ? Math.min(maxDieWidth, inputValNum) : inputValNum;
-    nullOrRound(setDieWidth, newVal.toString());
-    console.log({
-      aspectRatio
-    });
+    if (isNaN(inputValNum)) {
+      setDieWidth("");
+      return;
+    }
+    const newWidth = Math.min(inputValNum, maxDieWidth);
+    setDieWidth(newWidth.toString());
     if (maintainAspectRatio) {
-      nullOrRound(setDieHeight, `${newVal * aspectRatio}`);
+      const newHeight = Math.min(newWidth / aspectRatio.current, maxDieHeight);
+      setDieHeight(newHeight.toString());
     }
   };
   const handleDieHeightChange = value => {
     const inputValNum = parseFloat(value);
-    const newVal = maxDieHeight ? Math.min(maxDieHeight, inputValNum) : inputValNum;
-    nullOrRound(setDieHeight, newVal.toString());
+    if (isNaN(inputValNum)) {
+      setDieHeight("");
+      return;
+    }
+    const newHeight = Math.min(inputValNum, maxDieHeight);
+    setDieHeight(newHeight.toString());
     if (maintainAspectRatio) {
-      nullOrRound(setDieWidth, `${newVal * aspectRatio}`);
+      const newWidth = Math.min(newHeight * aspectRatio.current, maxDieWidth);
+      setDieWidth(newWidth.toString());
     }
   };
-  const handleScribeSizeChange = dimension => value => {
-    if (dimension === "horiz") {
-      nullOrRound(setScribeHoriz, value);
-    } else if (dimension === "vert") {
-      nullOrRound(setScribeVert, value);
+  // Update critical area and aspect ratio when die size changes
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    const dieWidthNum = parseFloat(dieWidth);
+    const dieHeightNum = parseFloat(dieHeight);
+    if (dieWidth && dieHeight) {
+      aspectRatio.current = dieWidthNum / dieHeightNum;
     }
-  };
-  const handleCriticalAreaChange = value => {
-    nullOrRound(setCriticalArea, value);
-  };
-  const handleDefectRateChange = value => {
-    nullOrRound(setDefectRate, value);
-  };
-  const handleEdgeLossChange = value => {
-    nullOrRound(setLossyEdgeWidth, value);
-  };
-  const handleTransChange = dimension => value => {
-    if (dimension === "horiz") {
-      nullOrRound(setTransHoriz, value);
-    } else if (dimension === "vert") {
-      nullOrRound(setTransVert, value);
-    }
-  };
+    setCriticalArea(`${dieWidthNum * dieHeightNum}`);
+  }, [dieWidth, dieHeight]);
   const handleMaintainAspectRatio = event => {
     setMaintainAspectRatio(event.target.checked);
-  };
-  const handleHighNAChange = event => {
-    setHighNA(event.target.checked);
   };
   const handleAllCriticalChange = event => {
     setCriticalArea(`${parseFloat(dieWidth) * parseFloat(dieHeight)}`);
@@ -800,9 +803,6 @@ function App() {
       setDiscSize(event.target.value);
     }
   };
-  const handleModelChange = event => {
-    setSelectedModel(event.target.value);
-  };
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "container"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
@@ -813,16 +813,18 @@ function App() {
     className: "input-row--two-col"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
     label: "Width (mm)",
-    value: dieWidth,
+    value: getDisplayValue(dieWidth),
     onChange: event => {
       handleDieWidthChange(event.target.value);
-    }
+    },
+    max: maxDieWidth
   }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
     label: "Height (mm)",
-    value: dieHeight,
+    value: getDisplayValue(dieHeight),
     onChange: event => {
       handleDieHeightChange(event.target.value);
-    }
+    },
+    max: maxDieHeight
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "input-row"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Checkbox_Checkbox__WEBPACK_IMPORTED_MODULE_1__.Checkbox, {
@@ -833,24 +835,16 @@ function App() {
     label: "Reticle Limit (26mm x 33mm)",
     onChange: handleReticleLimitChange,
     checked: reticleLimit
-  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Checkbox_Checkbox__WEBPACK_IMPORTED_MODULE_1__.Checkbox, {
-    label: "High-NA",
-    onChange: handleHighNAChange,
-    checked: highNA
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "input-row--two-col"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
     label: "Scribe Lines Horiz",
     value: scribeHoriz,
-    onChange: event => {
-      handleScribeSizeChange("horiz")(event.target.value);
-    }
+    onChange: event => setScribeHoriz(event.target.value)
   }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
     label: "Scribe Lines Vert",
     value: scribeVert,
-    onChange: event => {
-      handleScribeSizeChange("vert")(event.target.value);
-    }
+    onChange: event => setScribeVert(event.target.value)
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "input-row"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Checkbox_Checkbox__WEBPACK_IMPORTED_MODULE_1__.Checkbox, {
@@ -861,11 +855,10 @@ function App() {
     className: "input-row"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
     label: "Critical Area (mm\u00B2)",
-    value: criticalArea,
+    value: getDisplayValue(criticalArea),
     isDisabled: allCritical,
-    onChange: event => {
-      handleCriticalAreaChange(event.target.value);
-    }
+    onChange: event => setCriticalArea(event.target.value),
+    max: parseFloat(criticalArea)
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("hr", null), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", null, "Wafer"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "input-row"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ShapeSelector, {
@@ -884,32 +877,26 @@ function App() {
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
     label: "Defect Rate (#/cm\u00B2)",
     value: defectRate,
-    onChange: event => {
-      handleDefectRateChange(event.target.value);
-    }
+    min: 0,
+    max: 1,
+    onChange: event => setDefectRate(event.target.value)
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "input-row"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
     label: "Edge Loss (mm)",
     value: lossyEdgeWidth,
-    onChange: event => {
-      handleEdgeLossChange(event.target.value);
-    },
+    onChange: event => setLossyEdgeWidth(event.target.value),
     max: Math.min(waferWidth, waferHeight) / 2
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "input-row--two-col"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
     label: "Translation Horizontal (mm)",
     value: transHoriz,
-    onChange: event => {
-      handleTransChange("horiz")(event.target.value);
-    }
+    onChange: event => setScribeHoriz(event.target.value)
   }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
     label: "Translation Vertical (mm)",
     value: transVert,
-    onChange: event => {
-      handleTransChange("vert")(event.target.value);
-    }
+    onChange: event => setScribeVert(event.target.value)
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "input-row"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Checkbox_Checkbox__WEBPACK_IMPORTED_MODULE_1__.Checkbox, {
@@ -920,7 +907,7 @@ function App() {
     className: "input-row"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ModelSelector, {
     selectedModel: selectedModel,
-    handleModelChange: handleModelChange
+    handleModelChange: event => setSelectedModel(event.target.value)
   }))), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "output"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_WaferCanvas_WaferCanvas__WEBPACK_IMPORTED_MODULE_5__.WaferCanvas, {
@@ -968,11 +955,12 @@ __webpack_require__.r(__webpack_exports__);
 
 function Checkbox(props) {
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    className: "checkbox"
+    className: props.disabled ? "checkbox--disabled" : "checkbox"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
     type: "checkbox",
     onChange: props.onChange,
-    checked: props.checked
+    checked: props.checked,
+    disabled: props.disabled
   }), props.label));
 }
 
@@ -1001,7 +989,8 @@ function NumberInput(props) {
     onChange: props.onChange,
     onBlur: props.onBlur,
     step: "0.01",
-    max: props.max
+    max: props.max,
+    min: props.min
   })));
 }
 

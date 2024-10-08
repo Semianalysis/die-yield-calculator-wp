@@ -250,15 +250,19 @@
   left: 50%;
   transform: translate(-50%, -50%);
 }
-.wp-block-create-block-die-yield-calculator .checkbox {
+.wp-block-create-block-die-yield-calculator .checkbox, .wp-block-create-block-die-yield-calculator .checkbox--disabled {
   margin-bottom: 1em;
 }
-.wp-block-create-block-die-yield-calculator .checkbox label {
+.wp-block-create-block-die-yield-calculator .checkbox label, .wp-block-create-block-die-yield-calculator .checkbox--disabled label {
   display: flex;
   align-items: center;
 }
-.wp-block-create-block-die-yield-calculator .checkbox input[type=checkbox] {
+.wp-block-create-block-die-yield-calculator .checkbox input[type=checkbox], .wp-block-create-block-die-yield-calculator .checkbox--disabled input[type=checkbox] {
   margin-right: 1em;
+}
+.wp-block-create-block-die-yield-calculator .checkbox--disabled label {
+  color: #B4B9BC;
+  cursor: default;
 }
 .wp-block-create-block-die-yield-calculator .wafer-canvas {
   display: inline-block;

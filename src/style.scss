@@ -273,15 +273,23 @@
 	}
 
 	.checkbox {
-		margin-bottom: 1em;
+		&,
+		&--disabled {
+			margin-bottom: 1em;
 
-		label {
-			display: flex;
-			align-items: center;
+			label {
+				display: flex;
+				align-items: center;
+			}
+
+			input[type="checkbox"] {
+				margin-right: 1em;
+			}
 		}
 
-		input[type="checkbox"] {
-			margin-right: 1em;
+		&--disabled label {
+			color: #B4B9BC;
+			cursor: default;
 		}
 	}
 

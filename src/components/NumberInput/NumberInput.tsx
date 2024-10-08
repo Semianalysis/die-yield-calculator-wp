@@ -7,6 +7,7 @@ export function NumberInput(props: {
 	isDisabled?: boolean
 	onBlur?: (e: React.ChangeEvent<HTMLInputElement>) => void,
 	max?: number,
+	min?: number,
 }) {
 	return (
 		<div>
@@ -20,6 +21,7 @@ export function NumberInput(props: {
 					onBlur={props.onBlur}
 					step="0.01"
 					max={props.max}
+					min={props.min}
 				/>
 			</label>
 		</div>
