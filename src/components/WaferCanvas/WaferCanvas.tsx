@@ -11,7 +11,6 @@ const mmToPxScale = 3;
 // page may hang or crash
 const maxDies = 100000;
 
-
 function DieMapCanvas(props: {
 	results: FabResults;
 	waferWidth: number;
@@ -56,12 +55,7 @@ function DieMapCanvas(props: {
 
 	if (props.results.dies.length > maxDies) {
 		return (
-			<div
-				className="wafer-canvas__too-many-dies"
-				style={{
-					paddingBottom: `${props.waferWidth / props.waferHeight * 100}%`
-				}}
-			>
+			<div className="wafer-canvas__too-many-dies">
 				<span>Too many dies to visualize</span>
 			</div>
 		);
@@ -87,13 +81,19 @@ function DieDecorativeCanvas(props: {
 	const canvasEl = useRef<HTMLCanvasElement>(null);
 
 	useEffect(() => {
-		if (!canvasEl.current || !props.results.dies.length || props.results.dies.length > maxDies) {
+		if (!canvasEl.current) {
 			return;
 		}
 
 		const context = canvasEl.current.getContext("2d");
 
 		if (!context) {
+			return;
+		}
+
+		context.clearRect(0, 0, canvasEl.current.width, canvasEl.current.height);
+
+		if (!props.results.dies.length || props.results.dies.length > maxDies) {
 			return;
 		}
 
@@ -125,10 +125,6 @@ function DieDecorativeCanvas(props: {
 			);
 		});
 	}, [JSON.stringify(props.results)]);
-
-	if (props.results.dies.length > maxDies) {
-		return null;
-	}
 
 	return (
 		<canvas

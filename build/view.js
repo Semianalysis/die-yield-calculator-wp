@@ -590,7 +590,11 @@ function getDieMaxDimensions(reticleLimit, waferWidth, waferHeight, maintainAspe
  * stripped of any trailing zeroes
  */
 function getDisplayValue(value) {
-  return parseFloat(parseFloat(value).toFixed(4)).toString();
+  const valueNum = parseFloat(value);
+  if (isNaN(valueNum)) {
+    return value;
+  }
+  return parseFloat(valueNum.toFixed(4)).toString();
 }
 function App() {
   const [dieWidth, setDieWidth] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("8");
@@ -642,11 +646,11 @@ function App() {
   }, [maxDieHeight]);
   const handleDieWidthChange = value => {
     const inputValNum = parseFloat(value);
-    if (isNaN(inputValNum)) {
-      setDieWidth("");
+    if (isNaN(inputValNum) || inputValNum === 0) {
+      setDieWidth(value);
       return;
     }
-    const newWidth = Math.min(inputValNum, maxDieWidth);
+    const newWidth = Math.max(_config__WEBPACK_IMPORTED_MODULE_4__.minDieEdge, Math.min(inputValNum, maxDieWidth));
     setDieWidth(newWidth.toString());
     if (maintainAspectRatio) {
       const newHeight = Math.min(newWidth / aspectRatio.current, maxDieHeight);
@@ -655,11 +659,11 @@ function App() {
   };
   const handleDieHeightChange = value => {
     const inputValNum = parseFloat(value);
-    if (isNaN(inputValNum)) {
-      setDieHeight("");
+    if (isNaN(inputValNum) || inputValNum === 0) {
+      setDieHeight(value);
       return;
     }
-    const newHeight = Math.min(inputValNum, maxDieHeight);
+    const newHeight = Math.max(_config__WEBPACK_IMPORTED_MODULE_4__.minDieEdge, Math.min(inputValNum, maxDieHeight));
     setDieHeight(newHeight.toString());
     if (maintainAspectRatio) {
       const newWidth = Math.min(newHeight * aspectRatio.current, maxDieWidth);
@@ -670,10 +674,10 @@ function App() {
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     const dieWidthNum = parseFloat(dieWidth);
     const dieHeightNum = parseFloat(dieHeight);
-    if (dieWidth && dieHeight) {
+    if (dieWidthNum >= _config__WEBPACK_IMPORTED_MODULE_4__.minDieEdge && dieHeightNum >= _config__WEBPACK_IMPORTED_MODULE_4__.minDieEdge) {
       aspectRatio.current = dieWidthNum / dieHeightNum;
+      setCriticalArea(`${dieWidthNum * dieHeightNum}`);
     }
-    setCriticalArea(`${dieWidthNum * dieHeightNum}`);
   }, [dieWidth, dieHeight]);
   const handleMaintainAspectRatio = event => {
     setMaintainAspectRatio(event.target.checked);
@@ -910,6 +914,12 @@ function waferAreaCm(shape, widthMM, heightMM) {
 function totalDieAreaCm(dieWidthMM, dieHeightMM, numDies) {
   return dieWidthMM * dieHeightMM * numDies / 100;
 }
+function displayValue(value) {
+  if (value === null) {
+    return '—';
+  }
+  return value;
+}
 function ResultsStats(props) {
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "results"
@@ -917,19 +927,19 @@ function ResultsStats(props) {
     className: "results__list"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--total-dies"
-  }, "Total Dies: ", props.results.totalDies), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+  }, "Total Dies: ", displayValue(props.results.totalDies)), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--good-dies"
-  }, "Good Dies: ", props.results.goodDies), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+  }, "Good Dies: ", displayValue(props.results.goodDies)), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--defective-dies"
-  }, "Defective Dies: ", props.results.defectiveDies), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+  }, "Defective Dies: ", displayValue(props.results.defectiveDies)), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--partial-dies"
-  }, "Partial Dies: ", props.results.partialDies), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+  }, "Partial Dies: ", displayValue(props.results.partialDies)), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--lost-dies"
-  }, "Lost Dies: ", props.results.lostDies)), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("ul", {
+  }, "Lost Dies: ", displayValue(props.results.lostDies))), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("ul", {
     className: "results__list"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--yield"
-  }, "Fab Yield: ", parseFloat((props.results.fabYield * 100).toFixed(4)), "%"), props.shape === "Panel" ? react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+  }, "Fab Yield: ", props.results.fabYield === null ? "—" : parseFloat((props.results.fabYield * 100).toFixed(4)), "%"), props.shape === "Panel" ? react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--panel-width"
   }, "Panel Width: ", props.waferWidth, "mm"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--panel-height"
@@ -939,7 +949,7 @@ function ResultsStats(props) {
     className: "result result--wafer-area"
   }, "Wafer Area: ", parseFloat(waferAreaCm(props.shape, props.waferWidth, props.waferHeight).toFixed(4)), "cm\u00B2"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--die-area"
-  }, "Total Die Area: ", parseFloat(totalDieAreaCm(props.dieWidth, props.dieHeight, props.results.totalDies).toFixed(4)), "cm\u00B2")));
+  }, "Total Die Area: ", props.results.totalDies === null ? "—" : parseFloat(totalDieAreaCm(props.dieWidth, props.dieHeight, props.results.totalDies).toFixed(4)), "cm\u00B2")));
 }
 
 /***/ }),
@@ -997,10 +1007,7 @@ function DieMapCanvas(props) {
   }, [JSON.stringify(props.results)]);
   if (props.results.dies.length > maxDies) {
     return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-      className: "wafer-canvas__too-many-dies",
-      style: {
-        paddingBottom: `${props.waferWidth / props.waferHeight * 100}%`
-      }
+      className: "wafer-canvas__too-many-dies"
     }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null, "Too many dies to visualize"));
   }
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("canvas", {
@@ -1013,11 +1020,15 @@ function DieMapCanvas(props) {
 function DieDecorativeCanvas(props) {
   const canvasEl = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
-    if (!canvasEl.current || !props.results.dies.length || props.results.dies.length > maxDies) {
+    if (!canvasEl.current) {
       return;
     }
     const context = canvasEl.current.getContext("2d");
     if (!context) {
+      return;
+    }
+    context.clearRect(0, 0, canvasEl.current.width, canvasEl.current.height);
+    if (!props.results.dies.length || props.results.dies.length > maxDies) {
       return;
     }
     context.clearRect(0, 0, canvasEl.current.width, canvasEl.current.height);
@@ -1035,9 +1046,6 @@ function DieDecorativeCanvas(props) {
       context.clearRect(mmToPxScale * die.x, mmToPxScale * die.y, mmToPxScale * die.width, mmToPxScale * die.height);
     });
   }, [JSON.stringify(props.results)]);
-  if (props.results.dies.length > maxDies) {
-    return null;
-  }
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("canvas", {
     className: "wafer-canvas__die-decorative",
     ref: canvasEl,
@@ -1181,6 +1189,7 @@ function WaferCanvas(props) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   discSizes: () => (/* reexport safe */ _sizes__WEBPACK_IMPORTED_MODULE_0__.discSizes),
+/* harmony export */   minDieEdge: () => (/* reexport safe */ _sizes__WEBPACK_IMPORTED_MODULE_0__.minDieEdge),
 /* harmony export */   panelSizes: () => (/* reexport safe */ _sizes__WEBPACK_IMPORTED_MODULE_0__.panelSizes),
 /* harmony export */   yieldModels: () => (/* reexport safe */ _yieldModels__WEBPACK_IMPORTED_MODULE_1__.yieldModels)
 /* harmony export */ });
@@ -1200,8 +1209,13 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   discSizes: () => (/* binding */ discSizes),
+/* harmony export */   minDieEdge: () => (/* binding */ minDieEdge),
 /* harmony export */   panelSizes: () => (/* binding */ panelSizes)
 /* harmony export */ });
+/**
+ * Smallest die edge we will calculate, in mm
+ */
+const minDieEdge = 0.2;
 /**
  * Available sizes for rectangular wafers
  */
@@ -1327,9 +1341,20 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _utils_calculations__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/calculations */ "./src/utils/calculations.ts");
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../config */ "./src/config/index.ts");
+/* harmony import */ var _utils_calculations__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/calculations */ "./src/utils/calculations.ts");
 
 
+
+const defaultState = {
+  dies: [],
+  totalDies: null,
+  goodDies: null,
+  defectiveDies: null,
+  partialDies: null,
+  lostDies: null,
+  fabYield: null
+};
 /**
  * Given the numeric inputs, selected wafer properties, and a yield model, calculate
  * the expected fabrication results.
@@ -1341,25 +1366,18 @@ __webpack_require__.r(__webpack_exports__);
  * @param discSize chosen size of disc wafer
  */
 function useInputs(values, waferCenteringEnabled, yieldModel, shape, panelSize, discSize) {
-  const [results, setResults] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
-    dies: [],
-    totalDies: 0,
-    goodDies: 0,
-    defectiveDies: 0,
-    partialDies: 0,
-    lostDies: 0,
-    fabYield: 0
-  });
+  const [results, setResults] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(defaultState);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
-    // Bail out if we can't use any of the values
+    // Reset to defaults if we can't use some of the values
     const invalidValues = Object.values(values).filter(isNaN);
-    if (invalidValues.length) {
-      return;
-    }
-    if (shape === "Disc") {
-      setResults((0,_utils_calculations__WEBPACK_IMPORTED_MODULE_1__.evaluateDiscInputs)(values, discSize, yieldModel, waferCenteringEnabled));
-    } else if (shape === "Panel") {
-      setResults((0,_utils_calculations__WEBPACK_IMPORTED_MODULE_1__.evaluatePanelInputs)(values, panelSize, yieldModel, waferCenteringEnabled));
+    if (invalidValues.length || values.dieWidth < _config__WEBPACK_IMPORTED_MODULE_1__.minDieEdge || values.dieHeight < _config__WEBPACK_IMPORTED_MODULE_1__.minDieEdge) {
+      setResults(defaultState);
+    } else {
+      if (shape === "Disc") {
+        setResults((0,_utils_calculations__WEBPACK_IMPORTED_MODULE_2__.evaluateDiscInputs)(values, discSize, yieldModel, waferCenteringEnabled));
+      } else if (shape === "Panel") {
+        setResults((0,_utils_calculations__WEBPACK_IMPORTED_MODULE_2__.evaluatePanelInputs)(values, panelSize, yieldModel, waferCenteringEnabled));
+      }
     }
   }, [JSON.stringify(values), shape, panelSize, discSize, yieldModel, waferCenteringEnabled]);
   return results;

@@ -272,6 +272,7 @@
   transform-style: preserve-3d;
   background-color: #b88ecb;
   touch-action: none;
+  max-width: 100%;
 }
 .wp-block-create-block-die-yield-calculator .wafer-canvas .wafer-canvas__watermark {
   position: absolute;
@@ -323,12 +324,9 @@
   opacity: 0.2;
 }
 .wp-block-create-block-die-yield-calculator .wafer-canvas .wafer-canvas__too-many-dies {
-  position: relative;
-}
-.wp-block-create-block-die-yield-calculator .wafer-canvas .wafer-canvas__too-many-dies span {
-  display: block;
   position: absolute;
-  width: 100%;
+  right: 0;
+  left: 0;
   top: 50%;
   text-align: center;
   transform: translateY(-50%);

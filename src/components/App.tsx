@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Checkbox } from "./Checkbox/Checkbox";
 import { NumberInput } from "./NumberInput/NumberInput";
 import { useInputs } from "../hooks/useInputs";
-import { panelSizes, discSizes, yieldModels } from "../config";
+import { panelSizes, discSizes, yieldModels, minDieEdge } from "../config";
 import { WaferShape } from "../types";
 import { WaferCanvas } from "./WaferCanvas/WaferCanvas";
 import { ResultsStats } from "./ResultsStats/ResultsStats";
@@ -119,7 +119,13 @@ function getDieMaxDimensions(
  * stripped of any trailing zeroes
  */
 function getDisplayValue(value: string) {
-	return parseFloat(parseFloat(value).toFixed(4)).toString();
+	const valueNum = parseFloat(value);
+
+	if (isNaN(valueNum)) {
+		return value;
+	}
+
+	return parseFloat(valueNum.toFixed(4)).toString();
 }
 
 function App() {
@@ -195,12 +201,12 @@ function App() {
 	const handleDieWidthChange = (value: string) => {
 		const inputValNum = parseFloat(value);
 
-		if(isNaN(inputValNum)) {
-			setDieWidth("");
+		if(isNaN(inputValNum) || inputValNum === 0) {
+			setDieWidth(value);
 			return;
 		}
 
-		const newWidth = Math.min(inputValNum, maxDieWidth);
+		const newWidth = Math.max(minDieEdge, Math.min(inputValNum, maxDieWidth));
 		setDieWidth(newWidth.toString());
 
 		if (maintainAspectRatio) {
@@ -212,12 +218,12 @@ function App() {
 	const handleDieHeightChange = (value: string) => {
 		const inputValNum = parseFloat(value);
 
-		if(isNaN(inputValNum)) {
-			setDieHeight("");
+		if(isNaN(inputValNum) || inputValNum === 0) {
+			setDieHeight(value);
 			return;
 		}
 
-		const newHeight = Math.min(inputValNum, maxDieHeight);
+		const newHeight = Math.max(minDieEdge, Math.min(inputValNum, maxDieHeight));
 		setDieHeight(newHeight.toString());
 
 		if (maintainAspectRatio) {
@@ -231,11 +237,10 @@ function App() {
 		const dieWidthNum = parseFloat(dieWidth);
 		const dieHeightNum = parseFloat(dieHeight);
 
-		if (dieWidth && dieHeight) {
+		if (dieWidthNum >= minDieEdge && dieHeightNum >= minDieEdge) {
 			aspectRatio.current = dieWidthNum / dieHeightNum;
+			setCriticalArea(`${dieWidthNum * dieHeightNum}`);
 		}
-
-		setCriticalArea(`${dieWidthNum * dieHeightNum}`);
 	}, [dieWidth, dieHeight]);
 
 	const handleMaintainAspectRatio = (event: React.ChangeEvent<HTMLInputElement>) => {

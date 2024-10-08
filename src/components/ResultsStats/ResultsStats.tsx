@@ -21,6 +21,14 @@ function totalDieAreaCm(
 	return dieWidthMM * dieHeightMM * numDies / 100;
 }
 
+function displayValue(value: number | null) {
+	if (value === null) {
+		return '—';
+	}
+
+	return value;
+}
+
 export function ResultsStats(props: {
 	results: FabResults;
 	shape: WaferShape;
@@ -32,14 +40,16 @@ export function ResultsStats(props: {
 	return (
 		<div className="results">
 			<ul className="results__list">
-				<li className="result result--total-dies">Total Dies: {props.results.totalDies}</li>
-				<li className="result result--good-dies">Good Dies: {props.results.goodDies}</li>
-				<li className="result result--defective-dies">Defective Dies: {props.results.defectiveDies}</li>
-				<li className="result result--partial-dies">Partial Dies: {props.results.partialDies}</li>
-				<li className="result result--lost-dies">Lost Dies: {props.results.lostDies}</li>
+				<li className="result result--total-dies">Total Dies: {displayValue(props.results.totalDies)}</li>
+				<li className="result result--good-dies">Good Dies: {displayValue(props.results.goodDies)}</li>
+				<li className="result result--defective-dies">Defective Dies: {displayValue(props.results.defectiveDies)}</li>
+				<li className="result result--partial-dies">Partial Dies: {displayValue(props.results.partialDies)}</li>
+				<li className="result result--lost-dies">Lost Dies: {displayValue(props.results.lostDies)}</li>
 			</ul>
 			<ul className="results__list">
-				<li className="result result--yield">Fab Yield: {parseFloat((props.results.fabYield * 100).toFixed(4))}%</li>
+				<li className="result result--yield">Fab Yield: {props.results.fabYield === null
+					? "—"
+					: parseFloat((props.results.fabYield * 100).toFixed(4))}%</li>
 				{
 					props.shape === "Panel" ? (
 						<>
@@ -54,7 +64,7 @@ export function ResultsStats(props: {
 					Area: {parseFloat(waferAreaCm(props.shape, props.waferWidth, props.waferHeight).toFixed(4))}cm²
 				</li>
 				<li className="result result--die-area">Total Die
-					Area: {parseFloat(totalDieAreaCm(props.dieWidth, props.dieHeight, props.results.totalDies).toFixed(4))}cm²
+					Area: {props.results.totalDies === null ? "—" : parseFloat(totalDieAreaCm(props.dieWidth, props.dieHeight, props.results.totalDies).toFixed(4))}cm²
 				</li>
 			</ul>
 		</div>

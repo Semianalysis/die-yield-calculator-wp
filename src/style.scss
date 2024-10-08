@@ -301,6 +301,7 @@
 		transform-style: preserve-3d;
 		background-color: #b88ecb;
 		touch-action: none;
+		max-width: 100%;
 
 		.wafer-canvas__watermark {
 			position: absolute;
@@ -371,19 +372,15 @@
 		}
 
 		.wafer-canvas__too-many-dies {
-			position: relative;
-
-			span {
-				display: block;
-				position: absolute;
-				width: 100%;
-				top: 50%;
-				text-align: center;
-				transform: translateY(-50%);
-				line-height: 1;
-				color: rgba(0,0,0,0.5);
-				text-shadow: 0 1px #ffffff2e;
-			}
+			position: absolute;
+			left: 0;
+			right: 0;
+			top: 50%;
+			text-align: center;
+			transform: translateY(-50%);
+			line-height: 1;
+			color: rgba(0,0,0,0.5);
+			text-shadow: 0 1px #ffffff2e;
 		}
 	}
 

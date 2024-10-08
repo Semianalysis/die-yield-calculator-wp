@@ -1,7 +1,17 @@
 import { useEffect, useState } from "react";
 import { FabResults, WaferShape } from "../types";
-import { discSizes, panelSizes, yieldModels } from "../config";
+import { discSizes, panelSizes, yieldModels, minDieEdge } from "../config";
 import { evaluateDiscInputs, evaluatePanelInputs, InputValues } from "../utils/calculations";
+
+const defaultState = {
+	dies: [],
+	totalDies: null,
+	goodDies: null,
+	defectiveDies: null,
+	partialDies: null,
+	lostDies: null,
+	fabYield: null,
+};
 
 /**
  * Given the numeric inputs, selected wafer properties, and a yield model, calculate
@@ -21,28 +31,20 @@ export function useInputs(
 	panelSize: keyof typeof panelSizes,
 	discSize: keyof typeof discSizes
 ): FabResults {
-	const [results, setResults] = useState<FabResults>({
-		dies: [],
-		totalDies: 0,
-		goodDies: 0,
-		defectiveDies: 0,
-		partialDies: 0,
-		lostDies: 0,
-		fabYield: 0
-	});
+	const [results, setResults] = useState<FabResults>(defaultState);
 
 	useEffect(() => {
-		// Bail out if we can't use any of the values
+		// Reset to defaults if we can't use some of the values
 		const invalidValues = Object.values(values).filter(isNaN);
 
-		if (invalidValues.length) {
-			return;
-		}
-
-		if (shape === "Disc") {
-			setResults(evaluateDiscInputs(values, discSize, yieldModel, waferCenteringEnabled));
-		} else if (shape === "Panel") {
-			setResults(evaluatePanelInputs(values, panelSize, yieldModel, waferCenteringEnabled));
+		if (invalidValues.length || values.dieWidth < minDieEdge || values.dieHeight < minDieEdge) {
+			setResults(defaultState);
+		} else {
+			if (shape === "Disc") {
+				setResults(evaluateDiscInputs(values, discSize, yieldModel, waferCenteringEnabled));
+			} else if (shape === "Panel") {
+				setResults(evaluatePanelInputs(values, panelSize, yieldModel, waferCenteringEnabled));
+			}
 		}
 	}, [JSON.stringify(values), shape, panelSize, discSize, yieldModel, waferCenteringEnabled]);
 
