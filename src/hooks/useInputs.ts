@@ -5,16 +5,16 @@ import { evaluateDiscInputs, evaluatePanelInputs, InputValues } from "../utils/c
 
 const validPositiveInteger = (value: number) => !isNaN(value) && value >= 0;
 
-const validations : { [K in keyof InputValues] : (inputs: InputValues) => boolean } = {
+const validations : { [k in keyof InputValues] : (inputs: InputValues) => boolean } = {
 	dieWidth: ({ dieWidth }) => !isNaN(dieWidth) && dieWidth >= minDieEdge,
 	dieHeight: ({ dieHeight }) => !isNaN(dieHeight) && dieHeight >= minDieEdge,
 	criticalArea: ({criticalArea, dieHeight, dieWidth}) => !isNaN(criticalArea) && criticalArea >= 0 && criticalArea <= dieWidth * dieHeight,
-	defectRate: ({ defectRate }) => !isNaN(defectRate) && defectRate >= 0 && defectRate <= 1,
+	defectRate: ({ defectRate }) => validPositiveInteger(defectRate),
 	lossyEdgeWidth: ({lossyEdgeWidth}) => validPositiveInteger(lossyEdgeWidth),
 	scribeHoriz: ({scribeHoriz}) => validPositiveInteger(scribeHoriz),
 	scribeVert: ({scribeVert}) => validPositiveInteger(scribeVert),
-	transHoriz: ({transHoriz}) => validPositiveInteger(transHoriz),
-	transVert: ({transVert}) => validPositiveInteger(transVert),
+	transHoriz: ({transHoriz}) => !isNaN(transHoriz),
+	transVert: ({transVert}) => !isNaN(transVert),
 }
 
 /**
@@ -51,7 +51,6 @@ export function useInputs(
 			}
 		}
 	}, [JSON.stringify(values), shape, panelSize, discSize, yieldModel, waferCenteringEnabled]);
-
 
 	return results;
 }

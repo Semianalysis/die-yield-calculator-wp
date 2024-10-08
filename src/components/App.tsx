@@ -362,7 +362,6 @@ function App() {
 							label="Defect Rate (#/cm²)"
 							value={defectRate}
 							min={0}
-							max={1}
 							onChange={(event) => setDefectRate(event.target.value)}
 						/>
 					</div>
@@ -378,12 +377,12 @@ function App() {
 						<NumberInput
 							label="Translation Horizontal (mm)"
 							value={transHoriz}
-							onChange={(event) => setScribeHoriz(event.target.value)}
+							onChange={(event) => setTransHoriz(event.target.value)}
 						/>
 						<NumberInput
 							label="Translation Vertical (mm)"
 							value={transVert}
-							onChange={(event) => setScribeVert(event.target.value)}
+							onChange={(event) => setTransVert(event.target.value)}
 						/>
 					</div>
 					<div className="input-row">

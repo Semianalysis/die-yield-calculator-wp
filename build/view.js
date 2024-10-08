@@ -777,7 +777,6 @@ function App() {
     label: "Defect Rate (#/cm\u00B2)",
     value: defectRate,
     min: 0,
-    max: 1,
     onChange: event => setDefectRate(event.target.value)
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "input-row"
@@ -791,11 +790,11 @@ function App() {
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
     label: "Translation Horizontal (mm)",
     value: transHoriz,
-    onChange: event => setScribeHoriz(event.target.value)
+    onChange: event => setTransHoriz(event.target.value)
   }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
     label: "Translation Vertical (mm)",
     value: transVert,
-    onChange: event => setScribeVert(event.target.value)
+    onChange: event => setTransVert(event.target.value)
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "input-row"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Checkbox_Checkbox__WEBPACK_IMPORTED_MODULE_1__.Checkbox, {
@@ -1394,7 +1393,7 @@ const validations = {
   }) => !isNaN(criticalArea) && criticalArea >= 0 && criticalArea <= dieWidth * dieHeight,
   defectRate: ({
     defectRate
-  }) => !isNaN(defectRate) && defectRate >= 0 && defectRate <= 1,
+  }) => validPositiveInteger(defectRate),
   lossyEdgeWidth: ({
     lossyEdgeWidth
   }) => validPositiveInteger(lossyEdgeWidth),
@@ -1406,10 +1405,10 @@ const validations = {
   }) => validPositiveInteger(scribeVert),
   transHoriz: ({
     transHoriz
-  }) => validPositiveInteger(transHoriz),
+  }) => !isNaN(transHoriz),
   transVert: ({
     transVert
-  }) => validPositiveInteger(transVert)
+  }) => !isNaN(transVert)
 };
 /**
  * Given the numeric inputs, selected wafer properties, and a yield model, calculate
