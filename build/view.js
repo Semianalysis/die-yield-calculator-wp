@@ -1052,11 +1052,8 @@ __webpack_require__.r(__webpack_exports__);
 const mmToPxScale = 3;
 // Don't try and draw too many dies, or performance will suffer too much and the
 // page may hang or crash
-const maxDies = 100000;
+const maxDies = 50000;
 function DieMapCanvas(props) {
-  // Don't try and draw too many dies, or performance will suffer too much and the
-  // page may hang or crash
-  const maxDies = 100000;
   const canvasEl = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
   const dieStateColors = {
     good: "rgba(6,231,6,0.77)",

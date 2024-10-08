@@ -9,16 +9,13 @@ const mmToPxScale = 3;
 
 // Don't try and draw too many dies, or performance will suffer too much and the
 // page may hang or crash
-const maxDies = 100000;
+const maxDies = 50000;
 
 function DieMapCanvas(props: {
 	results: FabResults;
 	waferWidth: number;
 	waferHeight: number;
 }) {
-	// Don't try and draw too many dies, or performance will suffer too much and the
-	// page may hang or crash
-	const maxDies = 100000;
 	const canvasEl = useRef<HTMLCanvasElement>(null);
 	const dieStateColors = {
 		good: "rgba(6,231,6,0.77)",
