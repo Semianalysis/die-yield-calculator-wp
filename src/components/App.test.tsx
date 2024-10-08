@@ -1,6 +1,6 @@
 import React from "react";
 import App from "./App";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 
 describe("App", () => {
@@ -30,7 +30,7 @@ describe("App", () => {
 
 		const expected = Math.pow(300 / 5, 2);
 
-		expect(screen.queryByText(new RegExp(expected.toString()))).toBeInTheDocument();
+		expect(await screen.findByText(new RegExp(expected.toString()))).toBeInTheDocument();
 	});
 
 	it("calculates yields for wafer shape", async () => {
@@ -42,27 +42,29 @@ describe("App", () => {
 		await waitFor(() => expect(screen.getByText(/976/)).toBeInTheDocument());
 	});
 
-	it("displays a breakdown of die states whose sum equals the total number of dies", () => {
+	it("displays a breakdown of die states whose sum equals the total number of dies", async () => {
 		render(<App />);
 
 		// Get the number of dies displayed for each state and the total number of dies.
 		let totalDiesCount = 0;
 		let allStatesCount = 0;
-		[
+		await Promise.all([
 			"Total",
 			"Good",
 			"Defective",
 			"Partial",
 			"Lost"
-		].forEach((label) => {
+		].map(async (label) => {
 			const regex = new RegExp(`${label} Dies`);
-			const textNode = screen.getByText(regex).textContent;
+			const textNode = await screen.findByText(regex);
 
-			if (textNode) {
-				const countStr = textNode.match(/\d+/)?.[0];
+			if (textNode.textContent) {
+				// Wait for the calculation to appear
+				const countStr = await within(textNode).findByText(/\d+/);
 
-				if (countStr) {
-					const countNum = parseInt(countStr);
+				if (countStr.textContent) {
+					const countMatch = countStr.textContent.match(/\d+/)?.[0];
+					const countNum = countMatch ? parseInt(countMatch) : 0;
 
 					if (label === "Total") {
 						totalDiesCount = countNum;
@@ -71,18 +73,18 @@ describe("App", () => {
 					}
 				}
 			}
-		});
+		}));
 
 		expect(totalDiesCount).toBeGreaterThan(0);
 		expect(totalDiesCount).toEqual(allStatesCount);
 	});
 
-	it('automatically adjusts the other die dimension input when one is changed with maintain aspect ratio on', async () => {
+	it("automatically adjusts the other die dimension input when one is changed with maintain aspect ratio on", async () => {
 		render(<App />);
 		const user = userEvent.setup();
-		const maintainAspectRatioCheckbox = screen.getByRole("checkbox", { name: /Aspect Ratio/});
-		const dieWidthInput = screen.getByRole("spinbutton", {name: /Width/});
-		const dieHeightInput = screen.getByRole("spinbutton", {name: /Height/});
+		const maintainAspectRatioCheckbox = screen.getByRole("checkbox", { name: /Aspect Ratio/ });
+		const dieWidthInput = screen.getByRole("spinbutton", { name: /Width/ });
+		const dieHeightInput = screen.getByRole("spinbutton", { name: /Height/ });
 
 		// Aspect ratio on by default
 		expect(maintainAspectRatioCheckbox).toBeChecked();

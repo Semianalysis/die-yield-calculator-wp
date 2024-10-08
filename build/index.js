@@ -1049,14 +1049,24 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 
 function NumberInput(props) {
+  // Use an event listener to prevent scroll events from bubbling and causing the
+  // document to scroll. See https://github.com/facebook/react/issues/5845#issuecomment-492955321
+  const inputElRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    const onWheel = event => event.stopPropagation();
+    inputElRef.current?.addEventListener("wheel", onWheel);
+    // Remove event listener on unmount
+    return () => inputElRef.current?.removeEventListener("wheel", onWheel);
+  }, []);
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", {
-    className: props.isDisabled ? 'disabled' : ''
+    className: props.isDisabled ? "disabled" : ""
   }, props.label, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
     type: "number",
     disabled: props.isDisabled,
     value: props.value,
     onChange: props.onChange,
     onBlur: props.onBlur,
+    ref: inputElRef,
     step: "0.01",
     max: props.max,
     min: props.min
@@ -1150,11 +1160,8 @@ __webpack_require__.r(__webpack_exports__);
 const mmToPxScale = 3;
 // Don't try and draw too many dies, or performance will suffer too much and the
 // page may hang or crash
-const maxDies = 100000;
+const maxDies = 50000;
 function DieMapCanvas(props) {
-  // Don't try and draw too many dies, or performance will suffer too much and the
-  // page may hang or crash
-  const maxDies = 100000;
   const canvasEl = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
   const dieStateColors = {
     good: "rgba(6,231,6,0.77)",
@@ -1485,6 +1492,34 @@ const yieldModels = {
 
 /***/ }),
 
+/***/ "./src/hooks/useDebouncedEffect.ts":
+/*!*****************************************!*\
+  !*** ./src/hooks/useDebouncedEffect.ts ***!
+  \*****************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   useDebouncedEffect: () => (/* binding */ useDebouncedEffect)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+
+/**
+ * useEffect, but wrapped in a debouncer
+ * @param effect The effect callback to run
+ * @param deps The dependency list
+ * @param delay The debounce delay in milliseconds
+ */
+function useDebouncedEffect(effect, deps, delay) {
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    const handler = setTimeout(() => effect(), delay);
+    return () => clearTimeout(handler);
+  }, [...(deps || []), delay]);
+}
+
+/***/ }),
+
 /***/ "./src/hooks/useEasterEgg.ts":
 /*!***********************************!*\
   !*** ./src/hooks/useEasterEgg.ts ***!
@@ -1545,6 +1580,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../config */ "./src/config/index.ts");
 /* harmony import */ var _utils_calculations__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/calculations */ "./src/utils/calculations.ts");
+/* harmony import */ var _useDebouncedEffect__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./useDebouncedEffect */ "./src/hooks/useDebouncedEffect.ts");
+
 
 
 
@@ -1592,7 +1629,7 @@ const validations = {
  */
 function useInputs(values, waferCenteringEnabled, yieldModel, shape, panelSize, discSize) {
   const [results, setResults] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
-  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+  (0,_useDebouncedEffect__WEBPACK_IMPORTED_MODULE_3__.useDebouncedEffect)(() => {
     // Reset to defaults if we can't use one or more values
     const invalidValues = Object.keys(validations).filter(validation => !validations[validation](values));
     if (invalidValues.length) {
@@ -1604,7 +1641,7 @@ function useInputs(values, waferCenteringEnabled, yieldModel, shape, panelSize, 
         setResults((0,_utils_calculations__WEBPACK_IMPORTED_MODULE_2__.evaluatePanelInputs)(values, panelSize, yieldModel, waferCenteringEnabled));
       }
     }
-  }, [JSON.stringify(values), shape, panelSize, discSize, yieldModel, waferCenteringEnabled]);
+  }, [JSON.stringify(values), shape, panelSize, discSize, yieldModel, waferCenteringEnabled], 100);
   return results;
 }
 
@@ -2135,7 +2172,7 @@ function i(t,e,i,n){return new(i||(i=Promise))((function(s,r){function l(t){try{
   \************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"create-block/die-yield-calculator","version":"0.1.0","title":"SemiAnalysis Die Yield Calculator","category":"widgets","icon":"smiley","description":"Embeds a React application for calculating expected semiconductor yield from a die.","example":{},"supports":{"html":false},"textdomain":"die-yield-calculator","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","render":"file:./render.php","viewScript":"file:./view.js"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"create-block/die-yield-calculator","version":"0.1.1","title":"Die Yield Calculator","category":"widgets","icon":"calculator","description":"Embeds a React application for calculating expected semiconductor die yield.","example":{},"supports":{"html":false},"textdomain":"die-yield-calculator","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","render":"file:./render.php","viewScript":"file:./view.js"}');
 
 /***/ })
 

@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FabResults, WaferShape } from "../types";
 import { discSizes, panelSizes, yieldModels, minDieEdge } from "../config";
 import { evaluateDiscInputs, evaluatePanelInputs, InputValues } from "../utils/calculations";
+import { useDebouncedEffect } from "./useDebouncedEffect";
 
 const validPositiveInteger = (value: number) => !isNaN(value) && value >= 0;
 
@@ -37,7 +38,7 @@ export function useInputs(
 ) {
 	const [results, setResults] = useState<FabResults>(null);
 
-	useEffect(() => {
+	useDebouncedEffect(() => {
 		// Reset to defaults if we can't use one or more values
 		const invalidValues = Object.keys(validations).filter((validation) => !validations[validation as keyof typeof validations](values));
 
@@ -50,7 +51,7 @@ export function useInputs(
 				setResults(evaluatePanelInputs(values, panelSize, yieldModel, waferCenteringEnabled));
 			}
 		}
-	}, [JSON.stringify(values), shape, panelSize, discSize, yieldModel, waferCenteringEnabled]);
+	}, [JSON.stringify(values), shape, panelSize, discSize, yieldModel, waferCenteringEnabled], 100);
 
 	return results;
 }

@@ -2,11 +2,11 @@
   "$schema": "https://schemas.wp.org/trunk/block.json",
   "apiVersion": 3,
   "name": "create-block/die-yield-calculator",
-  "version": "0.1.0",
-  "title": "SemiAnalysis Die Yield Calculator",
+  "version": "0.1.1",
+  "title": "Die Yield Calculator",
   "category": "widgets",
-  "icon": "smiley",
-  "description": "Embeds a React application for calculating expected semiconductor yield from a die.",
+  "icon": "calculator",
+  "description": "Embeds a React application for calculating expected semiconductor die yield.",
   "example": {},
   "supports": {
     "html": false
