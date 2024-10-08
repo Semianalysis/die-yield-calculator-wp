@@ -41,7 +41,7 @@ function DieMapCanvas(props: {
 		// Clear the canvases before drawing new die map
 		context.clearRect(0, 0, canvasEl.current.width, canvasEl.current.height);
 
-		if (!props.results.dies.length || props.results.dies.length > maxDies) {
+		if (!props.results || props.results.dies.length > maxDies) {
 			return;
 		}
 
@@ -57,9 +57,9 @@ function DieMapCanvas(props: {
 		});
 	}, [JSON.stringify(props.results)]);
 
-	if (props.results.totalDies === null) {
+	if (props.results === null) {
 		return (
-			<div className="wafer-canvas__message" role="status">
+			<div className="wafer-canvas__message--error" role="status">
 				<span>Invalid input(s) provided</span>
 			</div>
 		);
@@ -105,7 +105,7 @@ function DieDecorativeCanvas(props: {
 
 		context.clearRect(0, 0, canvasEl.current.width, canvasEl.current.height);
 
-		if (!props.results.dies.length || props.results.dies.length > maxDies) {
+		if (!props.results || props.results.dies.length > maxDies) {
 			return;
 		}
 
@@ -222,48 +222,17 @@ export function WaferCanvas(props: {
 	shape: WaferShape;
 	waferWidth: number;
 	waferHeight: number;
+	easterEggEnabled: boolean;
 }) {
 	const [tiltX, setTiltX] = useState(0);
 	const [tiltY, setTiltY] = useState(0);
-	const [easterEggEnabled, setEasterEggEnabled] = useState(false);
-
-	useEffect(() => {
-		const sequence = ['t', 's', 'm', 'c'];
-		let keyIndex = 0;
-		let timeOut: ReturnType<typeof setTimeout>;
-
-		const listenerCb = (e: KeyboardEvent) => {
-			// Clear previous timeout
-			clearTimeout(timeOut);
-
-			// Handle keypress
-			if (e.key === sequence[keyIndex]) {
-				if (keyIndex === sequence.length - 1) {
-					// If we are at the end of the sequence, unlock the easter egg
-					setEasterEggEnabled(true);
-				} else {
-					// Otherwise continue to the next key in the sequence
-					keyIndex++;
-				}
-			} else {
-				keyIndex = 0;
-			}
-
-			// User has 2s between key entries before sequence resets
-			timeOut = setTimeout(() => keyIndex = 0, 2000);
-		};
-		window.addEventListener('keydown', listenerCb);
-
-		// Remove key listener when component unmounts
-		return () => window.removeEventListener('keydown', listenerCb)
-	}, []);
 
 	function onMove({ tiltAngleXPercentage, tiltAngleYPercentage }: OnMoveParams) {
 		setTiltX(tiltAngleXPercentage);
 		setTiltY(tiltAngleYPercentage);
 	}
 
-	if (easterEggEnabled) {
+	if (props.easterEggEnabled) {
 		return (
 			<Tilt
 				glareEnable={true}

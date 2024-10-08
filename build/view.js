@@ -512,6 +512,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _WaferCanvas_WaferCanvas__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./WaferCanvas/WaferCanvas */ "./src/components/WaferCanvas/WaferCanvas.tsx");
 /* harmony import */ var _ResultsStats_ResultsStats__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./ResultsStats/ResultsStats */ "./src/components/ResultsStats/ResultsStats.tsx");
 /* harmony import */ var _assets_semianalysis_logo_full_360px_png__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../assets/semianalysis-logo-full-360px.png */ "./src/assets/semianalysis-logo-full-360px.png");
+/* harmony import */ var _hooks_useEasterEgg__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../hooks/useEasterEgg */ "./src/hooks/useEasterEgg.ts");
+
 
 
 
@@ -626,6 +628,7 @@ function App() {
     transHoriz: parseFloat(transHoriz),
     transVert: parseFloat(transVert)
   }, waferCenteringEnabled, selectedModel, waferShape, panelSize, discSize);
+  const easterEggEnabled = (0,_hooks_useEasterEgg__WEBPACK_IMPORTED_MODULE_8__.useEasterEgg)();
   const waferWidth = waferShape === "Panel" ? _config__WEBPACK_IMPORTED_MODULE_4__.panelSizes[panelSize].waferWidth : _config__WEBPACK_IMPORTED_MODULE_4__.discSizes[discSize].waferWidth;
   const waferHeight = waferShape === "Panel" ? _config__WEBPACK_IMPORTED_MODULE_4__.panelSizes[panelSize].waferHeight : _config__WEBPACK_IMPORTED_MODULE_4__.discSizes[discSize].waferWidth;
   // Derive max die width/height based on whether reticle limit is set.
@@ -811,11 +814,12 @@ function App() {
     shape: waferShape,
     lossyEdgeWidth: parseFloat(lossyEdgeWidth),
     waferWidth: waferWidth,
-    waferHeight: waferHeight
+    waferHeight: waferHeight,
+    easterEggEnabled: easterEggEnabled
   }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "panel"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", null, "Results"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_ResultsStats_ResultsStats__WEBPACK_IMPORTED_MODULE_6__.ResultsStats, {
-    results: results,
+    results: easterEggEnabled ? null : results,
     shape: waferShape,
     dieWidth: parseFloat(dieWidth),
     dieHeight: parseFloat(dieHeight),
@@ -915,8 +919,8 @@ function totalDieAreaCm(dieWidthMM, dieHeightMM, numDies) {
   return dieWidthMM * dieHeightMM * numDies / 100;
 }
 function displayValue(value) {
-  if (value === null) {
-    return '—';
+  if (!value) {
+    return "—";
   }
   return value;
 }
@@ -927,19 +931,19 @@ function ResultsStats(props) {
     className: "results__list"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--total-dies"
-  }, "Total Dies: ", displayValue(props.results.totalDies)), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+  }, "Total Dies: ", displayValue(props.results?.totalDies)), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--good-dies"
-  }, "Good Dies: ", displayValue(props.results.goodDies)), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+  }, "Good Dies: ", displayValue(props.results?.goodDies)), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--defective-dies"
-  }, "Defective Dies: ", displayValue(props.results.defectiveDies)), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+  }, "Defective Dies: ", displayValue(props.results?.defectiveDies)), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--partial-dies"
-  }, "Partial Dies: ", displayValue(props.results.partialDies)), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+  }, "Partial Dies: ", displayValue(props.results?.partialDies)), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--lost-dies"
-  }, "Lost Dies: ", displayValue(props.results.lostDies))), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("ul", {
+  }, "Lost Dies: ", displayValue(props.results?.lostDies))), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("ul", {
     className: "results__list"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--yield"
-  }, "Fab Yield: ", props.results.fabYield === null ? "—" : parseFloat((props.results.fabYield * 100).toFixed(4)), "%"), props.shape === "Panel" ? react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+  }, "Fab Yield: ", displayValue(props.results?.fabYield && parseFloat((props.results.fabYield * 100).toFixed(4))), "%"), props.shape === "Panel" ? react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--panel-width"
   }, "Panel Width: ", props.waferWidth, "mm"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--panel-height"
@@ -949,7 +953,7 @@ function ResultsStats(props) {
     className: "result result--wafer-area"
   }, "Wafer Area: ", parseFloat(waferAreaCm(props.shape, props.waferWidth, props.waferHeight).toFixed(4)), "cm\u00B2"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--die-area"
-  }, "Total Die Area: ", props.results.totalDies === null ? "—" : parseFloat(totalDieAreaCm(props.dieWidth, props.dieHeight, props.results.totalDies).toFixed(4)), "cm\u00B2")));
+  }, "Total Die Area: ", displayValue(props.results?.totalDies && parseFloat(totalDieAreaCm(props.dieWidth, props.dieHeight, props.results.totalDies).toFixed(4))), "cm\u00B2")));
 }
 
 /***/ }),
@@ -999,7 +1003,7 @@ function DieMapCanvas(props) {
     }
     // Clear the canvases before drawing new die map
     context.clearRect(0, 0, canvasEl.current.width, canvasEl.current.height);
-    if (!props.results.dies.length || props.results.dies.length > maxDies) {
+    if (!props.results || props.results.dies.length > maxDies) {
       return;
     }
     // Draw each die onto the canvas
@@ -1008,9 +1012,9 @@ function DieMapCanvas(props) {
       context.fillRect(mmToPxScale * die.x, mmToPxScale * die.y, mmToPxScale * die.width, mmToPxScale * die.height);
     });
   }, [JSON.stringify(props.results)]);
-  if (props.results.totalDies === null) {
+  if (props.results === null) {
     return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-      className: "wafer-canvas__message",
+      className: "wafer-canvas__message--error",
       role: "status"
     }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null, "Invalid input(s) provided"));
   }
@@ -1038,7 +1042,7 @@ function DieDecorativeCanvas(props) {
       return;
     }
     context.clearRect(0, 0, canvasEl.current.width, canvasEl.current.height);
-    if (!props.results.dies.length || props.results.dies.length > maxDies) {
+    if (!props.results || props.results.dies.length > maxDies) {
       return;
     }
     context.clearRect(0, 0, canvasEl.current.width, canvasEl.current.height);
@@ -1111,33 +1115,6 @@ function LossyEdgeMarker(props) {
 function WaferCanvas(props) {
   const [tiltX, setTiltX] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(0);
   const [tiltY, setTiltY] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(0);
-  const [easterEggEnabled, setEasterEggEnabled] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
-  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
-    const sequence = ['t', 's', 'm', 'c'];
-    let keyIndex = 0;
-    let timeOut;
-    const listenerCb = e => {
-      // Clear previous timeout
-      clearTimeout(timeOut);
-      // Handle keypress
-      if (e.key === sequence[keyIndex]) {
-        if (keyIndex === sequence.length - 1) {
-          // If we are at the end of the sequence, unlock the easter egg
-          setEasterEggEnabled(true);
-        } else {
-          // Otherwise continue to the next key in the sequence
-          keyIndex++;
-        }
-      } else {
-        keyIndex = 0;
-      }
-      // User has 2s between key entries before sequence resets
-      timeOut = setTimeout(() => keyIndex = 0, 2000);
-    };
-    window.addEventListener('keydown', listenerCb);
-    // Remove key listener when component unmounts
-    return () => window.removeEventListener('keydown', listenerCb);
-  }, []);
   function onMove({
     tiltAngleXPercentage,
     tiltAngleYPercentage
@@ -1145,7 +1122,7 @@ function WaferCanvas(props) {
     setTiltX(tiltAngleXPercentage);
     setTiltY(tiltAngleYPercentage);
   }
-  if (easterEggEnabled) {
+  if (props.easterEggEnabled) {
     return react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_parallax_tilt__WEBPACK_IMPORTED_MODULE_3__["default"], {
       glareEnable: true,
       glareMaxOpacity: 0.75,
@@ -1339,6 +1316,52 @@ const yieldModels = {
 
 /***/ }),
 
+/***/ "./src/hooks/useEasterEgg.ts":
+/*!***********************************!*\
+  !*** ./src/hooks/useEasterEgg.ts ***!
+  \***********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   useEasterEgg: () => (/* binding */ useEasterEgg)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+
+function useEasterEgg() {
+  const [easterEggEnabled, setEasterEggEnabled] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    const sequence = ['t', 's', 'm', 'c'];
+    let keyIndex = 0;
+    let timeOut;
+    const listenerCb = e => {
+      // Clear previous timeout
+      clearTimeout(timeOut);
+      // Handle keypress
+      if (e.key === sequence[keyIndex]) {
+        if (keyIndex === sequence.length - 1) {
+          // If we are at the end of the sequence, unlock the easter egg
+          setEasterEggEnabled(true);
+        } else {
+          // Otherwise continue to the next key in the sequence
+          keyIndex++;
+        }
+      } else {
+        keyIndex = 0;
+      }
+      // User has 2s between key entries before sequence resets
+      timeOut = setTimeout(() => keyIndex = 0, 2000);
+    };
+    window.addEventListener('keydown', listenerCb);
+    // Remove key listener when component unmounts
+    return () => window.removeEventListener('keydown', listenerCb);
+  }, []);
+  return easterEggEnabled;
+}
+
+/***/ }),
+
 /***/ "./src/hooks/useInputs.ts":
 /*!********************************!*\
   !*** ./src/hooks/useInputs.ts ***!
@@ -1356,15 +1379,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const defaultState = {
-  dies: [],
-  totalDies: null,
-  goodDies: null,
-  defectiveDies: null,
-  partialDies: null,
-  lostDies: null,
-  fabYield: null
-};
 const validPositiveInteger = value => !isNaN(value) && value >= 0;
 const validations = {
   dieWidth: ({
@@ -1408,12 +1422,12 @@ const validations = {
  * @param discSize chosen size of disc wafer
  */
 function useInputs(values, waferCenteringEnabled, yieldModel, shape, panelSize, discSize) {
-  const [results, setResults] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(defaultState);
+  const [results, setResults] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     // Reset to defaults if we can't use one or more values
     const invalidValues = Object.keys(validations).filter(validation => !validations[validation](values));
     if (invalidValues.length) {
-      setResults(defaultState);
+      setResults(null);
     } else {
       if (shape === "Disc") {
         setResults((0,_utils_calculations__WEBPACK_IMPORTED_MODULE_2__.evaluateDiscInputs)(values, discSize, yieldModel, waferCenteringEnabled));

@@ -7,6 +7,7 @@ import { WaferShape } from "../types";
 import { WaferCanvas } from "./WaferCanvas/WaferCanvas";
 import { ResultsStats } from "./ResultsStats/ResultsStats";
 import semiAnalysisLogo from "../assets/semianalysis-logo-full-360px.png";
+import { useEasterEgg } from "../hooks/useEasterEgg";
 
 const ShapeSelector = (props: { shape: WaferShape, setShape: (value: WaferShape) => void }) => {
 	const shapes: Array<WaferShape> = ["Disc", "Panel"];
@@ -165,6 +166,7 @@ function App() {
 		panelSize,
 		discSize
 	);
+	const easterEggEnabled = useEasterEgg();
 
 	const waferWidth = waferShape === "Panel"
 		? panelSizes[panelSize].waferWidth
@@ -408,11 +410,12 @@ function App() {
 							lossyEdgeWidth={parseFloat(lossyEdgeWidth)}
 							waferWidth={waferWidth}
 							waferHeight={waferHeight}
+							easterEggEnabled={easterEggEnabled}
 						/>
 						<div className="panel">
 							<h2>Results</h2>
 							<ResultsStats
-								results={results}
+								results={easterEggEnabled ? null : results}
 								shape={waferShape}
 								dieWidth={parseFloat(dieWidth)}
 								dieHeight={parseFloat(dieHeight)}

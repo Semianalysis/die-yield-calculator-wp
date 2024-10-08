@@ -3,16 +3,6 @@ import { FabResults, WaferShape } from "../types";
 import { discSizes, panelSizes, yieldModels, minDieEdge } from "../config";
 import { evaluateDiscInputs, evaluatePanelInputs, InputValues } from "../utils/calculations";
 
-const defaultState = {
-	dies: [],
-	totalDies: null,
-	goodDies: null,
-	defectiveDies: null,
-	partialDies: null,
-	lostDies: null,
-	fabYield: null,
-};
-
 const validPositiveInteger = (value: number) => !isNaN(value) && value >= 0;
 
 const validations : { [K in keyof InputValues] : (inputs: InputValues) => boolean } = {
@@ -44,15 +34,15 @@ export function useInputs(
 	shape: WaferShape,
 	panelSize: keyof typeof panelSizes,
 	discSize: keyof typeof discSizes
-): FabResults {
-	const [results, setResults] = useState<FabResults>(defaultState);
+) {
+	const [results, setResults] = useState<FabResults>(null);
 
 	useEffect(() => {
 		// Reset to defaults if we can't use one or more values
 		const invalidValues = Object.keys(validations).filter((validation) => !validations[validation as keyof typeof validations](values));
 
 		if (invalidValues.length) {
-			setResults(defaultState);
+			setResults(null);
 		} else {
 			if (shape === "Disc") {
 				setResults(evaluateDiscInputs(values, discSize, yieldModel, waferCenteringEnabled));

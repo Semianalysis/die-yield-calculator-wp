@@ -372,15 +372,22 @@
 		}
 
 		.wafer-canvas__message {
-			position: absolute;
-			left: 0;
-			right: 0;
-			top: 50%;
-			text-align: center;
-			transform: translateY(-50%);
-			line-height: 1;
-			color: rgba(0,0,0,0.5);
-			text-shadow: 0 1px #ffffff2e;
+			&,
+			&--error {
+				position: absolute;
+				left: 0;
+				right: 0;
+				top: 50%;
+				text-align: center;
+				transform: translateY(-50%);
+				line-height: 1;
+				color: rgba(0, 0, 0, 0.5);
+				text-shadow: 0 1px #ffffff2e;
+			}
+
+			&--error {
+				color: $color-lost;
+			}
 		}
 	}
 
