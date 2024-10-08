@@ -1098,7 +1098,7 @@ function DieMapCanvas(props) {
     lost: "rgba(243,81,67,0.68)"
   };
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
-    if (!canvasEl.current || !props.results.dies.length || props.results.dies.length > maxDies) {
+    if (!canvasEl.current) {
       return;
     }
     const context = canvasEl.current.getContext("2d");
@@ -1107,15 +1107,25 @@ function DieMapCanvas(props) {
     }
     // Clear the canvases before drawing new die map
     context.clearRect(0, 0, canvasEl.current.width, canvasEl.current.height);
+    if (!props.results.dies.length || props.results.dies.length > maxDies) {
+      return;
+    }
     // Draw each die onto the canvas
     props.results.dies.forEach(die => {
       context.fillStyle = dieStateColors[die.dieState];
       context.fillRect(mmToPxScale * die.x, mmToPxScale * die.y, mmToPxScale * die.width, mmToPxScale * die.height);
     });
   }, [JSON.stringify(props.results)]);
+  if (props.results.totalDies === null) {
+    return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      className: "wafer-canvas__message",
+      role: "status"
+    }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null, "Invalid input(s) provided"));
+  }
   if (props.results.dies.length > maxDies) {
     return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-      className: "wafer-canvas__too-many-dies"
+      className: "wafer-canvas__message",
+      role: "status"
     }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null, "Too many dies to visualize"));
   }
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("canvas", {
@@ -1463,6 +1473,38 @@ const defaultState = {
   lostDies: null,
   fabYield: null
 };
+const validPositiveInteger = value => !isNaN(value) && value >= 0;
+const validations = {
+  dieWidth: ({
+    dieWidth
+  }) => !isNaN(dieWidth) && dieWidth >= _config__WEBPACK_IMPORTED_MODULE_1__.minDieEdge,
+  dieHeight: ({
+    dieHeight
+  }) => !isNaN(dieHeight) && dieHeight >= _config__WEBPACK_IMPORTED_MODULE_1__.minDieEdge,
+  criticalArea: ({
+    criticalArea,
+    dieHeight,
+    dieWidth
+  }) => !isNaN(criticalArea) && criticalArea >= 0 && criticalArea <= dieWidth * dieHeight,
+  defectRate: ({
+    defectRate
+  }) => !isNaN(defectRate) && defectRate >= 0 && defectRate <= 1,
+  lossyEdgeWidth: ({
+    lossyEdgeWidth
+  }) => validPositiveInteger(lossyEdgeWidth),
+  scribeHoriz: ({
+    scribeHoriz
+  }) => validPositiveInteger(scribeHoriz),
+  scribeVert: ({
+    scribeVert
+  }) => validPositiveInteger(scribeVert),
+  transHoriz: ({
+    transHoriz
+  }) => validPositiveInteger(transHoriz),
+  transVert: ({
+    transVert
+  }) => validPositiveInteger(transVert)
+};
 /**
  * Given the numeric inputs, selected wafer properties, and a yield model, calculate
  * the expected fabrication results.
@@ -1476,9 +1518,9 @@ const defaultState = {
 function useInputs(values, waferCenteringEnabled, yieldModel, shape, panelSize, discSize) {
   const [results, setResults] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(defaultState);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
-    // Reset to defaults if we can't use some of the values
-    const invalidValues = Object.values(values).filter(isNaN);
-    if (invalidValues.length || values.dieWidth < _config__WEBPACK_IMPORTED_MODULE_1__.minDieEdge || values.dieHeight < _config__WEBPACK_IMPORTED_MODULE_1__.minDieEdge) {
+    // Reset to defaults if we can't use one or more values
+    const invalidValues = Object.keys(validations).filter(validation => !validations[validation](values));
+    if (invalidValues.length) {
       setResults(defaultState);
     } else {
       if (shape === "Disc") {

@@ -28,7 +28,7 @@ function DieMapCanvas(props: {
 	};
 
 	useEffect(() => {
-		if (!canvasEl.current || !props.results.dies.length || props.results.dies.length > maxDies) {
+		if (!canvasEl.current) {
 			return;
 		}
 
@@ -40,6 +40,10 @@ function DieMapCanvas(props: {
 
 		// Clear the canvases before drawing new die map
 		context.clearRect(0, 0, canvasEl.current.width, canvasEl.current.height);
+
+		if (!props.results.dies.length || props.results.dies.length > maxDies) {
+			return;
+		}
 
 		// Draw each die onto the canvas
 		props.results.dies.forEach((die) => {
@@ -53,9 +57,17 @@ function DieMapCanvas(props: {
 		});
 	}, [JSON.stringify(props.results)]);
 
+	if (props.results.totalDies === null) {
+		return (
+			<div className="wafer-canvas__message" role="status">
+				<span>Invalid input(s) provided</span>
+			</div>
+		);
+	}
+
 	if (props.results.dies.length > maxDies) {
 		return (
-			<div className="wafer-canvas__too-many-dies">
+			<div className="wafer-canvas__message" role="status">
 				<span>Too many dies to visualize</span>
 			</div>
 		);

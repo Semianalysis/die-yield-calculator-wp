@@ -323,7 +323,7 @@
 .wp-block-create-block-die-yield-calculator .wafer-canvas:hover .wafer-canvas__edge {
   opacity: 0.2;
 }
-.wp-block-create-block-die-yield-calculator .wafer-canvas .wafer-canvas__too-many-dies {
+.wp-block-create-block-die-yield-calculator .wafer-canvas .wafer-canvas__message {
   position: absolute;
   left: 0;
   right: 0;
