@@ -299,7 +299,7 @@
 }
 .wp-block-create-block-die-yield-calculator .wafer-canvas.wafer-canvas--disc,
 .wp-block-create-block-die-yield-calculator .wafer-canvas.wafer-canvas--disc .wafer-canvas__mirror-background {
-  border-radius: 100%;
+  clip-path: ellipse(50% 50% at 50% 50%);
   transform: rotate(45deg);
   overflow: hidden;
 }

@@ -341,7 +341,8 @@
 		&.wafer-canvas--disc {
 			&,
 			.wafer-canvas__mirror-background {
-				border-radius: 100%;
+				// Use clip path instead of border radius to prevent tilt mouseover being triggered in corners
+				clip-path: ellipse(50% 50% at 50% 50%);
 				transform: rotate(45deg);
 				overflow: hidden;
 			}
