@@ -1025,11 +1025,11 @@ function waferAreaCm(shape, widthMM, heightMM) {
 function totalDieAreaCm(dieWidthMM, dieHeightMM, numDies) {
   return dieWidthMM * dieHeightMM * numDies / 100;
 }
-function displayValue(value) {
-  if (!value) {
+function displayValue(value, unit) {
+  if (value === null || value === undefined) {
     return "—";
   }
-  return value;
+  return `${value}${unit || ''}`;
 }
 function ResultsStats(props) {
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
@@ -1050,7 +1050,7 @@ function ResultsStats(props) {
     className: "results__list"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--yield"
-  }, "Fab Yield: ", displayValue(props.results?.fabYield && parseFloat((props.results.fabYield * 100).toFixed(4))), "%"), props.shape === "Panel" ? react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+  }, "Fab Yield: ", displayValue(props.results?.fabYield && parseFloat((props.results.fabYield * 100).toFixed(4)), '%')), props.shape === "Panel" ? react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--panel-width"
   }, "Panel Width: ", props.waferWidth, "mm"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--panel-height"
@@ -1060,7 +1060,7 @@ function ResultsStats(props) {
     className: "result result--wafer-area"
   }, "Wafer Area: ", parseFloat(waferAreaCm(props.shape, props.waferWidth, props.waferHeight).toFixed(4)), "cm\u00B2"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--die-area"
-  }, "Total Die Area: ", displayValue(props.results?.totalDies && parseFloat(totalDieAreaCm(props.dieWidth, props.dieHeight, props.results.totalDies).toFixed(4))), "cm\u00B2")));
+  }, "Total Die Area: ", displayValue(props.results?.totalDies && parseFloat(totalDieAreaCm(props.dieWidth, props.dieHeight, props.results.totalDies).toFixed(4)), 'cm²'))));
 }
 
 /***/ }),

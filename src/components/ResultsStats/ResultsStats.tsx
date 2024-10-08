@@ -21,12 +21,12 @@ function totalDieAreaCm(
 	return dieWidthMM * dieHeightMM * numDies / 100;
 }
 
-function displayValue(value?: number | null) {
-	if (!value) {
+function displayValue(value: number | null | undefined, unit?: string) {
+	if (value === null || value === undefined) {
 		return "—";
 	}
 
-	return value;
+	return `${value}${unit || ''}`;
 }
 
 export function ResultsStats(props: {
@@ -48,7 +48,7 @@ export function ResultsStats(props: {
 			</ul>
 			<ul className="results__list">
 				<li className="result result--yield">Fab
-					Yield: {displayValue(props.results?.fabYield && parseFloat((props.results.fabYield * 100).toFixed(4)))}%
+					Yield: {displayValue(props.results?.fabYield && parseFloat((props.results.fabYield * 100).toFixed(4)), '%')}
 				</li>
 				{
 					props.shape === "Panel" ? (
@@ -64,7 +64,7 @@ export function ResultsStats(props: {
 					Area: {parseFloat(waferAreaCm(props.shape, props.waferWidth, props.waferHeight).toFixed(4))}cm²
 				</li>
 				<li className="result result--die-area">Total Die
-					Area: {displayValue(props.results?.totalDies && parseFloat(totalDieAreaCm(props.dieWidth, props.dieHeight, props.results.totalDies).toFixed(4)))}cm²
+					Area: {displayValue(props.results?.totalDies && parseFloat(totalDieAreaCm(props.dieWidth, props.dieHeight, props.results.totalDies).toFixed(4)), 'cm²')}
 				</li>
 			</ul>
 		</div>
