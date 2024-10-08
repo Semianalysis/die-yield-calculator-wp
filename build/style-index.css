@@ -383,6 +383,7 @@
   transform: translateX(-50%);
   transition: opacity 0.3s ease;
   border: 0;
+  box-shadow: 0 0.5em 1em rgba(0, 0, 0, 0.75);
 }
 @media (min-width: 768px) {
   .wp-block-create-block-die-yield-calculator .jump-to-results, .wp-block-create-block-die-yield-calculator .jump-to-results--hidden {
