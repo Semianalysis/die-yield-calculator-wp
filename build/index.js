@@ -1049,14 +1049,24 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 
 function NumberInput(props) {
+  // Use an event listener to prevent scroll events from bubbling and causing the
+  // document to scroll. See https://github.com/facebook/react/issues/5845#issuecomment-492955321
+  const inputElRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    const onWheel = event => event.stopPropagation();
+    inputElRef.current?.addEventListener("wheel", onWheel);
+    // Remove event listener on unmount
+    return () => inputElRef.current?.removeEventListener("wheel", onWheel);
+  }, []);
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", {
-    className: props.isDisabled ? 'disabled' : ''
+    className: props.isDisabled ? "disabled" : ""
   }, props.label, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
     type: "number",
     disabled: props.isDisabled,
     value: props.value,
     onChange: props.onChange,
     onBlur: props.onBlur,
+    ref: inputElRef,
     step: "0.01",
     max: props.max,
     min: props.min
