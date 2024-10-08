@@ -38,7 +38,7 @@ export function ResultsStats(props: {
 	waferHeight: number;
 }) {
 	return (
-		<div className="results">
+		<div className="results" aria-busy={!props.results}>
 			<ul className="results__list">
 				<li className="result result--total-dies">Total Dies: {displayValue(props.results?.totalDies)}</li>
 				<li className="result result--good-dies">Good Dies: {displayValue(props.results?.goodDies)}</li>
