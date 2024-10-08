@@ -1387,6 +1387,34 @@ const yieldModels = {
 
 /***/ }),
 
+/***/ "./src/hooks/useDebouncedEffect.ts":
+/*!*****************************************!*\
+  !*** ./src/hooks/useDebouncedEffect.ts ***!
+  \*****************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   useDebouncedEffect: () => (/* binding */ useDebouncedEffect)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+
+/**
+ * useEffect, but wrapped in a debouncer
+ * @param effect The effect callback to run
+ * @param deps The dependency list
+ * @param delay The debounce delay in milliseconds
+ */
+function useDebouncedEffect(effect, deps, delay) {
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    const handler = setTimeout(() => effect(), delay);
+    return () => clearTimeout(handler);
+  }, [...(deps || []), delay]);
+}
+
+/***/ }),
+
 /***/ "./src/hooks/useEasterEgg.ts":
 /*!***********************************!*\
   !*** ./src/hooks/useEasterEgg.ts ***!
@@ -1447,6 +1475,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../config */ "./src/config/index.ts");
 /* harmony import */ var _utils_calculations__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/calculations */ "./src/utils/calculations.ts");
+/* harmony import */ var _useDebouncedEffect__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./useDebouncedEffect */ "./src/hooks/useDebouncedEffect.ts");
+
 
 
 
@@ -1494,7 +1524,7 @@ const validations = {
  */
 function useInputs(values, waferCenteringEnabled, yieldModel, shape, panelSize, discSize) {
   const [results, setResults] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
-  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+  (0,_useDebouncedEffect__WEBPACK_IMPORTED_MODULE_3__.useDebouncedEffect)(() => {
     // Reset to defaults if we can't use one or more values
     const invalidValues = Object.keys(validations).filter(validation => !validations[validation](values));
     if (invalidValues.length) {
@@ -1506,7 +1536,7 @@ function useInputs(values, waferCenteringEnabled, yieldModel, shape, panelSize, 
         setResults((0,_utils_calculations__WEBPACK_IMPORTED_MODULE_2__.evaluatePanelInputs)(values, panelSize, yieldModel, waferCenteringEnabled));
       }
     }
-  }, [JSON.stringify(values), shape, panelSize, discSize, yieldModel, waferCenteringEnabled]);
+  }, [JSON.stringify(values), shape, panelSize, discSize, yieldModel, waferCenteringEnabled], 100);
   return results;
 }
 
