@@ -848,11 +848,11 @@ function App() {
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "input-row--two-col"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
-    label: "Scribe Lines Horiz",
+    label: "Scribe Lines X (mm)",
     value: scribeHoriz,
     onChange: event => setScribeHoriz(event.target.value)
   }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
-    label: "Scribe Lines Vert",
+    label: "Scribe Lines Y (mm)",
     value: scribeVert,
     onChange: event => setScribeVert(event.target.value)
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
