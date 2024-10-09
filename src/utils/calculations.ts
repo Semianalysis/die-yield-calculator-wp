@@ -1,4 +1,4 @@
-import { discSizes, panelSizes, yieldModels } from "../config";
+import { waferSizes, panelSizes, yieldModels } from "../config";
 import { DieState, FabResults } from "../types";
 import { isInsideAnotherPath } from "fork-ts-checker-webpack-plugin/lib/utils/path/is-inside-another-path";
 import {
@@ -113,7 +113,7 @@ export function evaluatePanelInputs(
 	} = inputVals;
 	let dies = [];
 	const fabYield = getFabYield(defectRate, criticalArea, selectedModel);
-	const { waferWidth, waferHeight } = panelSizes[selectedSize];
+	const { width, height } = panelSizes[selectedSize];
 
 	const {
 		x: offsetX,
@@ -121,8 +121,8 @@ export function evaluatePanelInputs(
 	} = getDieOffset(inputVals, waferCenteringEnabled);
 
 	const positions = rectanglesInRectangle(
-		waferWidth,
-		waferHeight,
+		width,
+		height,
 		dieWidth,
 		dieHeight,
 		scribeVert,
@@ -152,8 +152,8 @@ export function evaluatePanelInputs(
 			corner.y,
 			lossyEdgeWidth,
 			lossyEdgeWidth,
-			waferWidth - lossyEdgeWidth * 2,
-			waferHeight - lossyEdgeWidth * 2
+			width - lossyEdgeWidth * 2,
+			height - lossyEdgeWidth * 2
 		));
 
 		if (!goodCorners.length) {
@@ -200,7 +200,7 @@ export function evaluatePanelInputs(
  */
 export function evaluateDiscInputs(
 	inputVals: InputValues,
-	selectedSize: keyof typeof discSizes,
+	selectedSize: keyof typeof waferSizes,
 	selectedModel: keyof typeof yieldModels,
 	waferCenteringEnabled: boolean
 ): FabResults {
@@ -216,7 +216,7 @@ export function evaluateDiscInputs(
 
 	let dies = [];
 	const fabYield = getFabYield(defectRate, criticalArea, selectedModel);
-	const { waferWidth } = discSizes[selectedSize];
+	const { width } = waferSizes[selectedSize];
 
 	const {
 		x: offsetX,
@@ -224,7 +224,7 @@ export function evaluateDiscInputs(
 	} = getDieOffset(inputVals, waferCenteringEnabled);
 
 	const positions = rectanglesInCircle(
-		waferWidth,
+		width,
 		dieWidth,
 		dieHeight,
 		scribeHoriz,
@@ -250,8 +250,8 @@ export function evaluateDiscInputs(
 		const y = positions[i].y;
 
 		const corners = getRectCorners(x, y, dieWidth, dieHeight);
-		const radiusInsideLossyEdge = waferWidth / 2 - lossyEdgeWidth;
-		const goodCorners = corners.filter(corner => isInsideCircle(corner.x, corner.y, waferWidth / 2, waferWidth / 2, radiusInsideLossyEdge));
+		const radiusInsideLossyEdge = width / 2 - lossyEdgeWidth;
+		const goodCorners = corners.filter(corner => isInsideCircle(corner.x, corner.y, width / 2, width / 2, radiusInsideLossyEdge));
 
 		if (!goodCorners.length) {
 			dieStates[i] = "lost";

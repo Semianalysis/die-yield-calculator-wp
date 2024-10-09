@@ -1,8 +1,8 @@
 import React from "react";
-import { FabResults, WaferShape } from "../../types";
+import { FabResults, SubstrateShape } from "../../types";
 
 function waferAreaCm(
-	shape: WaferShape,
+	shape: SubstrateShape,
 	widthMM: number,
 	heightMM: number
 ) {
@@ -31,7 +31,7 @@ function displayValue(value: number | null | undefined, unit?: string) {
 
 export function ResultsStats(props: {
 	results: FabResults;
-	shape: WaferShape;
+	shape: SubstrateShape;
 	dieWidth: number;
 	dieHeight: number;
 	waferWidth: number;

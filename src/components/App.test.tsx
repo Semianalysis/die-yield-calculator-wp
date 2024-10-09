@@ -37,7 +37,7 @@ describe("App", () => {
 		render(<App />);
 		const user = userEvent.setup();
 		await user.click(screen.getByRole("radio", {
-			name: /Disc/
+			name: /Wafer/
 		}));
 		await waitFor(() => expect(screen.getByText(/976/)).toBeInTheDocument());
 	});

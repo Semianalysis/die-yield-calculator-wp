@@ -525,7 +525,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const ShapeSelector = props => {
-  const shapes = ["Disc", "Panel"];
+  const shapes = ["Wafer", "Panel"];
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("fieldset", null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("legend", null, "Shape"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "radio-group"
   }, shapes.map(shape => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", {
@@ -538,13 +538,13 @@ const ShapeSelector = props => {
     onChange: e => props.setShape(shape)
   }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null, shape)))));
 };
-const DiscSizeSelect = props => {
+const WaferSizeSelect = props => {
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", {
     className: "select"
   }, "Diameter", react__WEBPACK_IMPORTED_MODULE_0___default().createElement("select", {
     value: props.selectedSize,
     onChange: props.handleSizeChange
-  }, Object.entries(_config__WEBPACK_IMPORTED_MODULE_4__.discSizes).map(([key, value]) => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+  }, Object.entries(_config__WEBPACK_IMPORTED_MODULE_4__.waferSizes).map(([key, value]) => react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
     key: key,
     value: key
   }, value.name))));
@@ -614,9 +614,9 @@ function App() {
   const [scribeVert, setScribeVert] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0.2");
   const [transHoriz, setTransHoriz] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0");
   const [transVert, setTransVert] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0");
-  const [waferShape, setWaferShape] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("Disc");
+  const [substrateShape, setSubstrateShape] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("Wafer");
   const [panelSize, setPanelSize] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("s300mm");
-  const [discSize, setDiscSize] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("s300mm");
+  const [waferSize, setWaferSize] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("s300mm");
   const [selectedModel, setSelectedModel] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("murphy");
   const aspectRatio = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(parseFloat(dieWidth) / parseFloat(dieHeight));
   const results = (0,_hooks_useInputs__WEBPACK_IMPORTED_MODULE_3__.useInputs)({
@@ -629,11 +629,11 @@ function App() {
     scribeVert: parseFloat(scribeVert),
     transHoriz: parseFloat(transHoriz),
     transVert: parseFloat(transVert)
-  }, waferCenteringEnabled, selectedModel, waferShape, panelSize, discSize);
+  }, waferCenteringEnabled, selectedModel, substrateShape, panelSize, waferSize);
   const easterEggEnabled = (0,_hooks_useEasterEgg__WEBPACK_IMPORTED_MODULE_8__.useEasterEgg)();
   const outputRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
-  const waferWidth = waferShape === "Panel" ? _config__WEBPACK_IMPORTED_MODULE_4__.panelSizes[panelSize].waferWidth : _config__WEBPACK_IMPORTED_MODULE_4__.discSizes[discSize].waferWidth;
-  const waferHeight = waferShape === "Panel" ? _config__WEBPACK_IMPORTED_MODULE_4__.panelSizes[panelSize].waferHeight : _config__WEBPACK_IMPORTED_MODULE_4__.discSizes[discSize].waferWidth;
+  const waferWidth = substrateShape === "Panel" ? _config__WEBPACK_IMPORTED_MODULE_4__.panelSizes[panelSize].width : _config__WEBPACK_IMPORTED_MODULE_4__.waferSizes[waferSize].width;
+  const waferHeight = substrateShape === "Panel" ? _config__WEBPACK_IMPORTED_MODULE_4__.panelSizes[panelSize].height : _config__WEBPACK_IMPORTED_MODULE_4__.waferSizes[waferSize].width;
   // Derive max die width/height based on whether reticle limit is set.
   // Fall back to wafer dimensions / 4 as a sane max.
   const {
@@ -699,10 +699,10 @@ function App() {
     setWaferCenteringEnabled(event.target.checked);
   };
   const handleSizeChange = event => {
-    if (waferShape === "Panel") {
+    if (substrateShape === "Panel") {
       setPanelSize(event.target.value);
-    } else if (waferShape === "Disc") {
-      setDiscSize(event.target.value);
+    } else if (substrateShape === "Wafer") {
+      setWaferSize(event.target.value);
     }
   };
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
@@ -761,18 +761,18 @@ function App() {
     isDisabled: allCritical,
     onChange: event => setCriticalArea(event.target.value),
     max: parseFloat(criticalArea)
-  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("hr", null), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", null, "Wafer"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("hr", null), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", null, "Substrate"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "input-row"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ShapeSelector, {
-    shape: waferShape,
-    setShape: setWaferShape
+    shape: substrateShape,
+    setShape: setSubstrateShape
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "input-row"
-  }, waferShape === "Panel" && react__WEBPACK_IMPORTED_MODULE_0___default().createElement(PanelSizeSelect, {
+  }, substrateShape === "Panel" && react__WEBPACK_IMPORTED_MODULE_0___default().createElement(PanelSizeSelect, {
     selectedSize: panelSize,
     handleSizeChange: handleSizeChange
-  }), waferShape === "Disc" && react__WEBPACK_IMPORTED_MODULE_0___default().createElement(DiscSizeSelect, {
-    selectedSize: discSize,
+  }), substrateShape === "Wafer" && react__WEBPACK_IMPORTED_MODULE_0___default().createElement(WaferSizeSelect, {
+    selectedSize: waferSize,
     handleSizeChange: handleSizeChange
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "input-row"
@@ -816,7 +816,7 @@ function App() {
     ref: outputRef
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_WaferCanvas_WaferCanvas__WEBPACK_IMPORTED_MODULE_5__.WaferCanvas, {
     results: results,
-    shape: waferShape,
+    shape: substrateShape,
     lossyEdgeWidth: parseFloat(lossyEdgeWidth),
     waferWidth: waferWidth,
     waferHeight: waferHeight,
@@ -825,11 +825,11 @@ function App() {
     className: "panel"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", null, "Results"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_ResultsStats_ResultsStats__WEBPACK_IMPORTED_MODULE_6__.ResultsStats, {
     results: easterEggEnabled ? null : results,
-    shape: waferShape,
+    shape: substrateShape,
     dieWidth: parseFloat(dieWidth),
     dieHeight: parseFloat(dieHeight),
-    waferWidth: waferShape === "Panel" ? _config__WEBPACK_IMPORTED_MODULE_4__.panelSizes[panelSize].waferWidth : _config__WEBPACK_IMPORTED_MODULE_4__.discSizes[discSize].waferWidth,
-    waferHeight: waferShape === "Panel" ? _config__WEBPACK_IMPORTED_MODULE_4__.panelSizes[panelSize].waferHeight : _config__WEBPACK_IMPORTED_MODULE_4__.discSizes[discSize].waferWidth
+    waferWidth: substrateShape === "Panel" ? _config__WEBPACK_IMPORTED_MODULE_4__.panelSizes[panelSize].width : _config__WEBPACK_IMPORTED_MODULE_4__.waferSizes[waferSize].width,
+    waferHeight: substrateShape === "Panel" ? _config__WEBPACK_IMPORTED_MODULE_4__.panelSizes[panelSize].height : _config__WEBPACK_IMPORTED_MODULE_4__.waferSizes[waferSize].width
   }))), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("a", {
     href: "https://semianalysis.com",
     target: "_blank",
@@ -997,7 +997,8 @@ function displayValue(value, unit) {
 }
 function ResultsStats(props) {
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    className: "results"
+    className: "results",
+    "aria-busy": !props.results
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("ul", {
     className: "results__list"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
@@ -1154,7 +1155,7 @@ function LossyEdgeMarker(props) {
       context.fillStyle = pattern;
     }
     context.clearRect(0, 0, canvasEl.current.width, canvasEl.current.height);
-    if (props.shape === "Disc") {
+    if (props.shape === "Wafer") {
       const outerRadius = waferWidthPx / 2;
       const innerRadius = outerRadius - lossyEdgeWidthInPx;
       context.beginPath();
@@ -1207,8 +1208,8 @@ function WaferCanvas(props) {
     glareMaxOpacity: 0.75,
     scale: 1.05,
     onMove: onMove,
-    className: `wafer-canvas ${props.shape === "Disc" ? "wafer-canvas--disc" : ""}`,
-    glareBorderRadius: props.shape === "Disc" ? "100%" : "0"
+    className: `wafer-canvas ${props.shape === "Wafer" ? "wafer-canvas--disc" : ""}`,
+    glareBorderRadius: props.shape === "Wafer" ? "100%" : "0"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "wafer-canvas__mirror-background",
     style: {
@@ -1243,9 +1244,9 @@ function WaferCanvas(props) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   discSizes: () => (/* reexport safe */ _sizes__WEBPACK_IMPORTED_MODULE_0__.discSizes),
 /* harmony export */   minDieEdge: () => (/* reexport safe */ _sizes__WEBPACK_IMPORTED_MODULE_0__.minDieEdge),
 /* harmony export */   panelSizes: () => (/* reexport safe */ _sizes__WEBPACK_IMPORTED_MODULE_0__.panelSizes),
+/* harmony export */   waferSizes: () => (/* reexport safe */ _sizes__WEBPACK_IMPORTED_MODULE_0__.waferSizes),
 /* harmony export */   yieldModels: () => (/* reexport safe */ _yieldModels__WEBPACK_IMPORTED_MODULE_1__.yieldModels)
 /* harmony export */ });
 /* harmony import */ var _sizes__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./sizes */ "./src/config/sizes.ts");
@@ -1263,9 +1264,9 @@ __webpack_require__.r(__webpack_exports__);
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   discSizes: () => (/* binding */ discSizes),
 /* harmony export */   minDieEdge: () => (/* binding */ minDieEdge),
-/* harmony export */   panelSizes: () => (/* binding */ panelSizes)
+/* harmony export */   panelSizes: () => (/* binding */ panelSizes),
+/* harmony export */   waferSizes: () => (/* binding */ waferSizes)
 /* harmony export */ });
 /**
  * Smallest die edge we will calculate, in mm
@@ -1277,70 +1278,70 @@ const minDieEdge = 0.2;
 const panelSizes = {
   s300mm: {
     name: "300 mm (12 in)",
-    waferHeight: 300,
-    waferWidth: 300
+    height: 300,
+    width: 300
   },
   s305mm: {
     name: "305 x 457 mm² (12 x 18 in²)",
-    waferHeight: 305,
-    waferWidth: 457
+    height: 305,
+    width: 457
   },
   s457mmsq: {
     name: "457 mm² (18 in)",
-    waferHeight: 457,
-    waferWidth: 457
+    height: 457,
+    width: 457
   },
   s457x600mm: {
     name: "457 x 600 mm² (18 x 24 in²)",
-    waferWidth: 457,
-    waferHeight: 600
+    width: 457,
+    height: 600
   },
   s510mm: {
     name: "510 x 515 mm² (21 in)",
-    waferHeight: 510,
-    waferWidth: 515
+    height: 510,
+    width: 515
   },
   s600m: {
     name: "600 mm (24 in)",
-    waferHeight: 600,
-    waferWidth: 600
+    height: 600,
+    width: 600
   }
 };
 /**
  * Available sizes for round wafers
  */
-const discSizes = {
+const waferSizes = {
   s51mm: {
     name: "51 mm (2 in)",
-    waferWidth: 51
+    width: 51
   },
   s76mm: {
     name: "76 mm (3 in)",
-    waferWidth: 76
+    width: 76
   },
   s100mm: {
     name: "100 mm (4 in)",
-    waferWidth: 100
+    width: 100
   },
   s125mm: {
     name: "125 mm (5 in)",
-    waferWidth: 125
+    width: 125
   },
   s150mm: {
     name: "150 mm (6 in)",
-    waferWidth: 150
+    width: 150
   },
   s200mm: {
     name: "200 mm (8 in)",
-    waferWidth: 200
+    width: 200
   },
   s300mm: {
     name: "300 mm (12 in)",
-    waferWidth: 300
+    width: 300
   },
   s450mm: {
     name: "450 mm (18 in)",
-    waferWidth: 450
+    width: 450
   }
 };
 
@@ -1527,7 +1528,7 @@ function useInputs(values, waferCenteringEnabled, yieldModel, shape, panelSize, 
     if (invalidValues.length) {
       setResults(null);
     } else {
-      if (shape === "Disc") {
+      if (shape === "Wafer") {
         setResults((0,_utils_calculations__WEBPACK_IMPORTED_MODULE_2__.evaluateDiscInputs)(values, discSize, yieldModel, waferCenteringEnabled));
       } else if (shape === "Panel") {
         setResults((0,_utils_calculations__WEBPACK_IMPORTED_MODULE_2__.evaluatePanelInputs)(values, panelSize, yieldModel, waferCenteringEnabled));
@@ -1635,14 +1636,14 @@ function evaluatePanelInputs(inputVals, selectedSize, selectedModel, waferCenter
   let dies = [];
   const fabYield = getFabYield(defectRate, criticalArea, selectedModel);
   const {
-    waferWidth,
-    waferHeight
+    width,
+    height
   } = _config__WEBPACK_IMPORTED_MODULE_0__.panelSizes[selectedSize];
   const {
     x: offsetX,
     y: offsetY
   } = getDieOffset(inputVals, waferCenteringEnabled);
-  const positions = (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.rectanglesInRectangle)(waferWidth, waferHeight, dieWidth, dieHeight, scribeVert, scribeHoriz, offsetX, offsetY);
+  const positions = (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.rectanglesInRectangle)(width, height, dieWidth, dieHeight, scribeVert, scribeHoriz, offsetX, offsetY);
   const totalDies = positions.length;
   const nonDefectiveDies = Math.floor(fabYield * totalDies);
   let dieStates = new Array(totalDies).fill("defective");
@@ -1656,7 +1657,7 @@ function evaluatePanelInputs(inputVals, selectedSize, selectedModel, waferCenter
   for (let i = 0; i < dieStates.length; i++) {
     const position = positions[i];
     const corners = (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.getRectCorners)(position.x, position.y, dieWidth, dieHeight);
-    const goodCorners = corners.filter(corner => (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.isInsideRectangle)(corner.x, corner.y, lossyEdgeWidth, lossyEdgeWidth, waferWidth - lossyEdgeWidth * 2, waferHeight - lossyEdgeWidth * 2));
+    const goodCorners = corners.filter(corner => (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.isInsideRectangle)(corner.x, corner.y, lossyEdgeWidth, lossyEdgeWidth, width - lossyEdgeWidth * 2, height - lossyEdgeWidth * 2));
     if (!goodCorners.length) {
       dieStates[i] = "lost";
     } else if (goodCorners.length < 4) {
@@ -1708,13 +1709,13 @@ function evaluateDiscInputs(inputVals, selectedSize, selectedModel, waferCenteri
   let dies = [];
   const fabYield = getFabYield(defectRate, criticalArea, selectedModel);
   const {
-    waferWidth
-  } = _config__WEBPACK_IMPORTED_MODULE_0__.discSizes[selectedSize];
+    width
+  } = _config__WEBPACK_IMPORTED_MODULE_0__.waferSizes[selectedSize];
   const {
     x: offsetX,
     y: offsetY
   } = getDieOffset(inputVals, waferCenteringEnabled);
-  const positions = (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.rectanglesInCircle)(waferWidth, dieWidth, dieHeight, scribeHoriz, scribeVert, offsetX, offsetY);
+  const positions = (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.rectanglesInCircle)(width, dieWidth, dieHeight, scribeHoriz, scribeVert, offsetX, offsetY);
   let totalDies = positions.length;
   const nonDefectiveDies = Math.floor(fabYield * totalDies);
   let dieStates = new Array(totalDies).fill("defective");
@@ -1729,8 +1730,8 @@ function evaluateDiscInputs(inputVals, selectedSize, selectedModel, waferCenteri
     const x = positions[i].x;
     const y = positions[i].y;
     const corners = (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.getRectCorners)(x, y, dieWidth, dieHeight);
-    const radiusInsideLossyEdge = waferWidth / 2 - lossyEdgeWidth;
-    const goodCorners = corners.filter(corner => (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.isInsideCircle)(corner.x, corner.y, waferWidth / 2, waferWidth / 2, radiusInsideLossyEdge));
+    const radiusInsideLossyEdge = width / 2 - lossyEdgeWidth;
+    const goodCorners = corners.filter(corner => (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.isInsideCircle)(corner.x, corner.y, width / 2, width / 2, radiusInsideLossyEdge));
     if (!goodCorners.length) {
       dieStates[i] = "lost";
     } else if (goodCorners.length < 4) {
