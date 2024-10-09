@@ -134,7 +134,7 @@ function App() {
 	const [dieWidth, setDieWidth] = useState<string>("8");
 	const [dieHeight, setDieHeight] = useState<string>("8");
 	const [waferCenteringEnabled, setWaferCenteringEnabled] = useState(true);
-	const [maintainAspectRatio, setMaintainAspectRatio] = useState(true);
+	const [maintainAspectRatio, setMaintainAspectRatio] = useState(false);
 	const [criticalArea, setCriticalArea] = useState<string>("64");
 	const [defectRate, setDefectRate] = useState<string>("0.1");
 	const [lossyEdgeWidth, setLossyEdgeWidth] = useState<string>("3");

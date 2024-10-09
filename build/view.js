@@ -604,7 +604,7 @@ function App() {
   const [dieWidth, setDieWidth] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("8");
   const [dieHeight, setDieHeight] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("8");
   const [waferCenteringEnabled, setWaferCenteringEnabled] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
-  const [maintainAspectRatio, setMaintainAspectRatio] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
+  const [maintainAspectRatio, setMaintainAspectRatio] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
   const [criticalArea, setCriticalArea] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("64");
   const [defectRate, setDefectRate] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0.1");
   const [lossyEdgeWidth, setLossyEdgeWidth] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("3");

@@ -20,7 +20,9 @@ describe("App", () => {
 		const scribeLinesYInput = screen.getByRole("spinbutton", {
 			name: /Scribe Lines Vert/
 		});
+		const maintainAspectRatioCheckbox = screen.getByRole("checkbox", { name: /Aspect Ratio/ });
 
+		await user.click(maintainAspectRatioCheckbox);
 		await user.clear(widthInput);
 		await user.type(widthInput, "5");
 		await user.clear(scribeLinesXInput);
@@ -86,7 +88,29 @@ describe("App", () => {
 		const dieWidthInput = screen.getByRole("spinbutton", { name: /Width/ });
 		const dieHeightInput = screen.getByRole("spinbutton", { name: /Height/ });
 
-		// Aspect ratio on by default
+		// Aspect ratio off by default
+		expect(maintainAspectRatioCheckbox).not.toBeChecked();
+
+		// Assert we can enter a height without width updating
+		await user.clear(dieHeightInput);
+		await user.type(dieHeightInput, "13");
+		await user.clear(dieWidthInput);
+		await user.type(dieWidthInput, "19");
+		expect(dieHeightInput).toHaveDisplayValue("13");
+		expect(dieWidthInput).toHaveDisplayValue("19");
+
+		// ...and a width value without height updating
+		await user.clear(dieWidthInput);
+		await user.type(dieWidthInput, "9");
+		expect(dieWidthInput).toHaveDisplayValue("9");
+		expect(dieHeightInput).toHaveDisplayValue("13");
+
+		// Make both values the same
+		await user.clear(dieWidthInput);
+		await user.type(dieWidthInput, "13");
+
+		// Turn maintain aspect ratio on
+		await user.click(maintainAspectRatioCheckbox);
 		expect(maintainAspectRatioCheckbox).toBeChecked();
 
 		// Type a new value in width, height automatically updates
@@ -98,21 +122,5 @@ describe("App", () => {
 		await user.clear(dieHeightInput);
 		await user.type(dieHeightInput, "2");
 		expect(dieHeightInput).toHaveDisplayValue("2");
-
-		// Turn aspect ratio off
-		await user.click(maintainAspectRatioCheckbox);
-		expect(maintainAspectRatioCheckbox).not.toBeChecked();
-
-		// Now assert we can enter a height without width updating
-		await user.clear(dieHeightInput);
-		await user.type(dieHeightInput, "13");
-		expect(dieHeightInput).toHaveDisplayValue("13");
-		expect(dieWidthInput).toHaveDisplayValue("2");
-
-		// ...and a width value without height updating
-		await user.clear(dieWidthInput);
-		await user.type(dieWidthInput, "9");
-		expect(dieWidthInput).toHaveDisplayValue("9");
-		expect(dieHeightInput).toHaveDisplayValue("13");
 	});
 });
