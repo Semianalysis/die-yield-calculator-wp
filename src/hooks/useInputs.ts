@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { FabResults, WaferShape } from "../types";
-import { discSizes, panelSizes, yieldModels, minDieEdge } from "../config";
+import { FabResults, SubstrateShape } from "../types";
+import { waferSizes, panelSizes, yieldModels, minDieEdge } from "../config";
 import { evaluateDiscInputs, evaluatePanelInputs, InputValues } from "../utils/calculations";
 import { useDebouncedEffect } from "./useDebouncedEffect";
 
@@ -32,9 +32,9 @@ export function useInputs(
 	values: InputValues,
 	waferCenteringEnabled: boolean,
 	yieldModel: keyof typeof yieldModels,
-	shape: WaferShape,
+	shape: SubstrateShape,
 	panelSize: keyof typeof panelSizes,
-	discSize: keyof typeof discSizes
+	discSize: keyof typeof waferSizes
 ) {
 	const [results, setResults] = useState<FabResults>(null);
 
@@ -45,7 +45,7 @@ export function useInputs(
 		if (invalidValues.length) {
 			setResults(null);
 		} else {
-			if (shape === "Disc") {
+			if (shape === "Wafer") {
 				setResults(evaluateDiscInputs(values, discSize, yieldModel, waferCenteringEnabled));
 			} else if (shape === "Panel") {
 				setResults(evaluatePanelInputs(values, panelSize, yieldModel, waferCenteringEnabled));

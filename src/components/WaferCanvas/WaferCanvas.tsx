@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { FabResults, WaferShape } from "../../types";
+import { FabResults, SubstrateShape } from "../../types";
 import Tilt, { OnMoveParams } from "react-parallax-tilt";
 import { createHatchingCanvasPattern } from "../../utils/canvas";
 import { ReactComponent as TSMCLogo } from '../../assets/tsmc-logo.svg';
@@ -82,7 +82,7 @@ function DieMapCanvas(props: {
 
 function DieDecorativeCanvas(props: {
 	results: FabResults;
-	shape: WaferShape;
+	shape: SubstrateShape;
 	waferWidth: number;
 	waferHeight: number;
 }) {
@@ -150,7 +150,7 @@ function LossyEdgeMarker(props: {
 	lossyEdgeWidth: number;
 	waferWidth: number;
 	waferHeight: number;
-	shape: WaferShape;
+	shape: SubstrateShape;
 }) {
 	const canvasEl = useRef<HTMLCanvasElement>(null);
 	const waferWidthPx = props.waferWidth * mmToPxScale;
@@ -177,7 +177,7 @@ function LossyEdgeMarker(props: {
 
 		context.clearRect(0, 0, canvasEl.current.width, canvasEl.current.height);
 
-		if (props.shape === "Disc") {
+		if (props.shape === "Wafer") {
 			const outerRadius = waferWidthPx / 2;
 			const innerRadius = outerRadius - lossyEdgeWidthInPx;
 
@@ -216,7 +216,7 @@ function LossyEdgeMarker(props: {
 export function WaferCanvas(props: {
 	results: FabResults;
 	lossyEdgeWidth: number;
-	shape: WaferShape;
+	shape: SubstrateShape;
 	waferWidth: number;
 	waferHeight: number;
 	easterEggEnabled: boolean;
@@ -250,8 +250,8 @@ export function WaferCanvas(props: {
 				glareMaxOpacity={0.75}
 				scale={1.05}
 				onMove={onMove}
-				className={`wafer-canvas ${props.shape === "Disc" ? "wafer-canvas--disc" : ""}`}
-				glareBorderRadius={props.shape === "Disc" ? "100%" : "0"}
+				className={`wafer-canvas ${props.shape === "Wafer" ? "wafer-canvas--disc" : ""}`}
+				glareBorderRadius={props.shape === "Wafer" ? "100%" : "0"}
 			>
 				<div
 					className="wafer-canvas__mirror-background"

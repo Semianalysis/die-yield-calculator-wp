@@ -215,6 +215,12 @@
 		background-position: right 15px center;
 		background-repeat: no-repeat;
 		background-size: 0.75em;
+
+		// To reset Windows from displaying the wrong color
+		option {
+			background-color: initial;
+			color: initial;
+		}
 	}
 
 	input[type="checkbox"],

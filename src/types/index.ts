@@ -1,2 +1,2 @@
 export * from './dies';
-export * from './wafers';
+export * from './substrates';

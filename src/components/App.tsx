@@ -2,16 +2,16 @@ import React, { useState, useEffect, useRef } from "react";
 import { Checkbox } from "./Checkbox/Checkbox";
 import { NumberInput } from "./NumberInput/NumberInput";
 import { useInputs } from "../hooks/useInputs";
-import { panelSizes, discSizes, yieldModels, minDieEdge } from "../config";
-import { WaferShape } from "../types";
+import { panelSizes, waferSizes, yieldModels, minDieEdge } from "../config";
+import { SubstrateShape } from "../types";
 import { WaferCanvas } from "./WaferCanvas/WaferCanvas";
 import { ResultsStats } from "./ResultsStats/ResultsStats";
 import semiAnalysisLogo from "../assets/semianalysis-logo-full-360px.png";
 import { useEasterEgg } from "../hooks/useEasterEgg";
 import { JumpToResults } from "./JumpToResults/JumpToResults";
 
-const ShapeSelector = (props: { shape: WaferShape, setShape: (value: WaferShape) => void }) => {
-	const shapes: Array<WaferShape> = ["Disc", "Panel"];
+const ShapeSelector = (props: { shape: SubstrateShape, setShape: (value: SubstrateShape) => void }) => {
+	const shapes: Array<SubstrateShape> = ["Wafer", "Panel"];
 
 	return (
 		<fieldset>
@@ -35,15 +35,15 @@ const ShapeSelector = (props: { shape: WaferShape, setShape: (value: WaferShape)
 	);
 };
 
-const DiscSizeSelect = (props: {
-	selectedSize: keyof typeof discSizes,
+const WaferSizeSelect = (props: {
+	selectedSize: keyof typeof waferSizes,
 	handleSizeChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
 }) => {
 	return (
 		<label className="select">
 			Diameter
 			<select value={props.selectedSize} onChange={props.handleSizeChange}>
-				{Object.entries(discSizes).map(([key, value]) => (
+				{Object.entries(waferSizes).map(([key, value]) => (
 					<option key={key} value={key}>
 						{value.name}
 					</option>
@@ -134,7 +134,7 @@ function App() {
 	const [dieWidth, setDieWidth] = useState<string>("8");
 	const [dieHeight, setDieHeight] = useState<string>("8");
 	const [waferCenteringEnabled, setWaferCenteringEnabled] = useState(true);
-	const [maintainAspectRatio, setMaintainAspectRatio] = useState(true);
+	const [maintainAspectRatio, setMaintainAspectRatio] = useState(false);
 	const [criticalArea, setCriticalArea] = useState<string>("64");
 	const [defectRate, setDefectRate] = useState<string>("0.1");
 	const [lossyEdgeWidth, setLossyEdgeWidth] = useState<string>("3");
@@ -144,9 +144,9 @@ function App() {
 	const [scribeVert, setScribeVert] = useState<string>("0.2");
 	const [transHoriz, setTransHoriz] = useState<string>("0");
 	const [transVert, setTransVert] = useState<string>("0");
-	const [waferShape, setWaferShape] = useState<WaferShape>("Disc");
+	const [substrateShape, setSubstrateShape] = useState<SubstrateShape>("Wafer");
 	const [panelSize, setPanelSize] = useState<keyof typeof panelSizes>("s300mm");
-	const [discSize, setDiscSize] = useState<keyof typeof discSizes>("s300mm");
+	const [waferSize, setWaferSize] = useState<keyof typeof waferSizes>("s300mm");
 	const [selectedModel, setSelectedModel] = useState<keyof typeof yieldModels>("murphy");
 	const aspectRatio = useRef(parseFloat(dieWidth) / parseFloat(dieHeight));
 	const results = useInputs(
@@ -163,19 +163,19 @@ function App() {
 		},
 		waferCenteringEnabled,
 		selectedModel,
-		waferShape,
+		substrateShape,
 		panelSize,
-		discSize
+		waferSize
 	);
 	const easterEggEnabled = useEasterEgg();
 	const outputRef = useRef<HTMLDivElement>(null);
 
-	const waferWidth = waferShape === "Panel"
-		? panelSizes[panelSize].waferWidth
-		: discSizes[discSize].waferWidth;
-	const waferHeight = waferShape === "Panel"
-		? panelSizes[panelSize].waferHeight
-		: discSizes[discSize].waferWidth;
+	const waferWidth = substrateShape === "Panel"
+		? panelSizes[panelSize].width
+		: waferSizes[waferSize].width;
+	const waferHeight = substrateShape === "Panel"
+		? panelSizes[panelSize].height
+		: waferSizes[waferSize].width;
 
 	// Derive max die width/height based on whether reticle limit is set.
 	// Fall back to wafer dimensions / 4 as a sane max.
@@ -265,10 +265,10 @@ function App() {
 	};
 
 	const handleSizeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-		if (waferShape === "Panel") {
+		if (substrateShape === "Panel") {
 			setPanelSize(event.target.value as keyof typeof panelSizes);
-		} else if (waferShape === "Disc") {
-			setDiscSize(event.target.value as keyof typeof discSizes);
+		} else if (substrateShape === "Wafer") {
+			setWaferSize(event.target.value as keyof typeof waferSizes);
 		}
 	};
 
@@ -309,12 +309,12 @@ function App() {
 					</div>
 					<div className="input-row--two-col">
 						<NumberInput
-							label="Scribe Lines Horiz"
+							label="Scribe Lines X (mm)"
 							value={scribeHoriz}
 							onChange={(event) => setScribeHoriz(event.target.value)}
 						/>
 						<NumberInput
-							label="Scribe Lines Vert"
+							label="Scribe Lines Y (mm)"
 							value={scribeVert}
 							onChange={(event) => setScribeVert(event.target.value)}
 						/>
@@ -336,25 +336,25 @@ function App() {
 						/>
 					</div>
 					<hr />
-					<h2>Wafer</h2>
+					<h2>Substrate</h2>
 					<div className="input-row">
 						<ShapeSelector
-							shape={waferShape}
-							setShape={setWaferShape}
+							shape={substrateShape}
+							setShape={setSubstrateShape}
 						/>
 					</div>
 					<div className="input-row">
 						{
-							waferShape === "Panel" &&
+							substrateShape === "Panel" &&
 							<PanelSizeSelect
 								selectedSize={panelSize}
 								handleSizeChange={handleSizeChange}
 							/>
 						}
 						{
-							waferShape === "Disc" &&
-							<DiscSizeSelect
-								selectedSize={discSize}
+							substrateShape === "Wafer" &&
+							<WaferSizeSelect
+								selectedSize={waferSize}
 								handleSizeChange={handleSizeChange}
 							/>
 						}
@@ -408,7 +408,7 @@ function App() {
 					<div>
 						<WaferCanvas
 							results={results}
-							shape={waferShape}
+							shape={substrateShape}
 							lossyEdgeWidth={parseFloat(lossyEdgeWidth)}
 							waferWidth={waferWidth}
 							waferHeight={waferHeight}
@@ -418,11 +418,11 @@ function App() {
 							<h2>Results</h2>
 							<ResultsStats
 								results={easterEggEnabled ? null : results}
-								shape={waferShape}
+								shape={substrateShape}
 								dieWidth={parseFloat(dieWidth)}
 								dieHeight={parseFloat(dieHeight)}
-								waferWidth={waferShape === "Panel" ? panelSizes[panelSize].waferWidth : discSizes[discSize].waferWidth}
-								waferHeight={waferShape === "Panel" ? panelSizes[panelSize].waferHeight : discSizes[discSize].waferWidth}
+								waferWidth={substrateShape === "Panel" ? panelSizes[panelSize].width : waferSizes[waferSize].width}
+								waferHeight={substrateShape === "Panel" ? panelSizes[panelSize].height : waferSizes[waferSize].width}
 							/>
 						</div>
 					</div>

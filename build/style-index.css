@@ -200,6 +200,10 @@
   background-repeat: no-repeat;
   background-size: 0.75em;
 }
+.wp-block-create-block-die-yield-calculator select option {
+  background-color: initial;
+  color: initial;
+}
 .wp-block-create-block-die-yield-calculator input[type=checkbox],
 .wp-block-create-block-die-yield-calculator input[type=radio] {
   cursor: pointer;
