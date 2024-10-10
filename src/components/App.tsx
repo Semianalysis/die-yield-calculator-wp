@@ -427,7 +427,7 @@ function App() {
 						</div>
 					</div>
 					<a
-						href="https://semianalysis.com"
+						href="https://www.semianalysis.com/"
 						target="_blank"
 						className="logo"
 					>
