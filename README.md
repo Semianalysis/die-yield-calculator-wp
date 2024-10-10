@@ -33,3 +33,11 @@ $ npm run packages-update
 Updates WordPress packages to the latest version.
 ```
 For a list of all available commands, see the [WordPress documentation](https://github.com/WordPress/gutenberg/tree/HEAD/packages/scripts#available-scripts).
+
+## Deployment
+
+To deploy the calculator to the SemiAnalysis website, we must export and upload the plugin as a ZIP file.
+
+1. First, bump the plugin version. This will ensure that the cache key for assets, such as JS and CSS files, is updated. To do this, update the version number in `die-yield-calculator.php` according to semantic version. You should also update the version number in `package.json` and `src/block.json` for consistency.
+2. Export the plugin as a ZIP using the command `npm run plugin-zip`
+3. In the WordPress Admin for the SemiAnalysis site, navigate to 'Plugins' -> 'Add New Plugin', then click 'Upload Plugin'. Upload the ZIP file you just exported and upload it. If the site already has an older version of the plugin installed, it will prompt you to replace it.
