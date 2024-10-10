@@ -1023,7 +1023,7 @@ function ResultsStats(props) {
     className: "result result--panel-diameter"
   }, "Wafer Diameter: ", props.waferWidth, "mm"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--wafer-area"
-  }, "Wafer Area: ", parseFloat(waferAreaCm(props.shape, props.waferWidth, props.waferHeight).toFixed(4)), "cm\u00B2"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+  }, props.shape, " Area: ", parseFloat(waferAreaCm(props.shape, props.waferWidth, props.waferHeight).toFixed(4)), "cm\u00B2"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--die-area"
   }, "Total Die Area: ", displayValue(props.results?.totalDies && parseFloat(totalDieAreaCm(props.dieWidth, props.dieHeight, props.results.totalDies).toFixed(4)), 'cm²'))));
 }

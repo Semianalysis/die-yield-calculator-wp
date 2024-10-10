@@ -60,8 +60,7 @@ export function ResultsStats(props: {
 						<li className="result result--panel-diameter">Wafer Diameter: {props.waferWidth}mm</li>
 					)
 				}
-				<li className="result result--wafer-area">Wafer
-					Area: {parseFloat(waferAreaCm(props.shape, props.waferWidth, props.waferHeight).toFixed(4))}cm²
+				<li className="result result--wafer-area">{props.shape} Area: {parseFloat(waferAreaCm(props.shape, props.waferWidth, props.waferHeight).toFixed(4))}cm²
 				</li>
 				<li className="result result--die-area">Total Die
 					Area: {displayValue(props.results?.totalDies && parseFloat(totalDieAreaCm(props.dieWidth, props.dieHeight, props.results.totalDies).toFixed(4)), 'cm²')}
