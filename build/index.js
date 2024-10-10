@@ -939,7 +939,7 @@ function App() {
     waferWidth: substrateShape === "Panel" ? _config__WEBPACK_IMPORTED_MODULE_4__.panelSizes[panelSize].width : _config__WEBPACK_IMPORTED_MODULE_4__.waferSizes[waferSize].width,
     waferHeight: substrateShape === "Panel" ? _config__WEBPACK_IMPORTED_MODULE_4__.panelSizes[panelSize].height : _config__WEBPACK_IMPORTED_MODULE_4__.waferSizes[waferSize].width
   }))), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("a", {
-    href: "https://semianalysis.com",
+    href: "https://www.semianalysis.com/",
     target: "_blank",
     className: "logo"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("img", {
@@ -2173,7 +2173,7 @@ function i(t,e,i,n){return new(i||(i=Promise))((function(s,r){function l(t){try{
   \************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"create-block/die-yield-calculator","version":"0.1.1","title":"Die Yield Calculator","category":"widgets","icon":"calculator","description":"Embeds a React application for calculating expected semiconductor die yield.","example":{},"supports":{"html":false},"textdomain":"die-yield-calculator","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","render":"file:./render.php","viewScript":"file:./view.js"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"create-block/die-yield-calculator","version":"0.1.2","title":"Die Yield Calculator","category":"widgets","icon":"calculator","description":"Embeds a React application for calculating expected semiconductor die yield.","example":{},"supports":{"html":false},"textdomain":"die-yield-calculator","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","render":"file:./render.php","viewScript":"file:./view.js"}');
 
 /***/ })
 
