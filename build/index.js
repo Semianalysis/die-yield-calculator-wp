@@ -725,6 +725,7 @@ function App() {
   const [substrateShape, setSubstrateShape] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("Wafer");
   const [panelSize, setPanelSize] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("s300mm");
   const [waferSize, setWaferSize] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("s300mm");
+  const [waferCost, setWaferCost] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("19000");
   const [selectedModel, setSelectedModel] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("murphy");
   const aspectRatio = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(parseFloat(dieWidth) / parseFloat(dieHeight));
   const results = (0,_hooks_useInputs__WEBPACK_IMPORTED_MODULE_3__.useInputs)({
@@ -736,7 +737,8 @@ function App() {
     scribeHoriz: parseFloat(scribeHoriz),
     scribeVert: parseFloat(scribeVert),
     transHoriz: parseFloat(transHoriz),
-    transVert: parseFloat(transVert)
+    transVert: parseFloat(transVert),
+    waferCost: parseFloat(waferCost)
   }, waferCenteringEnabled, selectedModel, substrateShape, panelSize, waferSize);
   const easterEggEnabled = (0,_hooks_useEasterEgg__WEBPACK_IMPORTED_MODULE_8__.useEasterEgg)();
   const outputRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
@@ -912,6 +914,13 @@ function App() {
     label: "Wafer Centering",
     onChange: handleWaferCenteringChange,
     checked: waferCenteringEnabled
+  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "input-row"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
+    label: "Wafer Cost",
+    value: waferCost,
+    onChange: event => setWaferCost(event.target.value),
+    min: 1
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("hr", null), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", null, "Options"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "input-row"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ModelSelector, {
@@ -1119,7 +1128,9 @@ function ResultsStats(props) {
     className: "result result--partial-dies"
   }, "Partial Dies: ", displayValue(props.results?.partialDies)), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--lost-dies"
-  }, "Lost Dies: ", displayValue(props.results?.lostDies))), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("ul", {
+  }, "Lost Dies: ", displayValue(props.results?.lostDies)), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+    className: "result result--lost-dies"
+  }, "Cost Per Good Die: ", displayValue(props.results?.costPerGoodDie))), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("ul", {
     className: "results__list"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--yield"
@@ -1739,7 +1750,8 @@ function evaluatePanelInputs(inputVals, selectedSize, selectedModel, waferCenter
     defectRate,
     scribeHoriz,
     scribeVert,
-    lossyEdgeWidth
+    lossyEdgeWidth,
+    waferCost
   } = inputVals;
   let dies = [];
   const fabYield = getFabYield(defectRate, criticalArea, selectedModel);
@@ -1786,6 +1798,7 @@ function evaluatePanelInputs(inputVals, selectedSize, selectedModel, waferCenter
     lostDies,
     goodDies
   } = getDieStateCounts(dieStates);
+  const costPerGoodDie = waferCost/goodDies;
   return {
     dies,
     defectiveDies,
@@ -1793,7 +1806,9 @@ function evaluatePanelInputs(inputVals, selectedSize, selectedModel, waferCenter
     lostDies,
     totalDies,
     goodDies,
-    fabYield
+    fabYield,
+    costPerGoodDie,
+    waferCost
   };
 }
 /**
@@ -1812,7 +1827,8 @@ function evaluateDiscInputs(inputVals, selectedSize, selectedModel, waferCenteri
     defectRate,
     lossyEdgeWidth,
     scribeHoriz,
-    scribeVert
+    scribeVert,
+    waferCost
   } = inputVals;
   let dies = [];
   const fabYield = getFabYield(defectRate, criticalArea, selectedModel);
@@ -1860,6 +1876,7 @@ function evaluateDiscInputs(inputVals, selectedSize, selectedModel, waferCenteri
     lostDies,
     goodDies
   } = getDieStateCounts(dieStates);
+  const costPerGoodDie = waferCost/goodDies;
   return {
     dies,
     totalDies,
@@ -1867,7 +1884,8 @@ function evaluateDiscInputs(inputVals, selectedSize, selectedModel, waferCenteri
     defectiveDies,
     partialDies,
     lostDies,
-    fabYield
+    fabYield,
+    costPerGoodDie
   };
 }
 
@@ -2173,7 +2191,7 @@ function i(t,e,i,n){return new(i||(i=Promise))((function(s,r){function l(t){try{
   \************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"create-block/die-yield-calculator","version":"0.1.4","title":"Die Yield Calculator","category":"widgets","icon":"calculator","description":"Embeds a React application for calculating expected semiconductor die yield.","example":{},"supports":{"html":false},"textdomain":"die-yield-calculator","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","render":"file:./render.php","viewScript":"file:./view.js"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"create-block/die-yield-calculator","version":"0.1.3","title":"Die Yield Calculator","category":"widgets","icon":"calculator","description":"Embeds a React application for calculating expected semiconductor die yield.","example":{},"supports":{"html":false},"textdomain":"die-yield-calculator","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","render":"file:./render.php","viewScript":"file:./view.js"}');
 
 /***/ })
 
