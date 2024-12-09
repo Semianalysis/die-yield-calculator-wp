@@ -1129,8 +1129,8 @@ function ResultsStats(props) {
   }, "Partial Dies: ", displayValue(props.results?.partialDies)), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--lost-dies"
   }, "Lost Dies: ", displayValue(props.results?.lostDies)), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
-    className: "result result--lost-dies"
-  }, "Cost Per Good Die: ", displayValue(props.results?.costPerGoodDie))), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("ul", {
+    className: "result result--die-cost"
+  }, "Cost/Good Die: ", parseFloat(props.results?.costPerGoodDie.toFixed(2)))), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("ul", {
     className: "results__list"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--yield"
