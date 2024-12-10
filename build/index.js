@@ -848,11 +848,11 @@ function App() {
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "input-row--two-col"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
-    label: "Scribe Lines X (mm)",
+    label: "Scribe Line Minimum X (mm)",
     value: scribeHoriz,
     onChange: event => setScribeHoriz(event.target.value)
   }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
-    label: "Scribe Lines Y (mm)",
+    label: "Scribe Line Minimum Y (mm)",
     value: scribeVert,
     onChange: event => setScribeVert(event.target.value)
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
@@ -2173,7 +2173,7 @@ function i(t,e,i,n){return new(i||(i=Promise))((function(s,r){function l(t){try{
   \************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"create-block/die-yield-calculator","version":"0.1.2","title":"Die Yield Calculator","category":"widgets","icon":"calculator","description":"Embeds a React application for calculating expected semiconductor die yield.","example":{},"supports":{"html":false},"textdomain":"die-yield-calculator","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","render":"file:./render.php","viewScript":"file:./view.js"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"create-block/die-yield-calculator","version":"0.1.3","title":"Die Yield Calculator","category":"widgets","icon":"calculator","description":"Embeds a React application for calculating expected semiconductor die yield.","example":{},"supports":{"html":false},"textdomain":"die-yield-calculator","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","render":"file:./render.php","viewScript":"file:./view.js"}');
 
 /***/ })
 

@@ -309,12 +309,12 @@ function App() {
 					</div>
 					<div className="input-row--two-col">
 						<NumberInput
-							label="Scribe Lines X (mm)"
+							label="Scribe Line Minimum X (mm)"
 							value={scribeHoriz}
 							onChange={(event) => setScribeHoriz(event.target.value)}
 						/>
 						<NumberInput
-							label="Scribe Lines Y (mm)"
+							label="Scribe Line Minimum Y (mm)"
 							value={scribeVert}
 							onChange={(event) => setScribeVert(event.target.value)}
 						/>
