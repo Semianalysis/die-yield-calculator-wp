@@ -1823,7 +1823,19 @@ function evaluateDiscInputs(inputVals, selectedSize, selectedModel, waferCenteri
     x: offsetX,
     y: offsetY
   } = getDieOffset(inputVals, waferCenteringEnabled);
-  const positions = (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.rectanglesInCircle)(width, dieWidth, dieHeight, scribeHoriz, scribeVert, offsetX, offsetY);
+  // First, calculate the reticle shot map
+  const shotPositions = (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.rectanglesInCircle)(width, 26, 33, 0, 0, offsetX, offsetY, true);
+  // Calculate the dies in each shot
+  const diesInShot = (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.rectanglesInRectangle)(26, 33, dieWidth, dieHeight, scribeHoriz, scribeVert, 0, 0);
+  // Now calculate the absolute position of each die based on shot coordinates + die
+  // coordinates within shot
+  const positions = shotPositions.reduce((acc, shotPosition) => {
+    const dies = diesInShot.map(diePosition => ({
+      x: diePosition.x + shotPosition.x,
+      y: diePosition.y + shotPosition.y
+    }));
+    return [...acc, ...dies];
+  }, []);
   let totalDies = positions.length;
   const nonDefectiveDies = Math.floor(fabYield * totalDies);
   let dieStates = new Array(totalDies).fill("defective");
@@ -1985,8 +1997,8 @@ function isInsideRectangle(x, y, rectangleX, rectangleY, rectangleWidth, rectang
 }
 /**
  * Given a circle with the provided diameter, determine the maximum number of
- * rectangles of a given width and height would fit fully inside it, without
- * overlapping the edges
+ * rectangles of a given width and height would fit inside it
+ *
  * @param diameter size of the circle
  * @param rectWidth width of each rectangle
  * @param rectHeight height of each rectangle
@@ -1994,8 +2006,9 @@ function isInsideRectangle(x, y, rectangleX, rectangleY, rectangleWidth, rectang
  * @param gapY vertical space between each rectangle
  * @param offsetX amount by which to offset each rectangle horizontally
  * @param offsetY amount by which to offset each rectangle vertically
+ * @param includePartials whether to include rectangles that overlap the circle edge
  */
-function rectanglesInCircle(diameter, rectWidth, rectHeight, gapX, gapY, offsetX, offsetY) {
+function rectanglesInCircle(diameter, rectWidth, rectHeight, gapX, gapY, offsetX, offsetY, includePartials) {
   const radius = diameter / 2;
   const positions = [];
   // Traverse each row, starting at the center
@@ -2011,8 +2024,14 @@ function rectanglesInCircle(diameter, rectWidth, rectHeight, gapX, gapY, offsetX
         const offsetRectY = rectY + offsetY;
         const corners = getRectCorners(offsetRectX, offsetRectY, rectWidth, rectHeight);
         const cornersWithinCircle = corners.filter(corner => isInsideCircle(corner.x, corner.y, 0, 0, radius));
+        // If partials are allowed, only one corner must overlap, otherwise all must.
+        // Note that technically a square could overlap a circle without any corners
+        // being within the circle. However given the scales we are working with and
+        // the complexity of the maths involved in calculating this, we are not
+        // accounting for that possibility here.
+        const minOverlappingCorners = includePartials ? 1 : 4;
         // If the rectangle fits within the circle, add it to the result
-        if (cornersWithinCircle.length === 4) {
+        if (cornersWithinCircle.length >= minOverlappingCorners) {
           positions.push({
             // Add the radius back to the final coordinates so all are positive integers
             x: offsetRectX + radius,

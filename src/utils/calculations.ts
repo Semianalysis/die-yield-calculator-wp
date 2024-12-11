@@ -1,7 +1,7 @@
 import { waferSizes, panelSizes, yieldModels } from "../config";
 import { DieState, FabResults } from "../types";
-import { isInsideAnotherPath } from "fork-ts-checker-webpack-plugin/lib/utils/path/is-inside-another-path";
 import {
+	Position,
 	getRectCorners,
 	isInsideCircle,
 	isInsideRectangle,
@@ -223,15 +223,37 @@ export function evaluateDiscInputs(
 		y: offsetY
 	} = getDieOffset(inputVals, waferCenteringEnabled);
 
-	const positions = rectanglesInCircle(
+	// First, calculate the reticle shot map
+	const shotPositions = rectanglesInCircle(
 		width,
-		dieWidth,
-		dieHeight,
-		scribeHoriz,
-		scribeVert,
+		26,
+		33,
+		0,
+		0,
 		offsetX,
-		offsetY
+		offsetY,
+		true
 	);
+
+	// Calculate the dies in each shot
+	const diesInShot = rectanglesInRectangle(
+		26,33,dieWidth,dieHeight,scribeHoriz, scribeVert,0,0
+	);
+
+	// Now calculate the absolute position of each die based on shot coordinates + die
+	// coordinates within shot
+	const positions = shotPositions.reduce((acc: Position[], shotPosition) => {
+		const dies = diesInShot.map((diePosition) => ({
+			x: diePosition.x + shotPosition.x,
+			y: diePosition.y + shotPosition.y,
+		}));
+
+		return [
+			...acc,
+			...dies,
+		];
+	}, []);
+
 	let totalDies = positions.length;
 	const nonDefectiveDies = Math.floor(fabYield * totalDies);
 

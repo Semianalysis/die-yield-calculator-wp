@@ -76,12 +76,12 @@ export function isInsideRectangle(
 	);
 }
 
-type Position = { x: number, y: number };
+export type Position = { x: number, y: number };
 
 /**
  * Given a circle with the provided diameter, determine the maximum number of
- * rectangles of a given width and height would fit fully inside it, without
- * overlapping the edges
+ * rectangles of a given width and height would fit inside it
+ *
  * @param diameter size of the circle
  * @param rectWidth width of each rectangle
  * @param rectHeight height of each rectangle
@@ -89,6 +89,7 @@ type Position = { x: number, y: number };
  * @param gapY vertical space between each rectangle
  * @param offsetX amount by which to offset each rectangle horizontally
  * @param offsetY amount by which to offset each rectangle vertically
+ * @param includePartials whether to include rectangles that overlap the circle edge
  */
 export function rectanglesInCircle(
 	diameter: number,
@@ -97,7 +98,8 @@ export function rectanglesInCircle(
 	gapX: number,
 	gapY: number,
 	offsetX: number,
-	offsetY: number
+	offsetY: number,
+	includePartials: boolean,
 ): Position[] {
 	const radius = diameter / 2;
 	const positions: Position[] = [];
@@ -121,8 +123,15 @@ export function rectanglesInCircle(
 				);
 				const cornersWithinCircle = corners.filter((corner) => isInsideCircle(corner.x, corner.y, 0, 0, radius));
 
+				// If partials are allowed, only one corner must overlap, otherwise all must.
+				// Note that technically a square could overlap a circle without any corners
+				// being within the circle. However given the scales we are working with and
+				// the complexity of the maths involved in calculating this, we are not
+				// accounting for that possibility here.
+				const minOverlappingCorners = includePartials ? 1 : 4;
+
 				// If the rectangle fits within the circle, add it to the result
-				if (cornersWithinCircle.length === 4) {
+				if (cornersWithinCircle.length >= minOverlappingCorners) {
 					positions.push({
 						// Add the radius back to the final coordinates so all are positive integers
 						x: offsetRectX + radius,
