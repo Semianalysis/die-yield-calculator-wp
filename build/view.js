@@ -1571,6 +1571,20 @@ function getFabYield(defectRate, criticalArea, model) {
   return _config__WEBPACK_IMPORTED_MODULE_0__.yieldModels[model].yield(defects);
 }
 /**
+ * Generate a set of length n of randomly selected numbers from a range (min-max)
+ * @param min bottom of range
+ * @param max top of range
+ * @param n number of random numbers to generate
+ */
+function randomNumberSetFromRange(min, max, n) {
+  const numbers = new Set();
+  while (numbers.size < n) {
+    const randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
+    numbers.add(randomNum);
+  }
+  return numbers;
+}
+/**
  * Count the total number of dies for each possible state (good, defective, partial, lost)
  * @param dieStates array of die state strings
  */
@@ -1720,52 +1734,47 @@ function evaluateDiscInputs(inputVals, selectedSize, selectedModel, waferCenteri
   // Calculate the dies in each shot
   const diesInShot = (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.rectanglesInRectangle)(26, 33, dieWidth, dieHeight, scribeHoriz, scribeVert, 0, 0);
   // Now calculate the absolute position of each die based on shot coordinates + die
-  // coordinates within shot
-  const positions = shotPositions.reduce((acc, shotPosition) => {
-    const dies = diesInShot.map(diePosition => ({
-      x: diePosition.x + shotPosition.x,
-      y: diePosition.y + shotPosition.y
-    }));
+  // coordinates within shot. Assign a state based on whether it is partly or fully
+  // outside the wafer
+  const dieMap = shotPositions.reduce((acc, shotPosition, shotIndex) => {
+    const dies = diesInShot.map((relativeDiePosition, dieIndex) => {
+      let dieState = "good";
+      const absoluteDieX = relativeDiePosition.x + shotPosition.x;
+      const absoluteDieY = relativeDiePosition.y + shotPosition.y;
+      const corners = (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.getRectCorners)(absoluteDieX, absoluteDieY, dieWidth, dieHeight);
+      const radiusInsideLossyEdge = width / 2 - lossyEdgeWidth;
+      const goodCorners = corners.filter(corner => (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.isInsideCircle)(corner.x, corner.y, width / 2, width / 2, radiusInsideLossyEdge));
+      if (!goodCorners.length) {
+        dieState = "lost";
+      } else if (goodCorners.length < 4) {
+        dieState = "partial";
+      }
+      return {
+        key: `${shotIndex}:${dieIndex}`,
+        dieState,
+        x: absoluteDieX,
+        y: absoluteDieY,
+        width: dieWidth,
+        height: dieHeight
+      };
+    });
     return [...acc, ...dies];
   }, []);
-  let totalDies = positions.length;
-  const nonDefectiveDies = Math.floor(fabYield * totalDies);
-  let dieStates = new Array(totalDies).fill("defective");
-  for (let i = 0; i < nonDefectiveDies; i++) {
-    dieStates[i] = "good";
-  }
-  for (let i = dieStates.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [dieStates[i], dieStates[j]] = [dieStates[j], dieStates[i]];
-  }
-  for (let i = 0; i < dieStates.length; i++) {
-    const x = positions[i].x;
-    const y = positions[i].y;
-    const corners = (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.getRectCorners)(x, y, dieWidth, dieHeight);
-    const radiusInsideLossyEdge = width / 2 - lossyEdgeWidth;
-    const goodCorners = corners.filter(corner => (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.isInsideCircle)(corner.x, corner.y, width / 2, width / 2, radiusInsideLossyEdge));
-    if (!goodCorners.length) {
-      dieStates[i] = "lost";
-    } else if (goodCorners.length < 4) {
-      dieStates[i] = "partial";
-    }
-    dies[i] = {
-      key: i,
-      dieState: dieStates[i],
-      x,
-      y,
-      width: dieWidth,
-      height: dieHeight
-    };
-  }
+  // Randomly distribute n defective dies around the map based on fab yield
+  let totalDies = dieMap.length;
+  const numDefectiveDies = totalDies - Math.floor(fabYield * totalDies);
+  const defectiveDieKeys = randomNumberSetFromRange(0, totalDies, numDefectiveDies);
+  defectiveDieKeys.forEach(key => {
+    dieMap[key].dieState = "defective";
+  });
   const {
     defectiveDies,
     partialDies,
     lostDies,
     goodDies
-  } = getDieStateCounts(dieStates);
+  } = getDieStateCounts(dieMap.map(die => die.dieState));
   return {
-    dies,
+    dies: dieMap,
     totalDies,
     goodDies,
     defectiveDies,
