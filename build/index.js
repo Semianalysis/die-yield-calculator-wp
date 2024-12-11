@@ -1866,7 +1866,12 @@ function evaluateDiscInputs(inputVals, selectedSize, selectedModel, waferCenteri
         height: dieHeight
       };
     });
-    return [...acc, ...dies];
+    // Take the shot as long as 1 or more dies within it will be "good"...
+    if (dies.find(die => die.dieState === "good")) {
+      return [...acc, ...dies];
+    }
+    // ...otherwise skip the shot
+    return acc;
   }, []);
   // Randomly distribute n defective dies around the map based on fab yield
   let totalDies = dieMap.length;
