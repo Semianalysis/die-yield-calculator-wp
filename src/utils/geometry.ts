@@ -87,6 +87,7 @@ export function isInsideRectangle(
  * @param outerRectY top left y coordinate of outer rectangle
  * @param outerRectWidth width of outer rectangle
  * @param outerRectHeight height of outer rectangle
+ * @param allowPartial returns true if only part of the inner rectangle overlaps the outer
  */
 function rectangleIsInsideRectangle(
 	innerRectX: number,
@@ -97,6 +98,7 @@ function rectangleIsInsideRectangle(
 	outerRectY: number,
 	outerRectWidth: number,
 	outerRectHeight: number,
+	allowPartial: boolean,
 ) {
 	const innerRectCorners = getRectCorners(
 		innerRectX,
@@ -104,8 +106,8 @@ function rectangleIsInsideRectangle(
 		innerRectWidth,
 		innerRectHeight
 	);
-	const cornersOutsideOuterRectangle = innerRectCorners.find(
-		(corner) => !isInsideRectangle(
+	const cornersInsideOuterRectangle = innerRectCorners.filter(
+		(corner) => isInsideRectangle(
 			corner.x,
 			corner.y,
 			outerRectX,
@@ -115,7 +117,11 @@ function rectangleIsInsideRectangle(
 		)
 	);
 
-	return !cornersOutsideOuterRectangle;
+	if (allowPartial) {
+		return cornersInsideOuterRectangle.length > 0;
+	}
+
+	return cornersInsideOuterRectangle.length === 4;
 }
 
 export type Position = { x: number, y: number };
@@ -199,6 +205,7 @@ export function rectanglesInCircle(
  * @param offsetX amount by which to offset each rectangle horizontally
  * @param offsetY amount by which to offset each rectangle vertically
  * @param center if true, center align inner and outer rectangles. otherwise, align top-left
+ * @param includePartials include inner rectangles that only partially overlap with the outer rectangle
  */
 export function rectanglesInRectangle(
 	outerRectWidth: number,
@@ -210,6 +217,7 @@ export function rectanglesInRectangle(
 	offsetX: number,
 	offsetY: number,
 	center: boolean,
+	includePartials: boolean
 ) : Position[] {
 	const positions: Position[] = [];
 	// When calculating from the center, we will only traverse a quarter of the outer
@@ -240,7 +248,8 @@ export function rectanglesInRectangle(
 						outerRectWidth * -0.5,
 						outerRectHeight * -0.5,
 						outerRectWidth,
-						outerRectHeight
+						outerRectHeight,
+						includePartials
 					);
 
 					// If the rectangle fits within the rectangle, add it to the result
@@ -267,7 +276,8 @@ export function rectanglesInRectangle(
 				0,
 				0,
 				outerRectWidth,
-				outerRectHeight
+				outerRectHeight,
+				includePartials
 			);
 
 			if (isInside) {

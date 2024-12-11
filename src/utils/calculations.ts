@@ -1,4 +1,4 @@
-import { waferSizes, panelSizes, yieldModels } from "../config";
+import {waferSizes, panelSizes, yieldModels} from "../config";
 import {Die, DieState, FabResults} from "../types";
 import {
 	Position,
@@ -34,7 +34,7 @@ export function getFabYield(
  * @param max top of range
  * @param n number of random numbers to generate
  */
-function randomNumberSetFromRange(min: number, max: number, n:number) {
+function randomNumberSetFromRange(min: number, max: number, n: number) {
 	const numbers: Set<number> = new Set();
 
 	while (numbers.size < n) {
@@ -105,178 +105,60 @@ function getDieOffset(inputs: InputValues, waferCenteringEnabled: boolean) {
 	};
 }
 
+
 /**
- * Use the given inputs to calculate how many dies would fit on the given panel
- * shaped wafer and what each die's state would be.
- * @param inputVals
- * @param selectedSize
- * @param selectedModel
- * @param waferCenteringEnabled
+ * Calculate the position of dies in a single shot
+ * @param dieWidth
+ * @param dieHeight
+ * @param scribeHoriz
+ * @param scribeVert
  */
-export function evaluatePanelInputs(
-	inputVals: InputValues,
-	selectedSize: keyof typeof panelSizes,
-	selectedModel: keyof typeof yieldModels,
-	waferCenteringEnabled: boolean
-): FabResults {
-	const {
+function getRelativeDiePositions(
+	dieWidth: number,
+	dieHeight: number,
+	scribeHoriz: number,
+	scribeVert: number
+) {
+	return rectanglesInRectangle(
+		26,
+		33,
 		dieWidth,
 		dieHeight,
-		criticalArea,
-		defectRate,
 		scribeHoriz,
 		scribeVert,
-		lossyEdgeWidth,
-	} = inputVals;
-	let dies = [];
-	const fabYield = getFabYield(defectRate, criticalArea, selectedModel);
-	const { width, height } = panelSizes[selectedSize];
-
-	const {
-		x: offsetX,
-		y: offsetY
-	} = getDieOffset(inputVals, waferCenteringEnabled);
-
-	const positions = rectanglesInRectangle(
-		width,
-		height,
-		dieWidth,
-		dieHeight,
-		scribeVert,
-		scribeHoriz,
-		offsetX,
-		offsetY,
-		true
+		0,
+		0,
+		false,
+		false,
 	);
-
-	const totalDies = positions.length;
-	const nonDefectiveDies = Math.floor(fabYield * totalDies);
-
-	let dieStates = new Array(totalDies).fill("defective");
-	for (let i = 0; i < nonDefectiveDies; i++) {
-		dieStates[i] = "good";
-	}
-
-	for (let i = dieStates.length - 1; i > 0; i--) {
-		const j = Math.floor(Math.random() * (i + 1));
-		[dieStates[i], dieStates[j]] = [dieStates[j], dieStates[i]];
-	}
-
-	for (let i = 0; i < dieStates.length; i++) {
-		const position = positions[i];
-		const corners = getRectCorners(position.x, position.y, dieWidth, dieHeight);
-		const goodCorners = corners.filter((corner) => isInsideRectangle(
-			corner.x,
-			corner.y,
-			lossyEdgeWidth,
-			lossyEdgeWidth,
-			width - lossyEdgeWidth * 2,
-			height - lossyEdgeWidth * 2
-		));
-
-		if (!goodCorners.length) {
-			dieStates[i] = "lost";
-		} else if (goodCorners.length < 4) {
-			dieStates[i] = "partial";
-		}
-
-		dies[i] = {
-			key: i,
-			dieState: dieStates[i],
-			x: position.x,
-			y: position.y,
-			width: dieWidth,
-			height: dieHeight
-		};
-	}
-
-	const {
-		defectiveDies,
-		partialDies,
-		lostDies,
-		goodDies
-	} = getDieStateCounts(dieStates);
-
-	return {
-		dies,
-		defectiveDies,
-		partialDies,
-		lostDies,
-		totalDies,
-		goodDies,
-		fabYield
-	};
 }
 
 /**
- * Use the given inputs to calculate how many dies would fit on the given disc
- * shaped wafer and what each die's state would be.
- * @param inputVals
- * @param selectedSize
- * @param selectedModel
- * @param waferCenteringEnabled
+ * Calculate the absolute position of each die based on shot coordinates + die
+ * coordinates within shot. Assign a state based on whether it is partly or fully
+ * outside the wafer
+ * @param shotPositions coordinates of each shot/field
+ * @param diesInShot coordinates of dies relative to a shot
+ * @param dieWidth width of one die
+ * @param dieHeight height of one die
+ * @param fabYield 0-1 float representing non-defective yield of all dies
+ * @param isInsideWafer callback fn to determine if coordinate is within wafer coords
  */
-export function evaluateDiscInputs(
-	inputVals: InputValues,
-	selectedSize: keyof typeof waferSizes,
-	selectedModel: keyof typeof yieldModels,
-	waferCenteringEnabled: boolean
-): FabResults {
-	const {
-		dieWidth,
-		dieHeight,
-		criticalArea,
-		defectRate,
-		lossyEdgeWidth,
-		scribeHoriz,
-		scribeVert
-	} = inputVals;
-
-	let dies = [];
-	const fabYield = getFabYield(defectRate, criticalArea, selectedModel);
-	const { width } = waferSizes[selectedSize];
-
-	const {
-		x: offsetX,
-		y: offsetY
-	} = getDieOffset(inputVals, waferCenteringEnabled);
-
-	// First, calculate the reticle shot map
-	const shotPositions = rectanglesInCircle(
-		width,
-		26,
-		33,
-		0,
-		0,
-		offsetX,
-		offsetY,
-		true
-	);
-
-	// Calculate the dies in each shot
-	const diesInShot = rectanglesInRectangle(
-		26,
-		33,
-		dieWidth,
-		dieHeight,
-		scribeHoriz,
-		scribeVert,
-		0,
-		0,
-		false
-	);
-
-	// Now calculate the absolute position of each die based on shot coordinates + die
-	// coordinates within shot. Assign a state based on whether it is partly or fully
-	// outside the wafer
+function createDieMap(
+	shotPositions: Position[],
+	diesInShot: Position[],
+	dieWidth: number,
+	dieHeight: number,
+	fabYield: number,
+	isInsideWafer: (coordinate: Position) => boolean,
+) {
 	const dieMap = shotPositions.reduce((acc: Die[], shotPosition, shotIndex) => {
-		const dies = diesInShot.map((relativeDiePosition, dieIndex): Die => {
+		const dies = diesInShot.map((relativeDie, dieIndex): Die => {
 			let dieState: DieState = "good";
-			const absoluteDieX = relativeDiePosition.x + shotPosition.x;
-			const absoluteDieY = relativeDiePosition.y + shotPosition.y;
+			const absoluteDieX = relativeDie.x + shotPosition.x;
+			const absoluteDieY = relativeDie.y + shotPosition.y;
 			const corners = getRectCorners(absoluteDieX, absoluteDieY, dieWidth, dieHeight);
-			const radiusInsideLossyEdge = width / 2 - lossyEdgeWidth;
-			const goodCorners = corners.filter(corner => isInsideCircle(corner.x, corner.y, width / 2, width / 2, radiusInsideLossyEdge));
+			const goodCorners = corners.filter(isInsideWafer);
 
 			if (!goodCorners.length) {
 				dieState = "lost";
@@ -315,6 +197,163 @@ export function evaluateDiscInputs(
 		dieMap[key].dieState = "defective";
 	});
 
+	return dieMap;
+}
+
+/**
+ * Use the given inputs to calculate how many dies would fit on the given panel
+ * shaped wafer and what each die's state would be.
+ * @param inputVals
+ * @param selectedSize
+ * @param selectedModel
+ * @param waferCenteringEnabled
+ */
+export function evaluatePanelInputs(
+	inputVals: InputValues,
+	selectedSize: keyof typeof panelSizes,
+	selectedModel: keyof typeof yieldModels,
+	waferCenteringEnabled: boolean
+): FabResults {
+	const {
+		dieWidth,
+		dieHeight,
+		criticalArea,
+		defectRate,
+		scribeHoriz,
+		scribeVert,
+		lossyEdgeWidth,
+	} = inputVals;
+	let dies = [];
+	const fabYield = getFabYield(defectRate, criticalArea, selectedModel);
+	const {width, height} = panelSizes[selectedSize];
+
+	const {
+		x: offsetX,
+		y: offsetY
+	} = getDieOffset(inputVals, waferCenteringEnabled);
+
+	// First, calculate the reticle shot map
+	const shotPositions = rectanglesInRectangle(
+		width,
+		height,
+		26,
+		33,
+		0,
+		0,
+		offsetX,
+		offsetY,
+		true,
+		true,
+	);
+
+	// Calculate the position of dies in a single shot
+	const diesInShot = getRelativeDiePositions(
+		dieWidth,
+		dieHeight,
+		scribeHoriz,
+		scribeVert,
+	);
+
+	const dieMap = createDieMap(
+		shotPositions,
+		diesInShot,
+		dieWidth,
+		dieHeight,
+		fabYield,
+		(coordinate) => {
+			return isInsideRectangle(
+				coordinate.x,
+				coordinate.y,
+				lossyEdgeWidth,
+				lossyEdgeWidth,
+				width - lossyEdgeWidth * 2,
+				height - lossyEdgeWidth * 2
+			)
+		}
+	);
+
+	const {
+		defectiveDies,
+		partialDies,
+		lostDies,
+		goodDies
+	} = getDieStateCounts(dieMap.map((die) => die.dieState));
+
+	return {
+		dies: dieMap,
+		defectiveDies,
+		partialDies,
+		lostDies,
+		totalDies: dieMap.length,
+		goodDies,
+		fabYield
+	};
+}
+
+/**
+ * Use the given inputs to calculate how many dies would fit on the given disc
+ * shaped wafer and what each die's state would be.
+ * @param inputVals
+ * @param selectedSize
+ * @param selectedModel
+ * @param waferCenteringEnabled
+ */
+export function evaluateDiscInputs(
+	inputVals: InputValues,
+	selectedSize: keyof typeof waferSizes,
+	selectedModel: keyof typeof yieldModels,
+	waferCenteringEnabled: boolean
+): FabResults {
+	const {
+		dieWidth,
+		dieHeight,
+		criticalArea,
+		defectRate,
+		lossyEdgeWidth,
+		scribeHoriz,
+		scribeVert
+	} = inputVals;
+
+	const fabYield = getFabYield(defectRate, criticalArea, selectedModel);
+	const {width} = waferSizes[selectedSize];
+
+	const {
+		x: offsetX,
+		y: offsetY
+	} = getDieOffset(inputVals, waferCenteringEnabled);
+
+	// First, calculate the reticle shot map
+	const shotPositions = rectanglesInCircle(
+		width,
+		26,
+		33,
+		0,
+		0,
+		offsetX,
+		offsetY,
+		true
+	);
+
+	// Calculate the position of dies in a single shot
+	const diesInShot = getRelativeDiePositions(
+		dieWidth,
+		dieHeight,
+		scribeHoriz,
+		scribeVert,
+	);
+
+	const dieMap = createDieMap(
+		shotPositions,
+		diesInShot,
+		dieWidth,
+		dieHeight,
+		fabYield,
+		(coordinate) => {
+			const radiusInsideLossyEdge = width / 2 - lossyEdgeWidth;
+			return isInsideCircle(coordinate.x, coordinate.y, width / 2, width / 2, radiusInsideLossyEdge)
+		}
+	);
+
 	const {
 		defectiveDies,
 		partialDies,
@@ -324,7 +363,7 @@ export function evaluateDiscInputs(
 
 	return {
 		dies: dieMap,
-		totalDies,
+		totalDies: dieMap.length,
 		goodDies,
 		defectiveDies,
 		partialDies,
