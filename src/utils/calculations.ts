@@ -256,6 +256,7 @@ export function evaluateDiscInputs(
 	const diesInShot = rectanglesInRectangle(
 		26,33,dieWidth,dieHeight,scribeHoriz, scribeVert,0,0
 	);
+	console.log({diesInShot});
 
 	// Now calculate the absolute position of each die based on shot coordinates + die
 	// coordinates within shot. Assign a state based on whether it is partly or fully

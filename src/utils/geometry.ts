@@ -165,46 +165,40 @@ export function rectanglesInRectangle(
 	gapX: number,
 	gapY: number,
 	offsetX: number,
-	offsetY: number
-): Position[] {
+	offsetY: number,
+) : Position[] {
 	const positions: Position[] = [];
 
-	// Traverse each row, starting at the center
-	for (let y = 0; y <= outerRectHeight / 2; y += innerRectHeight + gapY) {
-		// Traverse each column, starting at the center
-		for (let x = 0; x <= outerRectWidth / 2; x += innerRectWidth + gapX) {
-			// Draw four rectangles, one in each quadrant (se, sw, nw, ne)
-			for (let i = 0; i < 4; i++) {
-				const rectX = i % 2 === 0 ? x : -x - innerRectWidth - gapX;
-				const rectY = i % 3 === 0 ? y : -y - innerRectHeight - gapY;
-				// Apply the offset - used for centering
-				const offsetRectX = rectX + offsetX;
-				const offsetRectY = rectY + offsetY;
-				const corners = getRectCorners(
-					offsetRectX,
-					offsetRectY,
-					innerRectWidth,
-					innerRectHeight
-				);
-				const cornersWithinRectangle = corners.filter(
-					(corner) => isInsideRectangle(
-						corner.x,
-						corner.y,
-						outerRectWidth * -0.5,
-						outerRectHeight * -0.5,
-						outerRectWidth,
-						outerRectHeight
-					)
-				);
+	// Traverse each row, starting at the top
+	for (let y = 0; y <= outerRectHeight; y += innerRectHeight + gapY) {
+		// Traverse each column, starting at the left
+		for (let x = 0; x <= outerRectWidth; x += innerRectWidth + gapX) {
+			const offsetRectX = x + offsetX;
+			const offsetRectY = y + offsetY;
+			const corners = getRectCorners(
+				offsetRectX,
+				offsetRectY,
+				innerRectWidth,
+				innerRectHeight
+			);
+			const cornersWithinRectangle = corners.filter(
+				(corner) => isInsideRectangle(
+					corner.x,
+					corner.y,
+					0,
+					0,
+					outerRectWidth,
+					outerRectHeight
+				)
+			);
 
-				// If the rectangle fits within the circle, add it to the result
-				if (cornersWithinRectangle.length === 4) {
-					positions.push({
-						// Add half the width/height back to the final coordinates so all are positive integers
-						x: offsetRectX + outerRectWidth / 2,
-						y: offsetRectY + outerRectHeight / 2
-					});
-				}
+			// If the rectangle fits within the larger rectangle, add it to the result
+			if (cornersWithinRectangle.length === 4) {
+				positions.push({
+					// Add half the width/height back to the final coordinates so all are positive integers
+					x: offsetRectX,
+					y: offsetRectY,
+				});
 			}
 		}
 	}
