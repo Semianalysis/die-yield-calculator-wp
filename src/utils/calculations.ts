@@ -256,7 +256,6 @@ export function evaluateDiscInputs(
 	const diesInShot = rectanglesInRectangle(
 		26,33,dieWidth,dieHeight,scribeHoriz, scribeVert,0,0
 	);
-	console.log({diesInShot});
 
 	// Now calculate the absolute position of each die based on shot coordinates + die
 	// coordinates within shot. Assign a state based on whether it is partly or fully
@@ -301,7 +300,7 @@ export function evaluateDiscInputs(
 	// Randomly distribute n defective dies around the map based on fab yield
 	let totalDies = dieMap.length;
 	const numDefectiveDies = totalDies - Math.floor(fabYield * totalDies);
-	const defectiveDieKeys = randomNumberSetFromRange(0, totalDies, numDefectiveDies);
+	const defectiveDieKeys = randomNumberSetFromRange(0, totalDies - 1, numDefectiveDies);
 
 	defectiveDieKeys.forEach((key) => {
 		dieMap[key].dieState = "defective";
