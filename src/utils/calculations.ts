@@ -145,7 +145,8 @@ export function evaluatePanelInputs(
 		scribeVert,
 		scribeHoriz,
 		offsetX,
-		offsetY
+		offsetY,
+		true
 	);
 
 	const totalDies = positions.length;
@@ -254,7 +255,15 @@ export function evaluateDiscInputs(
 
 	// Calculate the dies in each shot
 	const diesInShot = rectanglesInRectangle(
-		26,33,dieWidth,dieHeight,scribeHoriz, scribeVert,0,0
+		26,
+		33,
+		dieWidth,
+		dieHeight,
+		scribeHoriz,
+		scribeVert,
+		0,
+		0,
+		false
 	);
 
 	// Now calculate the absolute position of each die based on shot coordinates + die

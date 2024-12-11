@@ -76,6 +76,48 @@ export function isInsideRectangle(
 	);
 }
 
+/**
+ * Determines if one rectangle is fully inside another, i.e. all its corners overlap
+ * with the outer rectangle.
+ * @param innerRectX top left x coordinate of inner rectangle
+ * @param innerRectY top left y coordinate of inner rectangle
+ * @param innerRectWidth width of inner rectangle
+ * @param innerRectHeight height of outer rectangle
+ * @param outerRectX top left x coordinate of outer rectangle
+ * @param outerRectY top left y coordinate of outer rectangle
+ * @param outerRectWidth width of outer rectangle
+ * @param outerRectHeight height of outer rectangle
+ */
+function rectangleIsInsideRectangle(
+	innerRectX: number,
+	innerRectY: number,
+	innerRectWidth: number,
+	innerRectHeight: number,
+	outerRectX: number,
+	outerRectY: number,
+	outerRectWidth: number,
+	outerRectHeight: number,
+) {
+	const innerRectCorners = getRectCorners(
+		innerRectX,
+		innerRectY,
+		innerRectWidth,
+		innerRectHeight
+	);
+	const cornersOutsideOuterRectangle = innerRectCorners.find(
+		(corner) => !isInsideRectangle(
+			corner.x,
+			corner.y,
+			outerRectX,
+			outerRectY,
+			outerRectWidth,
+			outerRectHeight
+		)
+	);
+
+	return !cornersOutsideOuterRectangle;
+}
+
 export type Position = { x: number, y: number };
 
 /**
@@ -156,6 +198,7 @@ export function rectanglesInCircle(
  * @param gapY vertical space between each rectangle
  * @param offsetX amount by which to offset each rectangle horizontally
  * @param offsetY amount by which to offset each rectangle vertically
+ * @param center if true, center align inner and outer rectangles. otherwise, align top-left
  */
 export function rectanglesInRectangle(
 	outerRectWidth: number,
@@ -166,36 +209,69 @@ export function rectanglesInRectangle(
 	gapY: number,
 	offsetX: number,
 	offsetY: number,
+	center: boolean,
 ) : Position[] {
 	const positions: Position[] = [];
+	// When calculating from the center, we will only traverse a quarter of the outer
+	// rectangle but for each iteration draw 4 inner rectangles so we are traversing
+	// outwards
+	const xMax = center ? outerRectWidth / 2 : outerRectWidth;
+	const yMax = center ? outerRectHeight / 2 :  outerRectHeight;
 
 	// Traverse each row, starting at the top
-	for (let y = 0; y <= outerRectHeight; y += innerRectHeight + gapY) {
+	for (let y = 0; y <= yMax; y += innerRectHeight + gapY) {
 		// Traverse each column, starting at the left
-		for (let x = 0; x <= outerRectWidth; x += innerRectWidth + gapX) {
+		for (let x = 0; x <= xMax; x += innerRectWidth + gapX) {
+			if (center) {
+				// Draw four rectangles, one in each quadrant (se, sw, nw, ne)
+				for (let i = 0; i < 4; i++) {
+					const rectX = i % 2 === 0 ? x : -x - innerRectWidth - gapX;
+					const rectY = i % 3 === 0 ? y : -y - innerRectHeight - gapY;
+					// Apply the offset - used for centering
+					const offsetRectX = rectX + offsetX;
+					const offsetRectY = rectY + offsetY;
+
+					const isInside = rectangleIsInsideRectangle(
+						offsetRectX,
+						offsetRectY,
+						innerRectWidth,
+						innerRectHeight,
+						// Offset outer rectangle coordinates for centering
+						outerRectWidth * -0.5,
+						outerRectHeight * -0.5,
+						outerRectWidth,
+						outerRectHeight
+					);
+
+					// If the rectangle fits within the rectangle, add it to the result
+					if (isInside) {
+						positions.push({
+							// Add half the width/height back to the final coordinates so all are positive integers
+							x: offsetRectX + outerRectWidth / 2,
+							y: offsetRectY + outerRectHeight / 2
+						});
+					}
+				}
+
+				continue;
+			}
+
 			const offsetRectX = x + offsetX;
 			const offsetRectY = y + offsetY;
-			const corners = getRectCorners(
+
+			const isInside = rectangleIsInsideRectangle(
 				offsetRectX,
 				offsetRectY,
 				innerRectWidth,
-				innerRectHeight
-			);
-			const cornersWithinRectangle = corners.filter(
-				(corner) => isInsideRectangle(
-					corner.x,
-					corner.y,
-					0,
-					0,
-					outerRectWidth,
-					outerRectHeight
-				)
+				innerRectHeight,
+				0,
+				0,
+				outerRectWidth,
+				outerRectHeight
 			);
 
-			// If the rectangle fits within the larger rectangle, add it to the result
-			if (cornersWithinRectangle.length === 4) {
+			if (isInside) {
 				positions.push({
-					// Add half the width/height back to the final coordinates so all are positive integers
 					x: offsetRectX,
 					y: offsetRectY,
 				});

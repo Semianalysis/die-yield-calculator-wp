@@ -1765,7 +1765,7 @@ function evaluatePanelInputs(inputVals, selectedSize, selectedModel, waferCenter
     x: offsetX,
     y: offsetY
   } = getDieOffset(inputVals, waferCenteringEnabled);
-  const positions = (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.rectanglesInRectangle)(width, height, dieWidth, dieHeight, scribeVert, scribeHoriz, offsetX, offsetY);
+  const positions = (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.rectanglesInRectangle)(width, height, dieWidth, dieHeight, scribeVert, scribeHoriz, offsetX, offsetY, true);
   const totalDies = positions.length;
   const nonDefectiveDies = Math.floor(fabYield * totalDies);
   let dieStates = new Array(totalDies).fill("defective");
@@ -1840,7 +1840,7 @@ function evaluateDiscInputs(inputVals, selectedSize, selectedModel, waferCenteri
   // First, calculate the reticle shot map
   const shotPositions = (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.rectanglesInCircle)(width, 26, 33, 0, 0, offsetX, offsetY, true);
   // Calculate the dies in each shot
-  const diesInShot = (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.rectanglesInRectangle)(26, 33, dieWidth, dieHeight, scribeHoriz, scribeVert, 0, 0);
+  const diesInShot = (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.rectanglesInRectangle)(26, 33, dieWidth, dieHeight, scribeHoriz, scribeVert, 0, 0, false);
   // Now calculate the absolute position of each die based on shot coordinates + die
   // coordinates within shot. Assign a state based on whether it is partly or fully
   // outside the wafer
@@ -2010,6 +2010,23 @@ function isInsideRectangle(x, y, rectangleX, rectangleY, rectangleWidth, rectang
   return x >= rectangleX && x <= rectangleX + rectangleWidth && y >= rectangleY && y <= rectangleY + rectangleHeight;
 }
 /**
+ * Determines if one rectangle is fully inside another, i.e. all its corners overlap
+ * with the outer rectangle.
+ * @param innerRectX top left x coordinate of inner rectangle
+ * @param innerRectY top left y coordinate of inner rectangle
+ * @param innerRectWidth width of inner rectangle
+ * @param innerRectHeight height of outer rectangle
+ * @param outerRectX top left x coordinate of outer rectangle
+ * @param outerRectY top left y coordinate of outer rectangle
+ * @param outerRectWidth width of outer rectangle
+ * @param outerRectHeight height of outer rectangle
+ */
+function rectangleIsInsideRectangle(innerRectX, innerRectY, innerRectWidth, innerRectHeight, outerRectX, outerRectY, outerRectWidth, outerRectHeight) {
+  const innerRectCorners = getRectCorners(innerRectX, innerRectY, innerRectWidth, innerRectHeight);
+  const cornersOutsideOuterRectangle = innerRectCorners.find(corner => !isInsideRectangle(corner.x, corner.y, outerRectX, outerRectY, outerRectWidth, outerRectHeight));
+  return !cornersOutsideOuterRectangle;
+}
+/**
  * Given a circle with the provided diameter, determine the maximum number of
  * rectangles of a given width and height would fit inside it
  *
@@ -2068,21 +2085,46 @@ function rectanglesInCircle(diameter, rectWidth, rectHeight, gapX, gapY, offsetX
  * @param gapY vertical space between each rectangle
  * @param offsetX amount by which to offset each rectangle horizontally
  * @param offsetY amount by which to offset each rectangle vertically
+ * @param center if true, center align inner and outer rectangles. otherwise, align top-left
  */
-function rectanglesInRectangle(outerRectWidth, outerRectHeight, innerRectWidth, innerRectHeight, gapX, gapY, offsetX, offsetY) {
+function rectanglesInRectangle(outerRectWidth, outerRectHeight, innerRectWidth, innerRectHeight, gapX, gapY, offsetX, offsetY, center) {
   const positions = [];
+  // When calculating from the center, we will only traverse a quarter of the outer
+  // rectangle but for each iteration draw 4 inner rectangles so we are traversing
+  // outwards
+  const xMax = center ? outerRectWidth / 2 : outerRectWidth;
+  const yMax = center ? outerRectHeight / 2 : outerRectHeight;
   // Traverse each row, starting at the top
-  for (let y = 0; y <= outerRectHeight; y += innerRectHeight + gapY) {
+  for (let y = 0; y <= yMax; y += innerRectHeight + gapY) {
     // Traverse each column, starting at the left
-    for (let x = 0; x <= outerRectWidth; x += innerRectWidth + gapX) {
+    for (let x = 0; x <= xMax; x += innerRectWidth + gapX) {
+      if (center) {
+        // Draw four rectangles, one in each quadrant (se, sw, nw, ne)
+        for (let i = 0; i < 4; i++) {
+          const rectX = i % 2 === 0 ? x : -x - innerRectWidth - gapX;
+          const rectY = i % 3 === 0 ? y : -y - innerRectHeight - gapY;
+          // Apply the offset - used for centering
+          const offsetRectX = rectX + offsetX;
+          const offsetRectY = rectY + offsetY;
+          const isInside = rectangleIsInsideRectangle(offsetRectX, offsetRectY, innerRectWidth, innerRectHeight,
+          // Offset outer rectangle coordinates for centering
+          outerRectWidth * -0.5, outerRectHeight * -0.5, outerRectWidth, outerRectHeight);
+          // If the rectangle fits within the rectangle, add it to the result
+          if (isInside) {
+            positions.push({
+              // Add half the width/height back to the final coordinates so all are positive integers
+              x: offsetRectX + outerRectWidth / 2,
+              y: offsetRectY + outerRectHeight / 2
+            });
+          }
+        }
+        continue;
+      }
       const offsetRectX = x + offsetX;
       const offsetRectY = y + offsetY;
-      const corners = getRectCorners(offsetRectX, offsetRectY, innerRectWidth, innerRectHeight);
-      const cornersWithinRectangle = corners.filter(corner => isInsideRectangle(corner.x, corner.y, 0, 0, outerRectWidth, outerRectHeight));
-      // If the rectangle fits within the larger rectangle, add it to the result
-      if (cornersWithinRectangle.length === 4) {
+      const isInside = rectangleIsInsideRectangle(offsetRectX, offsetRectY, innerRectWidth, innerRectHeight, 0, 0, outerRectWidth, outerRectHeight);
+      if (isInside) {
         positions.push({
-          // Add half the width/height back to the final coordinates so all are positive integers
           x: offsetRectX,
           y: offsetRectY
         });
