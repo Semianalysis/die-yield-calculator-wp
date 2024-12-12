@@ -126,9 +126,9 @@ describe("geometry utils", () => {
 			expect(rectanglesInCircle(100, 1, 1, 0, 0, 0, 0, false).length).toBe(7644);
 		});
 
-		it('calculate partial overlaps', () => {
-			const result = rectanglesInCircle(100, 10, 10, 5, 5, 0, 0, true);
-			expect(result.length).toBe(36);
+		it('calculates partial overlaps', () => {
+			// We count many more rectangles if we allow them to overlap the edge of the circle
+			expect(rectanglesInCircle(100, 10, 10, 0, 0, 0, 0, true).length).toBe(104);
 		})
 	});
 
