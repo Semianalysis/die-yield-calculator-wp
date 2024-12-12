@@ -2027,7 +2027,14 @@ function rectangleIsInsideRectangle(innerRectX, innerRectY, innerRectWidth, inne
   const innerRectCorners = getRectCorners(innerRectX, innerRectY, innerRectWidth, innerRectHeight);
   const cornersInsideOuterRectangle = innerRectCorners.filter(corner => isInsideRectangle(corner.x, corner.y, outerRectX, outerRectY, outerRectWidth, outerRectHeight));
   if (allowPartial) {
-    return cornersInsideOuterRectangle.length > 0;
+    // Filter out corners that are on the edge of the outer rectangle
+    const nonEdgeCornersInsideOuterRect = cornersInsideOuterRectangle.filter(corner => {
+      if (corner.x === outerRectX || corner.x === outerRectX + outerRectWidth || corner.y === outerRectY || corner.y === outerRectY + outerRectHeight) {
+        return false;
+      }
+      return true;
+    });
+    return nonEdgeCornersInsideOuterRect.length > 0;
   }
   return cornersInsideOuterRectangle.length === 4;
 }

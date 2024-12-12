@@ -17,10 +17,10 @@ describe("geometry utils", () => {
 			const result = getRectCorners(x, y, width, height);
 
 			expect(result).toEqual([
-				{ x: 0, y: 0 },    // top-left
-				{ x: 10, y: 0 },   // top-right
-				{ x: 0, y: 5 },    // bottom-left
-				{ x: 10, y: 5 }   // bottom-right
+				{x: 0, y: 0},    // top-left
+				{x: 10, y: 0},   // top-right
+				{x: 0, y: 5},    // bottom-left
+				{x: 10, y: 5}   // bottom-right
 			]);
 		});
 
@@ -33,10 +33,10 @@ describe("geometry utils", () => {
 			const result = getRectCorners(x, y, width, height);
 
 			expect(result).toEqual([
-				{ x: -5, y: -5 },  // top-left
-				{ x: 5, y: -5 },   // top-right
-				{ x: -5, y: 0 },   // bottom-left
-				{ x: 5, y: 0 }    // bottom-right
+				{x: -5, y: -5},  // top-left
+				{x: 5, y: -5},   // top-right
+				{x: -5, y: 0},   // bottom-left
+				{x: 5, y: 0}    // bottom-right
 			]);
 		});
 
@@ -49,10 +49,10 @@ describe("geometry utils", () => {
 			const result = getRectCorners(x, y, width, height);
 
 			expect(result).toEqual([
-				{ x: 10, y: 20 },  // top-left (all points the same)
-				{ x: 10, y: 20 },  // top-right
-				{ x: 10, y: 20 },  // bottom-left
-				{ x: 10, y: 20 }  // bottom-right
+				{x: 10, y: 20},  // top-left (all points the same)
+				{x: 10, y: 20},  // top-right
+				{x: 10, y: 20},  // bottom-left
+				{x: 10, y: 20}  // bottom-right
 			]);
 		});
 
@@ -65,10 +65,10 @@ describe("geometry utils", () => {
 			const result = getRectCorners(x, y, width, height);
 
 			expect(result).toEqual([
-				{ x: 10, y: 20 },   // top-left
-				{ x: 0, y: 20 },    // top-right (since width is negative, right moves left)
-				{ x: 10, y: 15 },   // bottom-left (since height is negative, bottom moves up)
-				{ x: 0, y: 15 }    // bottom-right
+				{x: 10, y: 20},   // top-left
+				{x: 0, y: 20},    // top-right (since width is negative, right moves left)
+				{x: 10, y: 15},   // bottom-left (since height is negative, bottom moves up)
+				{x: 0, y: 15}    // bottom-right
 			]);
 		});
 
@@ -81,10 +81,10 @@ describe("geometry utils", () => {
 			const result = getRectCorners(x, y, width, height);
 
 			expect(result).toEqual([
-				{ x: 1.5, y: 2.5 },     // top-left
-				{ x: 4.7, y: 2.5 },     // top-right
-				{ x: 1.5, y: 7.3 },     // bottom-left
-				{ x: 4.7, y: 7.3 }     // bottom-right
+				{x: 1.5, y: 2.5},     // top-left
+				{x: 4.7, y: 2.5},     // top-right
+				{x: 1.5, y: 7.3},     // bottom-left
+				{x: 4.7, y: 7.3}     // bottom-right
 			]);
 		});
 	});
@@ -122,15 +122,48 @@ describe("geometry utils", () => {
 
 	describe("rectanglesInCircle", () => {
 		it("calculates the correct number of possible rectangles in a circle", () => {
-			expect(rectanglesInCircle(100, 10, 10, 0, 0, 0, 0).length).toBe(60);
-			expect(rectanglesInCircle(100, 1, 1, 0, 0, 0, 0).length).toBe(7644);
+			expect(rectanglesInCircle(100, 10, 10, 0, 0, 0, 0, false).length).toBe(60);
+			expect(rectanglesInCircle(100, 1, 1, 0, 0, 0, 0, false).length).toBe(7644);
 		});
+
+		it('calculate partial overlaps', () => {
+			const result = rectanglesInCircle(100, 10, 10, 5, 5, 0, 0, true);
+			expect(result.length).toBe(36);
+		})
 	});
 
 	describe("rectanglesInRectangle", () => {
-		it("calculates the correct number of possible rectangles in another rectangle", () => {
-			expect(rectanglesInRectangle(100, 100, 10, 10, 0, 0, 0, 0).length).toBe(100);
-			expect(rectanglesInRectangle(100, 100, 10, 10, 10, 10, 0, 0).length).toBe(25);
+		it("calculates the correct number of possible rectangles in another rectangle when starting from the top-left", () => {
+			expect(rectanglesInRectangle(100, 100, 10, 10, 0, 0, 0, 0, false, false).length).toBe(100);
+			expect(rectanglesInRectangle(100, 100, 10, 10, 10, 10, 0, 0, false, false).length).toBe(25);
+			expect(rectanglesInRectangle(60, 60, 20, 20, 0, 0, 0, 0, false, false).length).toBe(9);
 		});
+
+		it('calculates the correct number of rectangles when starting from the center', () => {
+			// Even though the inner square is 1/3 the size of the outer square, it can
+			// only fit 4 because they are in the middle, leaving no room for more squares
+			expect(rectanglesInRectangle(60, 60, 20, 20, 0, 0, 0, 0, true, false).length).toBe(4);
+			// We can fit the same number of 1/2 size squares because they go right up to the edge
+			expect(rectanglesInRectangle(60, 60, 30, 30, 0, 0, 0, 0, true, false).length).toBe(4);
+		});
+
+		it('calculates partial overlaps when starting from the top left', () => {
+			// Inner squares are 40% the size of the outer square, but we can fit 9 squares
+			// because of partial overlaps
+			expect(rectanglesInRectangle(100, 100, 40, 40, 0, 0, 0, 0, false, true).length).toBe(9);
+			// Once the inner square areas divide evenly into the outer square area, the
+			// partial overlaps are edged out
+			expect(rectanglesInRectangle(100, 100, 50, 50, 0, 0, 0, 0, false, true).length).toBe(4);
+		})
+
+		it('calculates partial overlaps when starting from the center', () => {
+			// Inner squares are 90% the area of the outer square, but we can fit 4 squares
+			// because we allow partial overlaps
+			expect(rectanglesInRectangle(100, 100, 90, 90, 0, 0, 0, 0, true, true).length).toBe(4);
+
+			// Inner square is 1/3 the size of the outer square, and we can fit 16 squares
+			// because we allow the outer squares to overlap
+			expect(rectanglesInRectangle(60, 60, 20, 20, 0, 0, 0, 0, true, true).length).toBe(16);
+		})
 	});
 });

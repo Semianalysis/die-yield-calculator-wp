@@ -118,7 +118,21 @@ function rectangleIsInsideRectangle(
 	);
 
 	if (allowPartial) {
-		return cornersInsideOuterRectangle.length > 0;
+		// Filter out corners that are on the edge of the outer rectangle
+		const nonEdgeCornersInsideOuterRect = cornersInsideOuterRectangle.filter((corner) => {
+			if (
+				corner.x === outerRectX ||
+				corner.x === outerRectX + outerRectWidth ||
+				corner.y === outerRectY ||
+				corner.y === outerRectY + outerRectHeight
+			) {
+				return false;
+			}
+
+			return true;
+		});
+
+		return nonEdgeCornersInsideOuterRect.length > 0;
 	}
 
 	return cornersInsideOuterRectangle.length === 4;
@@ -218,13 +232,13 @@ export function rectanglesInRectangle(
 	offsetY: number,
 	center: boolean,
 	includePartials: boolean
-) : Position[] {
+): Position[] {
 	const positions: Position[] = [];
 	// When calculating from the center, we will only traverse a quarter of the outer
 	// rectangle but for each iteration draw 4 inner rectangles so we are traversing
 	// outwards
 	const xMax = center ? outerRectWidth / 2 : outerRectWidth;
-	const yMax = center ? outerRectHeight / 2 :  outerRectHeight;
+	const yMax = center ? outerRectHeight / 2 : outerRectHeight;
 
 	// Traverse each row, starting at the top
 	for (let y = 0; y <= yMax; y += innerRectHeight + gapY) {
