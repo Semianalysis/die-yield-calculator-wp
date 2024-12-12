@@ -148,50 +148,53 @@ function getRelativeDiePositions(
  * @param isInsideWafer callback fn to determine if coordinate is within wafer coords
  */
 function createDieMap(
-	shotPositions: Position[],
-	diesInShot: Position[],
+	shotPositions: Array<Position>,
+	diesInShot: Array<Position>,
 	dieWidth: number,
 	dieHeight: number,
 	fabYield: number,
 	isInsideWafer: (coordinate: Position) => boolean,
 ) {
-	const dieMap = shotPositions.reduce((acc: Die[], shotPosition, shotIndex) => {
-		const dies = diesInShot.map((relativeDie, dieIndex): Die => {
-			let dieState: DieState = "good";
-			const absoluteDieX = relativeDie.x + shotPosition.x;
-			const absoluteDieY = relativeDie.y + shotPosition.y;
-			const corners = getRectCorners(
-				absoluteDieX,
-				absoluteDieY,
-				dieWidth,
-				dieHeight,
-			);
-			const goodCorners = corners.filter(isInsideWafer);
+	const dieMap = shotPositions.reduce(
+		(acc: Array<Die>, shotPosition, shotIndex) => {
+			const dies = diesInShot.map((relativeDie, dieIndex): Die => {
+				let dieState: DieState = "good";
+				const absoluteDieX = relativeDie.x + shotPosition.x;
+				const absoluteDieY = relativeDie.y + shotPosition.y;
+				const corners = getRectCorners(
+					absoluteDieX,
+					absoluteDieY,
+					dieWidth,
+					dieHeight,
+				);
+				const goodCorners = corners.filter(isInsideWafer);
 
-			if (!goodCorners.length) {
-				dieState = "lost";
-			} else if (goodCorners.length < 4) {
-				dieState = "partial";
+				if (!goodCorners.length) {
+					dieState = "lost";
+				} else if (goodCorners.length < 4) {
+					dieState = "partial";
+				}
+
+				return {
+					key: `${shotIndex}:${dieIndex}`,
+					dieState,
+					x: absoluteDieX,
+					y: absoluteDieY,
+					width: dieWidth,
+					height: dieHeight,
+				};
+			});
+
+			// Take the shot as long as 1 or more dies within it will be "good"...
+			if (dies.find((die) => die.dieState === "good")) {
+				return [...acc, ...dies];
 			}
 
-			return {
-				key: `${shotIndex}:${dieIndex}`,
-				dieState,
-				x: absoluteDieX,
-				y: absoluteDieY,
-				width: dieWidth,
-				height: dieHeight,
-			};
-		});
-
-		// Take the shot as long as 1 or more dies within it will be "good"...
-		if (dies.find((die) => die.dieState === "good")) {
-			return [...acc, ...dies];
-		}
-
-		// ...otherwise skip the shot
-		return acc;
-	}, []);
+			// ...otherwise skip the shot
+			return acc;
+		},
+		[],
+	);
 
 	// Randomly distribute n defective dies around the map based on fab yield
 	let totalDies = dieMap.length;
