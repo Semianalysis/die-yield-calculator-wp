@@ -1,12 +1,12 @@
-import {waferSizes, panelSizes, yieldModels} from "../config";
-import {Die, DieState, FabResults} from "../types";
+import { waferSizes, panelSizes, yieldModels } from "../config";
+import { Die, DieState, FabResults } from "../types";
 import {
 	Position,
 	getRectCorners,
 	isInsideCircle,
 	isInsideRectangle,
 	rectanglesInCircle,
-	rectanglesInRectangle
+	rectanglesInRectangle,
 } from "./geometry";
 
 /**
@@ -18,13 +18,13 @@ import {
 export function getFabYield(
 	defectRate: number,
 	criticalArea: number,
-	model: keyof typeof yieldModels
+	model: keyof typeof yieldModels,
 ) {
 	if (!defectRate) {
 		return 1;
 	}
 
-	const defects = criticalArea * defectRate / 100;
+	const defects = (criticalArea * defectRate) / 100;
 	return yieldModels[model].yield(defects);
 }
 
@@ -75,7 +75,7 @@ export function getDieStateCounts(dieStates: Array<DieState>) {
 		goodDies,
 		defectiveDies,
 		partialDies,
-		lostDies
+		lostDies,
 	};
 }
 
@@ -97,14 +97,17 @@ export type InputValues = {
  * @param waferCenteringEnabled center by wafer or by die
  */
 function getDieOffset(inputs: InputValues, waferCenteringEnabled: boolean) {
-	const dieOffsetX = waferCenteringEnabled ? inputs.scribeHoriz * 0.5 : inputs.dieWidth * -0.5;
-	const dieOffsetY = waferCenteringEnabled ? inputs.scribeVert * 0.5 : inputs.dieHeight * -0.5;
+	const dieOffsetX = waferCenteringEnabled
+		? inputs.scribeHoriz * 0.5
+		: inputs.dieWidth * -0.5;
+	const dieOffsetY = waferCenteringEnabled
+		? inputs.scribeVert * 0.5
+		: inputs.dieHeight * -0.5;
 	return {
 		x: dieOffsetX + inputs.transHoriz,
-		y: dieOffsetY + inputs.transVert
+		y: dieOffsetY + inputs.transVert,
 	};
 }
-
 
 /**
  * Calculate the position of dies in a single shot
@@ -117,7 +120,7 @@ function getRelativeDiePositions(
 	dieWidth: number,
 	dieHeight: number,
 	scribeHoriz: number,
-	scribeVert: number
+	scribeVert: number,
 ) {
 	return rectanglesInRectangle(
 		26,
@@ -157,7 +160,12 @@ function createDieMap(
 			let dieState: DieState = "good";
 			const absoluteDieX = relativeDie.x + shotPosition.x;
 			const absoluteDieY = relativeDie.y + shotPosition.y;
-			const corners = getRectCorners(absoluteDieX, absoluteDieY, dieWidth, dieHeight);
+			const corners = getRectCorners(
+				absoluteDieX,
+				absoluteDieY,
+				dieWidth,
+				dieHeight,
+			);
 			const goodCorners = corners.filter(isInsideWafer);
 
 			if (!goodCorners.length) {
@@ -172,16 +180,13 @@ function createDieMap(
 				x: absoluteDieX,
 				y: absoluteDieY,
 				width: dieWidth,
-				height: dieHeight
+				height: dieHeight,
 			};
 		});
 
 		// Take the shot as long as 1 or more dies within it will be "good"...
 		if (dies.find((die) => die.dieState === "good")) {
-			return [
-				...acc,
-				...dies,
-			];
+			return [...acc, ...dies];
 		}
 
 		// ...otherwise skip the shot
@@ -191,7 +196,11 @@ function createDieMap(
 	// Randomly distribute n defective dies around the map based on fab yield
 	let totalDies = dieMap.length;
 	const numDefectiveDies = totalDies - Math.floor(fabYield * totalDies);
-	const defectiveDieKeys = randomNumberSetFromRange(0, totalDies - 1, numDefectiveDies);
+	const defectiveDieKeys = randomNumberSetFromRange(
+		0,
+		totalDies - 1,
+		numDefectiveDies,
+	);
 
 	defectiveDieKeys.forEach((key) => {
 		dieMap[key].dieState = "defective";
@@ -212,7 +221,7 @@ export function evaluatePanelInputs(
 	inputVals: InputValues,
 	selectedSize: keyof typeof panelSizes,
 	selectedModel: keyof typeof yieldModels,
-	waferCenteringEnabled: boolean
+	waferCenteringEnabled: boolean,
 ): FabResults {
 	const {
 		dieWidth,
@@ -225,12 +234,12 @@ export function evaluatePanelInputs(
 	} = inputVals;
 	let dies = [];
 	const fabYield = getFabYield(defectRate, criticalArea, selectedModel);
-	const {width, height} = panelSizes[selectedSize];
+	const { width, height } = panelSizes[selectedSize];
 
-	const {
-		x: offsetX,
-		y: offsetY
-	} = getDieOffset(inputVals, waferCenteringEnabled);
+	const { x: offsetX, y: offsetY } = getDieOffset(
+		inputVals,
+		waferCenteringEnabled,
+	);
 
 	// First, calculate the reticle shot map
 	const shotPositions = rectanglesInRectangle(
@@ -267,17 +276,14 @@ export function evaluatePanelInputs(
 				lossyEdgeWidth,
 				lossyEdgeWidth,
 				width - lossyEdgeWidth * 2,
-				height - lossyEdgeWidth * 2
-			)
-		}
+				height - lossyEdgeWidth * 2,
+			);
+		},
 	);
 
-	const {
-		defectiveDies,
-		partialDies,
-		lostDies,
-		goodDies
-	} = getDieStateCounts(dieMap.map((die) => die.dieState));
+	const { defectiveDies, partialDies, lostDies, goodDies } = getDieStateCounts(
+		dieMap.map((die) => die.dieState),
+	);
 
 	return {
 		dies: dieMap,
@@ -286,7 +292,7 @@ export function evaluatePanelInputs(
 		lostDies,
 		totalDies: dieMap.length,
 		goodDies,
-		fabYield
+		fabYield,
 	};
 }
 
@@ -302,7 +308,7 @@ export function evaluateDiscInputs(
 	inputVals: InputValues,
 	selectedSize: keyof typeof waferSizes,
 	selectedModel: keyof typeof yieldModels,
-	waferCenteringEnabled: boolean
+	waferCenteringEnabled: boolean,
 ): FabResults {
 	const {
 		dieWidth,
@@ -311,16 +317,16 @@ export function evaluateDiscInputs(
 		defectRate,
 		lossyEdgeWidth,
 		scribeHoriz,
-		scribeVert
+		scribeVert,
 	} = inputVals;
 
 	const fabYield = getFabYield(defectRate, criticalArea, selectedModel);
-	const {width} = waferSizes[selectedSize];
+	const { width } = waferSizes[selectedSize];
 
-	const {
-		x: offsetX,
-		y: offsetY
-	} = getDieOffset(inputVals, waferCenteringEnabled);
+	const { x: offsetX, y: offsetY } = getDieOffset(
+		inputVals,
+		waferCenteringEnabled,
+	);
 
 	// First, calculate the reticle shot map
 	const shotPositions = rectanglesInCircle(
@@ -331,7 +337,7 @@ export function evaluateDiscInputs(
 		0,
 		offsetX,
 		offsetY,
-		true
+		true,
 	);
 
 	// Calculate the position of dies in a single shot
@@ -350,16 +356,19 @@ export function evaluateDiscInputs(
 		fabYield,
 		(coordinate) => {
 			const radiusInsideLossyEdge = width / 2 - lossyEdgeWidth;
-			return isInsideCircle(coordinate.x, coordinate.y, width / 2, width / 2, radiusInsideLossyEdge)
-		}
+			return isInsideCircle(
+				coordinate.x,
+				coordinate.y,
+				width / 2,
+				width / 2,
+				radiusInsideLossyEdge,
+			);
+		},
 	);
 
-	const {
-		defectiveDies,
-		partialDies,
-		lostDies,
-		goodDies,
-	} = getDieStateCounts(dieMap.map((die) => die.dieState));
+	const { defectiveDies, partialDies, lostDies, goodDies } = getDieStateCounts(
+		dieMap.map((die) => die.dieState),
+	);
 
 	return {
 		dies: dieMap,
@@ -368,6 +377,6 @@ export function evaluateDiscInputs(
 		defectiveDies,
 		partialDies,
 		lostDies,
-		fabYield
+		fabYield,
 	};
 }

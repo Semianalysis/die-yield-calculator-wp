@@ -10,32 +10,31 @@ export function getRectCorners(
 	x: number,
 	y: number,
 	width: number,
-	height: number
+	height: number,
 ) {
 	return [
 		{
 			// top left
 			x: x,
-			y: y
+			y: y,
 		},
 		{
 			// top right
 			x: x + width,
-			y: y
+			y: y,
 		},
 		{
 			// bottom left
 			x: x,
-			y: y + height
+			y: y + height,
 		},
 		{
 			// bottom right
 			x: x + width,
-			y: y + height
-		}
+			y: y + height,
+		},
 	];
 }
-
 
 /**
  * Determine whether a target position (x, y) is inside or outside a circle
@@ -47,7 +46,13 @@ export function getRectCorners(
  * @param centerY vertical center of the circle
  * @param radius size of the circle
  */
-export function isInsideCircle(x: number, y: number, centerX: number, centerY: number, radius: number) {
+export function isInsideCircle(
+	x: number,
+	y: number,
+	centerX: number,
+	centerY: number,
+	radius: number,
+) {
 	return Math.sqrt((x - centerX) ** 2 + (y - centerY) ** 2) <= radius;
 }
 
@@ -66,7 +71,7 @@ export function isInsideRectangle(
 	rectangleX: number,
 	rectangleY: number,
 	rectangleWidth: number,
-	rectangleHeight: number
+	rectangleHeight: number,
 ) {
 	return (
 		x >= rectangleX &&
@@ -104,33 +109,35 @@ function rectangleIsInsideRectangle(
 		innerRectX,
 		innerRectY,
 		innerRectWidth,
-		innerRectHeight
+		innerRectHeight,
 	);
-	const cornersInsideOuterRectangle = innerRectCorners.filter(
-		(corner) => isInsideRectangle(
+	const cornersInsideOuterRectangle = innerRectCorners.filter((corner) =>
+		isInsideRectangle(
 			corner.x,
 			corner.y,
 			outerRectX,
 			outerRectY,
 			outerRectWidth,
-			outerRectHeight
-		)
+			outerRectHeight,
+		),
 	);
 
 	if (allowPartial) {
 		// Filter out corners that are on the edge of the outer rectangle
-		const nonEdgeCornersInsideOuterRect = cornersInsideOuterRectangle.filter((corner) => {
-			if (
-				corner.x === outerRectX ||
-				corner.x === outerRectX + outerRectWidth ||
-				corner.y === outerRectY ||
-				corner.y === outerRectY + outerRectHeight
-			) {
-				return false;
-			}
+		const nonEdgeCornersInsideOuterRect = cornersInsideOuterRectangle.filter(
+			(corner) => {
+				if (
+					corner.x === outerRectX ||
+					corner.x === outerRectX + outerRectWidth ||
+					corner.y === outerRectY ||
+					corner.y === outerRectY + outerRectHeight
+				) {
+					return false;
+				}
 
-			return true;
-		});
+				return true;
+			},
+		);
 
 		return nonEdgeCornersInsideOuterRect.length > 0;
 	}
@@ -138,7 +145,7 @@ function rectangleIsInsideRectangle(
 	return cornersInsideOuterRectangle.length === 4;
 }
 
-export type Position = { x: number, y: number };
+export type Position = { x: number; y: number };
 
 /**
  * Given a circle with the provided diameter, determine the maximum number of
@@ -181,9 +188,11 @@ export function rectanglesInCircle(
 					offsetRectX,
 					offsetRectY,
 					rectWidth,
-					rectHeight
+					rectHeight,
 				);
-				const cornersWithinCircle = corners.filter((corner) => isInsideCircle(corner.x, corner.y, 0, 0, radius));
+				const cornersWithinCircle = corners.filter((corner) =>
+					isInsideCircle(corner.x, corner.y, 0, 0, radius),
+				);
 
 				// If partials are allowed, only one corner must overlap, otherwise all must.
 				// Note that technically a square could overlap a circle without any corners
@@ -197,7 +206,7 @@ export function rectanglesInCircle(
 					positions.push({
 						// Add the radius back to the final coordinates so all are positive integers
 						x: offsetRectX + radius,
-						y: offsetRectY + radius
+						y: offsetRectY + radius,
 					});
 				}
 			}
@@ -231,7 +240,7 @@ export function rectanglesInRectangle(
 	offsetX: number,
 	offsetY: number,
 	center: boolean,
-	includePartials: boolean
+	includePartials: boolean,
 ): Position[] {
 	const positions: Position[] = [];
 	// When calculating from the center, we will only traverse a quarter of the outer
@@ -263,7 +272,7 @@ export function rectanglesInRectangle(
 						outerRectHeight * -0.5,
 						outerRectWidth,
 						outerRectHeight,
-						includePartials
+						includePartials,
 					);
 
 					// If the rectangle fits within the rectangle, add it to the result
@@ -271,7 +280,7 @@ export function rectanglesInRectangle(
 						positions.push({
 							// Add half the width/height back to the final coordinates so all are positive integers
 							x: offsetRectX + outerRectWidth / 2,
-							y: offsetRectY + outerRectHeight / 2
+							y: offsetRectY + outerRectHeight / 2,
 						});
 					}
 				}
@@ -291,7 +300,7 @@ export function rectanglesInRectangle(
 				0,
 				outerRectWidth,
 				outerRectHeight,
-				includePartials
+				includePartials,
 			);
 
 			if (isInside) {
