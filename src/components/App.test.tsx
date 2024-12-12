@@ -15,10 +15,10 @@ describe("App", () => {
 			name: /Width/
 		});
 		const scribeLinesXInput = screen.getByRole("spinbutton", {
-			name: /Scribe Lines X/
+			name: /Scribe Line Minimum X/
 		});
 		const scribeLinesYInput = screen.getByRole("spinbutton", {
-			name: /Scribe Lines Y/
+			name: /Scribe Line Minimum Y/
 		});
 		const maintainAspectRatioCheckbox = screen.getByRole("checkbox", { name: /Aspect Ratio/ });
 
@@ -41,7 +41,7 @@ describe("App", () => {
 		await user.click(screen.getByRole("radio", {
 			name: /Wafer/
 		}));
-		await waitFor(() => expect(screen.getByText(/976/)).toBeInTheDocument());
+		await waitFor(() => expect(screen.getByText(/1104/)).toBeInTheDocument());
 	});
 
 	it("displays a breakdown of die states whose sum equals the total number of dies", async () => {
