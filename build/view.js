@@ -1904,8 +1904,9 @@ function isInsideRectangle(x, y, rectangleX, rectangleY, rectangleWidth, rectang
   return x >= rectangleX && x <= rectangleX + rectangleWidth && y >= rectangleY && y <= rectangleY + rectangleHeight;
 }
 /**
- * Determines if one rectangle is fully inside another, i.e. all its corners overlap
- * with the outer rectangle.
+ * Determines if one rectangle is inside another, i.e. it overlaps with the outer
+ * rectangle. A partial overlap (>0 corners inside the outer rectangle) is allowed if
+ * `allowPartial` is true.
  * @param innerRectX top left x coordinate of inner rectangle
  * @param innerRectY top left y coordinate of inner rectangle
  * @param innerRectWidth width of inner rectangle
