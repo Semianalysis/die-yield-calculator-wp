@@ -1659,7 +1659,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   evaluateDiscInputs: () => (/* binding */ evaluateDiscInputs),
 /* harmony export */   evaluatePanelInputs: () => (/* binding */ evaluatePanelInputs),
 /* harmony export */   getDieStateCounts: () => (/* binding */ getDieStateCounts),
-/* harmony export */   getFabYield: () => (/* binding */ getFabYield)
+/* harmony export */   getFabYield: () => (/* binding */ getFabYield),
+/* harmony export */   randomNumberSetFromRange: () => (/* binding */ randomNumberSetFromRange)
 /* harmony export */ });
 /* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../config */ "./src/config/index.ts");
 /* harmony import */ var _geometry__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./geometry */ "./src/utils/geometry.ts");

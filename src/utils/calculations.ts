@@ -34,7 +34,7 @@ export function getFabYield(
  * @param max top of range
  * @param n number of random numbers to generate
  */
-function randomNumberSetFromRange(min: number, max: number, n: number) {
+export function randomNumberSetFromRange(min: number, max: number, n: number) {
 	const numbers: Set<number> = new Set();
 
 	while (numbers.size < n) {
