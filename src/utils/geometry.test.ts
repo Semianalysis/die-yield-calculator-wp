@@ -154,15 +154,16 @@ describe("geometry utils", () => {
 		});
 
 		it("calculates the correct number of rectangles when starting from the center", () => {
-			// Even though the inner square is 1/3 the size of the outer square, it can
-			// only fit 4 because they are in the middle, leaving no room for more squares
 			expect(
 				rectanglesInRectangle(60, 60, 20, 20, 0, 0, 0, 0, true, false).length,
-			).toBe(4);
-			// We can fit the same number of 1/2 size squares because they go right up to the edge
+			).toBe(9);
 			expect(
 				rectanglesInRectangle(60, 60, 30, 30, 0, 0, 0, 0, true, false).length,
 			).toBe(4);
+			// When the inner square is more than 1/2 the width or height of the outer square, it centers it correctly
+			expect(
+				rectanglesInRectangle(60, 60, 40, 40, 0, 0, 0, 0, true, false).length,
+			).toBe(1);
 		});
 
 		it("calculates partial overlaps when starting from the top left", () => {
@@ -185,10 +186,10 @@ describe("geometry utils", () => {
 				rectanglesInRectangle(100, 100, 90, 90, 0, 0, 0, 0, true, true).length,
 			).toBe(4);
 
-			// Inner square is 1/3 the size of the outer square, and we can fit 16 squares
-			// because we allow the outer squares to overlap
+			// Inner square is slightly less than 1/3 the size of the outer square, and we
+			// can fit 16 squares because we allow the outer squares to overlap
 			expect(
-				rectanglesInRectangle(60, 60, 20, 20, 0, 0, 0, 0, true, true).length,
+				rectanglesInRectangle(70, 70, 20, 20, 0, 0, 0, 0, true, true).length,
 			).toBe(16);
 		});
 	});

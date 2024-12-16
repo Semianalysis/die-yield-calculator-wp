@@ -110,7 +110,8 @@ function getDieOffset(inputs: InputValues, waferCenteringEnabled: boolean) {
 }
 
 /**
- * Calculate the position of dies in a single shot
+ * Calculate the position of dies in a single shot. Dies are centered within the
+ * reticle shot and spaced by the scribe width and height.
  * @param dieWidth
  * @param dieHeight
  * @param scribeHoriz

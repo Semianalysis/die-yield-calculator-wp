@@ -219,7 +219,7 @@ export function rectanglesInCircle(
 
 /**
  * Given a rectangle with the provided dimensions, determine the maximum number of
- * smaller rectangles of a given width and height would fit fully inside it.
+ * smaller rectangles of a given width and height that would fit fully inside it.
  * @param outerRectWidth width of the big rectangle
  * @param outerRectHeight height of the big rectangle
  * @param innerRectWidth width of each smaller rectangle
@@ -230,6 +230,7 @@ export function rectanglesInCircle(
  * @param offsetY amount by which to offset each rectangle vertically
  * @param center if true, center align inner and outer rectangles. otherwise, align top-left
  * @param includePartials include inner rectangles that only partially overlap with the outer rectangle
+ * @returns an array of Position objects {x, y}, describing the top-left coordinates of each smaller rectangle
  */
 export function rectanglesInRectangle(
 	outerRectWidth: number,
@@ -241,60 +242,39 @@ export function rectanglesInRectangle(
 	offsetX: number,
 	offsetY: number,
 	center: boolean,
-	includePartials: boolean,
-): Position[] {
-	const positions: Position[] = [];
-	// When calculating from the center, we will only traverse a quarter of the outer
-	// rectangle but for each iteration draw 4 inner rectangles so we are traversing
-	// outwards
-	const xMax = center ? outerRectWidth / 2 : outerRectWidth;
-	const yMax = center ? outerRectHeight / 2 : outerRectHeight;
+	includePartials: boolean
+): Array<Position> {
+	const positions: Array<Position> = [];
 
-	// Traverse each row, starting at the top
-	for (let y = 0; y <= yMax; y += innerRectHeight + gapY) {
-		// Traverse each column, starting at the left
-		for (let x = 0; x <= xMax; x += innerRectWidth + gapX) {
-			if (center) {
-				// Draw four rectangles, one in each quadrant (se, sw, nw, ne)
-				for (let i = 0; i < 4; i++) {
-					const rectX = i % 2 === 0 ? x : -x - innerRectWidth - gapX;
-					const rectY = i % 3 === 0 ? y : -y - innerRectHeight - gapY;
-					// Apply the offset - used for centering
-					const offsetRectX = rectX + offsetX;
-					const offsetRectY = rectY + offsetY;
+	// Adjust the effective size of inner rectangles including gaps split evenly on both sides
+	const effectiveWidth = innerRectWidth + gapX;
+	const effectiveHeight = innerRectHeight + gapY;
+	const halfGapX = gapX / 2;
+	const halfGapY = gapY / 2;
 
-					const isInside = rectangleIsInsideRectangle(
-						offsetRectX,
-						offsetRectY,
-						innerRectWidth,
-						innerRectHeight,
-						// Offset outer rectangle coordinates for centering
-						outerRectWidth * -0.5,
-						outerRectHeight * -0.5,
-						outerRectWidth,
-						outerRectHeight,
-						includePartials,
-					);
+	// Compute the number of inner rectangles that can fit in each direction
+	const countX = Math.floor(outerRectWidth / effectiveWidth);
+	const countY = Math.floor(outerRectHeight / effectiveHeight);
 
-					// If the rectangle fits within the rectangle, add it to the result
-					if (isInside) {
-						positions.push({
-							// Add half the width/height back to the final coordinates so all are positive integers
-							x: offsetRectX + outerRectWidth / 2,
-							y: offsetRectY + outerRectHeight / 2,
-						});
-					}
-				}
+	// If center alignment is enabled, calculate the padding to center the rectangles
+	let startX = 0;
+	let startY = 0;
+	if (center) {
+		const totalInnerWidth = countX * effectiveWidth - gapX;
+		const totalInnerHeight = countY * effectiveHeight - gapY;
+		startX = (outerRectWidth - totalInnerWidth) / 2;
+		startY = (outerRectHeight - totalInnerHeight) / 2;
+	}
 
-				continue;
-			}
-
-			const offsetRectX = x + offsetX;
-			const offsetRectY = y + offsetY;
+	// Iterate through potential positions and calculate coordinates
+	for (let row = 0; row <= countY; row++) {
+		for (let col = 0; col <= countX; col++) {
+			const x = startX + col * effectiveWidth + offsetX + halfGapX;
+			const y = startY + row * effectiveHeight + offsetY + halfGapY;
 
 			const isInside = rectangleIsInsideRectangle(
-				offsetRectX,
-				offsetRectY,
+				x,
+				y,
 				innerRectWidth,
 				innerRectHeight,
 				0,
@@ -305,10 +285,7 @@ export function rectanglesInRectangle(
 			);
 
 			if (isInside) {
-				positions.push({
-					x: offsetRectX,
-					y: offsetRectY,
-				});
+				positions.push({ x, y });
 			}
 		}
 	}
