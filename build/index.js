@@ -1751,6 +1751,7 @@ function getRelativeDiePositions(dieWidth, dieHeight, scribeHoriz, scribeVert) {
  * @param isInsideWafer callback fn to determine if coordinate is within wafer coords
  */
 function createDieMap(shotPositions, diesInShot, dieWidth, dieHeight, fabYield, isInsideWafer) {
+  let goodDies = 0;
   const dieMap = shotPositions.reduce((acc, shotPosition, shotIndex) => {
     const dies = diesInShot.map((relativeDie, dieIndex) => {
       let dieState = "good";
@@ -1762,6 +1763,8 @@ function createDieMap(shotPositions, diesInShot, dieWidth, dieHeight, fabYield, 
         dieState = "lost";
       } else if (goodCorners.length < 4) {
         dieState = "partial";
+      } else {
+        goodDies += 1;
       }
       return {
         key: `${shotIndex}:${dieIndex}`,
@@ -1779,10 +1782,18 @@ function createDieMap(shotPositions, diesInShot, dieWidth, dieHeight, fabYield, 
     // ...otherwise skip the shot
     return acc;
   }, []);
-  // Randomly distribute n defective dies around the map based on fab yield
-  let totalDies = dieMap.length;
-  const numDefectiveDies = totalDies - Math.floor(fabYield * totalDies);
-  const defectiveDieKeys = randomNumberSetFromRange(0, totalDies - 1, numDefectiveDies);
+  // Sort die map so all good dies are first
+  dieMap.sort((a, b) => {
+    if (a.dieState === "good" && b.dieState !== "good") {
+      return -1;
+    } else if (a.dieState !== "good" && b.dieState === "good") {
+      return 1;
+    }
+    return 0;
+  });
+  // Randomly distribute n defective dies amongst good dies on the map based on fab yield
+  const numDefectiveDies = goodDies - Math.floor(fabYield * goodDies);
+  const defectiveDieKeys = randomNumberSetFromRange(0, goodDies - 1, numDefectiveDies);
   defectiveDieKeys.forEach(key => {
     dieMap[key].dieState = "defective";
   });
