@@ -372,12 +372,12 @@ function App() {
 					</div>
 					<div className="input-row--two-col">
 						<NumberInput
-							label="Translation Horizontal (mm)"
+							label="Reticle Offset Horizontal (mm)"
 							value={transHoriz}
 							onChange={(event) => setTransHoriz(event.target.value)}
 						/>
 						<NumberInput
-							label="Translation Vertical (mm)"
+							label="Reticle Offset Vertical (mm)"
 							value={transVert}
 							onChange={(event) => setTransVert(event.target.value)}
 						/>
