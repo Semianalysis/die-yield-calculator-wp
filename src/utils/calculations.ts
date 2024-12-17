@@ -156,10 +156,6 @@ export function createDieMap(
 	fabYield: number,
 	isInsideWafer: (coordinate: Position) => boolean,
 ) {
-	console.log({
-		shotPositions,
-		diesInShot,
-	})
 	let goodDies = 0;
 	const dieMap = shotPositions.reduce(
 		(acc: Array<Die>, shotPosition, shotIndex) => {
