@@ -30,7 +30,18 @@ describe("App", () => {
 		await user.clear(scribeLinesYInput);
 		await user.type(scribeLinesYInput, "0");
 
-		await waitFor(() => expect(screen.getByText(/2970/)).toBeInTheDocument());
+		// How many 26mm x 33mm field shots can we fit in the panel?
+		const fielCountX = Math.floor(300 / 26);
+		const fieldCountY = Math.floor(300 / 33);
+		const fieldCount = fielCountX * fieldCountY;
+		// How many 5mm square dies can we fit in a single field shot?
+		const dieCountX = Math.floor(26 / 5);
+		const dieCountY = Math.floor(33 / 5);
+		const dieCount = dieCountX * dieCountY;
+		// How many dies can we fit in the entire panel?
+		const totalDieCount = fieldCount * dieCount;
+
+		expect(await screen.findByText(new RegExp(totalDieCount.toString()))).toBeInTheDocument();
 	});
 
 	it("calculates yields for wafer shape", async () => {
