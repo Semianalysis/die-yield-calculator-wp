@@ -133,7 +133,6 @@ function getDisplayValue(value: string) {
 function App() {
 	const [dieWidth, setDieWidth] = useState<string>("8");
 	const [dieHeight, setDieHeight] = useState<string>("8");
-	const [waferCenteringEnabled, setWaferCenteringEnabled] = useState(true);
 	const [maintainAspectRatio, setMaintainAspectRatio] = useState(false);
 	const [criticalArea, setCriticalArea] = useState<string>("64");
 	const [defectRate, setDefectRate] = useState<string>("0.1");
@@ -161,14 +160,14 @@ function App() {
 			transHoriz: parseFloat(transHoriz),
 			transVert: parseFloat(transVert)
 		},
-		waferCenteringEnabled,
+		true,
 		selectedModel,
 		substrateShape,
 		panelSize,
 		waferSize
 	);
 	const easterEggEnabled = useEasterEgg();
-	const outputRef = useRef<HTMLDivElement>(null);
+	const outputRef = useRef<HTMLDivElement | null>(null);
 
 	const waferWidth = substrateShape === "Panel"
 		? panelSizes[panelSize].width
@@ -258,10 +257,6 @@ function App() {
 
 	const handleReticleLimitChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setReticleLimit(event.target.checked);
-	};
-
-	const handleWaferCenteringChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setWaferCenteringEnabled(event.target.checked);
 	};
 
 	const handleSizeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -385,13 +380,6 @@ function App() {
 							label="Translation Vertical (mm)"
 							value={transVert}
 							onChange={(event) => setTransVert(event.target.value)}
-						/>
-					</div>
-					<div className="input-row">
-						<Checkbox
-							label="Wafer Centering"
-							onChange={handleWaferCenteringChange}
-							checked={waferCenteringEnabled}
 						/>
 					</div>
 					<hr />

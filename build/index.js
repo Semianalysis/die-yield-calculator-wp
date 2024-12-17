@@ -711,7 +711,6 @@ function getDisplayValue(value) {
 function App() {
   const [dieWidth, setDieWidth] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("8");
   const [dieHeight, setDieHeight] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("8");
-  const [waferCenteringEnabled, setWaferCenteringEnabled] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
   const [maintainAspectRatio, setMaintainAspectRatio] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
   const [criticalArea, setCriticalArea] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("64");
   const [defectRate, setDefectRate] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0.1");
@@ -737,7 +736,7 @@ function App() {
     scribeVert: parseFloat(scribeVert),
     transHoriz: parseFloat(transHoriz),
     transVert: parseFloat(transVert)
-  }, waferCenteringEnabled, selectedModel, substrateShape, panelSize, waferSize);
+  }, true, selectedModel, substrateShape, panelSize, waferSize);
   const easterEggEnabled = (0,_hooks_useEasterEgg__WEBPACK_IMPORTED_MODULE_8__.useEasterEgg)();
   const outputRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
   const waferWidth = substrateShape === "Panel" ? _config__WEBPACK_IMPORTED_MODULE_4__.panelSizes[panelSize].width : _config__WEBPACK_IMPORTED_MODULE_4__.waferSizes[waferSize].width;
@@ -802,9 +801,6 @@ function App() {
   };
   const handleReticleLimitChange = event => {
     setReticleLimit(event.target.checked);
-  };
-  const handleWaferCenteringChange = event => {
-    setWaferCenteringEnabled(event.target.checked);
   };
   const handleSizeChange = event => {
     if (substrateShape === "Panel") {
@@ -906,12 +902,6 @@ function App() {
     label: "Translation Vertical (mm)",
     value: transVert,
     onChange: event => setTransVert(event.target.value)
-  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    className: "input-row"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Checkbox_Checkbox__WEBPACK_IMPORTED_MODULE_1__.Checkbox, {
-    label: "Wafer Centering",
-    onChange: handleWaferCenteringChange,
-    checked: waferCenteringEnabled
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("hr", null), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", null, "Options"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "input-row"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ModelSelector, {
