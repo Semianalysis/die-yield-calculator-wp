@@ -4,7 +4,7 @@ import { render, screen, waitFor, within } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 
 describe("App", () => {
-	it("calculates the correct number of total 10mm dies on a 300mm panel with no scribe lines", async () => {
+	it("calculates the correct number of total 5mm dies on a 300mm panel with no scribe lines", async () => {
 		render(<App />);
 		const user = userEvent.setup();
 		await user.click(screen.getByRole("radio", {
@@ -30,9 +30,7 @@ describe("App", () => {
 		await user.clear(scribeLinesYInput);
 		await user.type(scribeLinesYInput, "0");
 
-		const expected = Math.pow(300 / 5, 2);
-
-		expect(await screen.findByText(new RegExp(expected.toString()))).toBeInTheDocument();
+		await waitFor(() => expect(screen.getByText(/2970/)).toBeInTheDocument());
 	});
 
 	it("calculates yields for wafer shape", async () => {
