@@ -1,10 +1,16 @@
 import {
+	createDieMap,
 	getDieStateCounts,
 	getFabYield,
 	randomNumberSetFromRange,
 } from "./calculations";
 import { yieldModels } from "../config";
 import { DieState } from "../types";
+import {
+	isInsideCircle,
+	rectanglesInCircle,
+	rectanglesInRectangle
+} from "./geometry";
 
 describe("Calculations", () => {
 	describe("getDieStateCounts", () => {
@@ -100,6 +106,60 @@ describe("Calculations", () => {
 				expect(num).toBeGreaterThanOrEqual(1);
 				expect(num).toBeLessThanOrEqual(10);
 			});
+		});
+	});
+
+	describe("createDieMap", () => {
+		it("only applies yield to good dies", () => {
+			const dieEdge = 12;
+			const waferDiameter = 300;
+			const fabYield = 0.75;
+			const diesInShot = rectanglesInRectangle(
+				26,
+				33,
+				dieEdge,
+				dieEdge,
+				0.2,
+				0.2,
+				0,
+				0,
+				true,
+				false,
+			)
+			const shotPositions = rectanglesInCircle(
+				waferDiameter,
+				26,
+				33,
+				0,
+				0,
+				0,
+				0,
+				true,
+			);
+
+			const dieMap = createDieMap(
+				shotPositions,
+				diesInShot,
+				dieEdge,
+				dieEdge,
+				fabYield,
+				(coordinate) => {
+					const lossyEdgeWidth = 3;
+					const radiusInsideLossyEdge = waferDiameter / 2 - lossyEdgeWidth;
+					return isInsideCircle(
+						coordinate.x,
+						coordinate.y,
+						waferDiameter / 2,
+						waferDiameter / 2,
+						radiusInsideLossyEdge,
+					);
+				},
+			);
+
+			const diesFullyOnWafer = dieMap.filter((die) => die.dieState !== "lost" && die.dieState !== "partial");
+			const defectiveDies = dieMap.filter((die) => die.dieState === "defective");
+			// Yield should only have been applied to dies that are not lost or partial
+			expect(((diesFullyOnWafer.length - defectiveDies.length) / diesFullyOnWafer.length).toFixed(2)).toEqual(fabYield.toString());
 		});
 	});
 });

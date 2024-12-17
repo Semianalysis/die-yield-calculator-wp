@@ -148,7 +148,7 @@ function getRelativeDiePositions(
  * @param fabYield 0-1 float representing non-defective yield of all dies
  * @param isInsideWafer callback fn to determine if coordinate is within wafer coords
  */
-function createDieMap(
+export function createDieMap(
 	shotPositions: Array<Position>,
 	diesInShot: Array<Position>,
 	dieWidth: number,
@@ -156,6 +156,10 @@ function createDieMap(
 	fabYield: number,
 	isInsideWafer: (coordinate: Position) => boolean,
 ) {
+	console.log({
+		shotPositions,
+		diesInShot,
+	})
 	let goodDies = 0;
 	const dieMap = shotPositions.reduce(
 		(acc: Array<Die>, shotPosition, shotIndex) => {

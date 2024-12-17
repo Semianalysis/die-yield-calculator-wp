@@ -1646,6 +1646,7 @@ function useInputs(values, waferCenteringEnabled, yieldModel, shape, panelSize, 
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   createDieMap: () => (/* binding */ createDieMap),
 /* harmony export */   evaluateDiscInputs: () => (/* binding */ evaluateDiscInputs),
 /* harmony export */   evaluatePanelInputs: () => (/* binding */ evaluatePanelInputs),
 /* harmony export */   getDieStateCounts: () => (/* binding */ getDieStateCounts),
@@ -1751,6 +1752,10 @@ function getRelativeDiePositions(dieWidth, dieHeight, scribeHoriz, scribeVert) {
  * @param isInsideWafer callback fn to determine if coordinate is within wafer coords
  */
 function createDieMap(shotPositions, diesInShot, dieWidth, dieHeight, fabYield, isInsideWafer) {
+  console.log({
+    shotPositions,
+    diesInShot
+  });
   let goodDies = 0;
   const dieMap = shotPositions.reduce((acc, shotPosition, shotIndex) => {
     const dies = diesInShot.map((relativeDie, dieIndex) => {
