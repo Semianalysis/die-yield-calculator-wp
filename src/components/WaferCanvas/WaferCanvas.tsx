@@ -264,6 +264,7 @@ export function WaferCanvas(props: {
 	waferWidth: number;
 	waferHeight: number;
 	easterEggEnabled: boolean;
+	showShotMap: boolean;
 }) {
 	const [tiltX, setTiltX] = useState(0);
 	const [tiltY, setTiltY] = useState(0);
@@ -313,11 +314,15 @@ export function WaferCanvas(props: {
 					waferWidth={props.waferWidth}
 					waferHeight={props.waferHeight}
 				/>
-				<ShotMap
-					results={props.results}
-					waferWidth={props.waferWidth}
-					waferHeight={props.waferHeight}
-				/>
+				{
+					props.showShotMap && (
+						<ShotMap
+							results={props.results}
+							waferWidth={props.waferWidth}
+							waferHeight={props.waferHeight}
+						/>
+					)
+				}
 				<LossyEdgeMarker
 					lossyEdgeWidth={props.lossyEdgeWidth}
 					waferWidth={props.waferWidth}

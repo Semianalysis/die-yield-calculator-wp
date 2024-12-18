@@ -717,6 +717,7 @@ function App() {
   const [lossyEdgeWidth, setLossyEdgeWidth] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("3");
   const [allCritical, setAllCritical] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
   const [reticleLimit, setReticleLimit] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
+  const [showShotMap, setShowShotMap] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
   const [scribeHoriz, setScribeHoriz] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0.2");
   const [scribeVert, setScribeVert] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0.2");
   const [transHoriz, setTransHoriz] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0");
@@ -808,6 +809,9 @@ function App() {
     } else if (substrateShape === "Wafer") {
       setWaferSize(event.target.value);
     }
+  };
+  const handleShowShotMapChange = event => {
+    setShowShotMap(event.target.checked);
   };
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "container"
@@ -918,7 +922,12 @@ function App() {
     lossyEdgeWidth: parseFloat(lossyEdgeWidth),
     waferWidth: waferWidth,
     waferHeight: waferHeight,
-    easterEggEnabled: easterEggEnabled
+    easterEggEnabled: easterEggEnabled,
+    showShotMap: showShotMap
+  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Checkbox_Checkbox__WEBPACK_IMPORTED_MODULE_1__.Checkbox, {
+    label: "Show Reticle Shot Grid",
+    onChange: handleShowShotMapChange,
+    checked: showShotMap
   }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "panel"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", null, "Results"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_ResultsStats_ResultsStats__WEBPACK_IMPORTED_MODULE_6__.ResultsStats, {
@@ -1348,7 +1357,7 @@ function WaferCanvas(props) {
     results: props.results,
     waferWidth: props.waferWidth,
     waferHeight: props.waferHeight
-  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ShotMap, {
+  }), props.showShotMap && react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ShotMap, {
     results: props.results,
     waferWidth: props.waferWidth,
     waferHeight: props.waferHeight

@@ -139,6 +139,7 @@ function App() {
 	const [lossyEdgeWidth, setLossyEdgeWidth] = useState<string>("3");
 	const [allCritical, setAllCritical] = useState(true);
 	const [reticleLimit, setReticleLimit] = useState(true);
+	const [showShotMap, setShowShotMap] = useState(true);
 	const [scribeHoriz, setScribeHoriz] = useState<string>("0.2");
 	const [scribeVert, setScribeVert] = useState<string>("0.2");
 	const [transHoriz, setTransHoriz] = useState<string>("0");
@@ -266,6 +267,10 @@ function App() {
 			setWaferSize(event.target.value as keyof typeof waferSizes);
 		}
 	};
+
+	const handleShowShotMapChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setShowShotMap(event.target.checked);
+	}
 
 	return (
 		<div className="container">
@@ -401,6 +406,12 @@ function App() {
 							waferWidth={waferWidth}
 							waferHeight={waferHeight}
 							easterEggEnabled={easterEggEnabled}
+							showShotMap={showShotMap}
+						/>
+						<Checkbox
+							label="Show Reticle Shot Grid"
+							onChange={handleShowShotMapChange}
+							checked={showShotMap}
 						/>
 						<div className="panel">
 							<h2>Results</h2>
