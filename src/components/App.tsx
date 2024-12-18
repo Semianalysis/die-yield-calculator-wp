@@ -2,7 +2,13 @@ import React, { useState, useEffect, useRef } from "react";
 import { Checkbox } from "./Checkbox/Checkbox";
 import { NumberInput } from "./NumberInput/NumberInput";
 import { useInputs } from "../hooks/useInputs";
-import { panelSizes, waferSizes, yieldModels, minDieEdge } from "../config";
+import {
+	panelSizes,
+	waferSizes,
+	yieldModels,
+	minDieEdge,
+	fieldWidthMM, fieldHeightMM
+} from "../config";
 import { SubstrateShape } from "../types";
 import { WaferCanvas } from "./WaferCanvas/WaferCanvas";
 import { ResultsStats } from "./ResultsStats/ResultsStats";
@@ -99,9 +105,9 @@ function getDieMaxDimensions(
 	maintainAspectRatio: boolean,
 	aspectRatio: number
 ) {
-	// 26mm x 33mm is the current industry max reticle size
-	const boundingSquareWidth = reticleLimit ? 26 : waferWidth / 4;
-	const boundingSquareHeight = reticleLimit ? 33 : waferHeight / 4;
+	// Cannot exceed reticle dimensions
+	const boundingSquareWidth = reticleLimit ? fieldWidthMM : waferWidth / 4;
+	const boundingSquareHeight = reticleLimit ? fieldHeightMM : waferHeight / 4;
 
 	if (!maintainAspectRatio) {
 		return {
@@ -302,7 +308,7 @@ function App() {
 							checked={maintainAspectRatio}
 						/>
 						<Checkbox
-							label="Reticle Limit (26mm x 33mm)"
+							label={`Reticle Limit (${fieldWidthMM}mm x ${fieldHeightMM}mm)`}
 							onChange={handleReticleLimitChange}
 							checked={reticleLimit}
 						/>

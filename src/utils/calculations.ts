@@ -1,4 +1,10 @@
-import { waferSizes, panelSizes, yieldModels } from "../config";
+import {
+	waferSizes,
+	panelSizes,
+	yieldModels,
+	fieldWidthMM,
+	fieldHeightMM
+} from "../config";
 import { Die, DieState, FabResults, Position } from "../types";
 import {
 	getRectCorners,
@@ -123,8 +129,8 @@ function getRelativeDiePositions(
 	scribeVert: number
 ) {
 	return rectanglesInRectangle(
-		26,
-		33,
+		fieldWidthMM,
+		fieldHeightMM,
 		dieWidth,
 		dieHeight,
 		scribeHoriz,
@@ -260,8 +266,8 @@ export function evaluatePanelInputs(
 	const shotPositions = rectanglesInRectangle(
 		width,
 		height,
-		26,
-		33,
+		fieldWidthMM,
+		fieldHeightMM,
 		0,
 		0,
 		offsetX,
@@ -347,8 +353,8 @@ export function evaluateDiscInputs(
 	// First, calculate the reticle shot map
 	const shotPositions = rectanglesInCircle(
 		width,
-		26,
-		33,
+		fieldWidthMM,
+		fieldHeightMM,
 		0,
 		0,
 		offsetX,

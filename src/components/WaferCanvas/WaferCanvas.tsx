@@ -3,6 +3,7 @@ import { FabResults, SubstrateShape } from "../../types";
 import Tilt, { OnMoveParams } from "react-parallax-tilt";
 import { createHatchingCanvasPattern } from "../../utils/canvas";
 import { ReactComponent as TSMCLogo } from "../../assets/tsmc-logo.svg";
+import { fieldHeightMM, fieldWidthMM } from "../../config";
 
 // How many pixels should be rendered for every mm of wafer size
 const mmToPxScale = 3;
@@ -168,14 +169,19 @@ function ShotMap(props: {
 			return;
 		}
 		context.strokeStyle = "blue";
-		// Draw a rectangle for each field in the shot map
+		// Draw the top and right edges of each field in the shot map
 		props.results.fields.forEach((field) => {
-			context.strokeRect(
-				mmToPxScale * field.x,
-				mmToPxScale * field.y,
-				mmToPxScale * 26,
-				mmToPxScale * 33
+			context.beginPath()
+			context.moveTo(mmToPxScale * field.x, mmToPxScale * field.y);
+			context.lineTo(
+				mmToPxScale * field.x + mmToPxScale * fieldWidthMM,
+				mmToPxScale * field.y
 			);
+			context.lineTo(
+				mmToPxScale * field.x + mmToPxScale * fieldWidthMM,
+				mmToPxScale * field.y + mmToPxScale * fieldHeightMM
+			);
+			context.stroke(); // Render the path
 		});
 	}, [JSON.stringify(props.results)]);
 
