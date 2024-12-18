@@ -1212,7 +1212,6 @@ function DieDecorativeCanvas(props) {
     if (!props.results || props.results.dies.length > maxDies) {
       return;
     }
-    context.clearRect(0, 0, canvasEl.current.width, canvasEl.current.height);
     // Background color
     context.fillStyle = "rgba(217,217,210,0.76)";
     // Draw a background rectangle for a panel, or a background circle for a disc
@@ -1229,6 +1228,33 @@ function DieDecorativeCanvas(props) {
   }, [JSON.stringify(props.results)]);
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("canvas", {
     className: "wafer-canvas__die-decorative",
+    ref: canvasEl,
+    width: props.waferWidth * mmToPxScale,
+    height: props.waferHeight * mmToPxScale
+  });
+}
+function ShotMap(props) {
+  const canvasEl = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    if (!canvasEl.current) {
+      return;
+    }
+    const context = canvasEl.current.getContext("2d");
+    if (!context) {
+      return;
+    }
+    context.clearRect(0, 0, canvasEl.current.width, canvasEl.current.height);
+    if (!props.results || props.results.dies.length > maxDies) {
+      return;
+    }
+    context.strokeStyle = "blue";
+    // Draw a rectangle for each field in the shot map
+    props.results.fields.forEach(field => {
+      context.strokeRect(mmToPxScale * field.x, mmToPxScale * field.y, mmToPxScale * 26, mmToPxScale * 33);
+    });
+  }, [JSON.stringify(props.results)]);
+  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("canvas", {
+    className: "wafer-canvas__shot-map",
     ref: canvasEl,
     width: props.waferWidth * mmToPxScale,
     height: props.waferHeight * mmToPxScale
@@ -1319,6 +1345,10 @@ function WaferCanvas(props) {
     waferWidth: props.waferWidth,
     waferHeight: props.waferHeight
   }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(DieMapCanvas, {
+    results: props.results,
+    waferWidth: props.waferWidth,
+    waferHeight: props.waferHeight
+  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ShotMap, {
     results: props.results,
     waferWidth: props.waferWidth,
     waferHeight: props.waferHeight
@@ -1848,7 +1878,8 @@ function evaluatePanelInputs(inputVals, selectedSize, selectedModel, waferCenter
     lostDies,
     totalDies: dieMap.length,
     goodDies,
-    fabYield
+    fabYield,
+    fields: shotPositions
   };
 }
 /**
@@ -1898,7 +1929,8 @@ function evaluateDiscInputs(inputVals, selectedSize, selectedModel, waferCenteri
     defectiveDies,
     partialDies,
     lostDies,
-    fabYield
+    fabYield,
+    fields: shotPositions
   };
 }
 

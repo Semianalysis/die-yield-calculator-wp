@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { FabResults, SubstrateShape } from "../../types";
 import Tilt, { OnMoveParams } from "react-parallax-tilt";
 import { createHatchingCanvasPattern } from "../../utils/canvas";
-import { ReactComponent as TSMCLogo } from '../../assets/tsmc-logo.svg';
+import { ReactComponent as TSMCLogo } from "../../assets/tsmc-logo.svg";
 
 // How many pixels should be rendered for every mm of wafer size
 const mmToPxScale = 3;
@@ -106,7 +106,6 @@ function DieDecorativeCanvas(props: {
 			return;
 		}
 
-		context.clearRect(0, 0, canvasEl.current.width, canvasEl.current.height);
 		// Background color
 		context.fillStyle = "rgba(217,217,210,0.76)";
 		// Draw a background rectangle for a panel, or a background circle for a disc
@@ -138,6 +137,51 @@ function DieDecorativeCanvas(props: {
 	return (
 		<canvas
 			className="wafer-canvas__die-decorative"
+			ref={canvasEl}
+			width={props.waferWidth * mmToPxScale}
+			height={props.waferHeight * mmToPxScale}
+		></canvas>
+	);
+}
+
+function ShotMap(props: {
+	results: FabResults;
+	waferWidth: number;
+	waferHeight: number;
+}) {
+	const canvasEl = useRef<HTMLCanvasElement>(null);
+
+	useEffect(() => {
+		if (!canvasEl.current) {
+			return;
+		}
+
+		const context = canvasEl.current.getContext("2d");
+
+		if (!context) {
+			return;
+		}
+
+		context.clearRect(0, 0, canvasEl.current.width, canvasEl.current.height);
+
+		if (!props.results || props.results.dies.length > maxDies) {
+			return;
+		}
+		context.strokeStyle = "blue";
+		// Draw a rectangle for each field in the shot map
+		props.results.fields.forEach((field) => {
+			context.strokeRect(
+				mmToPxScale * field.x,
+				mmToPxScale * field.y,
+				mmToPxScale * 26,
+				mmToPxScale * 33
+			);
+		});
+	}, [JSON.stringify(props.results)]);
+
+	return (
+		<canvas
+			className="wafer-canvas__shot-map"
 			ref={canvasEl}
 			width={props.waferWidth * mmToPxScale}
 			height={props.waferHeight * mmToPxScale}
@@ -265,6 +309,11 @@ export function WaferCanvas(props: {
 					waferHeight={props.waferHeight}
 				/>
 				<DieMapCanvas
+					results={props.results}
+					waferWidth={props.waferWidth}
+					waferHeight={props.waferHeight}
+				/>
+				<ShotMap
 					results={props.results}
 					waferWidth={props.waferWidth}
 					waferHeight={props.waferHeight}

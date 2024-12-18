@@ -1,7 +1,6 @@
 import { waferSizes, panelSizes, yieldModels } from "../config";
-import { Die, DieState, FabResults } from "../types";
+import { Die, DieState, FabResults, Position } from "../types";
 import {
-	Position,
 	getRectCorners,
 	isInsideCircle,
 	isInsideRectangle,
@@ -308,7 +307,8 @@ export function evaluatePanelInputs(
 		lostDies,
 		totalDies: dieMap.length,
 		goodDies,
-		fabYield
+		fabYield,
+		fields: shotPositions
 	};
 }
 
@@ -393,6 +393,7 @@ export function evaluateDiscInputs(
 		defectiveDies,
 		partialDies,
 		lostDies,
-		fabYield
+		fabYield,
+		fields: shotPositions
 	};
 }

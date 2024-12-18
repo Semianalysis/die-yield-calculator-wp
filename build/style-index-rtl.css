@@ -311,6 +311,7 @@
   max-width: 100%;
   position: relative;
 }
+.wp-block-create-block-die-yield-calculator .wafer-canvas .wafer-canvas__shot-map,
 .wp-block-create-block-die-yield-calculator .wafer-canvas .wafer-canvas__edge,
 .wp-block-create-block-die-yield-calculator .wafer-canvas .wafer-canvas__die-map {
   position: absolute;
