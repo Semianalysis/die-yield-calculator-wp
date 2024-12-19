@@ -1,9 +1,7 @@
 import {
 	waferSizes,
 	panelSizes,
-	yieldModels,
-	fieldWidthMM,
-	fieldHeightMM
+	yieldModels
 } from "../config";
 import { Die, DieState, FabResults, Position } from "../types";
 import {
@@ -117,20 +115,24 @@ function getDieOffset(inputs: InputValues, waferCenteringEnabled: boolean) {
 /**
  * Calculate the position of dies in a single shot. Dies are centered within the
  * reticle shot and spaced by the scribe width and height.
- * @param dieWidth
- * @param dieHeight
- * @param scribeHoriz
- * @param scribeVert
+ * @param dieWidth width of one die
+ * @param dieHeight height of one die
+ * @param scribeHoriz minimum scribe line width between any 2 die
+ * @param scribeVert minimum scribe line height between any 2 die
+ * @param fieldWidth width of the shot/field
+ * @param fieldHeight height of the shot/field
  */
 function getRelativeDiePositions(
 	dieWidth: number,
 	dieHeight: number,
 	scribeHoriz: number,
-	scribeVert: number
+	scribeVert: number,
+	fieldWidth: number,
+	fieldHeight: number,
 ) {
 	return rectanglesInRectangle(
-		fieldWidthMM,
-		fieldHeightMM,
+		fieldWidth,
+		fieldHeight,
 		dieWidth,
 		dieHeight,
 		scribeHoriz,
@@ -236,13 +238,15 @@ export function createDieMap(
  * @param inputVals
  * @param selectedSize
  * @param selectedModel
- * @param waferCenteringEnabled
+ * @param fieldWidth
+ * @param fieldHeight
  */
 export function evaluatePanelInputs(
 	inputVals: InputValues,
 	selectedSize: keyof typeof panelSizes,
 	selectedModel: keyof typeof yieldModels,
-	waferCenteringEnabled: boolean
+	fieldWidth: number,
+	fieldHeight: number,
 ): FabResults {
 	const {
 		dieWidth,
@@ -259,15 +263,15 @@ export function evaluatePanelInputs(
 
 	const { x: offsetX, y: offsetY } = getDieOffset(
 		inputVals,
-		waferCenteringEnabled
+		true
 	);
 
 	// First, calculate the reticle shot map
 	const shotPositions = rectanglesInRectangle(
 		width,
 		height,
-		fieldWidthMM,
-		fieldHeightMM,
+		fieldWidth,
+		fieldHeight,
 		0,
 		0,
 		offsetX,
@@ -281,7 +285,9 @@ export function evaluatePanelInputs(
 		dieWidth,
 		dieHeight,
 		scribeHoriz,
-		scribeVert
+		scribeVert,
+		fieldWidth,
+		fieldHeight
 	);
 
 	const dieMap = createDieMap(
@@ -324,13 +330,15 @@ export function evaluatePanelInputs(
  * @param inputVals
  * @param selectedSize
  * @param selectedModel
- * @param waferCenteringEnabled
+ * @param fieldWidth
+ * @param fieldHeight
  */
 export function evaluateDiscInputs(
 	inputVals: InputValues,
 	selectedSize: keyof typeof waferSizes,
 	selectedModel: keyof typeof yieldModels,
-	waferCenteringEnabled: boolean
+	fieldWidth: number,
+	fieldHeight: number,
 ): FabResults {
 	const {
 		dieWidth,
@@ -347,14 +355,14 @@ export function evaluateDiscInputs(
 
 	const { x: offsetX, y: offsetY } = getDieOffset(
 		inputVals,
-		waferCenteringEnabled
+		true
 	);
 
 	// First, calculate the reticle shot map
 	const shotPositions = rectanglesInCircle(
 		width,
-		fieldWidthMM,
-		fieldHeightMM,
+		fieldWidth,
+		fieldHeight,
 		0,
 		0,
 		offsetX,
@@ -367,7 +375,9 @@ export function evaluateDiscInputs(
 		dieWidth,
 		dieHeight,
 		scribeHoriz,
-		scribeVert
+		scribeVert,
+		fieldWidth,
+		fieldHeight
 	);
 
 	const dieMap = createDieMap(

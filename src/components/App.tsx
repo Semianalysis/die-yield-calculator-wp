@@ -7,7 +7,6 @@ import {
 	waferSizes,
 	yieldModels,
 	minDieEdge,
-	fieldWidthMM, fieldHeightMM
 } from "../config";
 import { SubstrateShape } from "../types";
 import { WaferCanvas } from "./WaferCanvas/WaferCanvas";
@@ -103,7 +102,9 @@ function getDieMaxDimensions(
 	waferWidth: number,
 	waferHeight: number,
 	maintainAspectRatio: boolean,
-	aspectRatio: number
+	aspectRatio: number,
+	fieldWidthMM: number,
+	fieldHeightMM: number
 ) {
 	// Cannot exceed reticle dimensions
 	const boundingSquareWidth = reticleLimit ? fieldWidthMM : waferWidth / 4;
@@ -146,6 +147,7 @@ function App() {
 	const [allCritical, setAllCritical] = useState(true);
 	const [reticleLimit, setReticleLimit] = useState(true);
 	const [showShotMap, setShowShotMap] = useState(true);
+	const [halfField, setHalfField] = useState(false);
 	const [scribeHoriz, setScribeHoriz] = useState<string>("0.2");
 	const [scribeVert, setScribeVert] = useState<string>("0.2");
 	const [transHoriz, setTransHoriz] = useState<string>("0");
@@ -155,6 +157,10 @@ function App() {
 	const [waferSize, setWaferSize] = useState<keyof typeof waferSizes>("s300mm");
 	const [selectedModel, setSelectedModel] = useState<keyof typeof yieldModels>("murphy");
 	const aspectRatio = useRef(parseFloat(dieWidth) / parseFloat(dieHeight));
+
+	const fieldWidthMM = halfField ? 13 : 26;
+	const fieldHeightMM = 33;
+
 	const results = useInputs(
 		{
 			dieWidth: parseFloat(dieWidth),
@@ -167,11 +173,12 @@ function App() {
 			transHoriz: parseFloat(transHoriz),
 			transVert: parseFloat(transVert)
 		},
-		true,
 		selectedModel,
 		substrateShape,
 		panelSize,
-		waferSize
+		waferSize,
+		fieldWidthMM,
+		fieldHeightMM
 	);
 	const easterEggEnabled = useEasterEgg();
 	const outputRef = useRef<HTMLDivElement | null>(null);
@@ -193,7 +200,9 @@ function App() {
 		waferWidth,
 		waferHeight,
 		maintainAspectRatio,
-		aspectRatio.current
+		aspectRatio.current,
+		fieldWidthMM,
+		fieldHeightMM
 	);
 
 	useEffect(() => {
@@ -278,6 +287,10 @@ function App() {
 		setShowShotMap(event.target.checked);
 	}
 
+	const handleHalfFieldChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setHalfField(event.target.checked);
+	}
+
 	return (
 		<div className="container">
 			<div className="columns">
@@ -311,6 +324,11 @@ function App() {
 							label={`Reticle Limit (${fieldWidthMM}mm x ${fieldHeightMM}mm)`}
 							onChange={handleReticleLimitChange}
 							checked={reticleLimit}
+						/>
+						<Checkbox
+							label="Half Field Exposures"
+							onChange={handleHalfFieldChange}
+							checked={halfField}
 						/>
 					</div>
 					<div className="input-row--two-col">
@@ -413,6 +431,8 @@ function App() {
 							waferHeight={waferHeight}
 							easterEggEnabled={easterEggEnabled}
 							showShotMap={showShotMap}
+							fieldWidth={fieldWidthMM}
+							fieldHeight={fieldHeightMM}
 						/>
 						<Checkbox
 							label="Show Reticle Shot Grid"

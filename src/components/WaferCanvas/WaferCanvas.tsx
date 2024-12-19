@@ -3,7 +3,6 @@ import { FabResults, SubstrateShape } from "../../types";
 import Tilt, { OnMoveParams } from "react-parallax-tilt";
 import { createHatchingCanvasPattern } from "../../utils/canvas";
 import { ReactComponent as TSMCLogo } from "../../assets/tsmc-logo.svg";
-import { fieldHeightMM, fieldWidthMM } from "../../config";
 
 // How many pixels should be rendered for every mm of wafer size
 const mmToPxScale = 3;
@@ -149,6 +148,8 @@ function ShotMap(props: {
 	results: FabResults;
 	waferWidth: number;
 	waferHeight: number;
+	fieldWidth: number;
+	fieldHeight: number;
 }) {
 	const canvasEl = useRef<HTMLCanvasElement>(null);
 
@@ -174,12 +175,12 @@ function ShotMap(props: {
 			context.beginPath()
 			context.moveTo(mmToPxScale * field.x, mmToPxScale * field.y);
 			context.lineTo(
-				mmToPxScale * field.x + mmToPxScale * fieldWidthMM,
+				mmToPxScale * field.x + mmToPxScale * props.fieldWidth,
 				mmToPxScale * field.y
 			);
 			context.lineTo(
-				mmToPxScale * field.x + mmToPxScale * fieldWidthMM,
-				mmToPxScale * field.y + mmToPxScale * fieldHeightMM
+				mmToPxScale * field.x + mmToPxScale * props.fieldWidth,
+				mmToPxScale * field.y + mmToPxScale * props.fieldHeight
 			);
 			context.stroke(); // Render the path
 		});
@@ -271,6 +272,8 @@ export function WaferCanvas(props: {
 	waferHeight: number;
 	easterEggEnabled: boolean;
 	showShotMap: boolean;
+	fieldWidth: number;
+	fieldHeight: number;
 }) {
 	const [tiltX, setTiltX] = useState(0);
 	const [tiltY, setTiltY] = useState(0);
@@ -326,6 +329,8 @@ export function WaferCanvas(props: {
 							results={props.results}
 							waferWidth={props.waferWidth}
 							waferHeight={props.waferHeight}
+							fieldWidth={props.fieldWidth}
+							fieldHeight={props.fieldHeight}
 						/>
 					)
 				}
