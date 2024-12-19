@@ -325,11 +325,6 @@ function App() {
 							onChange={handleReticleLimitChange}
 							checked={reticleLimit}
 						/>
-						<Checkbox
-							label="Half Field Exposures"
-							onChange={handleHalfFieldChange}
-							checked={halfField}
-						/>
 					</div>
 					<div className="input-row--two-col">
 						<NumberInput
@@ -357,6 +352,15 @@ function App() {
 							isDisabled={allCritical}
 							onChange={(event) => setCriticalArea(event.target.value)}
 							max={parseFloat(criticalArea)}
+						/>
+					</div>
+					<hr />
+					<h2>Reticle</h2>
+					<div className="input-row">
+						<Checkbox
+							label="Half Field Exposures"
+							onChange={handleHalfFieldChange}
+							checked={halfField}
 						/>
 					</div>
 					<hr />
