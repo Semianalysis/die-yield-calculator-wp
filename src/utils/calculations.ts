@@ -274,8 +274,8 @@ export function evaluatePanelInputs(
 		fieldHeight,
 		0,
 		0,
-		offsetX,
-		offsetY,
+		offsetX - fieldWidth / 2,
+		offsetY - fieldHeight / 2,
 		true,
 		true
 	);
