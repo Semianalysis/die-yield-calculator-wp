@@ -169,10 +169,11 @@ function ShotMap(props: {
 		if (!props.results || props.results.dies.length > maxDies) {
 			return;
 		}
+
 		context.strokeStyle = "blue";
 		// Draw the top and right edges of each field in the shot map
 		props.results.fields.forEach((field) => {
-			context.beginPath()
+			context.beginPath();
 			context.moveTo(mmToPxScale * field.x, mmToPxScale * field.y);
 			context.lineTo(
 				mmToPxScale * field.x + mmToPxScale * props.fieldWidth,
@@ -184,6 +185,21 @@ function ShotMap(props: {
 			);
 			context.stroke(); // Render the path
 		});
+
+		// Draw crosshairs on wafer to indicate 0,0
+		context.strokeStyle = "red";
+		context.beginPath();
+		context.moveTo(0, props.waferHeight * mmToPxScale / 2);
+		context.lineTo(
+			props.waferWidth * mmToPxScale,
+			props.waferHeight * mmToPxScale / 2
+		);
+		context.moveTo(props.waferWidth * mmToPxScale / 2, 0);
+		context.lineTo(
+			props.waferWidth * mmToPxScale / 2,
+			props.waferHeight * mmToPxScale
+		);
+		context.stroke(); // Render the path
 	}, [JSON.stringify(props.results)]);
 
 	return (
