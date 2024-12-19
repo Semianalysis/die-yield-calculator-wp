@@ -373,6 +373,7 @@
 		&:hover {
 			box-shadow: 0.125em 0.25em 4em rgba(0, 0, 0, 0.75);
 
+			.wafer-canvas__shot-map,
 			.wafer-canvas__die-map,
 			.wafer-canvas__edge {
 				opacity: 0.2;
