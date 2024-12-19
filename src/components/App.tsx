@@ -363,6 +363,18 @@ function App() {
 							checked={halfField}
 						/>
 					</div>
+					<div className="input-row--two-col">
+						<NumberInput
+							label="Reticle Offset Horizontal (mm)"
+							value={transHoriz}
+							onChange={(event) => setTransHoriz(event.target.value)}
+						/>
+						<NumberInput
+							label="Reticle Offset Vertical (mm)"
+							value={transVert}
+							onChange={(event) => setTransVert(event.target.value)}
+						/>
+					</div>
 					<hr />
 					<h2>Substrate</h2>
 					<div className="input-row">
@@ -401,18 +413,6 @@ function App() {
 							value={lossyEdgeWidth}
 							onChange={(event) => setLossyEdgeWidth(event.target.value)}
 							max={Math.min(waferWidth, waferHeight) / 2}
-						/>
-					</div>
-					<div className="input-row--two-col">
-						<NumberInput
-							label="Reticle Offset Horizontal (mm)"
-							value={transHoriz}
-							onChange={(event) => setTransHoriz(event.target.value)}
-						/>
-						<NumberInput
-							label="Reticle Offset Vertical (mm)"
-							value={transVert}
-							onChange={(event) => setTransVert(event.target.value)}
 						/>
 					</div>
 					<hr />
