@@ -4,7 +4,7 @@ import { render, screen, waitFor, within } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 
 describe("App", () => {
-	it("calculates the correct number of total 10mm dies on a 300mm panel with no scribe lines", async () => {
+	it("calculates the correct number of total 5mm dies on a 300mm panel with no scribe lines", async () => {
 		render(<App />);
 		const user = userEvent.setup();
 		await user.click(screen.getByRole("radio", {
@@ -15,10 +15,10 @@ describe("App", () => {
 			name: /Width/
 		});
 		const scribeLinesXInput = screen.getByRole("spinbutton", {
-			name: /Scribe Lines X/
+			name: /Scribe Line Minimum X/
 		});
 		const scribeLinesYInput = screen.getByRole("spinbutton", {
-			name: /Scribe Lines Y/
+			name: /Scribe Line Minimum Y/
 		});
 		const maintainAspectRatioCheckbox = screen.getByRole("checkbox", { name: /Aspect Ratio/ });
 
@@ -30,9 +30,18 @@ describe("App", () => {
 		await user.clear(scribeLinesYInput);
 		await user.type(scribeLinesYInput, "0");
 
-		const expected = Math.pow(300 / 5, 2);
+		// How many 26mm x 33mm field shots can we fit in the panel?
+		const fielCountX = Math.floor(300 / 26);
+		const fieldCountY = Math.floor(300 / 33);
+		const fieldCount = fielCountX * fieldCountY;
+		// How many 5mm square dies can we fit in a single field shot?
+		const dieCountX = Math.floor(26 / 5);
+		const dieCountY = Math.floor(33 / 5);
+		const dieCount = dieCountX * dieCountY;
+		// How many dies can we fit in the entire panel?
+		const totalDieCount = fieldCount * dieCount;
 
-		expect(await screen.findByText(new RegExp(expected.toString()))).toBeInTheDocument();
+		expect(await screen.findByText(new RegExp(totalDieCount.toString()))).toBeInTheDocument();
 	});
 
 	it("calculates yields for wafer shape", async () => {
@@ -41,7 +50,7 @@ describe("App", () => {
 		await user.click(screen.getByRole("radio", {
 			name: /Wafer/
 		}));
-		await waitFor(() => expect(screen.getByText(/976/)).toBeInTheDocument());
+		await waitFor(() => expect(screen.getByText(/1104/)).toBeInTheDocument());
 	});
 
 	it("displays a breakdown of die states whose sum equals the total number of dies", async () => {

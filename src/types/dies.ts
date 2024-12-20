@@ -1,11 +1,11 @@
 export type DieState = "good" | "defective" | "partial" | "lost";
 
-type Die = {
+export type Die = {
 	x: number,
 	y: number,
 	width: number,
 	height: number,
-	key: number,
+	key: number | string,
 	dieState: DieState
 };
 

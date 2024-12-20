@@ -711,7 +711,6 @@ function getDisplayValue(value) {
 function App() {
   const [dieWidth, setDieWidth] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("8");
   const [dieHeight, setDieHeight] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("8");
-  const [waferCenteringEnabled, setWaferCenteringEnabled] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
   const [maintainAspectRatio, setMaintainAspectRatio] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
   const [criticalArea, setCriticalArea] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("64");
   const [defectRate, setDefectRate] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0.1");
@@ -737,7 +736,7 @@ function App() {
     scribeVert: parseFloat(scribeVert),
     transHoriz: parseFloat(transHoriz),
     transVert: parseFloat(transVert)
-  }, waferCenteringEnabled, selectedModel, substrateShape, panelSize, waferSize);
+  }, true, selectedModel, substrateShape, panelSize, waferSize);
   const easterEggEnabled = (0,_hooks_useEasterEgg__WEBPACK_IMPORTED_MODULE_8__.useEasterEgg)();
   const outputRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
   const waferWidth = substrateShape === "Panel" ? _config__WEBPACK_IMPORTED_MODULE_4__.panelSizes[panelSize].width : _config__WEBPACK_IMPORTED_MODULE_4__.waferSizes[waferSize].width;
@@ -803,9 +802,6 @@ function App() {
   const handleReticleLimitChange = event => {
     setReticleLimit(event.target.checked);
   };
-  const handleWaferCenteringChange = event => {
-    setWaferCenteringEnabled(event.target.checked);
-  };
   const handleSizeChange = event => {
     if (substrateShape === "Panel") {
       setPanelSize(event.target.value);
@@ -848,11 +844,11 @@ function App() {
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "input-row--two-col"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
-    label: "Scribe Lines X (mm)",
+    label: "Scribe Line Minimum X (mm)",
     value: scribeHoriz,
     onChange: event => setScribeHoriz(event.target.value)
   }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
-    label: "Scribe Lines Y (mm)",
+    label: "Scribe Line Minimum Y (mm)",
     value: scribeVert,
     onChange: event => setScribeVert(event.target.value)
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
@@ -899,19 +895,13 @@ function App() {
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "input-row--two-col"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
-    label: "Translation Horizontal (mm)",
+    label: "Reticle Offset Horizontal (mm)",
     value: transHoriz,
     onChange: event => setTransHoriz(event.target.value)
   }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
-    label: "Translation Vertical (mm)",
+    label: "Reticle Offset Vertical (mm)",
     value: transVert,
     onChange: event => setTransVert(event.target.value)
-  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    className: "input-row"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Checkbox_Checkbox__WEBPACK_IMPORTED_MODULE_1__.Checkbox, {
-    label: "Wafer Centering",
-    onChange: handleWaferCenteringChange,
-    checked: waferCenteringEnabled
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("hr", null), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", null, "Options"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "input-row"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ModelSelector, {
@@ -1656,10 +1646,12 @@ function useInputs(values, waferCenteringEnabled, yieldModel, shape, panelSize, 
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   createDieMap: () => (/* binding */ createDieMap),
 /* harmony export */   evaluateDiscInputs: () => (/* binding */ evaluateDiscInputs),
 /* harmony export */   evaluatePanelInputs: () => (/* binding */ evaluatePanelInputs),
 /* harmony export */   getDieStateCounts: () => (/* binding */ getDieStateCounts),
-/* harmony export */   getFabYield: () => (/* binding */ getFabYield)
+/* harmony export */   getFabYield: () => (/* binding */ getFabYield),
+/* harmony export */   randomNumberSetFromRange: () => (/* binding */ randomNumberSetFromRange)
 /* harmony export */ });
 /* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../config */ "./src/config/index.ts");
 /* harmony import */ var _geometry__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./geometry */ "./src/utils/geometry.ts");
@@ -1677,6 +1669,20 @@ function getFabYield(defectRate, criticalArea, model) {
   }
   const defects = criticalArea * defectRate / 100;
   return _config__WEBPACK_IMPORTED_MODULE_0__.yieldModels[model].yield(defects);
+}
+/**
+ * Generate a set of length n of randomly selected numbers from a range (min-max)
+ * @param min bottom of range
+ * @param max top of range
+ * @param n number of random numbers to generate
+ */
+function randomNumberSetFromRange(min, max, n) {
+  const numbers = new Set();
+  while (numbers.size < n) {
+    const randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
+    numbers.add(randomNum);
+  }
+  return numbers;
 }
 /**
  * Count the total number of dies for each possible state (good, defective, partial, lost)
@@ -1724,6 +1730,77 @@ function getDieOffset(inputs, waferCenteringEnabled) {
   };
 }
 /**
+ * Calculate the position of dies in a single shot. Dies are centered within the
+ * reticle shot and spaced by the scribe width and height.
+ * @param dieWidth
+ * @param dieHeight
+ * @param scribeHoriz
+ * @param scribeVert
+ */
+function getRelativeDiePositions(dieWidth, dieHeight, scribeHoriz, scribeVert) {
+  return (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.rectanglesInRectangle)(26, 33, dieWidth, dieHeight, scribeHoriz, scribeVert, 0, 0, false, false);
+}
+/**
+ * Calculate the absolute position of each die based on shot coordinates + die
+ * coordinates within shot. Assign a state based on whether it is partly or fully
+ * outside the wafer
+ * @param shotPositions coordinates of each shot/field
+ * @param diesInShot coordinates of dies relative to a shot
+ * @param dieWidth width of one die
+ * @param dieHeight height of one die
+ * @param fabYield 0-1 float representing non-defective yield of all dies
+ * @param isInsideWafer callback fn to determine if coordinate is within wafer coords
+ */
+function createDieMap(shotPositions, diesInShot, dieWidth, dieHeight, fabYield, isInsideWafer) {
+  let goodDies = 0;
+  const dieMap = shotPositions.reduce((acc, shotPosition, shotIndex) => {
+    const dies = diesInShot.map((relativeDie, dieIndex) => {
+      let dieState = "good";
+      const absoluteDieX = relativeDie.x + shotPosition.x;
+      const absoluteDieY = relativeDie.y + shotPosition.y;
+      const corners = (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.getRectCorners)(absoluteDieX, absoluteDieY, dieWidth, dieHeight);
+      const goodCorners = corners.filter(isInsideWafer);
+      if (!goodCorners.length) {
+        dieState = "lost";
+      } else if (goodCorners.length < 4) {
+        dieState = "partial";
+      } else {
+        goodDies += 1;
+      }
+      return {
+        key: `${shotIndex}:${dieIndex}`,
+        dieState,
+        x: absoluteDieX,
+        y: absoluteDieY,
+        width: dieWidth,
+        height: dieHeight
+      };
+    });
+    // Take the shot as long as 1 or more dies within it will be "good"...
+    if (dies.find(die => die.dieState === "good")) {
+      return [...acc, ...dies];
+    }
+    // ...otherwise skip the shot
+    return acc;
+  }, []);
+  // Sort die map so all good dies are first
+  dieMap.sort((a, b) => {
+    if (a.dieState === "good" && b.dieState !== "good") {
+      return -1;
+    } else if (a.dieState !== "good" && b.dieState === "good") {
+      return 1;
+    }
+    return 0;
+  });
+  // Randomly distribute n defective dies amongst good dies on the map based on fab yield
+  const numDefectiveDies = goodDies - Math.floor(fabYield * goodDies);
+  const defectiveDieKeys = randomNumberSetFromRange(0, goodDies - 1, numDefectiveDies);
+  defectiveDieKeys.forEach(key => {
+    dieMap[key].dieState = "defective";
+  });
+  return dieMap;
+}
+/**
  * Use the given inputs to calculate how many dies would fit on the given panel
  * shaped wafer and what each die's state would be.
  * @param inputVals
@@ -1751,47 +1828,25 @@ function evaluatePanelInputs(inputVals, selectedSize, selectedModel, waferCenter
     x: offsetX,
     y: offsetY
   } = getDieOffset(inputVals, waferCenteringEnabled);
-  const positions = (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.rectanglesInRectangle)(width, height, dieWidth, dieHeight, scribeVert, scribeHoriz, offsetX, offsetY);
-  const totalDies = positions.length;
-  const nonDefectiveDies = Math.floor(fabYield * totalDies);
-  let dieStates = new Array(totalDies).fill("defective");
-  for (let i = 0; i < nonDefectiveDies; i++) {
-    dieStates[i] = "good";
-  }
-  for (let i = dieStates.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [dieStates[i], dieStates[j]] = [dieStates[j], dieStates[i]];
-  }
-  for (let i = 0; i < dieStates.length; i++) {
-    const position = positions[i];
-    const corners = (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.getRectCorners)(position.x, position.y, dieWidth, dieHeight);
-    const goodCorners = corners.filter(corner => (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.isInsideRectangle)(corner.x, corner.y, lossyEdgeWidth, lossyEdgeWidth, width - lossyEdgeWidth * 2, height - lossyEdgeWidth * 2));
-    if (!goodCorners.length) {
-      dieStates[i] = "lost";
-    } else if (goodCorners.length < 4) {
-      dieStates[i] = "partial";
-    }
-    dies[i] = {
-      key: i,
-      dieState: dieStates[i],
-      x: position.x,
-      y: position.y,
-      width: dieWidth,
-      height: dieHeight
-    };
-  }
+  // First, calculate the reticle shot map
+  const shotPositions = (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.rectanglesInRectangle)(width, height, 26, 33, 0, 0, offsetX, offsetY, true, true);
+  // Calculate the position of dies in a single shot
+  const diesInShot = getRelativeDiePositions(dieWidth, dieHeight, scribeHoriz, scribeVert);
+  const dieMap = createDieMap(shotPositions, diesInShot, dieWidth, dieHeight, fabYield, coordinate => {
+    return (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.isInsideRectangle)(coordinate.x, coordinate.y, lossyEdgeWidth, lossyEdgeWidth, width - lossyEdgeWidth * 2, height - lossyEdgeWidth * 2);
+  });
   const {
     defectiveDies,
     partialDies,
     lostDies,
     goodDies
-  } = getDieStateCounts(dieStates);
+  } = getDieStateCounts(dieMap.map(die => die.dieState));
   return {
-    dies,
+    dies: dieMap,
     defectiveDies,
     partialDies,
     lostDies,
-    totalDies,
+    totalDies: dieMap.length,
     goodDies,
     fabYield
   };
@@ -1814,7 +1869,6 @@ function evaluateDiscInputs(inputVals, selectedSize, selectedModel, waferCenteri
     scribeHoriz,
     scribeVert
   } = inputVals;
-  let dies = [];
   const fabYield = getFabYield(defectRate, criticalArea, selectedModel);
   const {
     width
@@ -1823,46 +1877,23 @@ function evaluateDiscInputs(inputVals, selectedSize, selectedModel, waferCenteri
     x: offsetX,
     y: offsetY
   } = getDieOffset(inputVals, waferCenteringEnabled);
-  const positions = (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.rectanglesInCircle)(width, dieWidth, dieHeight, scribeHoriz, scribeVert, offsetX, offsetY);
-  let totalDies = positions.length;
-  const nonDefectiveDies = Math.floor(fabYield * totalDies);
-  let dieStates = new Array(totalDies).fill("defective");
-  for (let i = 0; i < nonDefectiveDies; i++) {
-    dieStates[i] = "good";
-  }
-  for (let i = dieStates.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [dieStates[i], dieStates[j]] = [dieStates[j], dieStates[i]];
-  }
-  for (let i = 0; i < dieStates.length; i++) {
-    const x = positions[i].x;
-    const y = positions[i].y;
-    const corners = (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.getRectCorners)(x, y, dieWidth, dieHeight);
+  // First, calculate the reticle shot map
+  const shotPositions = (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.rectanglesInCircle)(width, 26, 33, 0, 0, offsetX, offsetY, true);
+  // Calculate the position of dies in a single shot
+  const diesInShot = getRelativeDiePositions(dieWidth, dieHeight, scribeHoriz, scribeVert);
+  const dieMap = createDieMap(shotPositions, diesInShot, dieWidth, dieHeight, fabYield, coordinate => {
     const radiusInsideLossyEdge = width / 2 - lossyEdgeWidth;
-    const goodCorners = corners.filter(corner => (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.isInsideCircle)(corner.x, corner.y, width / 2, width / 2, radiusInsideLossyEdge));
-    if (!goodCorners.length) {
-      dieStates[i] = "lost";
-    } else if (goodCorners.length < 4) {
-      dieStates[i] = "partial";
-    }
-    dies[i] = {
-      key: i,
-      dieState: dieStates[i],
-      x,
-      y,
-      width: dieWidth,
-      height: dieHeight
-    };
-  }
+    return (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.isInsideCircle)(coordinate.x, coordinate.y, width / 2, width / 2, radiusInsideLossyEdge);
+  });
   const {
     defectiveDies,
     partialDies,
     lostDies,
     goodDies
-  } = getDieStateCounts(dieStates);
+  } = getDieStateCounts(dieMap.map(die => die.dieState));
   return {
-    dies,
-    totalDies,
+    dies: dieMap,
+    totalDies: dieMap.length,
     goodDies,
     defectiveDies,
     partialDies,
@@ -1984,9 +2015,38 @@ function isInsideRectangle(x, y, rectangleX, rectangleY, rectangleWidth, rectang
   return x >= rectangleX && x <= rectangleX + rectangleWidth && y >= rectangleY && y <= rectangleY + rectangleHeight;
 }
 /**
+ * Determines if one rectangle is inside another, i.e. it overlaps with the outer
+ * rectangle. A partial overlap (>0 corners inside the outer rectangle) is allowed if
+ * `allowPartial` is true.
+ * @param innerRectX top left x coordinate of inner rectangle
+ * @param innerRectY top left y coordinate of inner rectangle
+ * @param innerRectWidth width of inner rectangle
+ * @param innerRectHeight height of outer rectangle
+ * @param outerRectX top left x coordinate of outer rectangle
+ * @param outerRectY top left y coordinate of outer rectangle
+ * @param outerRectWidth width of outer rectangle
+ * @param outerRectHeight height of outer rectangle
+ * @param allowPartial returns true if only part of the inner rectangle overlaps the outer
+ */
+function rectangleIsInsideRectangle(innerRectX, innerRectY, innerRectWidth, innerRectHeight, outerRectX, outerRectY, outerRectWidth, outerRectHeight, allowPartial) {
+  const innerRectCorners = getRectCorners(innerRectX, innerRectY, innerRectWidth, innerRectHeight);
+  const cornersInsideOuterRectangle = innerRectCorners.filter(corner => isInsideRectangle(corner.x, corner.y, outerRectX, outerRectY, outerRectWidth, outerRectHeight));
+  if (allowPartial) {
+    // Filter out corners that are on the edge of the outer rectangle
+    const nonEdgeCornersInsideOuterRect = cornersInsideOuterRectangle.filter(corner => {
+      if (corner.x === outerRectX || corner.x === outerRectX + outerRectWidth || corner.y === outerRectY || corner.y === outerRectY + outerRectHeight) {
+        return false;
+      }
+      return true;
+    });
+    return nonEdgeCornersInsideOuterRect.length > 0;
+  }
+  return cornersInsideOuterRectangle.length === 4;
+}
+/**
  * Given a circle with the provided diameter, determine the maximum number of
- * rectangles of a given width and height would fit fully inside it, without
- * overlapping the edges
+ * rectangles of a given width and height would fit inside it
+ *
  * @param diameter size of the circle
  * @param rectWidth width of each rectangle
  * @param rectHeight height of each rectangle
@@ -1994,8 +2054,9 @@ function isInsideRectangle(x, y, rectangleX, rectangleY, rectangleWidth, rectang
  * @param gapY vertical space between each rectangle
  * @param offsetX amount by which to offset each rectangle horizontally
  * @param offsetY amount by which to offset each rectangle vertically
+ * @param includePartials whether to include rectangles that overlap the circle edge
  */
-function rectanglesInCircle(diameter, rectWidth, rectHeight, gapX, gapY, offsetX, offsetY) {
+function rectanglesInCircle(diameter, rectWidth, rectHeight, gapX, gapY, offsetX, offsetY, includePartials) {
   const radius = diameter / 2;
   const positions = [];
   // Traverse each row, starting at the center
@@ -2011,8 +2072,14 @@ function rectanglesInCircle(diameter, rectWidth, rectHeight, gapX, gapY, offsetX
         const offsetRectY = rectY + offsetY;
         const corners = getRectCorners(offsetRectX, offsetRectY, rectWidth, rectHeight);
         const cornersWithinCircle = corners.filter(corner => isInsideCircle(corner.x, corner.y, 0, 0, radius));
+        // If partials are allowed, only one corner must overlap, otherwise all must.
+        // Note that technically a square could overlap a circle without any corners
+        // being within the circle. However given the scales we are working with and
+        // the complexity of the maths involved in calculating this, we are not
+        // accounting for that possibility here.
+        const minOverlappingCorners = includePartials ? 1 : 4;
         // If the rectangle fits within the circle, add it to the result
-        if (cornersWithinCircle.length === 4) {
+        if (cornersWithinCircle.length >= minOverlappingCorners) {
           positions.push({
             // Add the radius back to the final coordinates so all are positive integers
             x: offsetRectX + radius,
@@ -2026,7 +2093,7 @@ function rectanglesInCircle(diameter, rectWidth, rectHeight, gapX, gapY, offsetX
 }
 /**
  * Given a rectangle with the provided dimensions, determine the maximum number of
- * smaller rectangles of a given width and height would fit fully inside it.
+ * smaller rectangles of a given width and height that would fit fully inside it.
  * @param outerRectWidth width of the big rectangle
  * @param outerRectHeight height of the big rectangle
  * @param innerRectWidth width of each smaller rectangle
@@ -2035,30 +2102,40 @@ function rectanglesInCircle(diameter, rectWidth, rectHeight, gapX, gapY, offsetX
  * @param gapY vertical space between each rectangle
  * @param offsetX amount by which to offset each rectangle horizontally
  * @param offsetY amount by which to offset each rectangle vertically
+ * @param center if true, center align inner and outer rectangles. otherwise, align top-left
+ * @param includePartials include inner rectangles that only partially overlap with the outer rectangle
+ * @returns an array of Position objects {x, y}, describing the top-left coordinates of each smaller rectangle
  */
-function rectanglesInRectangle(outerRectWidth, outerRectHeight, innerRectWidth, innerRectHeight, gapX, gapY, offsetX, offsetY) {
+function rectanglesInRectangle(outerRectWidth, outerRectHeight, innerRectWidth, innerRectHeight, gapX, gapY, offsetX, offsetY, center, includePartials) {
   const positions = [];
-  // Traverse each row, starting at the center
-  for (let y = 0; y <= outerRectHeight / 2; y += innerRectHeight + gapY) {
-    // Traverse each column, starting at the center
-    for (let x = 0; x <= outerRectWidth / 2; x += innerRectWidth + gapX) {
-      // Draw four rectangles, one in each quadrant (se, sw, nw, ne)
-      for (let i = 0; i < 4; i++) {
-        const rectX = i % 2 === 0 ? x : -x - innerRectWidth - gapX;
-        const rectY = i % 3 === 0 ? y : -y - innerRectHeight - gapY;
-        // Apply the offset - used for centering
-        const offsetRectX = rectX + offsetX;
-        const offsetRectY = rectY + offsetY;
-        const corners = getRectCorners(offsetRectX, offsetRectY, innerRectWidth, innerRectHeight);
-        const cornersWithinRectangle = corners.filter(corner => isInsideRectangle(corner.x, corner.y, outerRectWidth * -0.5, outerRectHeight * -0.5, outerRectWidth, outerRectHeight));
-        // If the rectangle fits within the circle, add it to the result
-        if (cornersWithinRectangle.length === 4) {
-          positions.push({
-            // Add half the width/height back to the final coordinates so all are positive integers
-            x: offsetRectX + outerRectWidth / 2,
-            y: offsetRectY + outerRectHeight / 2
-          });
-        }
+  // Adjust the effective size of inner rectangles including gaps split evenly on both sides
+  const effectiveWidth = innerRectWidth + gapX;
+  const effectiveHeight = innerRectHeight + gapY;
+  const halfGapX = gapX / 2;
+  const halfGapY = gapY / 2;
+  // Compute the number of inner rectangles that can fit in each direction
+  const countX = Math.floor(outerRectWidth / effectiveWidth);
+  const countY = Math.floor(outerRectHeight / effectiveHeight);
+  // If center alignment is enabled, calculate the padding to center the rectangles
+  let startX = 0;
+  let startY = 0;
+  if (center) {
+    const totalInnerWidth = countX * effectiveWidth - gapX;
+    const totalInnerHeight = countY * effectiveHeight - gapY;
+    startX = (outerRectWidth - totalInnerWidth) / 2;
+    startY = (outerRectHeight - totalInnerHeight) / 2;
+  }
+  // Iterate through potential positions and calculate coordinates
+  for (let row = 0; row <= countY; row++) {
+    for (let col = 0; col <= countX; col++) {
+      const x = startX + col * effectiveWidth + offsetX + halfGapX;
+      const y = startY + row * effectiveHeight + offsetY + halfGapY;
+      const isInside = rectangleIsInsideRectangle(x, y, innerRectWidth, innerRectHeight, 0, 0, outerRectWidth, outerRectHeight, includePartials);
+      if (isInside) {
+        positions.push({
+          x,
+          y
+        });
       }
     }
   }
@@ -2173,7 +2250,7 @@ function i(t,e,i,n){return new(i||(i=Promise))((function(s,r){function l(t){try{
   \************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"create-block/die-yield-calculator","version":"0.1.2","title":"Die Yield Calculator","category":"widgets","icon":"calculator","description":"Embeds a React application for calculating expected semiconductor die yield.","example":{},"supports":{"html":false},"textdomain":"die-yield-calculator","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","render":"file:./render.php","viewScript":"file:./view.js"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"create-block/die-yield-calculator","version":"0.1.3","title":"Die Yield Calculator","category":"widgets","icon":"calculator","description":"Embeds a React application for calculating expected semiconductor die yield.","example":{},"supports":{"html":false},"textdomain":"die-yield-calculator","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","render":"file:./render.php","viewScript":"file:./view.js"}');
 
 /***/ })
 
