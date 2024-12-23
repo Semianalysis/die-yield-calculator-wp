@@ -1789,7 +1789,7 @@ function getDieOffset(inputs, waferCenteringEnabled) {
  * @param scribeVert
  */
 function getRelativeDiePositions(dieWidth, dieHeight, scribeHoriz, scribeVert) {
-  return (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.rectanglesInRectangle)(_config__WEBPACK_IMPORTED_MODULE_0__.fieldWidthMM, _config__WEBPACK_IMPORTED_MODULE_0__.fieldHeightMM, dieWidth, dieHeight, scribeHoriz, scribeVert, 0, 0, false, false);
+  return (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.rectanglesInRectangle)(_config__WEBPACK_IMPORTED_MODULE_0__.fieldWidthMM, _config__WEBPACK_IMPORTED_MODULE_0__.fieldHeightMM, dieWidth, dieHeight, scribeHoriz, scribeVert, 0, 0, true, false);
 }
 /**
  * Calculate the absolute position of each die based on shot coordinates + die

@@ -137,7 +137,7 @@ function getRelativeDiePositions(
 		scribeVert,
 		0,
 		0,
-		false,
+		true,
 		false
 	);
 }
