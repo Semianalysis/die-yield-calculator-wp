@@ -574,10 +574,10 @@ const ModelSelector = props => react__WEBPACK_IMPORTED_MODULE_0___default().crea
  * and what the aspect ratio is, if any, falling back to a % of wafer dimensions
  * as a sane default
  */
-function getDieMaxDimensions(reticleLimit, waferWidth, waferHeight, maintainAspectRatio, aspectRatio) {
+function getDieMaxDimensions(reticleLimit, waferWidth, waferHeight, maintainAspectRatio, aspectRatio, fieldWidthMM, fieldHeightMM) {
   // Cannot exceed reticle dimensions
-  const boundingSquareWidth = reticleLimit ? _config__WEBPACK_IMPORTED_MODULE_4__.fieldWidthMM : waferWidth / 4;
-  const boundingSquareHeight = reticleLimit ? _config__WEBPACK_IMPORTED_MODULE_4__.fieldHeightMM : waferHeight / 4;
+  const boundingSquareWidth = reticleLimit ? fieldWidthMM : waferWidth / 4;
+  const boundingSquareHeight = reticleLimit ? fieldHeightMM : waferHeight / 4;
   if (!maintainAspectRatio) {
     return {
       width: boundingSquareWidth,
@@ -610,6 +610,7 @@ function App() {
   const [allCritical, setAllCritical] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
   const [reticleLimit, setReticleLimit] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
   const [showShotMap, setShowShotMap] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
+  const [halfField, setHalfField] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
   const [scribeHoriz, setScribeHoriz] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0.2");
   const [scribeVert, setScribeVert] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0.2");
   const [transHoriz, setTransHoriz] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0");
@@ -619,6 +620,8 @@ function App() {
   const [waferSize, setWaferSize] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("s300mm");
   const [selectedModel, setSelectedModel] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("murphy");
   const aspectRatio = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(parseFloat(dieWidth) / parseFloat(dieHeight));
+  const fieldWidthMM = halfField ? 13 : 26;
+  const fieldHeightMM = 33;
   const results = (0,_hooks_useInputs__WEBPACK_IMPORTED_MODULE_3__.useInputs)({
     dieWidth: parseFloat(dieWidth),
     dieHeight: parseFloat(dieHeight),
@@ -629,7 +632,7 @@ function App() {
     scribeVert: parseFloat(scribeVert),
     transHoriz: parseFloat(transHoriz),
     transVert: parseFloat(transVert)
-  }, true, selectedModel, substrateShape, panelSize, waferSize);
+  }, selectedModel, substrateShape, panelSize, waferSize, fieldWidthMM, fieldHeightMM);
   const easterEggEnabled = (0,_hooks_useEasterEgg__WEBPACK_IMPORTED_MODULE_8__.useEasterEgg)();
   const outputRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
   const waferWidth = substrateShape === "Panel" ? _config__WEBPACK_IMPORTED_MODULE_4__.panelSizes[panelSize].width : _config__WEBPACK_IMPORTED_MODULE_4__.waferSizes[waferSize].width;
@@ -639,7 +642,7 @@ function App() {
   const {
     width: maxDieWidth,
     height: maxDieHeight
-  } = getDieMaxDimensions(reticleLimit, waferWidth, waferHeight, maintainAspectRatio, aspectRatio.current);
+  } = getDieMaxDimensions(reticleLimit, waferWidth, waferHeight, maintainAspectRatio, aspectRatio.current, fieldWidthMM, fieldHeightMM);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     if (parseFloat(dieWidth) > maxDieWidth) {
       setDieWidth(maxDieWidth.toString());
@@ -705,6 +708,9 @@ function App() {
   const handleShowShotMapChange = event => {
     setShowShotMap(event.target.checked);
   };
+  const handleHalfFieldChange = event => {
+    setHalfField(event.target.checked);
+  };
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "container"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
@@ -734,7 +740,7 @@ function App() {
     onChange: handleMaintainAspectRatio,
     checked: maintainAspectRatio
   }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Checkbox_Checkbox__WEBPACK_IMPORTED_MODULE_1__.Checkbox, {
-    label: `Reticle Limit (${_config__WEBPACK_IMPORTED_MODULE_4__.fieldWidthMM}mm x ${_config__WEBPACK_IMPORTED_MODULE_4__.fieldHeightMM}mm)`,
+    label: `Reticle Limit (${fieldWidthMM}mm x ${fieldHeightMM}mm)`,
     onChange: handleReticleLimitChange,
     checked: reticleLimit
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
@@ -761,6 +767,22 @@ function App() {
     isDisabled: allCritical,
     onChange: event => setCriticalArea(event.target.value),
     max: parseFloat(criticalArea)
+  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("hr", null), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", null, "Reticle"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "input-row"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Checkbox_Checkbox__WEBPACK_IMPORTED_MODULE_1__.Checkbox, {
+    label: "Half Field Exposures",
+    onChange: handleHalfFieldChange,
+    checked: halfField
+  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "input-row--two-col"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
+    label: "Reticle Offset Horizontal (mm)",
+    value: transHoriz,
+    onChange: event => setTransHoriz(event.target.value)
+  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
+    label: "Reticle Offset Vertical (mm)",
+    value: transVert,
+    onChange: event => setTransVert(event.target.value)
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("hr", null), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", null, "Substrate"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "input-row"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ShapeSelector, {
@@ -788,16 +810,6 @@ function App() {
     value: lossyEdgeWidth,
     onChange: event => setLossyEdgeWidth(event.target.value),
     max: Math.min(waferWidth, waferHeight) / 2
-  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    className: "input-row--two-col"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
-    label: "Reticle Offset Horizontal (mm)",
-    value: transHoriz,
-    onChange: event => setTransHoriz(event.target.value)
-  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
-    label: "Reticle Offset Vertical (mm)",
-    value: transVert,
-    onChange: event => setTransVert(event.target.value)
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("hr", null), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", null, "Options"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "input-row"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ModelSelector, {
@@ -815,7 +827,9 @@ function App() {
     waferWidth: waferWidth,
     waferHeight: waferHeight,
     easterEggEnabled: easterEggEnabled,
-    showShotMap: showShotMap
+    showShotMap: showShotMap,
+    fieldWidth: fieldWidthMM,
+    fieldHeight: fieldHeightMM
   }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Checkbox_Checkbox__WEBPACK_IMPORTED_MODULE_1__.Checkbox, {
     label: "Show Reticle Shot Grid",
     onChange: handleShowShotMapChange,
@@ -1041,11 +1055,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var react_parallax_tilt__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react-parallax-tilt */ "./node_modules/react-parallax-tilt/dist/modern/index.js");
+/* harmony import */ var react_parallax_tilt__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-parallax-tilt */ "./node_modules/react-parallax-tilt/dist/modern/index.js");
 /* harmony import */ var _utils_canvas__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../utils/canvas */ "./src/utils/canvas.ts");
 /* harmony import */ var _assets_tsmc_logo_svg__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../assets/tsmc-logo.svg */ "./src/assets/tsmc-logo.svg");
-/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../config */ "./src/config/index.ts");
-
 
 
 
@@ -1155,10 +1167,18 @@ function ShotMap(props) {
     props.results.fields.forEach(field => {
       context.beginPath();
       context.moveTo(mmToPxScale * field.x, mmToPxScale * field.y);
-      context.lineTo(mmToPxScale * field.x + mmToPxScale * _config__WEBPACK_IMPORTED_MODULE_3__.fieldWidthMM, mmToPxScale * field.y);
-      context.lineTo(mmToPxScale * field.x + mmToPxScale * _config__WEBPACK_IMPORTED_MODULE_3__.fieldWidthMM, mmToPxScale * field.y + mmToPxScale * _config__WEBPACK_IMPORTED_MODULE_3__.fieldHeightMM);
+      context.lineTo(mmToPxScale * field.x + mmToPxScale * props.fieldWidth, mmToPxScale * field.y);
+      context.lineTo(mmToPxScale * field.x + mmToPxScale * props.fieldWidth, mmToPxScale * field.y + mmToPxScale * props.fieldHeight);
       context.stroke(); // Render the path
     });
+    // Draw crosshairs on wafer to indicate 0,0
+    context.strokeStyle = "black";
+    context.beginPath();
+    context.moveTo(0, props.waferHeight * mmToPxScale / 2);
+    context.lineTo(props.waferWidth * mmToPxScale, props.waferHeight * mmToPxScale / 2);
+    context.moveTo(props.waferWidth * mmToPxScale / 2, 0);
+    context.lineTo(props.waferWidth * mmToPxScale / 2, props.waferHeight * mmToPxScale);
+    context.stroke(); // Render the path
   }, [JSON.stringify(props.results)]);
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("canvas", {
     className: "wafer-canvas__shot-map",
@@ -1223,7 +1243,7 @@ function WaferCanvas(props) {
     setTiltY(tiltAngleYPercentage);
   }
   if (props.easterEggEnabled) {
-    return react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_parallax_tilt__WEBPACK_IMPORTED_MODULE_4__["default"], {
+    return react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_parallax_tilt__WEBPACK_IMPORTED_MODULE_3__["default"], {
       glareEnable: true,
       glareMaxOpacity: 0.75,
       scale: 1.05,
@@ -1233,7 +1253,7 @@ function WaferCanvas(props) {
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     role: "presentation",
     "aria-label": "A rendering of a silicon wafer"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_parallax_tilt__WEBPACK_IMPORTED_MODULE_4__["default"], {
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_parallax_tilt__WEBPACK_IMPORTED_MODULE_3__["default"], {
     key: props.shape,
     glareEnable: true,
     glareMaxOpacity: 0.75,
@@ -1258,7 +1278,9 @@ function WaferCanvas(props) {
   }), props.showShotMap && react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ShotMap, {
     results: props.results,
     waferWidth: props.waferWidth,
-    waferHeight: props.waferHeight
+    waferHeight: props.waferHeight,
+    fieldWidth: props.fieldWidth,
+    fieldHeight: props.fieldHeight
   }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(LossyEdgeMarker, {
     lossyEdgeWidth: props.lossyEdgeWidth,
     waferWidth: props.waferWidth,
@@ -1279,8 +1301,6 @@ function WaferCanvas(props) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   fieldHeightMM: () => (/* reexport safe */ _sizes__WEBPACK_IMPORTED_MODULE_0__.fieldHeightMM),
-/* harmony export */   fieldWidthMM: () => (/* reexport safe */ _sizes__WEBPACK_IMPORTED_MODULE_0__.fieldWidthMM),
 /* harmony export */   minDieEdge: () => (/* reexport safe */ _sizes__WEBPACK_IMPORTED_MODULE_0__.minDieEdge),
 /* harmony export */   panelSizes: () => (/* reexport safe */ _sizes__WEBPACK_IMPORTED_MODULE_0__.panelSizes),
 /* harmony export */   waferSizes: () => (/* reexport safe */ _sizes__WEBPACK_IMPORTED_MODULE_0__.waferSizes),
@@ -1301,8 +1321,6 @@ __webpack_require__.r(__webpack_exports__);
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   fieldHeightMM: () => (/* binding */ fieldHeightMM),
-/* harmony export */   fieldWidthMM: () => (/* binding */ fieldWidthMM),
 /* harmony export */   minDieEdge: () => (/* binding */ minDieEdge),
 /* harmony export */   panelSizes: () => (/* binding */ panelSizes),
 /* harmony export */   waferSizes: () => (/* binding */ waferSizes)
@@ -1383,8 +1401,6 @@ const waferSizes = {
     width: 450
   }
 };
-const fieldWidthMM = 26;
-const fieldHeightMM = 33;
 
 /***/ }),
 
@@ -1555,13 +1571,14 @@ const validations = {
  * Given the numeric inputs, selected wafer properties, and a yield model, calculate
  * the expected fabrication results.
  * @param values numeric values provided by the user via inputs
- * @param waferCenteringEnabled center by wafer (true) or by die (false)
  * @param yieldModel mathematical model for calculating yield
  * @param shape wafer shape
  * @param panelSize chosen size of panel wafer
  * @param discSize chosen size of disc wafer
+ * @param fieldWidth width of one shot/field
+ * @param fieldHeight height of one shot/field
  */
-function useInputs(values, waferCenteringEnabled, yieldModel, shape, panelSize, discSize) {
+function useInputs(values, yieldModel, shape, panelSize, discSize, fieldWidth, fieldHeight) {
   const [results, setResults] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
   (0,_useDebouncedEffect__WEBPACK_IMPORTED_MODULE_3__.useDebouncedEffect)(() => {
     // Reset to defaults if we can't use one or more values
@@ -1570,12 +1587,12 @@ function useInputs(values, waferCenteringEnabled, yieldModel, shape, panelSize, 
       setResults(null);
     } else {
       if (shape === "Wafer") {
-        setResults((0,_utils_calculations__WEBPACK_IMPORTED_MODULE_2__.evaluateDiscInputs)(values, discSize, yieldModel, waferCenteringEnabled));
+        setResults((0,_utils_calculations__WEBPACK_IMPORTED_MODULE_2__.evaluateDiscInputs)(values, discSize, yieldModel, fieldWidth, fieldHeight));
       } else if (shape === "Panel") {
-        setResults((0,_utils_calculations__WEBPACK_IMPORTED_MODULE_2__.evaluatePanelInputs)(values, panelSize, yieldModel, waferCenteringEnabled));
+        setResults((0,_utils_calculations__WEBPACK_IMPORTED_MODULE_2__.evaluatePanelInputs)(values, panelSize, yieldModel, fieldWidth, fieldHeight));
       }
     }
-  }, [JSON.stringify(values), shape, panelSize, discSize, yieldModel, waferCenteringEnabled], 100);
+  }, [JSON.stringify(values), shape, panelSize, discSize, yieldModel, fieldWidth, fieldHeight], 100);
   return results;
 }
 
@@ -1675,13 +1692,15 @@ function getDieOffset(inputs, waferCenteringEnabled) {
 /**
  * Calculate the position of dies in a single shot. Dies are centered within the
  * reticle shot and spaced by the scribe width and height.
- * @param dieWidth
- * @param dieHeight
- * @param scribeHoriz
- * @param scribeVert
+ * @param dieWidth width of one die
+ * @param dieHeight height of one die
+ * @param scribeHoriz minimum scribe line width between any 2 die
+ * @param scribeVert minimum scribe line height between any 2 die
+ * @param fieldWidth width of the shot/field
+ * @param fieldHeight height of the shot/field
  */
-function getRelativeDiePositions(dieWidth, dieHeight, scribeHoriz, scribeVert) {
-  return (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.rectanglesInRectangle)(_config__WEBPACK_IMPORTED_MODULE_0__.fieldWidthMM, _config__WEBPACK_IMPORTED_MODULE_0__.fieldHeightMM, dieWidth, dieHeight, scribeHoriz, scribeVert, 0, 0, true, false);
+function getRelativeDiePositions(dieWidth, dieHeight, scribeHoriz, scribeVert, fieldWidth, fieldHeight) {
+  return (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.rectanglesInRectangle)(fieldWidth, fieldHeight, dieWidth, dieHeight, scribeHoriz, scribeVert, 0, 0, true, false);
 }
 /**
  * Calculate the absolute position of each die based on shot coordinates + die
@@ -1749,9 +1768,10 @@ function createDieMap(shotPositions, diesInShot, dieWidth, dieHeight, fabYield, 
  * @param inputVals
  * @param selectedSize
  * @param selectedModel
- * @param waferCenteringEnabled
+ * @param fieldWidth
+ * @param fieldHeight
  */
-function evaluatePanelInputs(inputVals, selectedSize, selectedModel, waferCenteringEnabled) {
+function evaluatePanelInputs(inputVals, selectedSize, selectedModel, fieldWidth, fieldHeight) {
   const {
     dieWidth,
     dieHeight,
@@ -1770,11 +1790,11 @@ function evaluatePanelInputs(inputVals, selectedSize, selectedModel, waferCenter
   const {
     x: offsetX,
     y: offsetY
-  } = getDieOffset(inputVals, waferCenteringEnabled);
+  } = getDieOffset(inputVals, true);
   // First, calculate the reticle shot map
-  const shotPositions = (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.rectanglesInRectangle)(width, height, _config__WEBPACK_IMPORTED_MODULE_0__.fieldWidthMM, _config__WEBPACK_IMPORTED_MODULE_0__.fieldHeightMM, 0, 0, offsetX, offsetY, true, true);
+  const shotPositions = (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.rectanglesInRectangle)(width, height, fieldWidth, fieldHeight, 0, 0, offsetX - fieldWidth / 2, offsetY - fieldHeight / 2, true, true);
   // Calculate the position of dies in a single shot
-  const diesInShot = getRelativeDiePositions(dieWidth, dieHeight, scribeHoriz, scribeVert);
+  const diesInShot = getRelativeDiePositions(dieWidth, dieHeight, scribeHoriz, scribeVert, fieldWidth, fieldHeight);
   const dieMap = createDieMap(shotPositions, diesInShot, dieWidth, dieHeight, fabYield, coordinate => {
     return (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.isInsideRectangle)(coordinate.x, coordinate.y, lossyEdgeWidth, lossyEdgeWidth, width - lossyEdgeWidth * 2, height - lossyEdgeWidth * 2);
   });
@@ -1801,9 +1821,10 @@ function evaluatePanelInputs(inputVals, selectedSize, selectedModel, waferCenter
  * @param inputVals
  * @param selectedSize
  * @param selectedModel
- * @param waferCenteringEnabled
+ * @param fieldWidth
+ * @param fieldHeight
  */
-function evaluateDiscInputs(inputVals, selectedSize, selectedModel, waferCenteringEnabled) {
+function evaluateDiscInputs(inputVals, selectedSize, selectedModel, fieldWidth, fieldHeight) {
   const {
     dieWidth,
     dieHeight,
@@ -1820,11 +1841,11 @@ function evaluateDiscInputs(inputVals, selectedSize, selectedModel, waferCenteri
   const {
     x: offsetX,
     y: offsetY
-  } = getDieOffset(inputVals, waferCenteringEnabled);
+  } = getDieOffset(inputVals, true);
   // First, calculate the reticle shot map
-  const shotPositions = (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.rectanglesInCircle)(width, _config__WEBPACK_IMPORTED_MODULE_0__.fieldWidthMM, _config__WEBPACK_IMPORTED_MODULE_0__.fieldHeightMM, 0, 0, offsetX, offsetY, true);
+  const shotPositions = (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.rectanglesInCircle)(width, fieldWidth, fieldHeight, 0, 0, offsetX, offsetY, true);
   // Calculate the position of dies in a single shot
-  const diesInShot = getRelativeDiePositions(dieWidth, dieHeight, scribeHoriz, scribeVert);
+  const diesInShot = getRelativeDiePositions(dieWidth, dieHeight, scribeHoriz, scribeVert, fieldWidth, fieldHeight);
   const dieMap = createDieMap(shotPositions, diesInShot, dieWidth, dieHeight, fabYield, coordinate => {
     const radiusInsideLossyEdge = width / 2 - lossyEdgeWidth;
     return (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.isInsideCircle)(coordinate.x, coordinate.y, width / 2, width / 2, radiusInsideLossyEdge);
