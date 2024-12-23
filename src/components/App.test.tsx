@@ -31,8 +31,8 @@ describe("App", () => {
 		await user.type(scribeLinesYInput, "0");
 
 		// How many 26mm x 33mm field shots can we fit in the panel?
-		const fielCountX = Math.floor(300 / 26);
-		const fieldCountY = Math.floor(300 / 33);
+		const fielCountX = Math.ceil(300 / 26);
+		const fieldCountY = Math.ceil(300 / 33);
 		const fieldCount = fielCountX * fieldCountY;
 		// How many 5mm square dies can we fit in a single field shot?
 		const dieCountX = Math.floor(26 / 5);
