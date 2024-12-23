@@ -1,3 +1,5 @@
+import { Position } from "../types";
+
 /**
  * Calculate the coordinates of all four corners of a rectangle, given a starting
  * point and its dimensions.
@@ -145,8 +147,6 @@ function rectangleIsInsideRectangle(
 
 	return cornersInsideOuterRectangle.length === 4;
 }
-
-export type Position = { x: number; y: number };
 
 /**
  * Given a circle with the provided diameter, determine the maximum number of

@@ -683,9 +683,9 @@ const ModelSelector = props => react__WEBPACK_IMPORTED_MODULE_0___default().crea
  * as a sane default
  */
 function getDieMaxDimensions(reticleLimit, waferWidth, waferHeight, maintainAspectRatio, aspectRatio) {
-  // 26mm x 33mm is the current industry max reticle size
-  const boundingSquareWidth = reticleLimit ? 26 : waferWidth / 4;
-  const boundingSquareHeight = reticleLimit ? 33 : waferHeight / 4;
+  // Cannot exceed reticle dimensions
+  const boundingSquareWidth = reticleLimit ? _config__WEBPACK_IMPORTED_MODULE_4__.fieldWidthMM : waferWidth / 4;
+  const boundingSquareHeight = reticleLimit ? _config__WEBPACK_IMPORTED_MODULE_4__.fieldHeightMM : waferHeight / 4;
   if (!maintainAspectRatio) {
     return {
       width: boundingSquareWidth,
@@ -717,6 +717,7 @@ function App() {
   const [lossyEdgeWidth, setLossyEdgeWidth] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("3");
   const [allCritical, setAllCritical] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
   const [reticleLimit, setReticleLimit] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
+  const [showShotMap, setShowShotMap] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
   const [scribeHoriz, setScribeHoriz] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0.2");
   const [scribeVert, setScribeVert] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0.2");
   const [transHoriz, setTransHoriz] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0");
@@ -809,6 +810,9 @@ function App() {
       setWaferSize(event.target.value);
     }
   };
+  const handleShowShotMapChange = event => {
+    setShowShotMap(event.target.checked);
+  };
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "container"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
@@ -838,7 +842,7 @@ function App() {
     onChange: handleMaintainAspectRatio,
     checked: maintainAspectRatio
   }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Checkbox_Checkbox__WEBPACK_IMPORTED_MODULE_1__.Checkbox, {
-    label: "Reticle Limit (26mm x 33mm)",
+    label: `Reticle Limit (${_config__WEBPACK_IMPORTED_MODULE_4__.fieldWidthMM}mm x ${_config__WEBPACK_IMPORTED_MODULE_4__.fieldHeightMM}mm)`,
     onChange: handleReticleLimitChange,
     checked: reticleLimit
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
@@ -918,7 +922,12 @@ function App() {
     lossyEdgeWidth: parseFloat(lossyEdgeWidth),
     waferWidth: waferWidth,
     waferHeight: waferHeight,
-    easterEggEnabled: easterEggEnabled
+    easterEggEnabled: easterEggEnabled,
+    showShotMap: showShotMap
+  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Checkbox_Checkbox__WEBPACK_IMPORTED_MODULE_1__.Checkbox, {
+    label: "Show Reticle Shot Grid",
+    onChange: handleShowShotMapChange,
+    checked: showShotMap
   }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "panel"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", null, "Results"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_ResultsStats_ResultsStats__WEBPACK_IMPORTED_MODULE_6__.ResultsStats, {
@@ -1140,9 +1149,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var react_parallax_tilt__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-parallax-tilt */ "./node_modules/react-parallax-tilt/dist/modern/index.js");
+/* harmony import */ var react_parallax_tilt__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react-parallax-tilt */ "./node_modules/react-parallax-tilt/dist/modern/index.js");
 /* harmony import */ var _utils_canvas__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../utils/canvas */ "./src/utils/canvas.ts");
 /* harmony import */ var _assets_tsmc_logo_svg__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../assets/tsmc-logo.svg */ "./src/assets/tsmc-logo.svg");
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../config */ "./src/config/index.ts");
+
 
 
 
@@ -1212,7 +1223,6 @@ function DieDecorativeCanvas(props) {
     if (!props.results || props.results.dies.length > maxDies) {
       return;
     }
-    context.clearRect(0, 0, canvasEl.current.width, canvasEl.current.height);
     // Background color
     context.fillStyle = "rgba(217,217,210,0.76)";
     // Draw a background rectangle for a panel, or a background circle for a disc
@@ -1229,6 +1239,37 @@ function DieDecorativeCanvas(props) {
   }, [JSON.stringify(props.results)]);
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("canvas", {
     className: "wafer-canvas__die-decorative",
+    ref: canvasEl,
+    width: props.waferWidth * mmToPxScale,
+    height: props.waferHeight * mmToPxScale
+  });
+}
+function ShotMap(props) {
+  const canvasEl = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    if (!canvasEl.current) {
+      return;
+    }
+    const context = canvasEl.current.getContext("2d");
+    if (!context) {
+      return;
+    }
+    context.clearRect(0, 0, canvasEl.current.width, canvasEl.current.height);
+    if (!props.results || props.results.dies.length > maxDies) {
+      return;
+    }
+    context.strokeStyle = "blue";
+    // Draw the top and right edges of each field in the shot map
+    props.results.fields.forEach(field => {
+      context.beginPath();
+      context.moveTo(mmToPxScale * field.x, mmToPxScale * field.y);
+      context.lineTo(mmToPxScale * field.x + mmToPxScale * _config__WEBPACK_IMPORTED_MODULE_3__.fieldWidthMM, mmToPxScale * field.y);
+      context.lineTo(mmToPxScale * field.x + mmToPxScale * _config__WEBPACK_IMPORTED_MODULE_3__.fieldWidthMM, mmToPxScale * field.y + mmToPxScale * _config__WEBPACK_IMPORTED_MODULE_3__.fieldHeightMM);
+      context.stroke(); // Render the path
+    });
+  }, [JSON.stringify(props.results)]);
+  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("canvas", {
+    className: "wafer-canvas__shot-map",
     ref: canvasEl,
     width: props.waferWidth * mmToPxScale,
     height: props.waferHeight * mmToPxScale
@@ -1290,7 +1331,7 @@ function WaferCanvas(props) {
     setTiltY(tiltAngleYPercentage);
   }
   if (props.easterEggEnabled) {
-    return react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_parallax_tilt__WEBPACK_IMPORTED_MODULE_3__["default"], {
+    return react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_parallax_tilt__WEBPACK_IMPORTED_MODULE_4__["default"], {
       glareEnable: true,
       glareMaxOpacity: 0.75,
       scale: 1.05,
@@ -1300,7 +1341,7 @@ function WaferCanvas(props) {
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     role: "presentation",
     "aria-label": "A rendering of a silicon wafer"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_parallax_tilt__WEBPACK_IMPORTED_MODULE_3__["default"], {
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_parallax_tilt__WEBPACK_IMPORTED_MODULE_4__["default"], {
     key: props.shape,
     glareEnable: true,
     glareMaxOpacity: 0.75,
@@ -1319,6 +1360,10 @@ function WaferCanvas(props) {
     waferWidth: props.waferWidth,
     waferHeight: props.waferHeight
   }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(DieMapCanvas, {
+    results: props.results,
+    waferWidth: props.waferWidth,
+    waferHeight: props.waferHeight
+  }), props.showShotMap && react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ShotMap, {
     results: props.results,
     waferWidth: props.waferWidth,
     waferHeight: props.waferHeight
@@ -1342,6 +1387,8 @@ function WaferCanvas(props) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   fieldHeightMM: () => (/* reexport safe */ _sizes__WEBPACK_IMPORTED_MODULE_0__.fieldHeightMM),
+/* harmony export */   fieldWidthMM: () => (/* reexport safe */ _sizes__WEBPACK_IMPORTED_MODULE_0__.fieldWidthMM),
 /* harmony export */   minDieEdge: () => (/* reexport safe */ _sizes__WEBPACK_IMPORTED_MODULE_0__.minDieEdge),
 /* harmony export */   panelSizes: () => (/* reexport safe */ _sizes__WEBPACK_IMPORTED_MODULE_0__.panelSizes),
 /* harmony export */   waferSizes: () => (/* reexport safe */ _sizes__WEBPACK_IMPORTED_MODULE_0__.waferSizes),
@@ -1362,6 +1409,8 @@ __webpack_require__.r(__webpack_exports__);
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   fieldHeightMM: () => (/* binding */ fieldHeightMM),
+/* harmony export */   fieldWidthMM: () => (/* binding */ fieldWidthMM),
 /* harmony export */   minDieEdge: () => (/* binding */ minDieEdge),
 /* harmony export */   panelSizes: () => (/* binding */ panelSizes),
 /* harmony export */   waferSizes: () => (/* binding */ waferSizes)
@@ -1442,6 +1491,8 @@ const waferSizes = {
     width: 450
   }
 };
+const fieldWidthMM = 26;
+const fieldHeightMM = 33;
 
 /***/ }),
 
@@ -1738,7 +1789,7 @@ function getDieOffset(inputs, waferCenteringEnabled) {
  * @param scribeVert
  */
 function getRelativeDiePositions(dieWidth, dieHeight, scribeHoriz, scribeVert) {
-  return (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.rectanglesInRectangle)(26, 33, dieWidth, dieHeight, scribeHoriz, scribeVert, 0, 0, false, false);
+  return (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.rectanglesInRectangle)(_config__WEBPACK_IMPORTED_MODULE_0__.fieldWidthMM, _config__WEBPACK_IMPORTED_MODULE_0__.fieldHeightMM, dieWidth, dieHeight, scribeHoriz, scribeVert, 0, 0, true, false);
 }
 /**
  * Calculate the absolute position of each die based on shot coordinates + die
@@ -1829,7 +1880,7 @@ function evaluatePanelInputs(inputVals, selectedSize, selectedModel, waferCenter
     y: offsetY
   } = getDieOffset(inputVals, waferCenteringEnabled);
   // First, calculate the reticle shot map
-  const shotPositions = (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.rectanglesInRectangle)(width, height, 26, 33, 0, 0, offsetX, offsetY, true, true);
+  const shotPositions = (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.rectanglesInRectangle)(width, height, _config__WEBPACK_IMPORTED_MODULE_0__.fieldWidthMM, _config__WEBPACK_IMPORTED_MODULE_0__.fieldHeightMM, 0, 0, offsetX, offsetY, true, true);
   // Calculate the position of dies in a single shot
   const diesInShot = getRelativeDiePositions(dieWidth, dieHeight, scribeHoriz, scribeVert);
   const dieMap = createDieMap(shotPositions, diesInShot, dieWidth, dieHeight, fabYield, coordinate => {
@@ -1848,7 +1899,8 @@ function evaluatePanelInputs(inputVals, selectedSize, selectedModel, waferCenter
     lostDies,
     totalDies: dieMap.length,
     goodDies,
-    fabYield
+    fabYield,
+    fields: shotPositions
   };
 }
 /**
@@ -1878,7 +1930,7 @@ function evaluateDiscInputs(inputVals, selectedSize, selectedModel, waferCenteri
     y: offsetY
   } = getDieOffset(inputVals, waferCenteringEnabled);
   // First, calculate the reticle shot map
-  const shotPositions = (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.rectanglesInCircle)(width, 26, 33, 0, 0, offsetX, offsetY, true);
+  const shotPositions = (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.rectanglesInCircle)(width, _config__WEBPACK_IMPORTED_MODULE_0__.fieldWidthMM, _config__WEBPACK_IMPORTED_MODULE_0__.fieldHeightMM, 0, 0, offsetX, offsetY, true);
   // Calculate the position of dies in a single shot
   const diesInShot = getRelativeDiePositions(dieWidth, dieHeight, scribeHoriz, scribeVert);
   const dieMap = createDieMap(shotPositions, diesInShot, dieWidth, dieHeight, fabYield, coordinate => {
@@ -1898,7 +1950,8 @@ function evaluateDiscInputs(inputVals, selectedSize, selectedModel, waferCenteri
     defectiveDies,
     partialDies,
     lostDies,
-    fabYield
+    fabYield,
+    fields: shotPositions
   };
 }
 

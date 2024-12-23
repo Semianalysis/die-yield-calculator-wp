@@ -1,3 +1,5 @@
+import { Position } from "./geometry";
+
 export type DieState = "good" | "defective" | "partial" | "lost";
 
 export type Die = {
@@ -17,4 +19,5 @@ export type FabResults = null | {
 	partialDies: number;
 	fabYield: number,
 	dies: Array<Die>
+	fields: Array<Position>
 };

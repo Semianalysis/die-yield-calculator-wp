@@ -1,7 +1,7 @@
-import React from 'react';
-import { render, screen } from '@testing-library/react';
-import { ResultsStats } from './ResultsStats';
-import { FabResults } from '../../types';
+import React from "react";
+import { render, screen } from "@testing-library/react";
+import { ResultsStats } from "./ResultsStats";
+import { FabResults } from "../../types";
 
 const results: FabResults = {
 	totalDies: 100,
@@ -11,10 +11,11 @@ const results: FabResults = {
 	lostDies: 2,
 	fabYield: 0.9,
 	dies: [],
+	fields: []
 };
 
-describe('ResultStats', () => {
-	it('renders the ResultsStats component with correct values', () => {
+describe("ResultStats", () => {
+	it("renders the ResultsStats component with correct values", () => {
 		render(
 			<ResultsStats
 				results={results}
@@ -35,7 +36,7 @@ describe('ResultStats', () => {
 		expect(screen.getByText(/Total Die Area: 100cm²/i)).toBeInTheDocument();
 	});
 
-	it('renders the wafer diameter for wafer-type substrate', () => {
+	it("renders the wafer diameter for wafer-type substrate", () => {
 		render(
 			<ResultsStats
 				results={results}
@@ -51,7 +52,7 @@ describe('ResultStats', () => {
 		expect(screen.getByText(/Wafer Area: 314\.1593cm²/i)).toBeInTheDocument();
 	});
 
-	it('renders the width and height for panel-type substrate', () => {
+	it("renders the width and height for panel-type substrate", () => {
 		render(
 			<ResultsStats
 				results={results}

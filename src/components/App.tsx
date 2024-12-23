@@ -2,7 +2,13 @@ import React, { useState, useEffect, useRef } from "react";
 import { Checkbox } from "./Checkbox/Checkbox";
 import { NumberInput } from "./NumberInput/NumberInput";
 import { useInputs } from "../hooks/useInputs";
-import { panelSizes, waferSizes, yieldModels, minDieEdge } from "../config";
+import {
+	panelSizes,
+	waferSizes,
+	yieldModels,
+	minDieEdge,
+	fieldWidthMM, fieldHeightMM
+} from "../config";
 import { SubstrateShape } from "../types";
 import { WaferCanvas } from "./WaferCanvas/WaferCanvas";
 import { ResultsStats } from "./ResultsStats/ResultsStats";
@@ -99,9 +105,9 @@ function getDieMaxDimensions(
 	maintainAspectRatio: boolean,
 	aspectRatio: number
 ) {
-	// 26mm x 33mm is the current industry max reticle size
-	const boundingSquareWidth = reticleLimit ? 26 : waferWidth / 4;
-	const boundingSquareHeight = reticleLimit ? 33 : waferHeight / 4;
+	// Cannot exceed reticle dimensions
+	const boundingSquareWidth = reticleLimit ? fieldWidthMM : waferWidth / 4;
+	const boundingSquareHeight = reticleLimit ? fieldHeightMM : waferHeight / 4;
 
 	if (!maintainAspectRatio) {
 		return {
@@ -139,6 +145,7 @@ function App() {
 	const [lossyEdgeWidth, setLossyEdgeWidth] = useState<string>("3");
 	const [allCritical, setAllCritical] = useState(true);
 	const [reticleLimit, setReticleLimit] = useState(true);
+	const [showShotMap, setShowShotMap] = useState(true);
 	const [scribeHoriz, setScribeHoriz] = useState<string>("0.2");
 	const [scribeVert, setScribeVert] = useState<string>("0.2");
 	const [transHoriz, setTransHoriz] = useState<string>("0");
@@ -267,6 +274,10 @@ function App() {
 		}
 	};
 
+	const handleShowShotMapChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setShowShotMap(event.target.checked);
+	}
+
 	return (
 		<div className="container">
 			<div className="columns">
@@ -297,7 +308,7 @@ function App() {
 							checked={maintainAspectRatio}
 						/>
 						<Checkbox
-							label="Reticle Limit (26mm x 33mm)"
+							label={`Reticle Limit (${fieldWidthMM}mm x ${fieldHeightMM}mm)`}
 							onChange={handleReticleLimitChange}
 							checked={reticleLimit}
 						/>
@@ -401,6 +412,12 @@ function App() {
 							waferWidth={waferWidth}
 							waferHeight={waferHeight}
 							easterEggEnabled={easterEggEnabled}
+							showShotMap={showShotMap}
+						/>
+						<Checkbox
+							label="Show Reticle Shot Grid"
+							onChange={handleShowShotMapChange}
+							checked={showShotMap}
 						/>
 						<div className="panel">
 							<h2>Results</h2>

@@ -1,7 +1,12 @@
-import { waferSizes, panelSizes, yieldModels } from "../config";
-import { Die, DieState, FabResults } from "../types";
 import {
-	Position,
+	waferSizes,
+	panelSizes,
+	yieldModels,
+	fieldWidthMM,
+	fieldHeightMM
+} from "../config";
+import { Die, DieState, FabResults, Position } from "../types";
+import {
 	getRectCorners,
 	isInsideCircle,
 	isInsideRectangle,
@@ -124,15 +129,15 @@ function getRelativeDiePositions(
 	scribeVert: number
 ) {
 	return rectanglesInRectangle(
-		26,
-		33,
+		fieldWidthMM,
+		fieldHeightMM,
 		dieWidth,
 		dieHeight,
 		scribeHoriz,
 		scribeVert,
 		0,
 		0,
-		false,
+		true,
 		false
 	);
 }
@@ -261,8 +266,8 @@ export function evaluatePanelInputs(
 	const shotPositions = rectanglesInRectangle(
 		width,
 		height,
-		26,
-		33,
+		fieldWidthMM,
+		fieldHeightMM,
 		0,
 		0,
 		offsetX,
@@ -308,7 +313,8 @@ export function evaluatePanelInputs(
 		lostDies,
 		totalDies: dieMap.length,
 		goodDies,
-		fabYield
+		fabYield,
+		fields: shotPositions
 	};
 }
 
@@ -347,8 +353,8 @@ export function evaluateDiscInputs(
 	// First, calculate the reticle shot map
 	const shotPositions = rectanglesInCircle(
 		width,
-		26,
-		33,
+		fieldWidthMM,
+		fieldHeightMM,
 		0,
 		0,
 		offsetX,
@@ -393,6 +399,7 @@ export function evaluateDiscInputs(
 		defectiveDies,
 		partialDies,
 		lostDies,
-		fabYield
+		fabYield,
+		fields: shotPositions
 	};
 }

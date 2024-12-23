@@ -2,7 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { FabResults, SubstrateShape } from "../../types";
 import Tilt, { OnMoveParams } from "react-parallax-tilt";
 import { createHatchingCanvasPattern } from "../../utils/canvas";
-import { ReactComponent as TSMCLogo } from '../../assets/tsmc-logo.svg';
+import { ReactComponent as TSMCLogo } from "../../assets/tsmc-logo.svg";
+import { fieldHeightMM, fieldWidthMM } from "../../config";
 
 // How many pixels should be rendered for every mm of wafer size
 const mmToPxScale = 3;
@@ -106,7 +107,6 @@ function DieDecorativeCanvas(props: {
 			return;
 		}
 
-		context.clearRect(0, 0, canvasEl.current.width, canvasEl.current.height);
 		// Background color
 		context.fillStyle = "rgba(217,217,210,0.76)";
 		// Draw a background rectangle for a panel, or a background circle for a disc
@@ -138,6 +138,56 @@ function DieDecorativeCanvas(props: {
 	return (
 		<canvas
 			className="wafer-canvas__die-decorative"
+			ref={canvasEl}
+			width={props.waferWidth * mmToPxScale}
+			height={props.waferHeight * mmToPxScale}
+		></canvas>
+	);
+}
+
+function ShotMap(props: {
+	results: FabResults;
+	waferWidth: number;
+	waferHeight: number;
+}) {
+	const canvasEl = useRef<HTMLCanvasElement>(null);
+
+	useEffect(() => {
+		if (!canvasEl.current) {
+			return;
+		}
+
+		const context = canvasEl.current.getContext("2d");
+
+		if (!context) {
+			return;
+		}
+
+		context.clearRect(0, 0, canvasEl.current.width, canvasEl.current.height);
+
+		if (!props.results || props.results.dies.length > maxDies) {
+			return;
+		}
+		context.strokeStyle = "blue";
+		// Draw the top and right edges of each field in the shot map
+		props.results.fields.forEach((field) => {
+			context.beginPath()
+			context.moveTo(mmToPxScale * field.x, mmToPxScale * field.y);
+			context.lineTo(
+				mmToPxScale * field.x + mmToPxScale * fieldWidthMM,
+				mmToPxScale * field.y
+			);
+			context.lineTo(
+				mmToPxScale * field.x + mmToPxScale * fieldWidthMM,
+				mmToPxScale * field.y + mmToPxScale * fieldHeightMM
+			);
+			context.stroke(); // Render the path
+		});
+	}, [JSON.stringify(props.results)]);
+
+	return (
+		<canvas
+			className="wafer-canvas__shot-map"
 			ref={canvasEl}
 			width={props.waferWidth * mmToPxScale}
 			height={props.waferHeight * mmToPxScale}
@@ -220,6 +270,7 @@ export function WaferCanvas(props: {
 	waferWidth: number;
 	waferHeight: number;
 	easterEggEnabled: boolean;
+	showShotMap: boolean;
 }) {
 	const [tiltX, setTiltX] = useState(0);
 	const [tiltY, setTiltY] = useState(0);
@@ -269,6 +320,15 @@ export function WaferCanvas(props: {
 					waferWidth={props.waferWidth}
 					waferHeight={props.waferHeight}
 				/>
+				{
+					props.showShotMap && (
+						<ShotMap
+							results={props.results}
+							waferWidth={props.waferWidth}
+							waferHeight={props.waferHeight}
+						/>
+					)
+				}
 				<LossyEdgeMarker
 					lossyEdgeWidth={props.lossyEdgeWidth}
 					waferWidth={props.waferWidth}
