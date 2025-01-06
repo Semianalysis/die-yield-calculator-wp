@@ -1,6 +1,9 @@
-# Die yield calculator WordPress block
+# SemiAnalysis Die Yield Calculator WordPress block
 
-WordPress Gutenberg block for embedding the SemiAnalysis die yield calculator React application in posts and pages.
+WordPress Gutenberg block for embedding the SemiAnalysis Die Yield Calculator React application into posts and pages.
+
+## Licensing
+The SemiAnalysis Die Yield Calculator is 'source available', in that the code is made available here for you to view, submit issues and pull requests, and run locally on your own machine for personal (non-commercial) use, but SemiAnalysis maintains full ownership of the code, implementation, and assets. 
 
 ## Development
 
