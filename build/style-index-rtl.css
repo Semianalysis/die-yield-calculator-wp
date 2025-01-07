@@ -327,7 +327,7 @@
 .wp-block-create-block-die-yield-calculator .wafer-canvas:hover .wafer-canvas__shot-map,
 .wp-block-create-block-die-yield-calculator .wafer-canvas:hover .wafer-canvas__die-map,
 .wp-block-create-block-die-yield-calculator .wafer-canvas:hover .wafer-canvas__edge {
-  opacity: 0.2;
+  opacity: 0;
 }
 .wp-block-create-block-die-yield-calculator .wafer-canvas .wafer-canvas__message, .wp-block-create-block-die-yield-calculator .wafer-canvas .wafer-canvas__message--error {
   position: absolute;
