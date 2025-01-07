@@ -1280,13 +1280,15 @@ function ShotMap(props) {
       context.stroke(); // Render the path
     });
     // Draw crosshairs on wafer to indicate 0,0
-    context.strokeStyle = "black";
+    context.strokeStyle = "rgba(0,0,0,0.5)";
+    context.setLineDash([8, 5]);
     context.beginPath();
     context.moveTo(0, props.waferHeight * mmToPxScale / 2);
     context.lineTo(props.waferWidth * mmToPxScale, props.waferHeight * mmToPxScale / 2);
     context.moveTo(props.waferWidth * mmToPxScale / 2, 0);
     context.lineTo(props.waferWidth * mmToPxScale / 2, props.waferHeight * mmToPxScale);
     context.stroke(); // Render the path
+    context.setLineDash([]); // Reset line dash
   }, [JSON.stringify(props.results)]);
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("canvas", {
     className: "wafer-canvas__shot-map",

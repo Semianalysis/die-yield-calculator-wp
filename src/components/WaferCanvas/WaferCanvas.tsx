@@ -187,7 +187,8 @@ function ShotMap(props: {
 		});
 
 		// Draw crosshairs on wafer to indicate 0,0
-		context.strokeStyle = "black";
+		context.strokeStyle = "rgba(0,0,0,0.5)";
+		context.setLineDash([8, 5]);
 		context.beginPath();
 		context.moveTo(0, props.waferHeight * mmToPxScale / 2);
 		context.lineTo(
@@ -200,6 +201,7 @@ function ShotMap(props: {
 			props.waferHeight * mmToPxScale
 		);
 		context.stroke(); // Render the path
+		context.setLineDash([]); // Reset line dash
 	}, [JSON.stringify(props.results)]);
 
 	return (
