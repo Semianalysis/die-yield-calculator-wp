@@ -22,19 +22,21 @@ const validations : { [k in keyof InputValues] : (inputs: InputValues) => boolea
  * Given the numeric inputs, selected wafer properties, and a yield model, calculate
  * the expected fabrication results.
  * @param values numeric values provided by the user via inputs
- * @param waferCenteringEnabled center by wafer (true) or by die (false)
  * @param yieldModel mathematical model for calculating yield
  * @param shape wafer shape
  * @param panelSize chosen size of panel wafer
  * @param discSize chosen size of disc wafer
+ * @param fieldWidth width of one shot/field
+ * @param fieldHeight height of one shot/field
  */
 export function useInputs(
 	values: InputValues,
-	waferCenteringEnabled: boolean,
 	yieldModel: keyof typeof yieldModels,
 	shape: SubstrateShape,
 	panelSize: keyof typeof panelSizes,
-	discSize: keyof typeof waferSizes
+	discSize: keyof typeof waferSizes,
+	fieldWidth: number,
+	fieldHeight: number,
 ) {
 	const [results, setResults] = useState<FabResults>(null);
 
@@ -46,12 +48,12 @@ export function useInputs(
 			setResults(null);
 		} else {
 			if (shape === "Wafer") {
-				setResults(evaluateDiscInputs(values, discSize, yieldModel, waferCenteringEnabled));
+				setResults(evaluateDiscInputs(values, discSize, yieldModel, fieldWidth, fieldHeight));
 			} else if (shape === "Panel") {
-				setResults(evaluatePanelInputs(values, panelSize, yieldModel, waferCenteringEnabled));
+				setResults(evaluatePanelInputs(values, panelSize, yieldModel, fieldWidth, fieldHeight));
 			}
 		}
-	}, [JSON.stringify(values), shape, panelSize, discSize, yieldModel, waferCenteringEnabled], 100);
+	}, [JSON.stringify(values), shape, panelSize, discSize, yieldModel, fieldWidth, fieldHeight], 100);
 
 	return results;
 }

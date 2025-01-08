@@ -3,7 +3,6 @@ import { FabResults, SubstrateShape } from "../../types";
 import Tilt, { OnMoveParams } from "react-parallax-tilt";
 import { createHatchingCanvasPattern } from "../../utils/canvas";
 import { ReactComponent as TSMCLogo } from "../../assets/tsmc-logo.svg";
-import { fieldHeightMM, fieldWidthMM } from "../../config";
 
 // How many pixels should be rendered for every mm of wafer size
 const mmToPxScale = 3;
@@ -149,6 +148,8 @@ function ShotMap(props: {
 	results: FabResults;
 	waferWidth: number;
 	waferHeight: number;
+	fieldWidth: number;
+	fieldHeight: number;
 }) {
 	const canvasEl = useRef<HTMLCanvasElement>(null);
 
@@ -168,21 +169,39 @@ function ShotMap(props: {
 		if (!props.results || props.results.dies.length > maxDies) {
 			return;
 		}
+
 		context.strokeStyle = "blue";
 		// Draw the top and right edges of each field in the shot map
 		props.results.fields.forEach((field) => {
-			context.beginPath()
+			context.beginPath();
 			context.moveTo(mmToPxScale * field.x, mmToPxScale * field.y);
 			context.lineTo(
-				mmToPxScale * field.x + mmToPxScale * fieldWidthMM,
+				mmToPxScale * field.x + mmToPxScale * props.fieldWidth,
 				mmToPxScale * field.y
 			);
 			context.lineTo(
-				mmToPxScale * field.x + mmToPxScale * fieldWidthMM,
-				mmToPxScale * field.y + mmToPxScale * fieldHeightMM
+				mmToPxScale * field.x + mmToPxScale * props.fieldWidth,
+				mmToPxScale * field.y + mmToPxScale * props.fieldHeight
 			);
 			context.stroke(); // Render the path
 		});
+
+		// Draw crosshairs on wafer to indicate 0,0
+		context.strokeStyle = "rgba(0,0,0,0.5)";
+		context.setLineDash([8, 5]);
+		context.beginPath();
+		context.moveTo(0, props.waferHeight * mmToPxScale / 2);
+		context.lineTo(
+			props.waferWidth * mmToPxScale,
+			props.waferHeight * mmToPxScale / 2
+		);
+		context.moveTo(props.waferWidth * mmToPxScale / 2, 0);
+		context.lineTo(
+			props.waferWidth * mmToPxScale / 2,
+			props.waferHeight * mmToPxScale
+		);
+		context.stroke(); // Render the path
+		context.setLineDash([]); // Reset line dash
 	}, [JSON.stringify(props.results)]);
 
 	return (
@@ -271,6 +290,8 @@ export function WaferCanvas(props: {
 	waferHeight: number;
 	easterEggEnabled: boolean;
 	showShotMap: boolean;
+	fieldWidth: number;
+	fieldHeight: number;
 }) {
 	const [tiltX, setTiltX] = useState(0);
 	const [tiltY, setTiltY] = useState(0);
@@ -326,6 +347,8 @@ export function WaferCanvas(props: {
 							results={props.results}
 							waferWidth={props.waferWidth}
 							waferHeight={props.waferHeight}
+							fieldWidth={props.fieldWidth}
+							fieldHeight={props.fieldHeight}
 						/>
 					)
 				}
