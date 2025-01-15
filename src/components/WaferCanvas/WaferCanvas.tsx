@@ -122,7 +122,7 @@ function DieDecorativeCanvas(props: {
 			context.fill();
 		}
 
-		// Cut out each die from the background color the canvas
+		// Cut out each die from the background color of the canvas
 		props.results.dies.forEach((die) => {
 			context.clearRect(
 				mmToPxScale * die.x,
@@ -277,7 +277,7 @@ function LossyEdgeMarker(props: {
 			waferWidthPx,
 			props.notchKeepOutHeight * mmToPxScale,
 		);
-		const keepOutPattern = createHatchingCanvasPattern(context, "red");
+		const keepOutPattern = createHatchingCanvasPattern(context, "black");
 		if (keepOutPattern) {
 			context.fillStyle = keepOutPattern;
 		}
