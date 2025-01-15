@@ -88,6 +88,7 @@ export type InputValues = {
 	criticalArea: number;
 	defectRate: number;
 	lossyEdgeWidth: number;
+	notchKeepOutHeight: number;
 	scribeHoriz: number;
 	scribeVert: number;
 	transHoriz: number;
@@ -346,6 +347,7 @@ export function evaluateDiscInputs(
 		criticalArea,
 		defectRate,
 		lossyEdgeWidth,
+		notchKeepOutHeight,
 		scribeHoriz,
 		scribeVert
 	} = inputVals;
@@ -370,6 +372,11 @@ export function evaluateDiscInputs(
 		true
 	);
 
+	// Exclude shots that overlap the keep-out area
+	const shotPositionsFiltered = shotPositions.filter((shot) => {
+		return shot.y + fieldHeight < width - notchKeepOutHeight
+	});
+
 	// Calculate the position of dies in a single shot
 	const diesInShot = getRelativeDiePositions(
 		dieWidth,
@@ -381,7 +388,7 @@ export function evaluateDiscInputs(
 	);
 
 	const dieMap = createDieMap(
-		shotPositions,
+		shotPositionsFiltered,
 		diesInShot,
 		dieWidth,
 		dieHeight,
@@ -410,6 +417,6 @@ export function evaluateDiscInputs(
 		partialDies,
 		lostDies,
 		fabYield,
-		fields: shotPositions
+		fields: shotPositionsFiltered
 	};
 }

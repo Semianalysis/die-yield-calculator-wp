@@ -131,6 +131,7 @@ function App() {
 	const [criticalArea, setCriticalArea] = useState<string>("64");
 	const [defectRate, setDefectRate] = useState<string>("0.1");
 	const [lossyEdgeWidth, setLossyEdgeWidth] = useState<string>("3");
+	const [notchKeepOutHeight, setNotchKeepOutHeight] = useState<string>("5");
 	const [allCritical, setAllCritical] = useState(true);
 	const [reticleLimit, setReticleLimit] = useState(true);
 	const [showShotMap, setShowShotMap] = useState(true);
@@ -155,6 +156,7 @@ function App() {
 			criticalArea: parseFloat(criticalArea),
 			defectRate: parseFloat(defectRate),
 			lossyEdgeWidth: parseFloat(lossyEdgeWidth),
+			notchKeepOutHeight: parseFloat(notchKeepOutHeight),
 			scribeHoriz: parseFloat(scribeHoriz),
 			scribeVert: parseFloat(scribeVert),
 			transHoriz: parseFloat(transHoriz),
@@ -399,6 +401,14 @@ function App() {
 							label="Edge Loss (mm)"
 							value={lossyEdgeWidth}
 							onChange={(event) => setLossyEdgeWidth(event.target.value)}
+							max={Math.min(waferWidth, waferHeight) / 2}
+						/>
+					</div>
+					<div className="input-row">
+						<NumberInput
+							label="Notch keep-out (mm)"
+							value={notchKeepOutHeight}
+							onChange={(event) => setNotchKeepOutHeight(event.target.value)}
 							max={Math.min(waferWidth, waferHeight) / 2}
 						/>
 					</div>
