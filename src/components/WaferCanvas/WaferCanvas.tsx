@@ -21,7 +21,7 @@ function DieMapCanvas(props: {
 		good: "rgba(6,231,6,0.77)",
 		defective: "rgba(151,138,129,0.8)",
 		partial: "rgba(249,249,27,0.68)",
-		lost: "rgba(243,81,67,0.68)"
+		lost: "rgba(243,81,67,0.68)",
 	};
 
 	useEffect(() => {
@@ -49,7 +49,7 @@ function DieMapCanvas(props: {
 				mmToPxScale * die.x,
 				mmToPxScale * die.y,
 				mmToPxScale * die.width,
-				mmToPxScale * die.height
+				mmToPxScale * die.height,
 			);
 		});
 	}, [JSON.stringify(props.results)]);
@@ -86,7 +86,6 @@ function DieDecorativeCanvas(props: {
 	waferWidth: number;
 	waferHeight: number;
 }) {
-
 	const canvasEl = useRef<HTMLCanvasElement>(null);
 
 	useEffect(() => {
@@ -118,7 +117,7 @@ function DieDecorativeCanvas(props: {
 				canvasEl.current.width / 2,
 				0,
 				2 * Math.PI,
-				false
+				false,
 			);
 			context.fill();
 		}
@@ -129,7 +128,7 @@ function DieDecorativeCanvas(props: {
 				mmToPxScale * die.x,
 				mmToPxScale * die.y,
 				mmToPxScale * die.width,
-				mmToPxScale * die.height
+				mmToPxScale * die.height,
 			);
 		});
 	}, [JSON.stringify(props.results)]);
@@ -177,11 +176,11 @@ function ShotMap(props: {
 			context.moveTo(mmToPxScale * field.x, mmToPxScale * field.y);
 			context.lineTo(
 				mmToPxScale * field.x + mmToPxScale * props.fieldWidth,
-				mmToPxScale * field.y
+				mmToPxScale * field.y,
 			);
 			context.lineTo(
 				mmToPxScale * field.x + mmToPxScale * props.fieldWidth,
-				mmToPxScale * field.y + mmToPxScale * props.fieldHeight
+				mmToPxScale * field.y + mmToPxScale * props.fieldHeight,
 			);
 			context.stroke(); // Render the path
 		});
@@ -190,15 +189,15 @@ function ShotMap(props: {
 		context.strokeStyle = "rgba(0,0,0,0.5)";
 		context.setLineDash([8, 5]);
 		context.beginPath();
-		context.moveTo(0, props.waferHeight * mmToPxScale / 2);
+		context.moveTo(0, (props.waferHeight * mmToPxScale) / 2);
 		context.lineTo(
 			props.waferWidth * mmToPxScale,
-			props.waferHeight * mmToPxScale / 2
+			(props.waferHeight * mmToPxScale) / 2,
 		);
-		context.moveTo(props.waferWidth * mmToPxScale / 2, 0);
+		context.moveTo((props.waferWidth * mmToPxScale) / 2, 0);
 		context.lineTo(
-			props.waferWidth * mmToPxScale / 2,
-			props.waferHeight * mmToPxScale
+			(props.waferWidth * mmToPxScale) / 2,
+			props.waferHeight * mmToPxScale,
 		);
 		context.stroke(); // Render the path
 		context.setLineDash([]); // Reset line dash
@@ -214,19 +213,23 @@ function ShotMap(props: {
 	);
 }
 
-
 function LossyEdgeMarker(props: {
 	lossyEdgeWidth: number;
 	waferWidth: number;
 	waferHeight: number;
 	shape: SubstrateShape;
+	notchKeepOutHeight: number;
 }) {
 	const canvasEl = useRef<HTMLCanvasElement>(null);
 	const waferWidthPx = props.waferWidth * mmToPxScale;
 	const waferHeightPx = props.waferHeight * mmToPxScale;
 
 	useEffect(() => {
-		if (!canvasEl.current || props.waferWidth === 0 || props.lossyEdgeWidth > props.waferWidth / 2) {
+		if (
+			!canvasEl.current ||
+			props.waferWidth === 0 ||
+			props.lossyEdgeWidth > props.waferWidth / 2
+		) {
 			return;
 		}
 
@@ -239,9 +242,9 @@ function LossyEdgeMarker(props: {
 		const lossyEdgeWidthInPx = props.lossyEdgeWidth * mmToPxScale;
 
 		// Set the pattern as the fill style
-		const pattern = createHatchingCanvasPattern(context);
-		if (pattern) {
-			context.fillStyle = pattern;
+		const lossyEdgePattern = createHatchingCanvasPattern(context);
+		if (lossyEdgePattern) {
+			context.fillStyle = lossyEdgePattern;
 		}
 
 		context.clearRect(0, 0, canvasEl.current.width, canvasEl.current.height);
@@ -261,11 +264,30 @@ function LossyEdgeMarker(props: {
 			context.clearRect(
 				lossyEdgeWidthInPx,
 				lossyEdgeWidthInPx,
-				waferWidthPx - (lossyEdgeWidthInPx * 2),
-				waferHeightPx - (lossyEdgeWidthInPx * 2)
+				waferWidthPx - lossyEdgeWidthInPx * 2,
+				waferHeightPx - lossyEdgeWidthInPx * 2,
 			);
 		}
-	}, [props.lossyEdgeWidth, props.shape, props.waferWidth, props.waferHeight]);
+
+		// Clear the notch keep-out area so we can color it differently
+		const keepOutY = (props.waferHeight - props.notchKeepOutHeight) * mmToPxScale;
+		context.clearRect(
+			0,
+			keepOutY,
+			waferWidthPx,
+			props.notchKeepOutHeight * mmToPxScale,
+		);
+		const keepOutPattern = createHatchingCanvasPattern(context, "red");
+		if (keepOutPattern) {
+			context.fillStyle = keepOutPattern;
+		}
+		context.fillRect(
+			0,
+			keepOutY,
+			waferWidthPx,
+			props.notchKeepOutHeight * mmToPxScale,
+		);
+	}, [props.lossyEdgeWidth, props.notchKeepOutHeight, props.shape, props.waferWidth, props.waferHeight]);
 
 	return (
 		<canvas
@@ -285,6 +307,7 @@ function LossyEdgeMarker(props: {
 export function WaferCanvas(props: {
 	results: FabResults;
 	lossyEdgeWidth: number;
+	notchKeepOutHeight: number;
 	shape: SubstrateShape;
 	waferWidth: number;
 	waferHeight: number;
@@ -296,7 +319,10 @@ export function WaferCanvas(props: {
 	const [tiltX, setTiltX] = useState(0);
 	const [tiltY, setTiltY] = useState(0);
 
-	function onMove({ tiltAngleXPercentage, tiltAngleYPercentage }: OnMoveParams) {
+	function onMove({
+		tiltAngleXPercentage,
+		tiltAngleYPercentage,
+	}: OnMoveParams) {
 		setTiltX(tiltAngleXPercentage);
 		setTiltY(tiltAngleYPercentage);
 	}
@@ -328,8 +354,9 @@ export function WaferCanvas(props: {
 				<div
 					className="wafer-canvas__mirror-background"
 					style={{
-						backgroundPositionX: `${(tiltY / 2) + (tiltX / 4)}% `
-					}}></div>
+						backgroundPositionX: `${tiltY / 2 + tiltX / 4}% `,
+					}}
+				></div>
 				<DieDecorativeCanvas
 					results={props.results}
 					shape={props.shape}
@@ -341,22 +368,21 @@ export function WaferCanvas(props: {
 					waferWidth={props.waferWidth}
 					waferHeight={props.waferHeight}
 				/>
-				{
-					props.showShotMap && (
-						<ShotMap
-							results={props.results}
-							waferWidth={props.waferWidth}
-							waferHeight={props.waferHeight}
-							fieldWidth={props.fieldWidth}
-							fieldHeight={props.fieldHeight}
-						/>
-					)
-				}
+				{props.showShotMap && (
+					<ShotMap
+						results={props.results}
+						waferWidth={props.waferWidth}
+						waferHeight={props.waferHeight}
+						fieldWidth={props.fieldWidth}
+						fieldHeight={props.fieldHeight}
+					/>
+				)}
 				<LossyEdgeMarker
 					lossyEdgeWidth={props.lossyEdgeWidth}
 					waferWidth={props.waferWidth}
 					waferHeight={props.waferHeight}
 					shape={props.shape}
+					notchKeepOutHeight={props.notchKeepOutHeight}
 				/>
 				<div className="wafer-canvas__watermark"></div>
 			</Tilt>

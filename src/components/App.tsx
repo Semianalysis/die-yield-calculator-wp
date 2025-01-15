@@ -428,6 +428,7 @@ function App() {
 							results={results}
 							shape={substrateShape}
 							lossyEdgeWidth={parseFloat(lossyEdgeWidth)}
+							notchKeepOutHeight={parseFloat(notchKeepOutHeight)}
 							waferWidth={waferWidth}
 							waferHeight={waferHeight}
 							easterEggEnabled={easterEggEnabled}
