@@ -309,18 +309,6 @@
 		touch-action: none;
 		max-width: 100%;
 
-		&::after {
-			content: "";
-			display: block;
-			width: 3px;
-			height: 3px;
-			background-color: #141416;
-			position: absolute;
-			top: 100%;
-			left: 50%;
-			transform: translate(-50%, -50%) rotate(45deg);
-		}
-
 		.wafer-canvas__watermark {
 			position: absolute;
 			top: 0;
@@ -363,6 +351,19 @@
 				clip-path: ellipse(50% 50% at 50% 50%);
 				transform: rotate(45deg);
 				overflow: hidden;
+			}
+
+			// Display a 1mm v-shaped notch in the bottom of the wafer
+			&::after {
+				content: "";
+				display: block;
+				width: 3px;
+				height: 3px;
+				background-color: #141416;
+				position: absolute;
+				top: 100%;
+				left: 50%;
+				transform: translate(-50%, -50%) rotate(45deg);
 			}
 		}
 

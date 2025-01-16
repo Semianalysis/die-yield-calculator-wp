@@ -259,6 +259,27 @@ function LossyEdgeMarker(props: {
 			// Inner (lossy edge)
 			context.arc(outerRadius, outerRadius, innerRadius, 0, 2 * Math.PI, true);
 			context.fill();
+
+			// Clear the notch keep-out area so we can color it differently
+			const keepOutY = (props.waferHeight - props.notchKeepOutHeight) * mmToPxScale;
+			context.clearRect(
+				0,
+				keepOutY,
+				waferWidthPx,
+				props.notchKeepOutHeight * mmToPxScale,
+			);
+
+			// Hatch the notch keep-out area
+			const keepOutPattern = createHatchingCanvasPattern(context, "black");
+			if (keepOutPattern) {
+				context.fillStyle = keepOutPattern;
+			}
+			context.fillRect(
+				0,
+				keepOutY,
+				waferWidthPx,
+				props.notchKeepOutHeight * mmToPxScale,
+			);
 		} else if (props.shape === "Panel") {
 			context.fillRect(0, 0, canvasEl.current.width, canvasEl.current.height);
 			context.clearRect(
@@ -268,25 +289,6 @@ function LossyEdgeMarker(props: {
 				waferHeightPx - lossyEdgeWidthInPx * 2,
 			);
 		}
-
-		// Clear the notch keep-out area so we can color it differently
-		const keepOutY = (props.waferHeight - props.notchKeepOutHeight) * mmToPxScale;
-		context.clearRect(
-			0,
-			keepOutY,
-			waferWidthPx,
-			props.notchKeepOutHeight * mmToPxScale,
-		);
-		const keepOutPattern = createHatchingCanvasPattern(context, "black");
-		if (keepOutPattern) {
-			context.fillStyle = keepOutPattern;
-		}
-		context.fillRect(
-			0,
-			keepOutY,
-			waferWidthPx,
-			props.notchKeepOutHeight * mmToPxScale,
-		);
 	}, [props.lossyEdgeWidth, props.notchKeepOutHeight, props.shape, props.waferWidth, props.waferHeight]);
 
 	return (
