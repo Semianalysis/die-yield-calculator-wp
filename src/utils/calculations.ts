@@ -374,6 +374,9 @@ export function evaluateDiscInputs(
 
 	// Exclude shots that overlap the keep-out area
 	const shotPositionsFiltered = shotPositions.filter((shot) => {
+		if (!notchKeepOutHeight)  {
+			return true;
+		}
 		return shot.y + fieldHeight < width - notchKeepOutHeight
 	});
 
