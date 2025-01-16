@@ -2223,7 +2223,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /**
  * Clamps the input value to the range [min, max] and returns the clamped value.
- * Replaces trailing ".0" if there was one.
  * @param value
  * @param min
  * @param max
