@@ -514,6 +514,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _assets_semianalysis_logo_full_360px_png__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../assets/semianalysis-logo-full-360px.png */ "./src/assets/semianalysis-logo-full-360px.png");
 /* harmony import */ var _hooks_useEasterEgg__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../hooks/useEasterEgg */ "./src/hooks/useEasterEgg.ts");
 /* harmony import */ var _JumpToResults_JumpToResults__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./JumpToResults/JumpToResults */ "./src/components/JumpToResults/JumpToResults.tsx");
+/* harmony import */ var _utils_inputs__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../utils/inputs */ "./src/utils/inputs.ts");
+
 
 
 
@@ -589,17 +591,6 @@ function getDieMaxDimensions(reticleLimit, waferWidth, waferHeight, maintainAspe
     height: Math.min(boundingSquareHeight, boundingSquareWidth / aspectRatio)
   };
 }
-/**
- * Round a numeric string and return its rounded string for display purposes,
- * stripped of any trailing zeroes
- */
-function getDisplayValue(value) {
-  const valueNum = parseFloat(value);
-  if (isNaN(valueNum)) {
-    return value;
-  }
-  return parseFloat(valueNum.toFixed(4)).toString();
-}
 function App() {
   const [dieWidth, setDieWidth] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("8");
   const [dieHeight, setDieHeight] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("8");
@@ -659,11 +650,11 @@ function App() {
       setDieWidth(value);
       return;
     }
-    const newWidth = Math.max(_config__WEBPACK_IMPORTED_MODULE_4__.minDieEdge, Math.min(inputValNum, maxDieWidth));
-    setDieWidth(newWidth.toString());
+    const clampedWidth = (0,_utils_inputs__WEBPACK_IMPORTED_MODULE_10__.clampedInputDisplayValue)(value, _config__WEBPACK_IMPORTED_MODULE_4__.minDieEdge, maxDieWidth);
+    setDieWidth(clampedWidth);
     if (maintainAspectRatio) {
-      const newHeight = Math.min(newWidth / aspectRatio.current, maxDieHeight);
-      setDieHeight(newHeight.toString());
+      const clampedHeight = (0,_utils_inputs__WEBPACK_IMPORTED_MODULE_10__.clampedInputDisplayValue)(clampedWidth, _config__WEBPACK_IMPORTED_MODULE_4__.minDieEdge, maxDieWidth);
+      setDieHeight(clampedHeight);
     }
   };
   const handleDieHeightChange = value => {
@@ -672,11 +663,11 @@ function App() {
       setDieHeight(value);
       return;
     }
-    const newHeight = Math.max(_config__WEBPACK_IMPORTED_MODULE_4__.minDieEdge, Math.min(inputValNum, maxDieHeight));
-    setDieHeight(newHeight.toString());
+    const clampedHeight = (0,_utils_inputs__WEBPACK_IMPORTED_MODULE_10__.clampedInputDisplayValue)(value, _config__WEBPACK_IMPORTED_MODULE_4__.minDieEdge, maxDieHeight);
+    setDieHeight(clampedHeight);
     if (maintainAspectRatio) {
-      const newWidth = Math.min(newHeight * aspectRatio.current, maxDieWidth);
-      setDieWidth(newWidth.toString());
+      const clampedWidth = (0,_utils_inputs__WEBPACK_IMPORTED_MODULE_10__.clampedInputDisplayValue)(clampedHeight, _config__WEBPACK_IMPORTED_MODULE_4__.minDieEdge, maxDieHeight);
+      setDieWidth(clampedWidth);
     }
   };
   // Update critical area and aspect ratio when die size changes
@@ -721,14 +712,14 @@ function App() {
     className: "input-row--two-col"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
     label: "Width (mm)",
-    value: getDisplayValue(dieWidth),
+    value: dieWidth,
     onChange: event => {
       handleDieWidthChange(event.target.value);
     },
     max: maxDieWidth
   }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
     label: "Height (mm)",
-    value: getDisplayValue(dieHeight),
+    value: dieHeight,
     onChange: event => {
       handleDieHeightChange(event.target.value);
     },
@@ -763,7 +754,7 @@ function App() {
     className: "input-row"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
     label: "Critical Area (mm\u00B2)",
-    value: getDisplayValue(criticalArea),
+    value: criticalArea,
     isDisabled: allCritical,
     onChange: event => setCriticalArea(event.target.value),
     max: parseFloat(criticalArea)
@@ -2108,6 +2099,35 @@ function rectanglesInRectangle(outerRectWidth, outerRectHeight, innerRectWidth, 
     }
   }
   return positions;
+}
+
+/***/ }),
+
+/***/ "./src/utils/inputs.ts":
+/*!*****************************!*\
+  !*** ./src/utils/inputs.ts ***!
+  \*****************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   clampedInputDisplayValue: () => (/* binding */ clampedInputDisplayValue)
+/* harmony export */ });
+/**
+ * Clamps the input value to the range [min, max] and returns the clamped value.
+ * @param value
+ * @param min
+ * @param max
+ */
+function clampedInputDisplayValue(value, min, max) {
+  const numValue = parseFloat(value);
+  if (numValue < min) {
+    return min.toString();
+  }
+  if (numValue > max) {
+    return max.toString();
+  }
+  return value;
 }
 
 /***/ }),
