@@ -598,6 +598,7 @@ function App() {
   const [criticalArea, setCriticalArea] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("64");
   const [defectRate, setDefectRate] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0.1");
   const [lossyEdgeWidth, setLossyEdgeWidth] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("3");
+  const [notchKeepOutHeight, setNotchKeepOutHeight] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("5");
   const [allCritical, setAllCritical] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
   const [reticleLimit, setReticleLimit] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
   const [showShotMap, setShowShotMap] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
@@ -619,6 +620,7 @@ function App() {
     criticalArea: parseFloat(criticalArea),
     defectRate: parseFloat(defectRate),
     lossyEdgeWidth: parseFloat(lossyEdgeWidth),
+    notchKeepOutHeight: parseFloat(notchKeepOutHeight),
     scribeHoriz: parseFloat(scribeHoriz),
     scribeVert: parseFloat(scribeVert),
     transHoriz: parseFloat(transHoriz),
@@ -801,6 +803,13 @@ function App() {
     value: lossyEdgeWidth,
     onChange: event => setLossyEdgeWidth(event.target.value),
     max: Math.min(waferWidth, waferHeight) / 2
+  })), substrateShape === "Wafer" && react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "input-row"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
+    label: "Notch keep-out (mm)",
+    value: notchKeepOutHeight,
+    onChange: event => setNotchKeepOutHeight(event.target.value),
+    max: Math.min(waferWidth, waferHeight) / 2
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("hr", null), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", null, "Options"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "input-row"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ModelSelector, {
@@ -815,6 +824,7 @@ function App() {
     results: results,
     shape: substrateShape,
     lossyEdgeWidth: parseFloat(lossyEdgeWidth),
+    notchKeepOutHeight: parseFloat(notchKeepOutHeight),
     waferWidth: waferWidth,
     waferHeight: waferHeight,
     easterEggEnabled: easterEggEnabled,
@@ -1127,7 +1137,7 @@ function DieDecorativeCanvas(props) {
       context.arc(canvasEl.current.width / 2, canvasEl.current.width / 2, canvasEl.current.width / 2, 0, 2 * Math.PI, false);
       context.fill();
     }
-    // Cut out each die from the background color the canvas
+    // Cut out each die from the background color of the canvas
     props.results.dies.forEach(die => {
       context.clearRect(mmToPxScale * die.x, mmToPxScale * die.y, mmToPxScale * die.width, mmToPxScale * die.height);
     });
@@ -1194,9 +1204,9 @@ function LossyEdgeMarker(props) {
     }
     const lossyEdgeWidthInPx = props.lossyEdgeWidth * mmToPxScale;
     // Set the pattern as the fill style
-    const pattern = (0,_utils_canvas__WEBPACK_IMPORTED_MODULE_1__.createHatchingCanvasPattern)(context);
-    if (pattern) {
-      context.fillStyle = pattern;
+    const lossyEdgePattern = (0,_utils_canvas__WEBPACK_IMPORTED_MODULE_1__.createHatchingCanvasPattern)(context);
+    if (lossyEdgePattern) {
+      context.fillStyle = lossyEdgePattern;
     }
     context.clearRect(0, 0, canvasEl.current.width, canvasEl.current.height);
     if (props.shape === "Wafer") {
@@ -1208,11 +1218,20 @@ function LossyEdgeMarker(props) {
       // Inner (lossy edge)
       context.arc(outerRadius, outerRadius, innerRadius, 0, 2 * Math.PI, true);
       context.fill();
+      // Clear the notch keep-out area so we can color it differently
+      const keepOutY = (props.waferHeight - props.notchKeepOutHeight) * mmToPxScale;
+      context.clearRect(0, keepOutY, waferWidthPx, props.notchKeepOutHeight * mmToPxScale);
+      // Hatch the notch keep-out area
+      const keepOutPattern = (0,_utils_canvas__WEBPACK_IMPORTED_MODULE_1__.createHatchingCanvasPattern)(context, "black");
+      if (keepOutPattern) {
+        context.fillStyle = keepOutPattern;
+      }
+      context.fillRect(0, keepOutY, waferWidthPx, props.notchKeepOutHeight * mmToPxScale);
     } else if (props.shape === "Panel") {
       context.fillRect(0, 0, canvasEl.current.width, canvasEl.current.height);
       context.clearRect(lossyEdgeWidthInPx, lossyEdgeWidthInPx, waferWidthPx - lossyEdgeWidthInPx * 2, waferHeightPx - lossyEdgeWidthInPx * 2);
     }
-  }, [props.lossyEdgeWidth, props.shape, props.waferWidth, props.waferHeight]);
+  }, [props.lossyEdgeWidth, props.notchKeepOutHeight, props.shape, props.waferWidth, props.waferHeight]);
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("canvas", {
     className: "wafer-canvas__edge",
     ref: canvasEl,
@@ -1278,7 +1297,8 @@ function WaferCanvas(props) {
     lossyEdgeWidth: props.lossyEdgeWidth,
     waferWidth: props.waferWidth,
     waferHeight: props.waferHeight,
-    shape: props.shape
+    shape: props.shape,
+    notchKeepOutHeight: props.notchKeepOutHeight
   }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "wafer-canvas__watermark"
   })));
@@ -1547,6 +1567,9 @@ const validations = {
   lossyEdgeWidth: ({
     lossyEdgeWidth
   }) => validPositiveInteger(lossyEdgeWidth),
+  notchKeepOutHeight: ({
+    notchKeepOutHeight
+  }) => validPositiveInteger(notchKeepOutHeight),
   scribeHoriz: ({
     scribeHoriz
   }) => validPositiveInteger(scribeHoriz),
@@ -1824,6 +1847,7 @@ function evaluateDiscInputs(inputVals, selectedSize, selectedModel, fieldWidth, 
     criticalArea,
     defectRate,
     lossyEdgeWidth,
+    notchKeepOutHeight,
     scribeHoriz,
     scribeVert
   } = inputVals;
@@ -1837,9 +1861,16 @@ function evaluateDiscInputs(inputVals, selectedSize, selectedModel, fieldWidth, 
   } = getDieOffset(inputVals, true);
   // First, calculate the reticle shot map
   const shotPositions = (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.rectanglesInCircle)(width, fieldWidth, fieldHeight, 0, 0, offsetX, offsetY, true);
+  // Exclude shots that overlap the keep-out area
+  const shotPositionsFiltered = shotPositions.filter(shot => {
+    if (!notchKeepOutHeight) {
+      return true;
+    }
+    return shot.y + fieldHeight < width - notchKeepOutHeight;
+  });
   // Calculate the position of dies in a single shot
   const diesInShot = getRelativeDiePositions(dieWidth, dieHeight, scribeHoriz, scribeVert, fieldWidth, fieldHeight);
-  const dieMap = createDieMap(shotPositions, diesInShot, dieWidth, dieHeight, fabYield, coordinate => {
+  const dieMap = createDieMap(shotPositionsFiltered, diesInShot, dieWidth, dieHeight, fabYield, coordinate => {
     const radiusInsideLossyEdge = width / 2 - lossyEdgeWidth;
     return (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.isInsideCircle)(coordinate.x, coordinate.y, width / 2, width / 2, radiusInsideLossyEdge);
   });
@@ -1857,7 +1888,7 @@ function evaluateDiscInputs(inputVals, selectedSize, selectedModel, fieldWidth, 
     partialDies,
     lostDies,
     fabYield,
-    fields: shotPositions
+    fields: shotPositionsFiltered
   };
 }
 
@@ -1873,14 +1904,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   createHatchingCanvasPattern: () => (/* binding */ createHatchingCanvasPattern)
 /* harmony export */ });
-let pattern = null;
+let patterns = {};
 /**
  * Create a memoized hatch-effect canvas pattern on the given canvas context
  * that can be used as a fill.
  */
-function createHatchingCanvasPattern(context) {
-  if (pattern) {
-    return pattern;
+function createHatchingCanvasPattern(context, color = "rgba(90,79,69,0.8)") {
+  if (patterns[color]) {
+    return patterns[color];
   }
   // Create an offscreen canvas to use as the pattern source
   const patternCanvas = document.createElement("canvas");
@@ -1897,12 +1928,15 @@ function createHatchingCanvasPattern(context) {
   patternCtx.moveTo(1, patternCanvas.height - 1);
   // Draw to top-right
   patternCtx.lineTo(patternCanvas.width - 1, 1);
-  patternCtx.strokeStyle = "rgba(90,79,69,0.8)";
+  patternCtx.strokeStyle = color;
   patternCtx.lineWidth = 2;
   patternCtx.stroke();
-  // Create the pattern from the offscreen canvas
-  pattern = context.createPattern(patternCanvas, "repeat");
-  return pattern;
+  // Create the pattern from the offscreen canvas and memoize it
+  const pattern = context.createPattern(patternCanvas, "repeat");
+  if (pattern) {
+    patterns[color] = pattern;
+    return pattern;
+  }
 }
 
 /***/ }),

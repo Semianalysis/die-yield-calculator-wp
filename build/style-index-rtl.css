@@ -307,6 +307,17 @@
   transform: rotate(-45deg);
   overflow: hidden;
 }
+.wp-block-create-block-die-yield-calculator .wafer-canvas.wafer-canvas--disc::after {
+  content: "";
+  display: block;
+  width: 3px;
+  height: 3px;
+  background-color: #141416;
+  position: absolute;
+  top: 100%;
+  right: 50%;
+  transform: translate(50%, -50%) rotate(-45deg);
+}
 .wp-block-create-block-die-yield-calculator .wafer-canvas .wafer-canvas__die-decorative {
   max-width: 100%;
   position: relative;
