@@ -372,14 +372,6 @@ export function evaluateDiscInputs(
 		true
 	);
 
-	// Exclude shots that overlap the keep-out area
-	const shotPositionsFiltered = shotPositions.filter((shot) => {
-		if (!notchKeepOutHeight)  {
-			return true;
-		}
-		return shot.y + fieldHeight < width - notchKeepOutHeight
-	});
-
 	// Calculate the position of dies in a single shot
 	const diesInShot = getRelativeDiePositions(
 		dieWidth,
@@ -391,20 +383,22 @@ export function evaluateDiscInputs(
 	);
 
 	const dieMap = createDieMap(
-		shotPositionsFiltered,
+		shotPositions,
 		diesInShot,
 		dieWidth,
 		dieHeight,
 		fabYield,
 		(coordinate) => {
 			const radiusInsideLossyEdge = width / 2 - lossyEdgeWidth;
-			return isInsideCircle(
+			const isInsideLossyEdge = isInsideCircle(
 				coordinate.x,
 				coordinate.y,
 				width / 2,
 				width / 2,
 				radiusInsideLossyEdge
 			);
+			const isAboveNotchKeepout = coordinate.y < width - notchKeepOutHeight;
+			return isInsideLossyEdge && isAboveNotchKeepout;
 		}
 	);
 
@@ -420,6 +414,6 @@ export function evaluateDiscInputs(
 		partialDies,
 		lostDies,
 		fabYield,
-		fields: shotPositionsFiltered
+		fields: shotPositions
 	};
 }

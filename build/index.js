@@ -1969,18 +1969,13 @@ function evaluateDiscInputs(inputVals, selectedSize, selectedModel, fieldWidth, 
   } = getDieOffset(inputVals, true);
   // First, calculate the reticle shot map
   const shotPositions = (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.rectanglesInCircle)(width, fieldWidth, fieldHeight, 0, 0, offsetX, offsetY, true);
-  // Exclude shots that overlap the keep-out area
-  const shotPositionsFiltered = shotPositions.filter(shot => {
-    if (!notchKeepOutHeight) {
-      return true;
-    }
-    return shot.y + fieldHeight < width - notchKeepOutHeight;
-  });
   // Calculate the position of dies in a single shot
   const diesInShot = getRelativeDiePositions(dieWidth, dieHeight, scribeHoriz, scribeVert, fieldWidth, fieldHeight);
-  const dieMap = createDieMap(shotPositionsFiltered, diesInShot, dieWidth, dieHeight, fabYield, coordinate => {
+  const dieMap = createDieMap(shotPositions, diesInShot, dieWidth, dieHeight, fabYield, coordinate => {
     const radiusInsideLossyEdge = width / 2 - lossyEdgeWidth;
-    return (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.isInsideCircle)(coordinate.x, coordinate.y, width / 2, width / 2, radiusInsideLossyEdge);
+    const isInsideLossyEdge = (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.isInsideCircle)(coordinate.x, coordinate.y, width / 2, width / 2, radiusInsideLossyEdge);
+    const isAboveNotchKeepout = coordinate.y < width - notchKeepOutHeight;
+    return isInsideLossyEdge && isAboveNotchKeepout;
   });
   const {
     defectiveDies,
@@ -1996,7 +1991,7 @@ function evaluateDiscInputs(inputVals, selectedSize, selectedModel, fieldWidth, 
     partialDies,
     lostDies,
     fabYield,
-    fields: shotPositionsFiltered
+    fields: shotPositions
   };
 }
 
