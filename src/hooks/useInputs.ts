@@ -12,6 +12,7 @@ const validations : { [k in keyof InputValues] : (inputs: InputValues) => boolea
 	criticalArea: ({criticalArea, dieHeight, dieWidth}) => !isNaN(criticalArea) && criticalArea >= 0 && criticalArea <= dieWidth * dieHeight,
 	defectRate: ({ defectRate }) => validPositiveInteger(defectRate),
 	lossyEdgeWidth: ({lossyEdgeWidth}) => validPositiveInteger(lossyEdgeWidth),
+	notchKeepOutHeight: ({notchKeepOutHeight}) => validPositiveInteger(notchKeepOutHeight),
 	scribeHoriz: ({scribeHoriz}) => validPositiveInteger(scribeHoriz),
 	scribeVert: ({scribeVert}) => validPositiveInteger(scribeVert),
 	transHoriz: ({transHoriz}) => !isNaN(transHoriz),

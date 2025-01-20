@@ -50,6 +50,10 @@ describe("App", () => {
 		await user.click(screen.getByRole("radio", {
 			name: /Wafer/
 		}));
+		// No notch keepout
+		await user.type(screen.getByRole("spinbutton", {
+			name: /Notch keep-out/
+		}), "{backspace}0");
 		await waitFor(() => expect(screen.getByText(/1104/)).toBeInTheDocument());
 	});
 

@@ -2,12 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Checkbox } from "./Checkbox/Checkbox";
 import { NumberInput } from "./NumberInput/NumberInput";
 import { useInputs } from "../hooks/useInputs";
-import {
-	panelSizes,
-	waferSizes,
-	yieldModels,
-	minDieEdge,
-} from "../config";
+import { panelSizes, waferSizes, yieldModels, minDieEdge } from "../config";
 import { SubstrateShape } from "../types";
 import { WaferCanvas } from "./WaferCanvas/WaferCanvas";
 import { ResultsStats } from "./ResultsStats/ResultsStats";
@@ -16,34 +11,35 @@ import { useEasterEgg } from "../hooks/useEasterEgg";
 import { JumpToResults } from "./JumpToResults/JumpToResults";
 import { clampedInputDisplayValue } from "../utils/inputs";
 
-const ShapeSelector = (props: { shape: SubstrateShape, setShape: (value: SubstrateShape) => void }) => {
+const ShapeSelector = (props: {
+	shape: SubstrateShape;
+	setShape: (value: SubstrateShape) => void;
+}) => {
 	const shapes: Array<SubstrateShape> = ["Wafer", "Panel"];
 
 	return (
 		<fieldset>
 			<legend>Shape</legend>
 			<div className="radio-group">
-				{
-					shapes.map((shape) => (
-						<label className="radio-item" key={shape}>
-							<input
-								type="radio"
-								name="shape"
-								checked={props.shape === shape}
-								onChange={(e) => props.setShape(shape)}
-							/>
-							<span>{shape}</span>
-						</label>
-					))
-				}
+				{shapes.map((shape) => (
+					<label className="radio-item" key={shape}>
+						<input
+							type="radio"
+							name="shape"
+							checked={props.shape === shape}
+							onChange={(e) => props.setShape(shape)}
+						/>
+						<span>{shape}</span>
+					</label>
+				))}
 			</div>
 		</fieldset>
 	);
 };
 
 const WaferSizeSelect = (props: {
-	selectedSize: keyof typeof waferSizes,
-	handleSizeChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
+	selectedSize: keyof typeof waferSizes;
+	handleSizeChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
 }) => {
 	return (
 		<label className="select">
@@ -60,8 +56,8 @@ const WaferSizeSelect = (props: {
 };
 
 const PanelSizeSelect = (props: {
-	selectedSize: keyof typeof panelSizes,
-	handleSizeChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
+	selectedSize: keyof typeof panelSizes;
+	handleSizeChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
 }) => {
 	return (
 		<label className="select">
@@ -78,8 +74,8 @@ const PanelSizeSelect = (props: {
 };
 
 const ModelSelector = (props: {
-	selectedModel: keyof typeof yieldModels,
-	handleModelChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
+	selectedModel: keyof typeof yieldModels;
+	handleModelChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
 }) => (
 	<label className="select">
 		Yield Calculation Model
@@ -105,7 +101,7 @@ function getDieMaxDimensions(
 	maintainAspectRatio: boolean,
 	aspectRatio: number,
 	fieldWidthMM: number,
-	fieldHeightMM: number
+	fieldHeightMM: number,
 ) {
 	// Cannot exceed reticle dimensions
 	const boundingSquareWidth = reticleLimit ? fieldWidthMM : waferWidth / 4;
@@ -114,13 +110,13 @@ function getDieMaxDimensions(
 	if (!maintainAspectRatio) {
 		return {
 			width: boundingSquareWidth,
-			height: boundingSquareHeight
+			height: boundingSquareHeight,
 		};
 	}
 
 	return {
 		width: Math.min(boundingSquareWidth, boundingSquareHeight * aspectRatio),
-		height: Math.min(boundingSquareHeight, boundingSquareWidth / aspectRatio)
+		height: Math.min(boundingSquareHeight, boundingSquareWidth / aspectRatio),
 	};
 }
 
@@ -131,6 +127,7 @@ function App() {
 	const [criticalArea, setCriticalArea] = useState<string>("64");
 	const [defectRate, setDefectRate] = useState<string>("0.1");
 	const [lossyEdgeWidth, setLossyEdgeWidth] = useState<string>("3");
+	const [notchKeepOutHeight, setNotchKeepOutHeight] = useState<string>("5");
 	const [allCritical, setAllCritical] = useState(true);
 	const [reticleLimit, setReticleLimit] = useState(true);
 	const [showShotMap, setShowShotMap] = useState(true);
@@ -142,7 +139,8 @@ function App() {
 	const [substrateShape, setSubstrateShape] = useState<SubstrateShape>("Wafer");
 	const [panelSize, setPanelSize] = useState<keyof typeof panelSizes>("s300mm");
 	const [waferSize, setWaferSize] = useState<keyof typeof waferSizes>("s300mm");
-	const [selectedModel, setSelectedModel] = useState<keyof typeof yieldModels>("murphy");
+	const [selectedModel, setSelectedModel] =
+		useState<keyof typeof yieldModels>("murphy");
 	const aspectRatio = useRef(parseFloat(dieWidth) / parseFloat(dieHeight));
 
 	const fieldWidthMM = halfField ? 13 : 26;
@@ -155,41 +153,41 @@ function App() {
 			criticalArea: parseFloat(criticalArea),
 			defectRate: parseFloat(defectRate),
 			lossyEdgeWidth: parseFloat(lossyEdgeWidth),
+			notchKeepOutHeight: parseFloat(notchKeepOutHeight),
 			scribeHoriz: parseFloat(scribeHoriz),
 			scribeVert: parseFloat(scribeVert),
 			transHoriz: parseFloat(transHoriz),
-			transVert: parseFloat(transVert)
+			transVert: parseFloat(transVert),
 		},
 		selectedModel,
 		substrateShape,
 		panelSize,
 		waferSize,
 		fieldWidthMM,
-		fieldHeightMM
+		fieldHeightMM,
 	);
 	const easterEggEnabled = useEasterEgg();
 	const outputRef = useRef<HTMLDivElement | null>(null);
 
-	const waferWidth = substrateShape === "Panel"
-		? panelSizes[panelSize].width
-		: waferSizes[waferSize].width;
-	const waferHeight = substrateShape === "Panel"
-		? panelSizes[panelSize].height
-		: waferSizes[waferSize].width;
+	const waferWidth =
+		substrateShape === "Panel"
+			? panelSizes[panelSize].width
+			: waferSizes[waferSize].width;
+	const waferHeight =
+		substrateShape === "Panel"
+			? panelSizes[panelSize].height
+			: waferSizes[waferSize].width;
 
 	// Derive max die width/height based on whether reticle limit is set.
 	// Fall back to wafer dimensions / 4 as a sane max.
-	const {
-		width: maxDieWidth,
-		height: maxDieHeight,
-	} = getDieMaxDimensions(
+	const { width: maxDieWidth, height: maxDieHeight } = getDieMaxDimensions(
 		reticleLimit,
 		waferWidth,
 		waferHeight,
 		maintainAspectRatio,
 		aspectRatio.current,
 		fieldWidthMM,
-		fieldHeightMM
+		fieldHeightMM,
 	);
 
 	useEffect(() => {
@@ -207,7 +205,7 @@ function App() {
 	const handleDieWidthChange = (value: string) => {
 		const inputValNum = parseFloat(value);
 
-		if(isNaN(inputValNum) || inputValNum === 0) {
+		if (isNaN(inputValNum) || inputValNum === 0) {
 			setDieWidth(value);
 			return;
 		}
@@ -224,7 +222,7 @@ function App() {
 	const handleDieHeightChange = (value: string) => {
 		const inputValNum = parseFloat(value);
 
-		if(isNaN(inputValNum) || inputValNum === 0) {
+		if (isNaN(inputValNum) || inputValNum === 0) {
 			setDieHeight(value);
 			return;
 		}
@@ -249,16 +247,22 @@ function App() {
 		}
 	}, [dieWidth, dieHeight]);
 
-	const handleMaintainAspectRatio = (event: React.ChangeEvent<HTMLInputElement>) => {
+	const handleMaintainAspectRatio = (
+		event: React.ChangeEvent<HTMLInputElement>,
+	) => {
 		setMaintainAspectRatio(event.target.checked);
 	};
 
-	const handleAllCriticalChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+	const handleAllCriticalChange = (
+		event: React.ChangeEvent<HTMLInputElement>,
+	) => {
 		setCriticalArea(`${parseFloat(dieWidth) * parseFloat(dieHeight)}`);
 		setAllCritical(event.target.checked);
 	};
 
-	const handleReticleLimitChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+	const handleReticleLimitChange = (
+		event: React.ChangeEvent<HTMLInputElement>,
+	) => {
 		setReticleLimit(event.target.checked);
 	};
 
@@ -270,13 +274,17 @@ function App() {
 		}
 	};
 
-	const handleShowShotMapChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+	const handleShowShotMapChange = (
+		event: React.ChangeEvent<HTMLInputElement>,
+	) => {
 		setShowShotMap(event.target.checked);
-	}
+	};
 
-	const handleHalfFieldChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+	const handleHalfFieldChange = (
+		event: React.ChangeEvent<HTMLInputElement>,
+	) => {
 		setHalfField(event.target.checked);
-	}
+	};
 
 	return (
 		<div className="container">
@@ -371,20 +379,18 @@ function App() {
 						/>
 					</div>
 					<div className="input-row">
-						{
-							substrateShape === "Panel" &&
+						{substrateShape === "Panel" && (
 							<PanelSizeSelect
 								selectedSize={panelSize}
 								handleSizeChange={handleSizeChange}
 							/>
-						}
-						{
-							substrateShape === "Wafer" &&
+						)}
+						{substrateShape === "Wafer" && (
 							<WaferSizeSelect
 								selectedSize={waferSize}
 								handleSizeChange={handleSizeChange}
 							/>
-						}
+						)}
 					</div>
 					<div className="input-row">
 						<NumberInput
@@ -402,12 +408,24 @@ function App() {
 							max={Math.min(waferWidth, waferHeight) / 2}
 						/>
 					</div>
+					{substrateShape === "Wafer" && (
+						<div className="input-row">
+							<NumberInput
+								label="Notch keep-out (mm)"
+								value={notchKeepOutHeight}
+								onChange={(event) => setNotchKeepOutHeight(event.target.value)}
+								max={Math.min(waferWidth, waferHeight) / 2}
+							/>
+						</div>
+					)}
 					<hr />
 					<h2>Options</h2>
 					<div className="input-row">
 						<ModelSelector
 							selectedModel={selectedModel}
-							handleModelChange={(event) => setSelectedModel(event.target.value as keyof typeof yieldModels)}
+							handleModelChange={(event) =>
+								setSelectedModel(event.target.value as keyof typeof yieldModels)
+							}
 						/>
 					</div>
 					<JumpToResults outputRef={outputRef} />
@@ -418,6 +436,7 @@ function App() {
 							results={results}
 							shape={substrateShape}
 							lossyEdgeWidth={parseFloat(lossyEdgeWidth)}
+							notchKeepOutHeight={parseFloat(notchKeepOutHeight)}
 							waferWidth={waferWidth}
 							waferHeight={waferHeight}
 							easterEggEnabled={easterEggEnabled}
@@ -437,8 +456,16 @@ function App() {
 								shape={substrateShape}
 								dieWidth={parseFloat(dieWidth)}
 								dieHeight={parseFloat(dieHeight)}
-								waferWidth={substrateShape === "Panel" ? panelSizes[panelSize].width : waferSizes[waferSize].width}
-								waferHeight={substrateShape === "Panel" ? panelSizes[panelSize].height : waferSizes[waferSize].width}
+								waferWidth={
+									substrateShape === "Panel"
+										? panelSizes[panelSize].width
+										: waferSizes[waferSize].width
+								}
+								waferHeight={
+									substrateShape === "Panel"
+										? panelSizes[panelSize].height
+										: waferSizes[waferSize].width
+								}
 							/>
 						</div>
 					</div>

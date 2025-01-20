@@ -88,6 +88,7 @@ export type InputValues = {
 	criticalArea: number;
 	defectRate: number;
 	lossyEdgeWidth: number;
+	notchKeepOutHeight: number;
 	scribeHoriz: number;
 	scribeVert: number;
 	transHoriz: number;
@@ -346,6 +347,7 @@ export function evaluateDiscInputs(
 		criticalArea,
 		defectRate,
 		lossyEdgeWidth,
+		notchKeepOutHeight,
 		scribeHoriz,
 		scribeVert
 	} = inputVals;
@@ -388,13 +390,15 @@ export function evaluateDiscInputs(
 		fabYield,
 		(coordinate) => {
 			const radiusInsideLossyEdge = width / 2 - lossyEdgeWidth;
-			return isInsideCircle(
+			const isInsideLossyEdge = isInsideCircle(
 				coordinate.x,
 				coordinate.y,
 				width / 2,
 				width / 2,
 				radiusInsideLossyEdge
 			);
+			const isAboveNotchKeepout = coordinate.y < width - notchKeepOutHeight;
+			return isInsideLossyEdge && isAboveNotchKeepout;
 		}
 	);
 

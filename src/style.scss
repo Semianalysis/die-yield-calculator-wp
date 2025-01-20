@@ -352,6 +352,19 @@
 				transform: rotate(45deg);
 				overflow: hidden;
 			}
+
+			// Display a 1mm v-shaped notch in the bottom of the wafer
+			&::after {
+				content: "";
+				display: block;
+				width: 3px;
+				height: 3px;
+				background-color: #141416;
+				position: absolute;
+				top: 100%;
+				left: 50%;
+				transform: translate(-50%, -50%) rotate(45deg);
+			}
 		}
 
 		.wafer-canvas__die-decorative {

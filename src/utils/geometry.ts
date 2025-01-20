@@ -169,7 +169,7 @@ export function rectanglesInCircle(
 	gapY: number,
 	offsetX: number,
 	offsetY: number,
-	includePartials: boolean
+	includePartials: boolean,
 ): Position[] {
 	const radius = diameter / 2;
 	const positions: Position[] = [];
