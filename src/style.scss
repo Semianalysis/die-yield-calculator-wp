@@ -160,6 +160,10 @@
 		&--die-area::before {
 			content: "⬚";
 		}
+
+		&--shot-count::before {
+			content: "☼";
+		}
 	}
 
 	.input-row,

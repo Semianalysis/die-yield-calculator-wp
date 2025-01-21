@@ -15,11 +15,13 @@ export type FabResults = null | {
 	totalDies: number,
 	goodDies: number,
 	defectiveDies: number;
-	lostDies: number;
-	partialDies: number;
+	lostDies: number,
+	partialDies: number,
 	fabYield: number,
 	diePerRow: number,
 	diePerCol: number,
-	dies: Array<Die>
-	fields: Array<Position>
+	dies: Array<Die>,
+	fields: Array<Position>,
+	fullShotCount: number,
+	partialShotCount: number,
 };

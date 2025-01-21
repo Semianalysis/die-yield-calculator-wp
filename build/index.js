@@ -1149,7 +1149,9 @@ function ResultsStats(props) {
     className: "result result--wafer-area"
   }, props.shape, " Area: ", parseFloat(waferAreaCm(props.shape, props.waferWidth, props.waferHeight).toFixed(4)), "cm\u00B2"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--die-area"
-  }, "Total Die Area: ", displayValue(props.results?.totalDies && parseFloat(totalDieAreaCm(props.dieWidth, props.dieHeight, props.results.totalDies).toFixed(4)), "cm²"))));
+  }, "Total Die Area: ", displayValue(props.results?.totalDies && parseFloat(totalDieAreaCm(props.dieWidth, props.dieHeight, props.results.totalDies).toFixed(4)), "cm²")), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+    className: "result result--shot-count"
+  }, "Exposures: ", displayValue((props.results?.fullShotCount || 0) + (props.results?.partialShotCount || 0)), " (", displayValue(props.results?.fullShotCount), " full, ", displayValue(props.results?.partialShotCount), " partial)")));
 }
 
 /***/ }),
@@ -1834,16 +1836,21 @@ function getRelativeDiePositions(dieWidth, dieHeight, scribeHoriz, scribeVert, f
  * coordinates within shot. Assign a state based on whether it is partly or fully
  * outside the wafer
  * @param shotPositions coordinates of each shot/field
- * @param diesInShot coordinates of dies relative to a shot
+ * @param relativeDiePositions coordinates of dies relative to a shot
  * @param dieWidth width of one die
  * @param dieHeight height of one die
  * @param fabYield 0-1 float representing non-defective yield of all dies
  * @param isInsideWafer callback fn to determine if coordinate is within wafer coords
+ * @returns object containing all dies, full and partial shot counts, and positions
+ * of shots that will be taken
  */
-function createDieMap(shotPositions, diesInShot, dieWidth, dieHeight, fabYield, isInsideWafer) {
+function createDieMap(shotPositions, relativeDiePositions, dieWidth, dieHeight, fabYield, isInsideWafer) {
   let goodDies = 0;
-  const dieMap = shotPositions.reduce((acc, shotPosition, shotIndex) => {
-    const dies = diesInShot.map((relativeDie, dieIndex) => {
+  let fullShotCount = 0;
+  let partialShotCount = 0;
+  const shotsOnWafer = [];
+  const dies = shotPositions.reduce((acc, shotPosition, shotIndex) => {
+    const diesInShot = relativeDiePositions.map((relativeDie, dieIndex) => {
       let dieState = "good";
       const absoluteDieX = relativeDie.x + shotPosition.x;
       const absoluteDieY = relativeDie.y + shotPosition.y;
@@ -1865,15 +1872,24 @@ function createDieMap(shotPositions, diesInShot, dieWidth, dieHeight, fabYield, 
         height: dieHeight
       };
     });
+    const goodDiesInShot = diesInShot.filter(die => die.dieState === "good").length;
     // Take the shot as long as 1 or more dies within it will be "good"...
-    if (dies.find(die => die.dieState === "good")) {
-      return [...acc, ...dies];
+    if (goodDiesInShot) {
+      shotsOnWafer.push(shotPosition);
+      // If all shots are good, this is a 'full' shot
+      if (goodDiesInShot === diesInShot.length) {
+        fullShotCount += 1;
+      } else {
+        // ...otherwise it's a 'partial' shot
+        partialShotCount += 1;
+      }
+      return [...acc, ...diesInShot];
     }
     // ...otherwise skip the shot
     return acc;
   }, []);
   // Sort die map so all good dies are first
-  dieMap.sort((a, b) => {
+  dies.sort((a, b) => {
     if (a.dieState === "good" && b.dieState !== "good") {
       return -1;
     } else if (a.dieState !== "good" && b.dieState === "good") {
@@ -1885,9 +1901,14 @@ function createDieMap(shotPositions, diesInShot, dieWidth, dieHeight, fabYield, 
   const numDefectiveDies = goodDies - Math.floor(fabYield * goodDies);
   const defectiveDieKeys = randomNumberSetFromRange(0, goodDies - 1, numDefectiveDies);
   defectiveDieKeys.forEach(key => {
-    dieMap[key].dieState = "defective";
+    dies[key].dieState = "defective";
   });
-  return dieMap;
+  return {
+    dies,
+    fullShotCount,
+    partialShotCount,
+    shotsOnWafer
+  };
 }
 /**
  * Use the given inputs to calculate how many dies would fit on the given panel
@@ -1930,18 +1951,20 @@ function evaluatePanelInputs(inputVals, selectedSize, selectedModel, fieldWidth,
     partialDies,
     lostDies,
     goodDies
-  } = getDieStateCounts(dieMap.map(die => die.dieState));
+  } = getDieStateCounts(dieMap.dies.map(die => die.dieState));
   return {
-    dies: dieMap,
+    dies: dieMap.dies,
     diePerRow: diesInShot.numCols,
     diePerCol: diesInShot.numRows,
     defectiveDies,
     partialDies,
     lostDies,
-    totalDies: dieMap.length,
+    totalDies: dieMap.dies.length,
     goodDies,
     fabYield,
-    fields: shotPositions
+    fields: shotPositions,
+    fullShotCount: dieMap.fullShotCount,
+    partialShotCount: dieMap.partialShotCount
   };
 }
 /**
@@ -1987,10 +2010,10 @@ function evaluateDiscInputs(inputVals, selectedSize, selectedModel, fieldWidth, 
     partialDies,
     lostDies,
     goodDies
-  } = getDieStateCounts(dieMap.map(die => die.dieState));
+  } = getDieStateCounts(dieMap.dies.map(die => die.dieState));
   return {
-    dies: dieMap,
-    totalDies: dieMap.length,
+    dies: dieMap.dies,
+    totalDies: dieMap.dies.length,
     diePerRow: diesInShot.numCols,
     diePerCol: diesInShot.numRows,
     goodDies,
@@ -1998,7 +2021,9 @@ function evaluateDiscInputs(inputVals, selectedSize, selectedModel, fieldWidth, 
     partialDies,
     lostDies,
     fabYield,
-    fields: shotPositions
+    fields: shotPositions,
+    fullShotCount: dieMap.fullShotCount,
+    partialShotCount: dieMap.partialShotCount
   };
 }
 

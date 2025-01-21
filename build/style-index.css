@@ -133,6 +133,9 @@
 .wp-block-create-block-die-yield-calculator .result--die-area::before {
   content: "⬚";
 }
+.wp-block-create-block-die-yield-calculator .result--shot-count::before {
+  content: "☼";
+}
 .wp-block-create-block-die-yield-calculator .input-row,
 .wp-block-create-block-die-yield-calculator .input-row--two-col {
   margin-bottom: 1rem;

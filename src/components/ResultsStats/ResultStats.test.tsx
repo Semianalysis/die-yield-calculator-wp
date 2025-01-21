@@ -13,7 +13,9 @@ const results: FabResults = {
 	lostDies: 2,
 	fabYield: 0.9,
 	dies: [],
-	fields: []
+	fields: [],
+	fullShotCount: 20,
+	partialShotCount: 5,
 };
 
 describe("ResultStats", () => {
