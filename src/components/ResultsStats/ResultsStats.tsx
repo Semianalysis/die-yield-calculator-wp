@@ -55,6 +55,7 @@ export function ResultsStats(props: {
 					Dies: {displayValue(props.results?.lostDies)}</li>
 			</ul>
 			<ul className="results__list">
+				<li className="result result--shot-count">Exposures: {displayValue((props.results?.fullShotCount || 0) + (props.results?.partialShotCount || 0))} ({displayValue(props.results?.fullShotCount)} full, {displayValue(props.results?.partialShotCount)} partial)</li>
 				<li className="result result--yield">Fab
 					Yield: {displayValue(props.results?.fabYield && parseFloat((props.results.fabYield * 100).toFixed(4)), "%")}
 				</li>
@@ -79,7 +80,6 @@ export function ResultsStats(props: {
 				<li className="result result--die-area">Total Die
 					Area: {displayValue(props.results?.totalDies && parseFloat(totalDieAreaCm(props.dieWidth, props.dieHeight, props.results.totalDies).toFixed(4)), "cm²")}
 				</li>
-				<li className="result result--shot-count">Exposures: {displayValue((props.results?.fullShotCount || 0) + (props.results?.partialShotCount || 0))} ({displayValue(props.results?.fullShotCount)} full, {displayValue(props.results?.partialShotCount)} partial)</li>
 			</ul>
 		</div>
 	);

@@ -1138,6 +1138,8 @@ function ResultsStats(props) {
   }, "Lost Dies: ", displayValue(props.results?.lostDies))), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("ul", {
     className: "results__list"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+    className: "result result--shot-count"
+  }, "Exposures: ", displayValue((props.results?.fullShotCount || 0) + (props.results?.partialShotCount || 0)), " (", displayValue(props.results?.fullShotCount), " full, ", displayValue(props.results?.partialShotCount), " partial)"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--yield"
   }, "Fab Yield: ", displayValue(props.results?.fabYield && parseFloat((props.results.fabYield * 100).toFixed(4)), "%")), props.shape === "Panel" ? react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--panel-width"
@@ -1149,9 +1151,7 @@ function ResultsStats(props) {
     className: "result result--wafer-area"
   }, props.shape, " Area: ", parseFloat(waferAreaCm(props.shape, props.waferWidth, props.waferHeight).toFixed(4)), "cm\u00B2"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--die-area"
-  }, "Total Die Area: ", displayValue(props.results?.totalDies && parseFloat(totalDieAreaCm(props.dieWidth, props.dieHeight, props.results.totalDies).toFixed(4)), "cm²")), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
-    className: "result result--shot-count"
-  }, "Exposures: ", displayValue((props.results?.fullShotCount || 0) + (props.results?.partialShotCount || 0)), " (", displayValue(props.results?.fullShotCount), " full, ", displayValue(props.results?.partialShotCount), " partial)")));
+  }, "Total Die Area: ", displayValue(props.results?.totalDies && parseFloat(totalDieAreaCm(props.dieWidth, props.dieHeight, props.results.totalDies).toFixed(4)), "cm²"))));
 }
 
 /***/ }),
