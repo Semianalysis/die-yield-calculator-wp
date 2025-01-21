@@ -230,7 +230,7 @@ export function rectanglesInCircle(
  * @param offsetY amount by which to offset each rectangle vertically
  * @param center if true, center align inner and outer rectangles. otherwise, align top-left
  * @param includePartials include inner rectangles that only partially overlap with the outer rectangle
- * @returns an array of Position objects {x, y}, describing the top-left coordinates of each smaller rectangle
+ * @returns an object containing the positions of the inner rectangles, as well as the number of rows and columns
  */
 export function rectanglesInRectangle(
 	outerRectWidth: number,
@@ -243,7 +243,11 @@ export function rectanglesInRectangle(
 	offsetY: number,
 	center: boolean,
 	includePartials: boolean
-): Array<Position> {
+): {
+	positions: Array<Position>,
+	numRows: number,
+	numCols: number
+}{
 	const positions: Array<Position> = [];
 
 	// Adjust the effective size of inner rectangles including gaps split evenly on both sides
@@ -266,6 +270,9 @@ export function rectanglesInRectangle(
 		startY = (outerRectHeight - totalInnerHeight) / 2;
 	}
 
+	let numRows = 0;
+	let numCols = 0;
+
 	// Iterate through potential positions and calculate coordinates
 	for (let row = 0; row <= countY; row++) {
 		for (let col = 0; col <= countX; col++) {
@@ -286,9 +293,15 @@ export function rectanglesInRectangle(
 
 			if (isInside) {
 				positions.push({ x, y });
+				numRows = countY;
+				numCols = countX;
 			}
 		}
 	}
 
-	return positions;
+	return {
+		positions,
+		numRows,
+		numCols,
+	};
 }

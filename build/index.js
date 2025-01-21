@@ -1115,7 +1115,7 @@ function displayValue(value, unit) {
   if (value === null || value === undefined) {
     return "—";
   }
-  return `${value}${unit || ''}`;
+  return `${value}${unit || ""}`;
 }
 function ResultsStats(props) {
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
@@ -1126,6 +1126,8 @@ function ResultsStats(props) {
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--total-dies"
   }, "Total Dies: ", displayValue(props.results?.totalDies)), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+    className: "result result--die-per-reticle"
+  }, "Die Per Reticle: ", displayValue((props.results?.diePerRow || 0) * (props.results?.diePerCol || 0)), " (", displayValue(props.results?.diePerRow), "\u00D7", displayValue(props.results?.diePerCol), ")"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--good-dies"
   }, "Good Dies: ", displayValue(props.results?.goodDies)), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--defective-dies"
@@ -1137,7 +1139,7 @@ function ResultsStats(props) {
     className: "results__list"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--yield"
-  }, "Fab Yield: ", displayValue(props.results?.fabYield && parseFloat((props.results.fabYield * 100).toFixed(4)), '%')), props.shape === "Panel" ? react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+  }, "Fab Yield: ", displayValue(props.results?.fabYield && parseFloat((props.results.fabYield * 100).toFixed(4)), "%")), props.shape === "Panel" ? react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--panel-width"
   }, "Panel Width: ", props.waferWidth, "mm"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--panel-height"
@@ -1147,7 +1149,7 @@ function ResultsStats(props) {
     className: "result result--wafer-area"
   }, props.shape, " Area: ", parseFloat(waferAreaCm(props.shape, props.waferWidth, props.waferHeight).toFixed(4)), "cm\u00B2"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--die-area"
-  }, "Total Die Area: ", displayValue(props.results?.totalDies && parseFloat(totalDieAreaCm(props.dieWidth, props.dieHeight, props.results.totalDies).toFixed(4)), 'cm²'))));
+  }, "Total Die Area: ", displayValue(props.results?.totalDies && parseFloat(totalDieAreaCm(props.dieWidth, props.dieHeight, props.results.totalDies).toFixed(4)), "cm²"))));
 }
 
 /***/ }),
@@ -1815,7 +1817,8 @@ function getDieOffset(inputs, waferCenteringEnabled) {
 }
 /**
  * Calculate the position of dies in a single shot. Dies are centered within the
- * reticle shot and spaced by the scribe width and height.
+ * reticle shot and spaced by the scribe width and height. Also returns how
+ * many rows and columns of dies are in a single shot.
  * @param dieWidth width of one die
  * @param dieHeight height of one die
  * @param scribeHoriz minimum scribe line width between any 2 die
@@ -1916,10 +1919,10 @@ function evaluatePanelInputs(inputVals, selectedSize, selectedModel, fieldWidth,
     y: offsetY
   } = getDieOffset(inputVals, true);
   // First, calculate the reticle shot map
-  const shotPositions = (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.rectanglesInRectangle)(width, height, fieldWidth, fieldHeight, 0, 0, offsetX - fieldWidth / 2, offsetY - fieldHeight / 2, true, true);
+  const shotPositions = (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.rectanglesInRectangle)(width, height, fieldWidth, fieldHeight, 0, 0, offsetX - fieldWidth / 2, offsetY - fieldHeight / 2, true, true).positions;
   // Calculate the position of dies in a single shot
   const diesInShot = getRelativeDiePositions(dieWidth, dieHeight, scribeHoriz, scribeVert, fieldWidth, fieldHeight);
-  const dieMap = createDieMap(shotPositions, diesInShot, dieWidth, dieHeight, fabYield, coordinate => {
+  const dieMap = createDieMap(shotPositions, diesInShot.positions, dieWidth, dieHeight, fabYield, coordinate => {
     return (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.isInsideRectangle)(coordinate.x, coordinate.y, lossyEdgeWidth, lossyEdgeWidth, width - lossyEdgeWidth * 2, height - lossyEdgeWidth * 2);
   });
   const {
@@ -1930,6 +1933,8 @@ function evaluatePanelInputs(inputVals, selectedSize, selectedModel, fieldWidth,
   } = getDieStateCounts(dieMap.map(die => die.dieState));
   return {
     dies: dieMap,
+    diePerRow: diesInShot.numCols,
+    diePerCol: diesInShot.numRows,
     defectiveDies,
     partialDies,
     lostDies,
@@ -1971,7 +1976,7 @@ function evaluateDiscInputs(inputVals, selectedSize, selectedModel, fieldWidth, 
   const shotPositions = (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.rectanglesInCircle)(width, fieldWidth, fieldHeight, 0, 0, offsetX, offsetY, true);
   // Calculate the position of dies in a single shot
   const diesInShot = getRelativeDiePositions(dieWidth, dieHeight, scribeHoriz, scribeVert, fieldWidth, fieldHeight);
-  const dieMap = createDieMap(shotPositions, diesInShot, dieWidth, dieHeight, fabYield, coordinate => {
+  const dieMap = createDieMap(shotPositions, diesInShot.positions, dieWidth, dieHeight, fabYield, coordinate => {
     const radiusInsideLossyEdge = width / 2 - lossyEdgeWidth;
     const isInsideLossyEdge = (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.isInsideCircle)(coordinate.x, coordinate.y, width / 2, width / 2, radiusInsideLossyEdge);
     const isAboveNotchKeepout = coordinate.y < width - notchKeepOutHeight;
@@ -1986,6 +1991,8 @@ function evaluateDiscInputs(inputVals, selectedSize, selectedModel, fieldWidth, 
   return {
     dies: dieMap,
     totalDies: dieMap.length,
+    diePerRow: diesInShot.numCols,
+    diePerCol: diesInShot.numRows,
     goodDies,
     defectiveDies,
     partialDies,
@@ -2200,7 +2207,7 @@ function rectanglesInCircle(diameter, rectWidth, rectHeight, gapX, gapY, offsetX
  * @param offsetY amount by which to offset each rectangle vertically
  * @param center if true, center align inner and outer rectangles. otherwise, align top-left
  * @param includePartials include inner rectangles that only partially overlap with the outer rectangle
- * @returns an array of Position objects {x, y}, describing the top-left coordinates of each smaller rectangle
+ * @returns an object containing the positions of the inner rectangles, as well as the number of rows and columns
  */
 function rectanglesInRectangle(outerRectWidth, outerRectHeight, innerRectWidth, innerRectHeight, gapX, gapY, offsetX, offsetY, center, includePartials) {
   const positions = [];
@@ -2221,6 +2228,8 @@ function rectanglesInRectangle(outerRectWidth, outerRectHeight, innerRectWidth, 
     startX = (outerRectWidth - totalInnerWidth) / 2;
     startY = (outerRectHeight - totalInnerHeight) / 2;
   }
+  let numRows = 0;
+  let numCols = 0;
   // Iterate through potential positions and calculate coordinates
   for (let row = 0; row <= countY; row++) {
     for (let col = 0; col <= countX; col++) {
@@ -2232,10 +2241,16 @@ function rectanglesInRectangle(outerRectWidth, outerRectHeight, innerRectWidth, 
           x,
           y
         });
+        numRows = countY;
+        numCols = countX;
       }
     }
   }
-  return positions;
+  return {
+    positions,
+    numRows,
+    numCols
+  };
 }
 
 /***/ }),

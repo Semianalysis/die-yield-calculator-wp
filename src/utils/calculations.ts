@@ -115,7 +115,8 @@ function getDieOffset(inputs: InputValues, waferCenteringEnabled: boolean) {
 
 /**
  * Calculate the position of dies in a single shot. Dies are centered within the
- * reticle shot and spaced by the scribe width and height.
+ * reticle shot and spaced by the scribe width and height. Also returns how
+ * many rows and columns of dies are in a single shot.
  * @param dieWidth width of one die
  * @param dieHeight height of one die
  * @param scribeHoriz minimum scribe line width between any 2 die
@@ -279,7 +280,7 @@ export function evaluatePanelInputs(
 		offsetY - fieldHeight / 2,
 		true,
 		true
-	);
+	).positions;
 
 	// Calculate the position of dies in a single shot
 	const diesInShot = getRelativeDiePositions(
@@ -293,7 +294,7 @@ export function evaluatePanelInputs(
 
 	const dieMap = createDieMap(
 		shotPositions,
-		diesInShot,
+		diesInShot.positions,
 		dieWidth,
 		dieHeight,
 		fabYield,
@@ -315,6 +316,8 @@ export function evaluatePanelInputs(
 
 	return {
 		dies: dieMap,
+		diePerRow: diesInShot.numCols,
+		diePerCol: diesInShot.numRows,
 		defectiveDies,
 		partialDies,
 		lostDies,
@@ -384,7 +387,7 @@ export function evaluateDiscInputs(
 
 	const dieMap = createDieMap(
 		shotPositions,
-		diesInShot,
+		diesInShot.positions,
 		dieWidth,
 		dieHeight,
 		fabYield,
@@ -409,6 +412,8 @@ export function evaluateDiscInputs(
 	return {
 		dies: dieMap,
 		totalDies: dieMap.length,
+		diePerRow: diesInShot.numCols,
+		diePerCol: diesInShot.numRows,
 		goodDies,
 		defectiveDies,
 		partialDies,

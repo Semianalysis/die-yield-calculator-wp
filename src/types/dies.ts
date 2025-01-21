@@ -18,6 +18,8 @@ export type FabResults = null | {
 	lostDies: number;
 	partialDies: number;
 	fabYield: number,
+	diePerRow: number,
+	diePerCol: number,
 	dies: Array<Die>
 	fields: Array<Position>
 };

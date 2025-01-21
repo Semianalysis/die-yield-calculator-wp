@@ -139,7 +139,7 @@ describe("Calculations", () => {
 
 			const dieMap = createDieMap(
 				shotPositions,
-				diesInShot,
+				diesInShot.positions,
 				dieEdge,
 				dieEdge,
 				fabYield,
