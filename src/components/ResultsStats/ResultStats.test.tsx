@@ -5,13 +5,17 @@ import { FabResults } from "../../types";
 
 const results: FabResults = {
 	totalDies: 100,
+	diePerRow: 2,
+	diePerCol: 2,
 	goodDies: 90,
 	defectiveDies: 5,
 	partialDies: 3,
 	lostDies: 2,
 	fabYield: 0.9,
 	dies: [],
-	fields: []
+	fields: [],
+	fullShotCount: 20,
+	partialShotCount: 5,
 };
 
 describe("ResultStats", () => {

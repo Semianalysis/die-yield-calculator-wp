@@ -110,6 +110,9 @@
 .wp-block-create-block-die-yield-calculator .result--lost-dies::before {
   color: rgb(213, 63, 49);
 }
+.wp-block-create-block-die-yield-calculator .result--die-per-reticle::before {
+  content: "▣";
+}
 .wp-block-create-block-die-yield-calculator .result--yield::before {
   content: "◐";
   font-size: 1.125em;
@@ -129,6 +132,9 @@
 }
 .wp-block-create-block-die-yield-calculator .result--die-area::before {
   content: "⬚";
+}
+.wp-block-create-block-die-yield-calculator .result--shot-count::before {
+  content: "☼";
 }
 .wp-block-create-block-die-yield-calculator .input-row,
 .wp-block-create-block-die-yield-calculator .input-row--two-col {

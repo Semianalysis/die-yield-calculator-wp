@@ -136,4 +136,22 @@ describe("App", () => {
 		await user.type(dieHeightInput, "2");
 		expect(dieHeightInput).toHaveDisplayValue("2");
 	});
+
+	it("shows how many full and partial shots will be taken and how many die fit on a reticle", async () => {
+		render(<App />);
+		const user = userEvent.setup();
+		const totalDiesNode = await screen.findByText(/Total Dies: [0-9]+/);
+		const totalDies = parseInt(totalDiesNode.textContent?.match(/\d+/)?.[0] || "0");
+
+		// Get the number of dies per shot
+		const diePerReticleNode = await screen.findByText(/Die Per Reticle: [0-9]+/);
+		const diePerReticle = parseInt(diePerReticleNode.textContent?.match(/\d+/)?.[0] || "0");
+
+		// Get the number of shots
+		const shotCountNode = await screen.findByText(/Exposures: [0-9]+/);
+		const shotCount = parseInt(shotCountNode.textContent?.match(/\d+/)?.[0] || "0");
+
+		// The total number of dies should be the number of dies per shot times the number of shots
+		expect(totalDies).toEqual(diePerReticle * shotCount);
+	});
 });

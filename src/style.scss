@@ -131,6 +131,10 @@
 			color: $color-lost;
 		}
 
+		&--die-per-reticle::before {
+			content: "▣";
+		}
+
 		&--yield::before {
 			content: "◐";
 			font-size: 1.125em;
@@ -155,6 +159,10 @@
 
 		&--die-area::before {
 			content: "⬚";
+		}
+
+		&--shot-count::before {
+			content: "☼";
 		}
 	}
 
