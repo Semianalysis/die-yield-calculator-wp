@@ -51,7 +51,7 @@ export function ResultsStats(props: {
 					Dies: {displayValue(props.results?.defectiveDies)}</li>
 				<li className="result result--partial-dies">Partial
 					Dies: {displayValue(props.results?.partialDies)}</li>
-				<li className="result result--lost-dies">Lost
+				<li className="result result--lost-dies">Excluded
 					Dies: {displayValue(props.results?.lostDies)}</li>
 			</ul>
 			<ul className="results__list">

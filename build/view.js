@@ -1027,7 +1027,7 @@ function ResultsStats(props) {
     className: "result result--partial-dies"
   }, "Partial Dies: ", displayValue(props.results?.partialDies)), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--lost-dies"
-  }, "Lost Dies: ", displayValue(props.results?.lostDies))), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("ul", {
+  }, "Excluded Dies: ", displayValue(props.results?.lostDies))), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("ul", {
     className: "results__list"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--shot-count"
@@ -1076,9 +1076,9 @@ function DieMapCanvas(props) {
   const canvasEl = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
   const dieStateColors = {
     good: "rgba(6,231,6,0.77)",
-    defective: "rgba(151,138,129,0.8)",
+    defective: "rgba(243,81,67,0.68)",
     partial: "rgba(249,249,27,0.68)",
-    lost: "rgba(243,81,67,0.68)"
+    lost: "rgba(151,138,129,0.8)"
   };
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     if (!canvasEl.current) {

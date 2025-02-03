@@ -35,7 +35,7 @@ describe("ResultStats", () => {
 		expect(screen.getByText(/Good Dies: 90/i)).toBeInTheDocument();
 		expect(screen.getByText(/Defective Dies: 5/i)).toBeInTheDocument();
 		expect(screen.getByText(/Partial Dies: 3/i)).toBeInTheDocument();
-		expect(screen.getByText(/Lost Dies: 2/i)).toBeInTheDocument();
+		expect(screen.getByText(/Excluded Dies: 2/i)).toBeInTheDocument();
 		expect(screen.getByText(/Fab Yield: 90%/i)).toBeInTheDocument();
 		expect(screen.getByText(/Total Die Area: 100cm²/i)).toBeInTheDocument();
 	});

@@ -19,9 +19,9 @@ function DieMapCanvas(props: {
 	const canvasEl = useRef<HTMLCanvasElement>(null);
 	const dieStateColors = {
 		good: "rgba(6,231,6,0.77)",
-		defective: "rgba(151,138,129,0.8)",
+		defective: "rgba(243,81,67,0.68)",
 		partial: "rgba(249,249,27,0.68)",
-		lost: "rgba(243,81,67,0.68)",
+		lost: "rgba(151,138,129,0.8)",
 	};
 
 	useEffect(() => {
