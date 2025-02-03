@@ -164,6 +164,11 @@
 		&--shot-count::before {
 			content: "☼";
 		}
+
+		&--reticle-utilization::before {
+			content: "◰";
+			font-size: 1.33333em;
+		}
 	}
 
 	.input-row,
