@@ -1003,13 +1003,18 @@ function waferAreaCm(shape, widthMM, heightMM) {
 function totalDieAreaCm(dieWidthMM, dieHeightMM, numDies) {
   return dieWidthMM * dieHeightMM * numDies / 100;
 }
+function wasteAreaCm(dieWidthMM, dieHeightMM, goodDies, waferAreaCm) {
+  return waferAreaCm - goodDies * dieWidthMM * dieHeightMM / 100;
+}
 function displayValue(value, unit) {
   if (value === null || value === undefined) {
     return "—";
   }
-  return `${value}${unit || ""}`;
+  return `${parseFloat(value.toFixed(4))}${unit || ""}`;
 }
 function ResultsStats(props) {
+  const waferArea = waferAreaCm(props.shape, props.waferWidth, props.waferHeight);
+  const wasteArea = props.results?.goodDies && wasteAreaCm(props.dieWidth, props.dieHeight, props.results.goodDies, waferArea);
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "results",
     "aria-busy": !props.results
@@ -1027,13 +1032,15 @@ function ResultsStats(props) {
     className: "result result--partial-dies"
   }, "Partial Dies: ", displayValue(props.results?.partialDies)), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--lost-dies"
-  }, "Lost Dies: ", displayValue(props.results?.lostDies))), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("ul", {
+  }, "Excluded Dies: ", displayValue(props.results?.lostDies)), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+    className: "result result--yield"
+  }, "Fab Yield: ", displayValue(props.results?.fabYield && props.results.fabYield * 100, "%"))), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("ul", {
     className: "results__list"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--shot-count"
   }, "Exposures: ", displayValue((props.results?.fullShotCount || 0) + (props.results?.partialShotCount || 0)), " (", displayValue(props.results?.fullShotCount), " full, ", displayValue(props.results?.partialShotCount), " partial)"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
-    className: "result result--yield"
-  }, "Fab Yield: ", displayValue(props.results?.fabYield && parseFloat((props.results.fabYield * 100).toFixed(4)), "%")), props.shape === "Panel" ? react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+    className: "result result--reticle-utilization"
+  }, "Reticle Utilization: ", displayValue(props.results?.reticleUtilization && props.results?.reticleUtilization * 100, "%")), props.shape === "Panel" ? react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--panel-width"
   }, "Panel Width: ", props.waferWidth, "mm"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--panel-height"
@@ -1041,9 +1048,11 @@ function ResultsStats(props) {
     className: "result result--panel-diameter"
   }, "Wafer Diameter: ", props.waferWidth, "mm"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--wafer-area"
-  }, props.shape, " Area: ", parseFloat(waferAreaCm(props.shape, props.waferWidth, props.waferHeight).toFixed(4)), "cm\u00B2"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+  }, props.shape, " Area: ", displayValue(waferArea, "cm²")), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--die-area"
-  }, "Total Die Area: ", displayValue(props.results?.totalDies && parseFloat(totalDieAreaCm(props.dieWidth, props.dieHeight, props.results.totalDies).toFixed(4)), "cm²"))));
+  }, "Total Die Area: ", displayValue(props.results?.totalDies && totalDieAreaCm(props.dieWidth, props.dieHeight, props.results.totalDies - props.results.lostDies), "cm²")), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+    className: "result result--waste-area"
+  }, "Total Waste Area: ", displayValue(wasteArea, "cm²"), " (", wasteArea && displayValue(wasteArea / waferArea * 100, "%"), ")")));
 }
 
 /***/ }),
@@ -1076,9 +1085,9 @@ function DieMapCanvas(props) {
   const canvasEl = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
   const dieStateColors = {
     good: "rgba(6,231,6,0.77)",
-    defective: "rgba(151,138,129,0.8)",
+    defective: "rgba(243,81,67,0.68)",
     partial: "rgba(249,249,27,0.68)",
-    lost: "rgba(243,81,67,0.68)"
+    lost: "rgba(151,138,129,0.8)"
   };
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     if (!canvasEl.current) {
@@ -1642,6 +1651,7 @@ __webpack_require__.r(__webpack_exports__);
  * @param defectRate decimal representing how many dies will be defective
  * @param criticalArea die area
  * @param model model to calculate the yield
+ * @returns yield percentage
  */
 function getFabYield(defectRate, criticalArea, model) {
   if (!defectRate) {
@@ -1655,6 +1665,7 @@ function getFabYield(defectRate, criticalArea, model) {
  * @param min bottom of range
  * @param max top of range
  * @param n number of random numbers to generate
+ * @returns set of n random numbers
  */
 function randomNumberSetFromRange(min, max, n) {
   const numbers = new Set();
@@ -1667,6 +1678,7 @@ function randomNumberSetFromRange(min, max, n) {
 /**
  * Count the total number of dies for each possible state (good, defective, partial, lost)
  * @param dieStates array of die state strings
+ * @returns object containing counts for each die state
  */
 function getDieStateCounts(dieStates) {
   let goodDies = 0;
@@ -1700,6 +1712,7 @@ function getDieStateCounts(dieStates) {
  * Get the offset (x, y) to apply to all dies.
  * @param inputs
  * @param waferCenteringEnabled center by wafer or by die
+ * @returns object containing x and y offsets
  */
 function getDieOffset(inputs, waferCenteringEnabled) {
   const dieOffsetX = waferCenteringEnabled ? inputs.scribeHoriz * 0.5 : inputs.dieWidth * -0.5;
@@ -1717,8 +1730,8 @@ function getDieOffset(inputs, waferCenteringEnabled) {
  * @param dieHeight height of one die
  * @param scribeHoriz minimum scribe line width between any 2 die
  * @param scribeVert minimum scribe line height between any 2 die
- * @param fieldWidth width of the shot/field
- * @param fieldHeight height of the shot/field
+ * @param fieldWidth width of the reticle
+ * @param fieldHeight height of the reticle
  */
 function getRelativeDiePositions(dieWidth, dieHeight, scribeHoriz, scribeVert, fieldWidth, fieldHeight) {
   return (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.rectanglesInRectangle)(fieldWidth, fieldHeight, dieWidth, dieHeight, scribeHoriz, scribeVert, 0, 0, true, false);
@@ -1803,13 +1816,28 @@ function createDieMap(shotPositions, relativeDiePositions, dieWidth, dieHeight, 
   };
 }
 /**
+ * Calculate the percentage of the reticle area that is made of up dies
+ * @param fieldWidth reticle width
+ * @param fieldHeight reticle height
+ * @param dieWidth width of one die
+ * @param dieHeight height of one die
+ * @param diesPerShot number of dies in a single shot
+ * @returns percentage of reticle area that is made of up dies
+ */
+function getReticleUtilization(fieldWidth, fieldHeight, dieWidth, dieHeight, diesPerShot) {
+  const reticleArea = fieldWidth * fieldHeight;
+  const dieAreaPerShot = dieWidth * dieHeight * diesPerShot;
+  return dieAreaPerShot / reticleArea;
+}
+/**
  * Use the given inputs to calculate how many dies would fit on the given panel
  * shaped wafer and what each die's state would be.
- * @param inputVals
- * @param selectedSize
- * @param selectedModel
- * @param fieldWidth
- * @param fieldHeight
+ * @param inputVals input values
+ * @param selectedSize selected wafer size
+ * @param selectedModel selected yield model
+ * @param fieldWidth reticle width
+ * @param fieldHeight reticle height
+ * @returns object containing all dies, full and partial shot counts, and positions
  */
 function evaluatePanelInputs(inputVals, selectedSize, selectedModel, fieldWidth, fieldHeight) {
   const {
@@ -1856,17 +1884,19 @@ function evaluatePanelInputs(inputVals, selectedSize, selectedModel, fieldWidth,
     fabYield,
     fields: shotPositions,
     fullShotCount: dieMap.fullShotCount,
-    partialShotCount: dieMap.partialShotCount
+    partialShotCount: dieMap.partialShotCount,
+    reticleUtilization: getReticleUtilization(fieldWidth, fieldHeight, dieWidth, dieHeight, diesInShot.positions.length)
   };
 }
 /**
  * Use the given inputs to calculate how many dies would fit on the given disc
  * shaped wafer and what each die's state would be.
- * @param inputVals
- * @param selectedSize
- * @param selectedModel
- * @param fieldWidth
- * @param fieldHeight
+ * @param inputVals input values
+ * @param selectedSize selected wafer size
+ * @param selectedModel selected yield model
+ * @param fieldWidth reticle width
+ * @param fieldHeight reticle height
+ * @returns object containing all dies, full and partial shot counts, and positions
  */
 function evaluateDiscInputs(inputVals, selectedSize, selectedModel, fieldWidth, fieldHeight) {
   const {
@@ -1915,7 +1945,8 @@ function evaluateDiscInputs(inputVals, selectedSize, selectedModel, fieldWidth, 
     fabYield,
     fields: shotPositions,
     fullShotCount: dieMap.fullShotCount,
-    partialShotCount: dieMap.partialShotCount
+    partialShotCount: dieMap.partialShotCount,
+    reticleUtilization: getReticleUtilization(fieldWidth, fieldHeight, dieWidth, dieHeight, diesInShot.positions.length)
   };
 }
 

@@ -102,13 +102,13 @@
   color: rgb(46, 217, 46);
 }
 .wp-block-create-block-die-yield-calculator .result--defective-dies::before {
-  color: rgb(151, 138, 129);
+  color: rgb(213, 63, 49);
 }
 .wp-block-create-block-die-yield-calculator .result--partial-dies::before {
   color: rgb(249, 249, 27);
 }
 .wp-block-create-block-die-yield-calculator .result--lost-dies::before {
-  color: rgb(213, 63, 49);
+  color: rgb(151, 138, 129);
 }
 .wp-block-create-block-die-yield-calculator .result--die-per-reticle::before {
   content: "▣";
@@ -135,6 +135,14 @@
 }
 .wp-block-create-block-die-yield-calculator .result--shot-count::before {
   content: "☼";
+}
+.wp-block-create-block-die-yield-calculator .result--reticle-utilization::before {
+  content: "◰";
+  font-size: 1.33333em;
+}
+.wp-block-create-block-die-yield-calculator .result--waste-area::before {
+  content: "⊗";
+  font-size: 1.33333em;
 }
 .wp-block-create-block-die-yield-calculator .input-row,
 .wp-block-create-block-die-yield-calculator .input-row--two-col {
@@ -358,7 +366,7 @@
   text-shadow: 0 1px rgba(255, 255, 255, 0.1803921569);
 }
 .wp-block-create-block-die-yield-calculator .wafer-canvas .wafer-canvas__message--error {
-  color: rgb(213, 63, 49);
+  color: rgb(151, 138, 129);
 }
 .wp-block-create-block-die-yield-calculator .tsmc-logo {
   position: relative;
