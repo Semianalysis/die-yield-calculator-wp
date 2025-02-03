@@ -140,6 +140,10 @@
   content: "◰";
   font-size: 1.33333em;
 }
+.wp-block-create-block-die-yield-calculator .result--waste-area::before {
+  content: "⊗";
+  font-size: 1.33333em;
+}
 .wp-block-create-block-die-yield-calculator .input-row,
 .wp-block-create-block-die-yield-calculator .input-row--two-col {
   margin-bottom: 1rem;

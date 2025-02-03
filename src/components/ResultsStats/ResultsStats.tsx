@@ -21,12 +21,21 @@ function totalDieAreaCm(
 	return dieWidthMM * dieHeightMM * numDies / 100;
 }
 
+function wasteAreaCm(
+	dieWidthMM: number,
+	dieHeightMM: number,
+	goodDies: number,
+	waferAreaCm: number
+) {
+	return waferAreaCm - (goodDies * dieWidthMM * dieHeightMM / 100);
+}
+
 function displayValue(value: number | null | undefined, unit?: string) {
 	if (value === null || value === undefined) {
 		return "—";
 	}
 
-	return `${value}${unit || ""}`;
+	return `${parseFloat(value.toFixed(4))}${unit || ""}`;
 }
 
 export function ResultsStats(props: {
@@ -37,6 +46,9 @@ export function ResultsStats(props: {
 	waferWidth: number;
 	waferHeight: number;
 }) {
+	const waferArea = waferAreaCm(props.shape, props.waferWidth, props.waferHeight);
+	const wasteArea = props.results?.goodDies && wasteAreaCm(props.dieWidth, props.dieHeight, props.results.goodDies, waferArea);
+
 	return (
 		<div className="results" aria-busy={!props.results}>
 			<ul className="results__list">
@@ -53,14 +65,14 @@ export function ResultsStats(props: {
 					Dies: {displayValue(props.results?.partialDies)}</li>
 				<li className="result result--lost-dies">Excluded
 					Dies: {displayValue(props.results?.lostDies)}</li>
+				<li className="result result--yield">Fab Yield: {
+					displayValue(props.results?.fabYield && props.results.fabYield * 100, "%")
+				}</li>
 			</ul>
 			<ul className="results__list">
 				<li className="result result--shot-count">Exposures: {displayValue((props.results?.fullShotCount || 0) + (props.results?.partialShotCount || 0))} ({displayValue(props.results?.fullShotCount)} full, {displayValue(props.results?.partialShotCount)} partial)</li>
 				<li className="result result--reticle-utilization">Reticle Utilization: {
-					displayValue(props.results?.reticleUtilization && parseFloat((props.results?.reticleUtilization * 100).toFixed(4)), "%")
-				}</li>
-				<li className="result result--yield">Fab Yield: {
-					displayValue(props.results?.fabYield && parseFloat((props.results.fabYield * 100).toFixed(4)), "%")
+					displayValue(props.results?.reticleUtilization && props.results?.reticleUtilization * 100, "%")
 				}</li>
 				{
 					props.shape === "Panel" ? (
@@ -78,11 +90,14 @@ export function ResultsStats(props: {
 					)
 				}
 				<li
-					className="result result--wafer-area">{props.shape} Area: {parseFloat(waferAreaCm(props.shape, props.waferWidth, props.waferHeight).toFixed(4))}cm²
+					className="result result--wafer-area">{props.shape} Area: {displayValue(waferArea, "cm²")}
 				</li>
 				<li className="result result--die-area">Total Die
-					Area: {displayValue(props.results?.totalDies && parseFloat(totalDieAreaCm(props.dieWidth, props.dieHeight, props.results.totalDies).toFixed(4)), "cm²")}
+					Area: {displayValue(props.results?.totalDies && totalDieAreaCm(props.dieWidth, props.dieHeight, props.results.totalDies - props.results.lostDies), "cm²")}
 				</li>
+				<li className="result result--waste-area">Total Waste Area: {
+					displayValue(wasteArea, "cm²")
+				} ({wasteArea && displayValue(wasteArea / waferArea * 100, "%")})</li>
 			</ul>
 		</div>
 	);

@@ -1111,13 +1111,18 @@ function waferAreaCm(shape, widthMM, heightMM) {
 function totalDieAreaCm(dieWidthMM, dieHeightMM, numDies) {
   return dieWidthMM * dieHeightMM * numDies / 100;
 }
+function wasteAreaCm(dieWidthMM, dieHeightMM, goodDies, waferAreaCm) {
+  return waferAreaCm - goodDies * dieWidthMM * dieHeightMM / 100;
+}
 function displayValue(value, unit) {
   if (value === null || value === undefined) {
     return "—";
   }
-  return `${value}${unit || ""}`;
+  return `${parseFloat(value.toFixed(4))}${unit || ""}`;
 }
 function ResultsStats(props) {
+  const waferArea = waferAreaCm(props.shape, props.waferWidth, props.waferHeight);
+  const wasteArea = props.results?.goodDies && wasteAreaCm(props.dieWidth, props.dieHeight, props.results.goodDies, waferArea);
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "results",
     "aria-busy": !props.results
@@ -1135,15 +1140,15 @@ function ResultsStats(props) {
     className: "result result--partial-dies"
   }, "Partial Dies: ", displayValue(props.results?.partialDies)), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--lost-dies"
-  }, "Excluded Dies: ", displayValue(props.results?.lostDies))), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("ul", {
+  }, "Excluded Dies: ", displayValue(props.results?.lostDies)), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+    className: "result result--yield"
+  }, "Fab Yield: ", displayValue(props.results?.fabYield && props.results.fabYield * 100, "%"))), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("ul", {
     className: "results__list"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--shot-count"
   }, "Exposures: ", displayValue((props.results?.fullShotCount || 0) + (props.results?.partialShotCount || 0)), " (", displayValue(props.results?.fullShotCount), " full, ", displayValue(props.results?.partialShotCount), " partial)"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--reticle-utilization"
-  }, "Reticle Utilization: ", displayValue(props.results?.reticleUtilization && parseFloat((props.results?.reticleUtilization * 100).toFixed(4)), "%")), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
-    className: "result result--yield"
-  }, "Fab Yield: ", displayValue(props.results?.fabYield && parseFloat((props.results.fabYield * 100).toFixed(4)), "%")), props.shape === "Panel" ? react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+  }, "Reticle Utilization: ", displayValue(props.results?.reticleUtilization && props.results?.reticleUtilization * 100, "%")), props.shape === "Panel" ? react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--panel-width"
   }, "Panel Width: ", props.waferWidth, "mm"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--panel-height"
@@ -1151,9 +1156,11 @@ function ResultsStats(props) {
     className: "result result--panel-diameter"
   }, "Wafer Diameter: ", props.waferWidth, "mm"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--wafer-area"
-  }, props.shape, " Area: ", parseFloat(waferAreaCm(props.shape, props.waferWidth, props.waferHeight).toFixed(4)), "cm\u00B2"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+  }, props.shape, " Area: ", displayValue(waferArea, "cm²")), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--die-area"
-  }, "Total Die Area: ", displayValue(props.results?.totalDies && parseFloat(totalDieAreaCm(props.dieWidth, props.dieHeight, props.results.totalDies).toFixed(4)), "cm²"))));
+  }, "Total Die Area: ", displayValue(props.results?.totalDies && totalDieAreaCm(props.dieWidth, props.dieHeight, props.results.totalDies - props.results.lostDies), "cm²")), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+    className: "result result--waste-area"
+  }, "Total Waste Area: ", displayValue(wasteArea, "cm²"), " (", wasteArea && displayValue(wasteArea / waferArea * 100, "%"), ")")));
 }
 
 /***/ }),

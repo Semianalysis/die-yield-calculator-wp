@@ -38,7 +38,7 @@ describe("ResultStats", () => {
 		expect(screen.getByText(/Partial Dies: 3/i)).toBeInTheDocument();
 		expect(screen.getByText(/Excluded Dies: 2/i)).toBeInTheDocument();
 		expect(screen.getByText(/Fab Yield: 90%/i)).toBeInTheDocument();
-		expect(screen.getByText(/Total Die Area: 100cm²/i)).toBeInTheDocument();
+		expect(screen.getByText(/Total Die Area: 98cm²/i)).toBeInTheDocument();
 	});
 
 	it("renders the wafer diameter for wafer-type substrate", () => {
@@ -73,4 +73,25 @@ describe("ResultStats", () => {
 		expect(screen.getByText(/Panel Height: 200/i)).toBeInTheDocument();
 		expect(screen.getByText(/Panel Area: 400/i)).toBeInTheDocument();
 	});
+
+	it('calculates and displays the waste area (area of wafer not made up of good die)', () => {
+		const dieWidth = 6;
+		const dieHeight = 4;
+		const waferWidth = 200;
+		const waferHeight = 200;
+		render(
+			<ResultsStats
+				results={results}
+				shape="Panel"
+				dieWidth={dieWidth}
+				dieHeight={dieHeight}
+				waferWidth={waferWidth}
+				waferHeight={waferHeight}
+			/>
+		);
+
+		const expected = ((waferWidth * waferHeight) - (results.goodDies * dieWidth * dieHeight)) / 100;
+
+		expect(screen.getByText(new RegExp(`Total Waste Area: ${expected}cm²`, 'ig'))).toBeInTheDocument();
+	})
 });
