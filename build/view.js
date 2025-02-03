@@ -1032,6 +1032,8 @@ function ResultsStats(props) {
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--shot-count"
   }, "Exposures: ", displayValue((props.results?.fullShotCount || 0) + (props.results?.partialShotCount || 0)), " (", displayValue(props.results?.fullShotCount), " full, ", displayValue(props.results?.partialShotCount), " partial)"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+    className: "result result--reticle-utilization"
+  }, "Reticle Utilization: ", displayValue(props.results?.reticleUtilization && parseFloat((props.results?.reticleUtilization * 100).toFixed(4)), "%")), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--yield"
   }, "Fab Yield: ", displayValue(props.results?.fabYield && parseFloat((props.results.fabYield * 100).toFixed(4)), "%")), props.shape === "Panel" ? react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result result--panel-width"
@@ -1803,6 +1805,19 @@ function createDieMap(shotPositions, relativeDiePositions, dieWidth, dieHeight, 
   };
 }
 /**
+ * Calculate the percentage of the reticle area that is made of up dies
+ * @param fieldWidth
+ * @param fieldHeight
+ * @param dieWidth
+ * @param dieHeight
+ * @param diesPerShot
+ */
+function getReticleUtilization(fieldWidth, fieldHeight, dieWidth, dieHeight, diesPerShot) {
+  const reticleArea = fieldWidth * fieldHeight;
+  const dieAreaPerShot = dieWidth * dieHeight * diesPerShot;
+  return dieAreaPerShot / reticleArea;
+}
+/**
  * Use the given inputs to calculate how many dies would fit on the given panel
  * shaped wafer and what each die's state would be.
  * @param inputVals
@@ -1856,7 +1871,8 @@ function evaluatePanelInputs(inputVals, selectedSize, selectedModel, fieldWidth,
     fabYield,
     fields: shotPositions,
     fullShotCount: dieMap.fullShotCount,
-    partialShotCount: dieMap.partialShotCount
+    partialShotCount: dieMap.partialShotCount,
+    reticleUtilization: getReticleUtilization(fieldWidth, fieldHeight, dieWidth, dieHeight, diesInShot.positions.length)
   };
 }
 /**
@@ -1915,7 +1931,8 @@ function evaluateDiscInputs(inputVals, selectedSize, selectedModel, fieldWidth, 
     fabYield,
     fields: shotPositions,
     fullShotCount: dieMap.fullShotCount,
-    partialShotCount: dieMap.partialShotCount
+    partialShotCount: dieMap.partialShotCount,
+    reticleUtilization: getReticleUtilization(fieldWidth, fieldHeight, dieWidth, dieHeight, diesInShot.positions.length)
   };
 }
 

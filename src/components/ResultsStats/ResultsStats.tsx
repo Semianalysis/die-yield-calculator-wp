@@ -56,9 +56,12 @@ export function ResultsStats(props: {
 			</ul>
 			<ul className="results__list">
 				<li className="result result--shot-count">Exposures: {displayValue((props.results?.fullShotCount || 0) + (props.results?.partialShotCount || 0))} ({displayValue(props.results?.fullShotCount)} full, {displayValue(props.results?.partialShotCount)} partial)</li>
-				<li className="result result--yield">Fab
-					Yield: {displayValue(props.results?.fabYield && parseFloat((props.results.fabYield * 100).toFixed(4)), "%")}
-				</li>
+				<li className="result result--reticle-utilization">Reticle Utilization: {
+					displayValue(props.results?.reticleUtilization && parseFloat((props.results?.reticleUtilization * 100).toFixed(4)), "%")
+				}</li>
+				<li className="result result--yield">Fab Yield: {
+					displayValue(props.results?.fabYield && parseFloat((props.results.fabYield * 100).toFixed(4)), "%")
+				}</li>
 				{
 					props.shape === "Panel" ? (
 						<>

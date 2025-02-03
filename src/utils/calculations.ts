@@ -258,6 +258,26 @@ export function createDieMap(
 }
 
 /**
+ * Calculate the percentage of the reticle area that is made of up dies
+ * @param fieldWidth
+ * @param fieldHeight
+ * @param dieWidth
+ * @param dieHeight
+ * @param diesPerShot
+ */
+function getReticleUtilization(
+	fieldWidth: number,
+	fieldHeight: number,
+	dieWidth: number,
+	dieHeight: number,
+	diesPerShot: number
+) {
+	const reticleArea = fieldWidth * fieldHeight;
+	const dieAreaPerShot = dieWidth * dieHeight * diesPerShot;
+	return dieAreaPerShot / reticleArea;
+}
+
+/**
  * Use the given inputs to calculate how many dies would fit on the given panel
  * shaped wafer and what each die's state would be.
  * @param inputVals
@@ -337,6 +357,7 @@ export function evaluatePanelInputs(
 		dieMap.dies.map((die) => die.dieState)
 	);
 
+
 	return {
 		dies: dieMap.dies,
 		diePerRow: diesInShot.numCols,
@@ -350,6 +371,13 @@ export function evaluatePanelInputs(
 		fields: shotPositions,
 		fullShotCount: dieMap.fullShotCount,
 		partialShotCount: dieMap.partialShotCount,
+		reticleUtilization: getReticleUtilization(
+			fieldWidth,
+			fieldHeight,
+			dieWidth,
+			dieHeight,
+			diesInShot.positions.length
+		)
 	};
 }
 
@@ -447,5 +475,12 @@ export function evaluateDiscInputs(
 		fields: shotPositions,
 		fullShotCount: dieMap.fullShotCount,
 		partialShotCount: dieMap.partialShotCount,
+		reticleUtilization: getReticleUtilization(
+			fieldWidth,
+			fieldHeight,
+			dieWidth,
+			dieHeight,
+			diesInShot.positions.length
+		)
 	};
 }

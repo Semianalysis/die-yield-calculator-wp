@@ -16,6 +16,7 @@ const results: FabResults = {
 	fields: [],
 	fullShotCount: 20,
 	partialShotCount: 5,
+	reticleUtilization: 75,
 };
 
 describe("ResultStats", () => {

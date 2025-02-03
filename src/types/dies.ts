@@ -24,4 +24,5 @@ export type FabResults = null | {
 	fields: Array<Position>,
 	fullShotCount: number,
 	partialShotCount: number,
+	reticleUtilization: number,
 };
