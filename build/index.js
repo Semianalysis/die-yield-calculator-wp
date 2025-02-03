@@ -1759,6 +1759,7 @@ __webpack_require__.r(__webpack_exports__);
  * @param defectRate decimal representing how many dies will be defective
  * @param criticalArea die area
  * @param model model to calculate the yield
+ * @returns yield percentage
  */
 function getFabYield(defectRate, criticalArea, model) {
   if (!defectRate) {
@@ -1772,6 +1773,7 @@ function getFabYield(defectRate, criticalArea, model) {
  * @param min bottom of range
  * @param max top of range
  * @param n number of random numbers to generate
+ * @returns set of n random numbers
  */
 function randomNumberSetFromRange(min, max, n) {
   const numbers = new Set();
@@ -1784,6 +1786,7 @@ function randomNumberSetFromRange(min, max, n) {
 /**
  * Count the total number of dies for each possible state (good, defective, partial, lost)
  * @param dieStates array of die state strings
+ * @returns object containing counts for each die state
  */
 function getDieStateCounts(dieStates) {
   let goodDies = 0;
@@ -1817,6 +1820,7 @@ function getDieStateCounts(dieStates) {
  * Get the offset (x, y) to apply to all dies.
  * @param inputs
  * @param waferCenteringEnabled center by wafer or by die
+ * @returns object containing x and y offsets
  */
 function getDieOffset(inputs, waferCenteringEnabled) {
   const dieOffsetX = waferCenteringEnabled ? inputs.scribeHoriz * 0.5 : inputs.dieWidth * -0.5;
@@ -1834,8 +1838,8 @@ function getDieOffset(inputs, waferCenteringEnabled) {
  * @param dieHeight height of one die
  * @param scribeHoriz minimum scribe line width between any 2 die
  * @param scribeVert minimum scribe line height between any 2 die
- * @param fieldWidth width of the shot/field
- * @param fieldHeight height of the shot/field
+ * @param fieldWidth width of the reticle
+ * @param fieldHeight height of the reticle
  */
 function getRelativeDiePositions(dieWidth, dieHeight, scribeHoriz, scribeVert, fieldWidth, fieldHeight) {
   return (0,_geometry__WEBPACK_IMPORTED_MODULE_1__.rectanglesInRectangle)(fieldWidth, fieldHeight, dieWidth, dieHeight, scribeHoriz, scribeVert, 0, 0, true, false);
@@ -1921,11 +1925,12 @@ function createDieMap(shotPositions, relativeDiePositions, dieWidth, dieHeight, 
 }
 /**
  * Calculate the percentage of the reticle area that is made of up dies
- * @param fieldWidth
- * @param fieldHeight
- * @param dieWidth
- * @param dieHeight
- * @param diesPerShot
+ * @param fieldWidth reticle width
+ * @param fieldHeight reticle height
+ * @param dieWidth width of one die
+ * @param dieHeight height of one die
+ * @param diesPerShot number of dies in a single shot
+ * @returns percentage of reticle area that is made of up dies
  */
 function getReticleUtilization(fieldWidth, fieldHeight, dieWidth, dieHeight, diesPerShot) {
   const reticleArea = fieldWidth * fieldHeight;
@@ -1935,11 +1940,12 @@ function getReticleUtilization(fieldWidth, fieldHeight, dieWidth, dieHeight, die
 /**
  * Use the given inputs to calculate how many dies would fit on the given panel
  * shaped wafer and what each die's state would be.
- * @param inputVals
- * @param selectedSize
- * @param selectedModel
- * @param fieldWidth
- * @param fieldHeight
+ * @param inputVals input values
+ * @param selectedSize selected wafer size
+ * @param selectedModel selected yield model
+ * @param fieldWidth reticle width
+ * @param fieldHeight reticle height
+ * @returns object containing all dies, full and partial shot counts, and positions
  */
 function evaluatePanelInputs(inputVals, selectedSize, selectedModel, fieldWidth, fieldHeight) {
   const {
@@ -1993,11 +1999,12 @@ function evaluatePanelInputs(inputVals, selectedSize, selectedModel, fieldWidth,
 /**
  * Use the given inputs to calculate how many dies would fit on the given disc
  * shaped wafer and what each die's state would be.
- * @param inputVals
- * @param selectedSize
- * @param selectedModel
- * @param fieldWidth
- * @param fieldHeight
+ * @param inputVals input values
+ * @param selectedSize selected wafer size
+ * @param selectedModel selected yield model
+ * @param fieldWidth reticle width
+ * @param fieldHeight reticle height
+ * @returns object containing all dies, full and partial shot counts, and positions
  */
 function evaluateDiscInputs(inputVals, selectedSize, selectedModel, fieldWidth, fieldHeight) {
   const {

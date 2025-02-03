@@ -17,6 +17,7 @@ import {
  * @param defectRate decimal representing how many dies will be defective
  * @param criticalArea die area
  * @param model model to calculate the yield
+ * @returns yield percentage
  */
 export function getFabYield(
 	defectRate: number,
@@ -36,6 +37,7 @@ export function getFabYield(
  * @param min bottom of range
  * @param max top of range
  * @param n number of random numbers to generate
+ * @returns set of n random numbers
  */
 export function randomNumberSetFromRange(min: number, max: number, n: number) {
 	const numbers: Set<number> = new Set();
@@ -51,6 +53,7 @@ export function randomNumberSetFromRange(min: number, max: number, n: number) {
 /**
  * Count the total number of dies for each possible state (good, defective, partial, lost)
  * @param dieStates array of die state strings
+ * @returns object containing counts for each die state
  */
 export function getDieStateCounts(dieStates: Array<DieState>) {
 	let goodDies = 0;
@@ -99,6 +102,7 @@ export type InputValues = {
  * Get the offset (x, y) to apply to all dies.
  * @param inputs
  * @param waferCenteringEnabled center by wafer or by die
+ * @returns object containing x and y offsets
  */
 function getDieOffset(inputs: InputValues, waferCenteringEnabled: boolean) {
 	const dieOffsetX = waferCenteringEnabled
@@ -121,8 +125,8 @@ function getDieOffset(inputs: InputValues, waferCenteringEnabled: boolean) {
  * @param dieHeight height of one die
  * @param scribeHoriz minimum scribe line width between any 2 die
  * @param scribeVert minimum scribe line height between any 2 die
- * @param fieldWidth width of the shot/field
- * @param fieldHeight height of the shot/field
+ * @param fieldWidth width of the reticle
+ * @param fieldHeight height of the reticle
  */
 function getRelativeDiePositions(
 	dieWidth: number,
@@ -259,11 +263,12 @@ export function createDieMap(
 
 /**
  * Calculate the percentage of the reticle area that is made of up dies
- * @param fieldWidth
- * @param fieldHeight
- * @param dieWidth
- * @param dieHeight
- * @param diesPerShot
+ * @param fieldWidth reticle width
+ * @param fieldHeight reticle height
+ * @param dieWidth width of one die
+ * @param dieHeight height of one die
+ * @param diesPerShot number of dies in a single shot
+ * @returns percentage of reticle area that is made of up dies
  */
 function getReticleUtilization(
 	fieldWidth: number,
@@ -280,11 +285,12 @@ function getReticleUtilization(
 /**
  * Use the given inputs to calculate how many dies would fit on the given panel
  * shaped wafer and what each die's state would be.
- * @param inputVals
- * @param selectedSize
- * @param selectedModel
- * @param fieldWidth
- * @param fieldHeight
+ * @param inputVals input values
+ * @param selectedSize selected wafer size
+ * @param selectedModel selected yield model
+ * @param fieldWidth reticle width
+ * @param fieldHeight reticle height
+ * @returns object containing all dies, full and partial shot counts, and positions
  */
 export function evaluatePanelInputs(
 	inputVals: InputValues,
@@ -384,11 +390,12 @@ export function evaluatePanelInputs(
 /**
  * Use the given inputs to calculate how many dies would fit on the given disc
  * shaped wafer and what each die's state would be.
- * @param inputVals
- * @param selectedSize
- * @param selectedModel
- * @param fieldWidth
- * @param fieldHeight
+ * @param inputVals input values
+ * @param selectedSize selected wafer size
+ * @param selectedModel selected yield model
+ * @param fieldWidth reticle width
+ * @param fieldHeight reticle height
+ * @returns object containing all dies, full and partial shot counts, and positions
  */
 export function evaluateDiscInputs(
 	inputVals: InputValues,
