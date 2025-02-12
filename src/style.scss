@@ -8,9 +8,9 @@
 .wp-block-create-block-die-yield-calculator {
 	$color-accent: #F7B041;
 	$color-good: rgb(46, 217, 46);
-	$color-defective: rgba(151,138,129);
+	$color-defective: rgb(213, 63, 49);
 	$color-partial: rgba(249,249,27);
-	$color-lost: rgb(213, 63, 49);
+	$color-lost: rgba(151,138,129);
 
 	color: rgb(234, 235, 236);
 	font-family: Inter, sans-serif;
@@ -163,6 +163,16 @@
 
 		&--shot-count::before {
 			content: "☼";
+		}
+
+		&--reticle-utilization::before {
+			content: "◰";
+			font-size: 1.33333em;
+		}
+
+		&--waste-area::before {
+			content: "⊗";
+			font-size: 1.33333em;
 		}
 	}
 

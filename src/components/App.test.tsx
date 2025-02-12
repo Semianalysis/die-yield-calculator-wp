@@ -68,7 +68,7 @@ describe("App", () => {
 			"Good",
 			"Defective",
 			"Partial",
-			"Lost"
+			"Excluded"
 		].map(async (label) => {
 			const regex = new RegExp(`${label} Dies`);
 			const textNode = await screen.findByText(regex);

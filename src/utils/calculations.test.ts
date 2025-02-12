@@ -1,45 +1,46 @@
 import {
 	createDieMap,
+	evaluateDiscInputs,
 	getDieStateCounts,
 	getFabYield,
-	randomNumberSetFromRange
+	randomNumberSetFromRange,
 } from "./calculations";
 import { yieldModels } from "../config";
 import { DieState } from "../types";
 import {
 	isInsideCircle,
 	rectanglesInCircle,
-	rectanglesInRectangle
+	rectanglesInRectangle,
 } from "./geometry";
 
 describe("Calculations", () => {
 	describe("getDieStateCounts", () => {
-		it("counts only \"good\" dies", () => {
+		it('counts only "good" dies', () => {
 			expect(getDieStateCounts(["good", "good", "good"])).toEqual({
 				goodDies: 3,
 				defectiveDies: 0,
 				partialDies: 0,
-				lostDies: 0
+				lostDies: 0,
 			});
 		});
 
-		it("counts only \"defective\" dies", () => {
+		it('counts only "defective" dies', () => {
 			expect(getDieStateCounts(["defective", "defective"])).toEqual({
 				goodDies: 0,
 				defectiveDies: 2,
 				partialDies: 0,
-				lostDies: 0
+				lostDies: 0,
 			});
 		});
 
 		it("counts mixed die states", () => {
 			expect(
-				getDieStateCounts(["good", "defective", "partial", "lost", "good"])
+				getDieStateCounts(["good", "defective", "partial", "lost", "good"]),
 			).toEqual({
 				goodDies: 2,
 				defectiveDies: 1,
 				partialDies: 1,
-				lostDies: 1
+				lostDies: 1,
 			});
 		});
 
@@ -48,16 +49,16 @@ describe("Calculations", () => {
 				goodDies: 0,
 				defectiveDies: 0,
 				partialDies: 0,
-				lostDies: 0
+				lostDies: 0,
 			});
 		});
 
-		it("counts no \"good\" dies", () => {
+		it('counts no "good" dies', () => {
 			expect(getDieStateCounts(["defective", "partial", "lost"])).toEqual({
 				goodDies: 0,
 				defectiveDies: 1,
 				partialDies: 1,
-				lostDies: 1
+				lostDies: 1,
 			});
 		});
 
@@ -67,7 +68,7 @@ describe("Calculations", () => {
 				"defective",
 				"partial",
 				"lost",
-				"good"
+				"good",
 			];
 			const counts = getDieStateCounts(dieStates);
 			const totalCount =
@@ -84,17 +85,17 @@ describe("Calculations", () => {
 			"calculates a yield within the expected range for the %s model",
 			(model) => {
 				expect(
-					getFabYield(0.01, 1000, model as keyof typeof yieldModels)
+					getFabYield(0.01, 1000, model as keyof typeof yieldModels),
 				).toBeCloseTo(0.9, 1);
-			}
+			},
 		);
 		it.each(Object.keys(yieldModels))(
 			"returns a full yield if the defect rate is 0 for the %s model",
 			(model) => {
 				expect(getFabYield(0, 1000, model as keyof typeof yieldModels)).toEqual(
-					1
+					1,
 				);
-			}
+			},
 		);
 	});
 
@@ -124,7 +125,7 @@ describe("Calculations", () => {
 				0,
 				0,
 				true,
-				false
+				false,
 			);
 			const shotPositions = rectanglesInCircle(
 				waferDiameter,
@@ -134,7 +135,7 @@ describe("Calculations", () => {
 				0,
 				0,
 				0,
-				true
+				true,
 			);
 
 			const dieMap = createDieMap(
@@ -151,15 +152,24 @@ describe("Calculations", () => {
 						coordinate.y,
 						waferDiameter / 2,
 						waferDiameter / 2,
-						radiusInsideLossyEdge
+						radiusInsideLossyEdge,
 					);
-				}
+				},
 			);
 
-			const diesFullyOnWafer = dieMap.dies.filter((die) => die.dieState !== "lost" && die.dieState !== "partial");
-			const defectiveDies = dieMap.dies.filter((die) => die.dieState === "defective");
+			const diesFullyOnWafer = dieMap.dies.filter(
+				(die) => die.dieState !== "lost" && die.dieState !== "partial",
+			);
+			const defectiveDies = dieMap.dies.filter(
+				(die) => die.dieState === "defective",
+			);
 			// Yield should only have been applied to dies that are not lost or partial
-			expect(((diesFullyOnWafer.length - defectiveDies.length) / diesFullyOnWafer.length).toFixed(2)).toEqual(fabYield.toString());
+			expect(
+				(
+					(diesFullyOnWafer.length - defectiveDies.length) /
+					diesFullyOnWafer.length
+				).toFixed(2),
+			).toEqual(fabYield.toString());
 		});
 
 		it("calculates the shots to be taken and counts how many are full vs. partial", () => {
@@ -176,7 +186,7 @@ describe("Calculations", () => {
 				0,
 				0,
 				true,
-				false
+				false,
 			);
 			const shotPositions = rectanglesInCircle(
 				waferDiameter,
@@ -186,7 +196,7 @@ describe("Calculations", () => {
 				0,
 				0,
 				0,
-				true
+				true,
 			);
 
 			const { fullShotCount, partialShotCount, shotsOnWafer } = createDieMap(
@@ -203,12 +213,31 @@ describe("Calculations", () => {
 						coordinate.y,
 						waferDiameter / 2,
 						waferDiameter / 2,
-						radiusInsideLossyEdge
+						radiusInsideLossyEdge,
 					);
-				}
+				},
 			);
 
 			expect(fullShotCount + partialShotCount).toEqual(shotsOnWafer.length);
+		});
+	});
+
+	describe("evaluateDiscInputs", () => {
+		it("calculates how much of the reticle area is made of up dies", () => {
+			const inputVals = {
+				dieWidth: 8,
+				dieHeight: 8,
+				criticalArea: 64,
+				defectRate: 0.1,
+				lossyEdgeWidth: 3,
+				notchKeepOutHeight: 5,
+				scribeHoriz: 0.2,
+				scribeVert: 0.2,
+				transHoriz: 0,
+				transVert: 0,
+			};
+			const result = evaluateDiscInputs(inputVals, "s300mm", "murphy", 26, 33);
+			expect(result?.reticleUtilization).toBeCloseTo(0.895105, 6);
 		});
 	});
 });
