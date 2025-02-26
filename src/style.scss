@@ -500,3 +500,20 @@
 	}
 }
 
+.reticle-canvas {
+	margin: auto;
+	aspect-ratio: 1/1;
+	background: url("../src/assets/photomaskbg.svg") no-repeat;
+	background-size: contain;
+	max-width: calc(152.4 * 3px);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 8px;
+	overflow: hidden;
+}
+
+.reticle-canvas__inner {
+	width: calc(104 / 152.4 * 100%);
+	height: calc(132 / 152.4 * 100%);
+}

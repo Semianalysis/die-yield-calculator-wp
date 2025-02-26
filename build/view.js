@@ -1196,6 +1196,7 @@ function ReticleCanvas(props) {
     context.clearRect(0, 0, canvasEl.current.width, canvasEl.current.height);
     // Calculate the position of dies in a single shot
     const diesInShot = (0,_utils_calculations__WEBPACK_IMPORTED_MODULE_1__.getRelativeDiePositions)(props.dieWidth, props.dieHeight, props.scribeHoriz, props.scribeVert, props.fieldWidth, props.fieldHeight);
+    context.fillStyle = "#eee";
     // Draw each die onto the canvas
     diesInShot.positions.forEach(die => {
       context.fillRect(props.mmToPxScale * die.x, props.mmToPxScale * die.y, props.mmToPxScale * props.dieWidth, props.mmToPxScale * props.dieHeight);
@@ -1210,7 +1211,7 @@ function ReticleCanvas(props) {
     scale: 1.05,
     className: "reticle-canvas"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("canvas", {
-    className: "reticle-canvas__reticle",
+    className: "reticle-canvas__inner",
     ref: canvasEl,
     width: props.fieldWidth * props.mmToPxScale,
     height: props.fieldHeight * props.mmToPxScale

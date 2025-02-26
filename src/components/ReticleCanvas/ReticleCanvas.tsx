@@ -41,6 +41,8 @@ export function ReticleCanvas(props: Props) {
 			props.fieldHeight,
 		);
 
+		context.fillStyle = "#eee";
+
 		// Draw each die onto the canvas
 		diesInShot.positions.forEach((die) => {
 			context.fillRect(
@@ -68,7 +70,7 @@ export function ReticleCanvas(props: Props) {
 				className="reticle-canvas"
 			>
 				<canvas
-					className="reticle-canvas__reticle"
+					className="reticle-canvas__inner"
 					ref={canvasEl}
 					width={props.fieldWidth * props.mmToPxScale}
 					height={props.fieldHeight * props.mmToPxScale}
