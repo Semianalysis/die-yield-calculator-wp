@@ -511,6 +511,11 @@
 	justify-content: center;
 	border-radius: 8px;
 	overflow: hidden;
+	border: 1px solid;
+	border-top-color: #666c72;
+	border-right-color: #46494c;
+	border-bottom-color: #2d2f32;
+	border-left-color: #46494c;
 }
 
 .reticle-canvas__inner {
