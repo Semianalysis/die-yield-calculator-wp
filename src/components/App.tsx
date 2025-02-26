@@ -10,6 +10,7 @@ import semiAnalysisLogo from "../assets/semianalysis-logo-full-360px.png";
 import { useEasterEgg } from "../hooks/useEasterEgg";
 import { JumpToResults } from "./JumpToResults/JumpToResults";
 import { clampedInputDisplayValue } from "../utils/inputs";
+import { ReticleCanvas } from "./ReticleCanvas/ReticleCanvas";
 
 const ShapeSelector = (props: {
 	shape: SubstrateShape;
@@ -449,6 +450,15 @@ function App() {
 							onChange={handleShowShotMapChange}
 							checked={showShotMap}
 						/>
+						<ReticleCanvas
+							dieWidth={parseFloat(dieWidth)}
+							dieHeight={parseFloat(dieHeight)}
+							scribeHoriz={parseFloat(scribeHoriz)}
+							scribeVert={parseFloat(scribeVert)}
+							fieldWidth={fieldWidthMM}
+							fieldHeight={fieldHeightMM}
+							mmToPxScale={12}
+						/>
 						<div className="panel">
 							<h2>Results</h2>
 							<ResultsStats
@@ -468,6 +478,7 @@ function App() {
 								}
 							/>
 						</div>
+
 					</div>
 					<a
 						href="https://www.semianalysis.com/"

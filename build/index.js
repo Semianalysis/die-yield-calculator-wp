@@ -623,6 +623,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _hooks_useEasterEgg__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../hooks/useEasterEgg */ "./src/hooks/useEasterEgg.ts");
 /* harmony import */ var _JumpToResults_JumpToResults__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./JumpToResults/JumpToResults */ "./src/components/JumpToResults/JumpToResults.tsx");
 /* harmony import */ var _utils_inputs__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../utils/inputs */ "./src/utils/inputs.ts");
+/* harmony import */ var _ReticleCanvas_ReticleCanvas__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./ReticleCanvas/ReticleCanvas */ "./src/components/ReticleCanvas/ReticleCanvas.tsx");
+
 
 
 
@@ -943,6 +945,14 @@ function App() {
     label: "Show Reticle Shot Grid",
     onChange: handleShowShotMapChange,
     checked: showShotMap
+  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_ReticleCanvas_ReticleCanvas__WEBPACK_IMPORTED_MODULE_11__.ReticleCanvas, {
+    dieWidth: parseFloat(dieWidth),
+    dieHeight: parseFloat(dieHeight),
+    scribeHoriz: parseFloat(scribeHoriz),
+    scribeVert: parseFloat(scribeVert),
+    fieldWidth: fieldWidthMM,
+    fieldHeight: fieldHeightMM,
+    mmToPxScale: 12
   }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "panel"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", null, "Results"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_ResultsStats_ResultsStats__WEBPACK_IMPORTED_MODULE_6__.ResultsStats, {
@@ -989,6 +999,104 @@ function Checkbox(props) {
     checked: props.checked,
     disabled: props.disabled
   }), props.label));
+}
+
+/***/ }),
+
+/***/ "./src/components/DieMapCanvas/DieMapCanvas.tsx":
+/*!******************************************************!*\
+  !*** ./src/components/DieMapCanvas/DieMapCanvas.tsx ***!
+  \******************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   DieDecorativeCanvas: () => (/* binding */ DieDecorativeCanvas),
+/* harmony export */   DieMapCanvas: () => (/* binding */ DieMapCanvas)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+
+function DieMapCanvas(props) {
+  const canvasEl = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
+  const dieStateColors = {
+    good: "rgba(6,231,6,0.77)",
+    defective: "rgba(243,81,67,0.68)",
+    partial: "rgba(249,249,27,0.68)",
+    lost: "rgba(151,138,129,0.8)"
+  };
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    if (!canvasEl.current) {
+      return;
+    }
+    const context = canvasEl.current.getContext("2d");
+    if (!context) {
+      return;
+    }
+    // Clear the canvases before drawing new die map
+    context.clearRect(0, 0, canvasEl.current.width, canvasEl.current.height);
+    if (!props.results || props.results.dies.length > props.maxDies) {
+      return;
+    }
+    // Draw each die onto the canvas
+    props.results.dies.forEach(die => {
+      context.fillStyle = dieStateColors[die.dieState];
+      context.fillRect(props.mmToPxScale * die.x, props.mmToPxScale * die.y, props.mmToPxScale * die.width, props.mmToPxScale * die.height);
+    });
+  }, [JSON.stringify(props.results)]);
+  if (props.results === null) {
+    return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      className: "wafer-canvas__message--error",
+      role: "status"
+    }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null, "Invalid input(s) provided"));
+  }
+  if (props.results.dies.length > props.maxDies) {
+    return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      className: "wafer-canvas__message",
+      role: "status"
+    }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null, "Too many dies to visualize"));
+  }
+  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("canvas", {
+    className: "wafer-canvas__die-map",
+    ref: canvasEl,
+    width: props.waferWidth * props.mmToPxScale,
+    height: props.waferHeight * props.mmToPxScale
+  });
+}
+function DieDecorativeCanvas(props) {
+  const canvasEl = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    if (!canvasEl.current) {
+      return;
+    }
+    const context = canvasEl.current.getContext("2d");
+    if (!context) {
+      return;
+    }
+    context.clearRect(0, 0, canvasEl.current.width, canvasEl.current.height);
+    if (!props.results || props.results.dies.length > props.maxDies) {
+      return;
+    }
+    // Background color
+    context.fillStyle = "rgba(217,217,210,0.76)";
+    // Draw a background rectangle for a panel, or a background circle for a disc
+    if (props.shape === "Panel") {
+      context.fillRect(0, 0, canvasEl.current.width, canvasEl.current.height);
+    } else {
+      context.arc(canvasEl.current.width / 2, canvasEl.current.width / 2, canvasEl.current.width / 2, 0, 2 * Math.PI, false);
+      context.fill();
+    }
+    // Cut out each die from the background color of the canvas
+    props.results.dies.forEach(die => {
+      context.clearRect(props.mmToPxScale * die.x, props.mmToPxScale * die.y, props.mmToPxScale * die.width, props.mmToPxScale * die.height);
+    });
+  }, [JSON.stringify(props.results)]);
+  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("canvas", {
+    className: "wafer-canvas__die-decorative",
+    ref: canvasEl,
+    width: props.waferWidth * props.mmToPxScale,
+    height: props.waferHeight * props.mmToPxScale
+  });
 }
 
 /***/ }),
@@ -1165,6 +1273,60 @@ function ResultsStats(props) {
 
 /***/ }),
 
+/***/ "./src/components/ReticleCanvas/ReticleCanvas.tsx":
+/*!********************************************************!*\
+  !*** ./src/components/ReticleCanvas/ReticleCanvas.tsx ***!
+  \********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ReticleCanvas: () => (/* binding */ ReticleCanvas)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_parallax_tilt__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-parallax-tilt */ "./node_modules/react-parallax-tilt/dist/modern/index.js");
+/* harmony import */ var _utils_calculations__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../utils/calculations */ "./src/utils/calculations.ts");
+
+
+
+function ReticleCanvas(props) {
+  const canvasEl = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    if (!canvasEl.current) {
+      return;
+    }
+    const context = canvasEl.current.getContext("2d");
+    if (!context) {
+      return;
+    }
+    // Clear the canvases before drawing new die map
+    context.clearRect(0, 0, canvasEl.current.width, canvasEl.current.height);
+    // Calculate the position of dies in a single shot
+    const diesInShot = (0,_utils_calculations__WEBPACK_IMPORTED_MODULE_1__.getRelativeDiePositions)(props.dieWidth, props.dieHeight, props.scribeHoriz, props.scribeVert, props.fieldWidth, props.fieldHeight);
+    // Draw each die onto the canvas
+    diesInShot.positions.forEach(die => {
+      context.fillRect(props.mmToPxScale * die.x, props.mmToPxScale * die.y, props.mmToPxScale * props.dieWidth, props.mmToPxScale * props.dieHeight);
+    });
+  }, [props.dieWidth, props.dieHeight, props.scribeHoriz, props.scribeVert, props.fieldWidth, props.fieldHeight]);
+  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    role: "presentation",
+    "aria-label": "A rendering of the reticle"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_parallax_tilt__WEBPACK_IMPORTED_MODULE_2__["default"], {
+    glareEnable: true,
+    glareMaxOpacity: 0.75,
+    scale: 1.05,
+    className: "reticle-canvas"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("canvas", {
+    className: "reticle-canvas__reticle",
+    ref: canvasEl,
+    width: props.fieldWidth * props.mmToPxScale,
+    height: props.fieldHeight * props.mmToPxScale
+  })));
+}
+
+/***/ }),
+
 /***/ "./src/components/WaferCanvas/WaferCanvas.tsx":
 /*!****************************************************!*\
   !*** ./src/components/WaferCanvas/WaferCanvas.tsx ***!
@@ -1177,9 +1339,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var react_parallax_tilt__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-parallax-tilt */ "./node_modules/react-parallax-tilt/dist/modern/index.js");
+/* harmony import */ var react_parallax_tilt__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react-parallax-tilt */ "./node_modules/react-parallax-tilt/dist/modern/index.js");
 /* harmony import */ var _utils_canvas__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../utils/canvas */ "./src/utils/canvas.ts");
 /* harmony import */ var _assets_tsmc_logo_svg__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../assets/tsmc-logo.svg */ "./src/assets/tsmc-logo.svg");
+/* harmony import */ var _DieMapCanvas_DieMapCanvas__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../DieMapCanvas/DieMapCanvas */ "./src/components/DieMapCanvas/DieMapCanvas.tsx");
+
 
 
 
@@ -1189,87 +1353,6 @@ const mmToPxScale = 3;
 // Don't try and draw too many dies, or performance will suffer too much and the
 // page may hang or crash
 const maxDies = 50000;
-function DieMapCanvas(props) {
-  const canvasEl = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
-  const dieStateColors = {
-    good: "rgba(6,231,6,0.77)",
-    defective: "rgba(243,81,67,0.68)",
-    partial: "rgba(249,249,27,0.68)",
-    lost: "rgba(151,138,129,0.8)"
-  };
-  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
-    if (!canvasEl.current) {
-      return;
-    }
-    const context = canvasEl.current.getContext("2d");
-    if (!context) {
-      return;
-    }
-    // Clear the canvases before drawing new die map
-    context.clearRect(0, 0, canvasEl.current.width, canvasEl.current.height);
-    if (!props.results || props.results.dies.length > maxDies) {
-      return;
-    }
-    // Draw each die onto the canvas
-    props.results.dies.forEach(die => {
-      context.fillStyle = dieStateColors[die.dieState];
-      context.fillRect(mmToPxScale * die.x, mmToPxScale * die.y, mmToPxScale * die.width, mmToPxScale * die.height);
-    });
-  }, [JSON.stringify(props.results)]);
-  if (props.results === null) {
-    return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-      className: "wafer-canvas__message--error",
-      role: "status"
-    }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null, "Invalid input(s) provided"));
-  }
-  if (props.results.dies.length > maxDies) {
-    return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-      className: "wafer-canvas__message",
-      role: "status"
-    }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null, "Too many dies to visualize"));
-  }
-  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("canvas", {
-    className: "wafer-canvas__die-map",
-    ref: canvasEl,
-    width: props.waferWidth * mmToPxScale,
-    height: props.waferHeight * mmToPxScale
-  });
-}
-function DieDecorativeCanvas(props) {
-  const canvasEl = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
-  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
-    if (!canvasEl.current) {
-      return;
-    }
-    const context = canvasEl.current.getContext("2d");
-    if (!context) {
-      return;
-    }
-    context.clearRect(0, 0, canvasEl.current.width, canvasEl.current.height);
-    if (!props.results || props.results.dies.length > maxDies) {
-      return;
-    }
-    // Background color
-    context.fillStyle = "rgba(217,217,210,0.76)";
-    // Draw a background rectangle for a panel, or a background circle for a disc
-    if (props.shape === "Panel") {
-      context.fillRect(0, 0, canvasEl.current.width, canvasEl.current.height);
-    } else {
-      context.arc(canvasEl.current.width / 2, canvasEl.current.width / 2, canvasEl.current.width / 2, 0, 2 * Math.PI, false);
-      context.fill();
-    }
-    // Cut out each die from the background color of the canvas
-    props.results.dies.forEach(die => {
-      context.clearRect(mmToPxScale * die.x, mmToPxScale * die.y, mmToPxScale * die.width, mmToPxScale * die.height);
-    });
-  }, [JSON.stringify(props.results)]);
-  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("canvas", {
-    className: "wafer-canvas__die-decorative",
-    ref: canvasEl,
-    width: props.waferWidth * mmToPxScale,
-    height: props.waferHeight * mmToPxScale
-  });
-}
 function ShotMap(props) {
   const canvasEl = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
@@ -1376,7 +1459,7 @@ function WaferCanvas(props) {
     setTiltY(tiltAngleYPercentage);
   }
   if (props.easterEggEnabled) {
-    return react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_parallax_tilt__WEBPACK_IMPORTED_MODULE_3__["default"], {
+    return react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_parallax_tilt__WEBPACK_IMPORTED_MODULE_4__["default"], {
       glareEnable: true,
       glareMaxOpacity: 0.75,
       scale: 1.05,
@@ -1386,7 +1469,7 @@ function WaferCanvas(props) {
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     role: "presentation",
     "aria-label": "A rendering of a silicon wafer"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_parallax_tilt__WEBPACK_IMPORTED_MODULE_3__["default"], {
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_parallax_tilt__WEBPACK_IMPORTED_MODULE_4__["default"], {
     key: props.shape,
     glareEnable: true,
     glareMaxOpacity: 0.75,
@@ -1399,15 +1482,19 @@ function WaferCanvas(props) {
     style: {
       backgroundPositionX: `${tiltY / 2 + tiltX / 4}% `
     }
-  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(DieDecorativeCanvas, {
+  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_DieMapCanvas_DieMapCanvas__WEBPACK_IMPORTED_MODULE_3__.DieDecorativeCanvas, {
     results: props.results,
     shape: props.shape,
     waferWidth: props.waferWidth,
-    waferHeight: props.waferHeight
-  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(DieMapCanvas, {
+    waferHeight: props.waferHeight,
+    mmToPxScale: mmToPxScale,
+    maxDies: maxDies
+  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_DieMapCanvas_DieMapCanvas__WEBPACK_IMPORTED_MODULE_3__.DieMapCanvas, {
     results: props.results,
     waferWidth: props.waferWidth,
-    waferHeight: props.waferHeight
+    waferHeight: props.waferHeight,
+    mmToPxScale: mmToPxScale,
+    maxDies: maxDies
   }), props.showShotMap && react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ShotMap, {
     results: props.results,
     waferWidth: props.waferWidth,
@@ -1748,6 +1835,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   evaluatePanelInputs: () => (/* binding */ evaluatePanelInputs),
 /* harmony export */   getDieStateCounts: () => (/* binding */ getDieStateCounts),
 /* harmony export */   getFabYield: () => (/* binding */ getFabYield),
+/* harmony export */   getRelativeDiePositions: () => (/* binding */ getRelativeDiePositions),
 /* harmony export */   randomNumberSetFromRange: () => (/* binding */ randomNumberSetFromRange)
 /* harmony export */ });
 /* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../config */ "./src/config/index.ts");
