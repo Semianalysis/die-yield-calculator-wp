@@ -52,6 +52,7 @@
 }
 .wp-block-create-block-die-yield-calculator .panel {
   text-align: left;
+  margin-bottom: 2em;
 }
 @media (min-width: 768px) {
   .wp-block-create-block-die-yield-calculator .panel {
@@ -426,15 +427,19 @@
   pointer-events: none;
 }
 
-.reticle-canvas {
+.reticle-canvas, .reticle-canvas--background {
   margin: auto;
   aspect-ratio: 1/1;
-  background: url(data:image/svg+xml;base64,PHN2ZwoJdmVyc2lvbj0iMS4xIgoJYmFzZVByb2ZpbGU9ImZ1bGwiCgl3aWR0aD0iNjAwIgoJaGVpZ2h0PSI2MDAiCgl2aWV3Qm94PSIwIDAgNjAwIDYwMCIKCXhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIKPgoJPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjYwMCIgaGVpZ2h0PSI2MDAiIGZpbGw9ImJsYWNrIiAvPgoJPGcgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIyIj4KCQk8bGluZSB4MT0iMTAiIHkxPSIxMCIgeDI9IjMwIiB5Mj0iMTAiIC8+CgkJPGxpbmUgeDE9IjEwIiB5MT0iMTAiIHgyPSIxMCIgeTI9IjMwIiAvPgoJCTxsaW5lIHgxPSI1OTAiIHkxPSIxMCIgeDI9IjU3MCIgeTI9IjEwIiAvPgoJCTxsaW5lIHgxPSI1OTAiIHkxPSIxMCIgeDI9IjU5MCIgeTI9IjMwIiAvPgoJCTxsaW5lIHgxPSIxMCIgIHkxPSI1OTAiIHgyPSIzMCIgIHkyPSI1OTAiIC8+CgkJPGxpbmUgeDE9IjEwIiAgeTE9IjU5MCIgeDI9IjEwIiAgeTI9IjU3MCIgLz4KCQk8bGluZSB4MT0iNTkwIiB5MT0iNTkwIiB4Mj0iNTcwIiB5Mj0iNTkwIiAvPgoJCTxsaW5lIHgxPSI1OTAiIHkxPSI1OTAiIHgyPSI1OTAiIHkyPSI1NzAiIC8+Cgk8L2c+Cgk8cmVjdCB4PSIxMDAiIHk9IjEwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IndoaXRlIiAvPgoJPHJlY3QgeD0iNDkwIiB5PSIxMCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSJ3aGl0ZSIgLz4KCTxyZWN0IHg9IjEwMCIgeT0iNTgwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IndoaXRlIiAvPgoJPHJlY3QgeD0iNDkwIiB5PSI1ODAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0id2hpdGUiIC8+Cjwvc3ZnPgo=) no-repeat;
-  background-size: contain;
   max-width: 457.2px;
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-bottom: 2em;
+}
+
+.reticle-canvas--background {
+  background: url(data:image/svg+xml;base64,PHN2ZwoJdmVyc2lvbj0iMS4xIgoJYmFzZVByb2ZpbGU9ImZ1bGwiCgl3aWR0aD0iNjAwIgoJaGVpZ2h0PSI2MDAiCgl2aWV3Qm94PSIwIDAgNjAwIDYwMCIKCXhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIKPgoJPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjYwMCIgaGVpZ2h0PSI2MDAiIGZpbGw9ImJsYWNrIiAvPgoJPGcgc3Ryb2tlPSIjY2NjIiBzdHJva2Utd2lkdGg9IjIiPgoJCTxsaW5lIHgxPSIxMCIgeTE9IjEwIiB4Mj0iMzAiIHkyPSIxMCIgLz4KCQk8bGluZSB4MT0iMTAiIHkxPSIxMCIgeDI9IjEwIiB5Mj0iMzAiIC8+CgkJPGxpbmUgeDE9IjU5MCIgeTE9IjEwIiB4Mj0iNTcwIiB5Mj0iMTAiIC8+CgkJPGxpbmUgeDE9IjU5MCIgeTE9IjEwIiB4Mj0iNTkwIiB5Mj0iMzAiIC8+CgkJPGxpbmUgeDE9IjEwIiAgeTE9IjU5MCIgeDI9IjMwIiAgeTI9IjU5MCIgLz4KCQk8bGluZSB4MT0iMTAiICB5MT0iNTkwIiB4Mj0iMTAiICB5Mj0iNTcwIiAvPgoJCTxsaW5lIHgxPSI1OTAiIHkxPSI1OTAiIHgyPSI1NzAiIHkyPSI1OTAiIC8+CgkJPGxpbmUgeDE9IjU5MCIgeTE9IjU5MCIgeDI9IjU5MCIgeTI9IjU3MCIgLz4KCTwvZz4KCTxyZWN0IHg9IjEwMCIgeT0iMTAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iI2NjYyIgLz4KCTxyZWN0IHg9IjQ5MCIgeT0iMTAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iI2NjYyIgLz4KCTxyZWN0IHg9IjEwMCIgeT0iNTgwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiNjY2MiIC8+Cgk8cmVjdCB4PSI0OTAiIHk9IjU4MCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjY2NjIiAvPgo8L3N2Zz4K) no-repeat;
+  background-size: contain;
   border-radius: 8px;
   overflow: hidden;
   border: 1px solid;
@@ -447,7 +452,7 @@
 .reticle-canvas__inner {
   width: 68.2414698163%;
   height: 86.6141732283%;
-  outline: 1px dotted #666c72;
+  outline: 1px solid blue;
 }
 
 /*# sourceMappingURL=style-index.css.map*/

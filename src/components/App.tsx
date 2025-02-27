@@ -5,7 +5,7 @@ import { useInputs } from "../hooks/useInputs";
 import { panelSizes, waferSizes, yieldModels, minDieEdge } from "../config";
 import { SubstrateShape } from "../types";
 import { WaferCanvas } from "./WaferCanvas/WaferCanvas";
-import { ResultsStats, ReticleStats, WaferStats } from "./ResultsStats/ResultsStats";
+import { ReticleStats, WaferStats } from "./ResultsStats/ResultsStats";
 import semiAnalysisLogo from "../assets/semianalysis-logo-full-360px.png";
 import { useEasterEgg } from "../hooks/useEasterEgg";
 import { JumpToResults } from "./JumpToResults/JumpToResults";
@@ -132,6 +132,7 @@ function App() {
 	const [allCritical, setAllCritical] = useState(true);
 	const [reticleLimit, setReticleLimit] = useState(true);
 	const [showShotMap, setShowShotMap] = useState(true);
+	const [showReticleBackground, setShowReticleBackground] = useState(true);
 	const [halfField, setHalfField] = useState(false);
 	const [scribeHoriz, setScribeHoriz] = useState<string>("0.2");
 	const [scribeVert, setScribeVert] = useState<string>("0.2");
@@ -280,6 +281,12 @@ function App() {
 	) => {
 		setShowShotMap(event.target.checked);
 	};
+
+	const handleShowReticleBackgroundChange = (
+		event: React.ChangeEvent<HTMLInputElement>,
+	) => {
+		setShowReticleBackground(event.target.checked);
+	}
 
 	const handleHalfFieldChange = (
 		event: React.ChangeEvent<HTMLInputElement>,
@@ -479,6 +486,12 @@ function App() {
 							fieldWidth={fieldWidthMM}
 							fieldHeight={fieldHeightMM}
 							mmToPxScale={12}
+							showReticleBackground={showReticleBackground}
+						/>
+						<Checkbox
+							label="Show Illustrative Background"
+							onChange={handleShowReticleBackgroundChange}
+							checked={showReticleBackground}
 						/>
 						<hr />
 						<ReticleStats results={easterEggEnabled ? null : results} />

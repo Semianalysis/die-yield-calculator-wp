@@ -712,6 +712,7 @@ function App() {
   const [allCritical, setAllCritical] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
   const [reticleLimit, setReticleLimit] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
   const [showShotMap, setShowShotMap] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
+  const [showReticleBackground, setShowReticleBackground] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
   const [halfField, setHalfField] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
   const [scribeHoriz, setScribeHoriz] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0.2");
   const [scribeVert, setScribeVert] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0.2");
@@ -810,6 +811,9 @@ function App() {
   };
   const handleShowShotMapChange = event => {
     setShowShotMap(event.target.checked);
+  };
+  const handleShowReticleBackgroundChange = event => {
+    setShowReticleBackground(event.target.checked);
   };
   const handleHalfFieldChange = event => {
     setHalfField(event.target.checked);
@@ -963,7 +967,12 @@ function App() {
     scribeVert: parseFloat(scribeVert),
     fieldWidth: fieldWidthMM,
     fieldHeight: fieldHeightMM,
-    mmToPxScale: 12
+    mmToPxScale: 12,
+    showReticleBackground: showReticleBackground
+  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Checkbox_Checkbox__WEBPACK_IMPORTED_MODULE_1__.Checkbox, {
+    label: "Show Illustrative Background",
+    onChange: handleShowReticleBackgroundChange,
+    checked: showReticleBackground
   }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("hr", null), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_ResultsStats_ResultsStats__WEBPACK_IMPORTED_MODULE_6__.ReticleStats, {
     results: easterEggEnabled ? null : results
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("a", {
@@ -1319,20 +1328,22 @@ function ReticleCanvas(props) {
     context.clearRect(0, 0, canvasEl.current.width, canvasEl.current.height);
     // Calculate the position of dies in a single shot
     const diesInShot = (0,_utils_calculations__WEBPACK_IMPORTED_MODULE_1__.getRelativeDiePositions)(props.dieWidth, props.dieHeight, props.scribeHoriz, props.scribeVert, props.fieldWidth, props.fieldHeight);
-    context.fillStyle = "#eee";
+    context.fillStyle = "white";
     // Draw each die onto the canvas
     diesInShot.positions.forEach(die => {
       context.fillRect(props.mmToPxScale * die.x, props.mmToPxScale * die.y, props.mmToPxScale * props.dieWidth, props.mmToPxScale * props.dieHeight);
     });
-  }, [props.dieWidth, props.dieHeight, props.scribeHoriz, props.scribeVert, props.fieldWidth, props.fieldHeight]);
+  }, [props.dieWidth, props.dieHeight, props.scribeHoriz, props.scribeVert, props.fieldWidth, props.fieldHeight, props.showReticleBackground]);
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     role: "presentation",
     "aria-label": "A rendering of the reticle"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_parallax_tilt__WEBPACK_IMPORTED_MODULE_2__["default"], {
-    glareEnable: true,
+    key: props.showReticleBackground ? "background" : "no-background",
+    glareEnable: props.showReticleBackground,
     glareMaxOpacity: 0.75,
-    scale: 1.05,
-    className: "reticle-canvas"
+    scale: props.showReticleBackground ? 1.05 : 1,
+    tiltEnable: props.showReticleBackground,
+    className: props.showReticleBackground ? "reticle-canvas--background" : "reticle-canvas"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("canvas", {
     className: "reticle-canvas__inner",
     ref: canvasEl,

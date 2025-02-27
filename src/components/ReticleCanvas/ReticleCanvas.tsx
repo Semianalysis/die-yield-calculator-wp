@@ -1,7 +1,5 @@
 import React, { useEffect, useRef } from "react";
 import Tilt from "react-parallax-tilt";
-import { DieDecorativeCanvas } from "../DieMapCanvas/DieMapCanvas";
-import { FabResults } from "../../types";
 import { getRelativeDiePositions } from "../../utils/calculations";
 
 type Props = {
@@ -12,6 +10,7 @@ type Props = {
 	scribeVert: number;
 	fieldWidth: number;
 	fieldHeight: number;
+	showReticleBackground: boolean;
 };
 
 export function ReticleCanvas(props: Props) {
@@ -41,7 +40,7 @@ export function ReticleCanvas(props: Props) {
 			props.fieldHeight,
 		);
 
-		context.fillStyle = "#eee";
+		context.fillStyle = "white";
 
 		// Draw each die onto the canvas
 		diesInShot.positions.forEach((die) => {
@@ -59,15 +58,22 @@ export function ReticleCanvas(props: Props) {
 		props.scribeVert,
 		props.fieldWidth,
 		props.fieldHeight,
+		props.showReticleBackground,
 	]);
 
 	return (
 		<div role="presentation" aria-label="A rendering of the reticle">
 			<Tilt
-				glareEnable={true}
+				key={props.showReticleBackground ? "background" : "no-background"}
+				glareEnable={props.showReticleBackground}
 				glareMaxOpacity={0.75}
-				scale={1.05}
-				className="reticle-canvas"
+				scale={props.showReticleBackground ? 1.05 : 1}
+				tiltEnable={props.showReticleBackground}
+				className={
+					props.showReticleBackground
+						? "reticle-canvas--background"
+						: "reticle-canvas"
+				}
 			>
 				<canvas
 					className="reticle-canvas__inner"
