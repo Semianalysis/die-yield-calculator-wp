@@ -45,7 +45,7 @@
 }
 @media (min-width: 768px) {
   .wp-block-create-block-die-yield-calculator .columns {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 45fr 55fr;
     -moz-column-gap: 2em;
          column-gap: 2em;
   }
@@ -447,6 +447,7 @@
 .reticle-canvas__inner {
   width: 68.2414698163%;
   height: 86.6141732283%;
+  outline: 1px dotted #666c72;
 }
 
 /*# sourceMappingURL=style-index.css.map*/

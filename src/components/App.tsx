@@ -5,7 +5,7 @@ import { useInputs } from "../hooks/useInputs";
 import { panelSizes, waferSizes, yieldModels, minDieEdge } from "../config";
 import { SubstrateShape } from "../types";
 import { WaferCanvas } from "./WaferCanvas/WaferCanvas";
-import { ResultsStats } from "./ResultsStats/ResultsStats";
+import { ResultsStats, ReticleStats, WaferStats } from "./ResultsStats/ResultsStats";
 import semiAnalysisLogo from "../assets/semianalysis-logo-full-360px.png";
 import { useEasterEgg } from "../hooks/useEasterEgg";
 import { JumpToResults } from "./JumpToResults/JumpToResults";
@@ -432,7 +432,8 @@ function App() {
 					<JumpToResults outputRef={outputRef} />
 				</div>
 				<div className="output" ref={outputRef}>
-					<div>
+					<div className="panel">
+						<h2>Wafer Results</h2>
 						<WaferCanvas
 							results={results}
 							shape={substrateShape}
@@ -450,6 +451,26 @@ function App() {
 							onChange={handleShowShotMapChange}
 							checked={showShotMap}
 						/>
+						<hr />
+						<WaferStats
+							results={easterEggEnabled ? null : results}
+							shape={substrateShape}
+							dieWidth={parseFloat(dieWidth)}
+							dieHeight={parseFloat(dieHeight)}
+							waferWidth={
+								substrateShape === "Panel"
+									? panelSizes[panelSize].width
+									: waferSizes[waferSize].width
+							}
+							waferHeight={
+								substrateShape === "Panel"
+									? panelSizes[panelSize].height
+									: waferSizes[waferSize].width
+							}
+						/>
+					</div>
+					<div className="panel">
+						<h2>Reticle Results</h2>
 						<ReticleCanvas
 							dieWidth={parseFloat(dieWidth)}
 							dieHeight={parseFloat(dieHeight)}
@@ -459,26 +480,8 @@ function App() {
 							fieldHeight={fieldHeightMM}
 							mmToPxScale={12}
 						/>
-						<div className="panel">
-							<h2>Results</h2>
-							<ResultsStats
-								results={easterEggEnabled ? null : results}
-								shape={substrateShape}
-								dieWidth={parseFloat(dieWidth)}
-								dieHeight={parseFloat(dieHeight)}
-								waferWidth={
-									substrateShape === "Panel"
-										? panelSizes[panelSize].width
-										: waferSizes[waferSize].width
-								}
-								waferHeight={
-									substrateShape === "Panel"
-										? panelSizes[panelSize].height
-										: waferSizes[waferSize].width
-								}
-							/>
-						</div>
-
+						<hr />
+						<ReticleStats results={easterEggEnabled ? null : results} />
 					</div>
 					<a
 						href="https://www.semianalysis.com/"

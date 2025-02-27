@@ -50,7 +50,7 @@
 		row-gap: 4em;
 
 		@media (min-width: 768px) {
-			grid-template-columns: 1fr 1fr;
+			grid-template-columns: 45fr 55fr;
 			column-gap: 2em;
 		}
 	}
@@ -521,4 +521,5 @@
 .reticle-canvas__inner {
 	width: calc(104 / 152.4 * 100%);
 	height: calc(132 / 152.4 * 100%);
+	outline: 1px dotted #666c72;
 }
