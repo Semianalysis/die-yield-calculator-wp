@@ -1391,7 +1391,7 @@ function WaferCanvas(props) {
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_parallax_tilt__WEBPACK_IMPORTED_MODULE_4__["default"], {
     key: props.shape,
     glareEnable: true,
-    glareMaxOpacity: 0.75,
+    glareMaxOpacity: 0.25,
     scale: 1.05,
     onMove: onMove,
     className: `wafer-canvas ${props.shape === "Wafer" ? "wafer-canvas--disc" : ""}`,

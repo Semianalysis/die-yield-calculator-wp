@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import { ResultsStats } from "./ResultsStats";
+import { WaferStats, ReticleStats } from "./ResultsStats";
 import { FabResults } from "../../types";
 
 const results: FabResults = {
@@ -16,13 +16,13 @@ const results: FabResults = {
 	fields: [],
 	fullShotCount: 20,
 	partialShotCount: 5,
-	reticleUtilization: 75,
+	reticleUtilization: 0.75,
 };
 
 describe("ResultStats", () => {
-	it("renders the ResultsStats component with correct values", () => {
+	it("renders the WaferStats component with correct values", () => {
 		render(
-			<ResultsStats
+			<WaferStats
 				results={results}
 				shape="Panel"
 				dieWidth={10}
@@ -43,7 +43,7 @@ describe("ResultStats", () => {
 
 	it("renders the wafer diameter for wafer-type substrate", () => {
 		render(
-			<ResultsStats
+			<WaferStats
 				results={results}
 				shape="Wafer"
 				dieWidth={10}
@@ -59,7 +59,7 @@ describe("ResultStats", () => {
 
 	it("renders the width and height for panel-type substrate", () => {
 		render(
-			<ResultsStats
+			<WaferStats
 				results={results}
 				shape="Panel"
 				dieWidth={10}
@@ -80,7 +80,7 @@ describe("ResultStats", () => {
 		const waferWidth = 200;
 		const waferHeight = 200;
 		render(
-			<ResultsStats
+			<WaferStats
 				results={results}
 				shape="Panel"
 				dieWidth={dieWidth}
@@ -93,5 +93,14 @@ describe("ResultStats", () => {
 		const expected = ((waferWidth * waferHeight) - (results.goodDies * dieWidth * dieHeight)) / 100;
 
 		expect(screen.getByText(new RegExp(`Total Waste Area: ${expected}cm²`, 'ig'))).toBeInTheDocument();
-	})
+	});
+
+	it('renders the ReticleStats component with correct values', () => {
+		render(
+			<ReticleStats results={results} />
+		);
+
+		expect(screen.getByText(/Die Per Reticle: 4/i)).toBeInTheDocument();
+		expect(screen.getByText(/Reticle Utilization: 75%/i)).toBeInTheDocument();
+	});
 });
