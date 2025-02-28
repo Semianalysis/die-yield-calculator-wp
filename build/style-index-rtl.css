@@ -45,7 +45,7 @@
 }
 @media (min-width: 768px) {
   .wp-block-create-block-die-yield-calculator .columns {
-    grid-template-columns: 45fr 55fr;
+    grid-template-columns: 9fr 11fr;
     -moz-column-gap: 2em;
          column-gap: 2em;
   }
