@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import Tilt from "react-parallax-tilt";
 import { getRelativeDiePositions } from "../../utils/calculations";
+import {defaultFieldWidth, defaultFieldHeight} from "../../config";
 
 type Props = {
 	mmToPxScale: number;
@@ -8,8 +9,7 @@ type Props = {
 	dieHeight: number;
 	scribeHoriz: number;
 	scribeVert: number;
-	fieldWidth: number;
-	fieldHeight: number;
+	halfField: boolean;
 	showReticleBackground: boolean;
 };
 
@@ -30,14 +30,21 @@ export function ReticleCanvas(props: Props) {
 		// Clear the canvases before drawing new die map
 		context.clearRect(0, 0, canvasEl.current.width, canvasEl.current.height);
 
+		// If “half-field” checkbox is checked, AKA High-NA, the reticle size doesn't
+		// change, but die appear double width on the reticle. In the real-world process,
+		// anamorphic mirrors are used to demagnify die by 8x horizontally and 4x
+		// vertically.
+		const { dieHeight } = props;
+		const dieWidth = props.halfField ? props.dieWidth * 2 : props.dieWidth;
+
 		// Calculate the position of dies in a single shot
 		const diesInShot = getRelativeDiePositions(
-			props.dieWidth,
-			props.dieHeight,
+			dieWidth,
+			dieHeight,
 			props.scribeHoriz,
 			props.scribeVert,
-			props.fieldWidth,
-			props.fieldHeight,
+			defaultFieldWidth,
+			defaultFieldHeight,
 		);
 
 		context.fillStyle = "white";
@@ -47,8 +54,8 @@ export function ReticleCanvas(props: Props) {
 			context.fillRect(
 				props.mmToPxScale * die.x,
 				props.mmToPxScale * die.y,
-				props.mmToPxScale * props.dieWidth,
-				props.mmToPxScale * props.dieHeight,
+				props.mmToPxScale * dieWidth,
+				props.mmToPxScale * dieHeight,
 			);
 		});
 	}, [
@@ -56,8 +63,7 @@ export function ReticleCanvas(props: Props) {
 		props.dieHeight,
 		props.scribeHoriz,
 		props.scribeVert,
-		props.fieldWidth,
-		props.fieldHeight,
+		props.halfField,
 		props.showReticleBackground,
 	]);
 
@@ -78,8 +84,8 @@ export function ReticleCanvas(props: Props) {
 				<canvas
 					className="reticle-canvas__inner"
 					ref={canvasEl}
-					width={props.fieldWidth * props.mmToPxScale}
-					height={props.fieldHeight * props.mmToPxScale}
+					width={defaultFieldWidth * props.mmToPxScale}
+					height={defaultFieldHeight * props.mmToPxScale}
 				></canvas>
 			</Tilt>
 		</div>

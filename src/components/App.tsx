@@ -2,7 +2,14 @@ import React, { useState, useEffect, useRef } from "react";
 import { Checkbox } from "./Checkbox/Checkbox";
 import { NumberInput } from "./NumberInput/NumberInput";
 import { useInputs } from "../hooks/useInputs";
-import { panelSizes, waferSizes, yieldModels, minDieEdge } from "../config";
+import {
+	defaultFieldWidth,
+	defaultFieldHeight,
+	minDieEdge,
+	panelSizes,
+	waferSizes,
+	yieldModels,
+} from "../config";
 import { SubstrateShape } from "../types";
 import { WaferCanvas } from "./WaferCanvas/WaferCanvas";
 import { ReticleStats, WaferStats } from "./ResultsStats/ResultsStats";
@@ -145,8 +152,8 @@ function App() {
 		useState<keyof typeof yieldModels>("murphy");
 	const aspectRatio = useRef(parseFloat(dieWidth) / parseFloat(dieHeight));
 
-	const fieldWidthMM = halfField ? 13 : 26;
-	const fieldHeightMM = 33;
+	const fieldWidthMM = halfField ? defaultFieldWidth / 2 : defaultFieldWidth;
+	const fieldHeightMM = defaultFieldHeight;
 
 	const results = useInputs(
 		{
@@ -361,7 +368,7 @@ function App() {
 					<h2>Reticle</h2>
 					<div className="input-row">
 						<Checkbox
-							label="Half Field Exposures"
+							label="Half Field Exposures (High NA)"
 							onChange={handleHalfFieldChange}
 							checked={halfField}
 						/>
@@ -483,10 +490,9 @@ function App() {
 							dieHeight={parseFloat(dieHeight)}
 							scribeHoriz={parseFloat(scribeHoriz)}
 							scribeVert={parseFloat(scribeVert)}
-							fieldWidth={fieldWidthMM}
-							fieldHeight={fieldHeightMM}
 							mmToPxScale={12}
 							showReticleBackground={showReticleBackground}
+							halfField={halfField}
 						/>
 						<Checkbox
 							label="Show Illustrative Background"

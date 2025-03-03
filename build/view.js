@@ -615,8 +615,8 @@ function App() {
   const [waferSize, setWaferSize] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("s300mm");
   const [selectedModel, setSelectedModel] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("murphy");
   const aspectRatio = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(parseFloat(dieWidth) / parseFloat(dieHeight));
-  const fieldWidthMM = halfField ? 13 : 26;
-  const fieldHeightMM = 33;
+  const fieldWidthMM = halfField ? _config__WEBPACK_IMPORTED_MODULE_4__.defaultFieldWidth / 2 : _config__WEBPACK_IMPORTED_MODULE_4__.defaultFieldWidth;
+  const fieldHeightMM = _config__WEBPACK_IMPORTED_MODULE_4__.defaultFieldHeight;
   const results = (0,_hooks_useInputs__WEBPACK_IMPORTED_MODULE_3__.useInputs)({
     dieWidth: parseFloat(dieWidth),
     dieHeight: parseFloat(dieHeight),
@@ -769,7 +769,7 @@ function App() {
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("hr", null), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", null, "Reticle"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "input-row"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Checkbox_Checkbox__WEBPACK_IMPORTED_MODULE_1__.Checkbox, {
-    label: "Half Field Exposures",
+    label: "Half Field Exposures (High NA)",
     onChange: handleHalfFieldChange,
     checked: halfField
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
@@ -857,10 +857,9 @@ function App() {
     dieHeight: parseFloat(dieHeight),
     scribeHoriz: parseFloat(scribeHoriz),
     scribeVert: parseFloat(scribeVert),
-    fieldWidth: fieldWidthMM,
-    fieldHeight: fieldHeightMM,
     mmToPxScale: 12,
-    showReticleBackground: showReticleBackground
+    showReticleBackground: showReticleBackground,
+    halfField: halfField
   }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Checkbox_Checkbox__WEBPACK_IMPORTED_MODULE_1__.Checkbox, {
     label: "Show Illustrative Background",
     onChange: handleShowReticleBackgroundChange,
@@ -1201,8 +1200,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var react_parallax_tilt__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-parallax-tilt */ "./node_modules/react-parallax-tilt/dist/modern/index.js");
+/* harmony import */ var react_parallax_tilt__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-parallax-tilt */ "./node_modules/react-parallax-tilt/dist/modern/index.js");
 /* harmony import */ var _utils_calculations__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../utils/calculations */ "./src/utils/calculations.ts");
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../config */ "./src/config/index.ts");
+
 
 
 
@@ -1218,18 +1219,26 @@ function ReticleCanvas(props) {
     }
     // Clear the canvases before drawing new die map
     context.clearRect(0, 0, canvasEl.current.width, canvasEl.current.height);
+    // If “half-field” checkbox is checked, AKA High-NA, the reticle size doesn't
+    // change, but die appear double width on the reticle. In the real-world process,
+    // anamorphic mirrors are used to demagnify die by 8x horizontally and 4x
+    // vertically.
+    const {
+      dieHeight
+    } = props;
+    const dieWidth = props.halfField ? props.dieWidth * 2 : props.dieWidth;
     // Calculate the position of dies in a single shot
-    const diesInShot = (0,_utils_calculations__WEBPACK_IMPORTED_MODULE_1__.getRelativeDiePositions)(props.dieWidth, props.dieHeight, props.scribeHoriz, props.scribeVert, props.fieldWidth, props.fieldHeight);
+    const diesInShot = (0,_utils_calculations__WEBPACK_IMPORTED_MODULE_1__.getRelativeDiePositions)(dieWidth, dieHeight, props.scribeHoriz, props.scribeVert, _config__WEBPACK_IMPORTED_MODULE_2__.defaultFieldWidth, _config__WEBPACK_IMPORTED_MODULE_2__.defaultFieldHeight);
     context.fillStyle = "white";
     // Draw each die onto the canvas
     diesInShot.positions.forEach(die => {
-      context.fillRect(props.mmToPxScale * die.x, props.mmToPxScale * die.y, props.mmToPxScale * props.dieWidth, props.mmToPxScale * props.dieHeight);
+      context.fillRect(props.mmToPxScale * die.x, props.mmToPxScale * die.y, props.mmToPxScale * dieWidth, props.mmToPxScale * dieHeight);
     });
-  }, [props.dieWidth, props.dieHeight, props.scribeHoriz, props.scribeVert, props.fieldWidth, props.fieldHeight, props.showReticleBackground]);
+  }, [props.dieWidth, props.dieHeight, props.scribeHoriz, props.scribeVert, props.halfField, props.showReticleBackground]);
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     role: "presentation",
     "aria-label": "A rendering of the reticle"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_parallax_tilt__WEBPACK_IMPORTED_MODULE_2__["default"], {
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_parallax_tilt__WEBPACK_IMPORTED_MODULE_3__["default"], {
     key: props.showReticleBackground ? "background" : "no-background",
     glareEnable: props.showReticleBackground,
     glareMaxOpacity: 0.75,
@@ -1239,8 +1248,8 @@ function ReticleCanvas(props) {
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("canvas", {
     className: "reticle-canvas__inner",
     ref: canvasEl,
-    width: props.fieldWidth * props.mmToPxScale,
-    height: props.fieldHeight * props.mmToPxScale
+    width: _config__WEBPACK_IMPORTED_MODULE_2__.defaultFieldWidth * props.mmToPxScale,
+    height: _config__WEBPACK_IMPORTED_MODULE_2__.defaultFieldHeight * props.mmToPxScale
   })));
 }
 
@@ -1441,6 +1450,8 @@ function WaferCanvas(props) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   defaultFieldHeight: () => (/* reexport safe */ _sizes__WEBPACK_IMPORTED_MODULE_0__.defaultFieldHeight),
+/* harmony export */   defaultFieldWidth: () => (/* reexport safe */ _sizes__WEBPACK_IMPORTED_MODULE_0__.defaultFieldWidth),
 /* harmony export */   minDieEdge: () => (/* reexport safe */ _sizes__WEBPACK_IMPORTED_MODULE_0__.minDieEdge),
 /* harmony export */   panelSizes: () => (/* reexport safe */ _sizes__WEBPACK_IMPORTED_MODULE_0__.panelSizes),
 /* harmony export */   waferSizes: () => (/* reexport safe */ _sizes__WEBPACK_IMPORTED_MODULE_0__.waferSizes),
@@ -1461,6 +1472,8 @@ __webpack_require__.r(__webpack_exports__);
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   defaultFieldHeight: () => (/* binding */ defaultFieldHeight),
+/* harmony export */   defaultFieldWidth: () => (/* binding */ defaultFieldWidth),
 /* harmony export */   minDieEdge: () => (/* binding */ minDieEdge),
 /* harmony export */   panelSizes: () => (/* binding */ panelSizes),
 /* harmony export */   waferSizes: () => (/* binding */ waferSizes)
@@ -1541,6 +1554,11 @@ const waferSizes = {
     width: 450
   }
 };
+/**
+ * Default reticle field sizes, in mm
+ */
+const defaultFieldWidth = 26;
+const defaultFieldHeight = 33;
 
 /***/ }),
 
