@@ -128,7 +128,7 @@ function getDieOffset(inputs: InputValues, waferCenteringEnabled: boolean) {
  * @param fieldWidth width of the reticle
  * @param fieldHeight height of the reticle
  */
-function getRelativeDiePositions(
+export function getRelativeDiePositions(
 	dieWidth: number,
 	dieHeight: number,
 	scribeHoriz: number,

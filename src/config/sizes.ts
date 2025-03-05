@@ -28,3 +28,9 @@ export const waferSizes = {
 	s300mm: { name: "300 mm (12 in)", width: 300 },
 	s450mm: { name: "450 mm (18 in)", width: 450 }
 };
+
+/**
+ * Default reticle field sizes, in mm
+ */
+export const defaultFieldWidth = 26;
+export const defaultFieldHeight = 33;

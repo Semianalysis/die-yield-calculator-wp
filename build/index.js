@@ -507,7 +507,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
 /* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./editor.scss */ "./src/editor.scss");
+/* harmony import */ var _assets_scss_editor_scss__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./assets/scss/editor.scss */ "./src/assets/scss/editor.scss");
 /* harmony import */ var _components_App__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/App */ "./src/components/App.tsx");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__);
@@ -562,7 +562,7 @@ function Edit() {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/blocks */ "@wordpress/blocks");
 /* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./style.scss */ "./src/style.scss");
+/* harmony import */ var _assets_scss_style_scss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./assets/scss/style.scss */ "./src/assets/scss/style.scss");
 /* harmony import */ var _edit__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./edit */ "./src/edit.js");
 /* harmony import */ var _block_json__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./block.json */ "./src/block.json");
 /**
@@ -623,6 +623,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _hooks_useEasterEgg__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../hooks/useEasterEgg */ "./src/hooks/useEasterEgg.ts");
 /* harmony import */ var _JumpToResults_JumpToResults__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./JumpToResults/JumpToResults */ "./src/components/JumpToResults/JumpToResults.tsx");
 /* harmony import */ var _utils_inputs__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../utils/inputs */ "./src/utils/inputs.ts");
+/* harmony import */ var _ReticleCanvas_ReticleCanvas__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./ReticleCanvas/ReticleCanvas */ "./src/components/ReticleCanvas/ReticleCanvas.tsx");
+
 
 
 
@@ -710,6 +712,7 @@ function App() {
   const [allCritical, setAllCritical] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
   const [reticleLimit, setReticleLimit] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
   const [showShotMap, setShowShotMap] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
+  const [showReticleBackground, setShowReticleBackground] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
   const [halfField, setHalfField] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
   const [scribeHoriz, setScribeHoriz] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0.2");
   const [scribeVert, setScribeVert] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0.2");
@@ -720,8 +723,8 @@ function App() {
   const [waferSize, setWaferSize] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("s300mm");
   const [selectedModel, setSelectedModel] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("murphy");
   const aspectRatio = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(parseFloat(dieWidth) / parseFloat(dieHeight));
-  const fieldWidthMM = halfField ? 13 : 26;
-  const fieldHeightMM = 33;
+  const fieldWidthMM = _config__WEBPACK_IMPORTED_MODULE_4__.defaultFieldWidth;
+  const fieldHeightMM = halfField ? _config__WEBPACK_IMPORTED_MODULE_4__.defaultFieldHeight / 2 : _config__WEBPACK_IMPORTED_MODULE_4__.defaultFieldHeight;
   const results = (0,_hooks_useInputs__WEBPACK_IMPORTED_MODULE_3__.useInputs)({
     dieWidth: parseFloat(dieWidth),
     dieHeight: parseFloat(dieHeight),
@@ -809,6 +812,9 @@ function App() {
   const handleShowShotMapChange = event => {
     setShowShotMap(event.target.checked);
   };
+  const handleShowReticleBackgroundChange = event => {
+    setShowReticleBackground(event.target.checked);
+  };
   const handleHalfFieldChange = event => {
     setHalfField(event.target.checked);
   };
@@ -871,7 +877,7 @@ function App() {
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("hr", null), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", null, "Reticle"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "input-row"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Checkbox_Checkbox__WEBPACK_IMPORTED_MODULE_1__.Checkbox, {
-    label: "Half Field Exposures",
+    label: "Half Field Exposures (High NA)",
     onChange: handleHalfFieldChange,
     checked: halfField
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
@@ -928,7 +934,9 @@ function App() {
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "output",
     ref: outputRef
-  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_WaferCanvas_WaferCanvas__WEBPACK_IMPORTED_MODULE_5__.WaferCanvas, {
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "panel"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", null, "Wafer Results"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_WaferCanvas_WaferCanvas__WEBPACK_IMPORTED_MODULE_5__.WaferCanvas, {
     results: results,
     shape: substrateShape,
     lossyEdgeWidth: parseFloat(lossyEdgeWidth),
@@ -943,16 +951,30 @@ function App() {
     label: "Show Reticle Shot Grid",
     onChange: handleShowShotMapChange,
     checked: showShotMap
-  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    className: "panel"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", null, "Results"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_ResultsStats_ResultsStats__WEBPACK_IMPORTED_MODULE_6__.ResultsStats, {
+  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("hr", null), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_ResultsStats_ResultsStats__WEBPACK_IMPORTED_MODULE_6__.WaferStats, {
     results: easterEggEnabled ? null : results,
     shape: substrateShape,
     dieWidth: parseFloat(dieWidth),
     dieHeight: parseFloat(dieHeight),
     waferWidth: substrateShape === "Panel" ? _config__WEBPACK_IMPORTED_MODULE_4__.panelSizes[panelSize].width : _config__WEBPACK_IMPORTED_MODULE_4__.waferSizes[waferSize].width,
     waferHeight: substrateShape === "Panel" ? _config__WEBPACK_IMPORTED_MODULE_4__.panelSizes[panelSize].height : _config__WEBPACK_IMPORTED_MODULE_4__.waferSizes[waferSize].width
-  }))), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("a", {
+  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "panel"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", null, "Reticle Results"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_ReticleCanvas_ReticleCanvas__WEBPACK_IMPORTED_MODULE_11__.ReticleCanvas, {
+    dieWidth: parseFloat(dieWidth),
+    dieHeight: parseFloat(dieHeight),
+    scribeHoriz: parseFloat(scribeHoriz),
+    scribeVert: parseFloat(scribeVert),
+    mmToPxScale: 12,
+    showReticleBackground: showReticleBackground,
+    halfField: halfField
+  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Checkbox_Checkbox__WEBPACK_IMPORTED_MODULE_1__.Checkbox, {
+    label: "Show Illustrative Background",
+    onChange: handleShowReticleBackgroundChange,
+    checked: showReticleBackground
+  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("hr", null), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_ResultsStats_ResultsStats__WEBPACK_IMPORTED_MODULE_6__.ReticleStats, {
+    results: easterEggEnabled ? null : results
+  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("a", {
     href: "https://www.semianalysis.com/",
     target: "_blank",
     className: "logo"
@@ -989,6 +1011,104 @@ function Checkbox(props) {
     checked: props.checked,
     disabled: props.disabled
   }), props.label));
+}
+
+/***/ }),
+
+/***/ "./src/components/DieMapCanvas/DieMapCanvas.tsx":
+/*!******************************************************!*\
+  !*** ./src/components/DieMapCanvas/DieMapCanvas.tsx ***!
+  \******************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   DieDecorativeCanvas: () => (/* binding */ DieDecorativeCanvas),
+/* harmony export */   DieMapCanvas: () => (/* binding */ DieMapCanvas)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+
+function DieMapCanvas(props) {
+  const canvasEl = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
+  const dieStateColors = {
+    good: "rgba(6,231,6,0.77)",
+    defective: "rgba(243,81,67,0.68)",
+    partial: "rgba(249,249,27,0.68)",
+    lost: "rgba(151,138,129,0.8)"
+  };
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    if (!canvasEl.current) {
+      return;
+    }
+    const context = canvasEl.current.getContext("2d");
+    if (!context) {
+      return;
+    }
+    // Clear the canvases before drawing new die map
+    context.clearRect(0, 0, canvasEl.current.width, canvasEl.current.height);
+    if (!props.results || props.results.dies.length > props.maxDies) {
+      return;
+    }
+    // Draw each die onto the canvas
+    props.results.dies.forEach(die => {
+      context.fillStyle = dieStateColors[die.dieState];
+      context.fillRect(props.mmToPxScale * die.x, props.mmToPxScale * die.y, props.mmToPxScale * die.width, props.mmToPxScale * die.height);
+    });
+  }, [JSON.stringify(props.results)]);
+  if (props.results === null) {
+    return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      className: "wafer-canvas__message--error",
+      role: "status"
+    }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null, "Invalid input(s) provided"));
+  }
+  if (props.results.dies.length > props.maxDies) {
+    return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      className: "wafer-canvas__message",
+      role: "status"
+    }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null, "Too many dies to visualize"));
+  }
+  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("canvas", {
+    className: "wafer-canvas__die-map",
+    ref: canvasEl,
+    width: props.waferWidth * props.mmToPxScale,
+    height: props.waferHeight * props.mmToPxScale
+  });
+}
+function DieDecorativeCanvas(props) {
+  const canvasEl = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    if (!canvasEl.current) {
+      return;
+    }
+    const context = canvasEl.current.getContext("2d");
+    if (!context) {
+      return;
+    }
+    context.clearRect(0, 0, canvasEl.current.width, canvasEl.current.height);
+    if (!props.results || props.results.dies.length > props.maxDies) {
+      return;
+    }
+    // Background color
+    context.fillStyle = "rgba(217,217,210,0.76)";
+    // Draw a background rectangle for a panel, or a background circle for a disc
+    if (props.shape === "Panel") {
+      context.fillRect(0, 0, canvasEl.current.width, canvasEl.current.height);
+    } else {
+      context.arc(canvasEl.current.width / 2, canvasEl.current.width / 2, canvasEl.current.width / 2, 0, 2 * Math.PI, false);
+      context.fill();
+    }
+    // Cut out each die from the background color of the canvas
+    props.results.dies.forEach(die => {
+      context.clearRect(props.mmToPxScale * die.x, props.mmToPxScale * die.y, props.mmToPxScale * die.width, props.mmToPxScale * die.height);
+    });
+  }, [JSON.stringify(props.results)]);
+  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("canvas", {
+    className: "wafer-canvas__die-decorative",
+    ref: canvasEl,
+    width: props.waferWidth * props.mmToPxScale,
+    height: props.waferHeight * props.mmToPxScale
+  });
 }
 
 /***/ }),
@@ -1097,7 +1217,8 @@ function NumberInput(props) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   ResultsStats: () => (/* binding */ ResultsStats)
+/* harmony export */   ReticleStats: () => (/* binding */ ReticleStats),
+/* harmony export */   WaferStats: () => (/* binding */ WaferStats)
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
@@ -1120,47 +1241,139 @@ function displayValue(value, unit) {
   }
   return `${parseFloat(value.toFixed(4))}${unit || ""}`;
 }
-function ResultsStats(props) {
+function WaferStats(props) {
   const waferArea = waferAreaCm(props.shape, props.waferWidth, props.waferHeight);
   const wasteArea = props.results?.goodDies && wasteAreaCm(props.dieWidth, props.dieHeight, props.results.goodDies, waferArea);
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    className: "results",
+    className: "result-stats",
     "aria-busy": !props.results
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("ul", {
-    className: "results__list"
+    className: "result-stats__list"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
-    className: "result result--total-dies"
+    className: "result-stats__result result-stats__result--total-dies"
   }, "Total Dies: ", displayValue(props.results?.totalDies)), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
-    className: "result result--die-per-reticle"
-  }, "Die Per Reticle: ", displayValue((props.results?.diePerRow || 0) * (props.results?.diePerCol || 0)), " (", displayValue(props.results?.diePerRow), "\u00D7", displayValue(props.results?.diePerCol), ")"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
-    className: "result result--good-dies"
+    className: "result-stats__result result-stats__result--good-dies"
   }, "Good Dies: ", displayValue(props.results?.goodDies)), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
-    className: "result result--defective-dies"
+    className: "result-stats__result result-stats__result--defective-dies"
   }, "Defective Dies: ", displayValue(props.results?.defectiveDies)), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
-    className: "result result--partial-dies"
+    className: "result-stats__result result-stats__result--partial-dies"
   }, "Partial Dies: ", displayValue(props.results?.partialDies)), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
-    className: "result result--lost-dies"
+    className: "result-stats__result result-stats__result--lost-dies"
   }, "Excluded Dies: ", displayValue(props.results?.lostDies)), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
-    className: "result result--yield"
-  }, "Fab Yield: ", displayValue(props.results?.fabYield && props.results.fabYield * 100, "%"))), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("ul", {
-    className: "results__list"
+    className: "result-stats__result result-stats__result--yield"
+  }, "Fab Yield:", " ", displayValue(props.results?.fabYield && props.results.fabYield * 100, "%"))), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("ul", {
+    className: "result-stats__list"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
-    className: "result result--shot-count"
-  }, "Exposures: ", displayValue((props.results?.fullShotCount || 0) + (props.results?.partialShotCount || 0)), " (", displayValue(props.results?.fullShotCount), " full, ", displayValue(props.results?.partialShotCount), " partial)"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
-    className: "result result--reticle-utilization"
-  }, "Reticle Utilization: ", displayValue(props.results?.reticleUtilization && props.results?.reticleUtilization * 100, "%")), props.shape === "Panel" ? react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
-    className: "result result--panel-width"
+    className: "result-stats__result result-stats__result--shot-count"
+  }, "Exposures:", " ", displayValue((props.results?.fullShotCount || 0) + (props.results?.partialShotCount || 0)), " ", "(", displayValue(props.results?.fullShotCount), " full,", " ", displayValue(props.results?.partialShotCount), " partial)"), props.shape === "Panel" ? react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+    className: "result-stats__result result-stats__result--panel-width"
   }, "Panel Width: ", props.waferWidth, "mm"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
-    className: "result result--panel-height"
+    className: "result-stats__result result-stats__result--panel-height"
   }, "Panel Height: ", props.waferHeight, "mm")) : react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
-    className: "result result--panel-diameter"
+    className: "result-stats__result result-stats__result--panel-diameter"
   }, "Wafer Diameter: ", props.waferWidth, "mm"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
-    className: "result result--wafer-area"
+    className: "result-stats__result result-stats__result--wafer-area"
   }, props.shape, " Area: ", displayValue(waferArea, "cm²")), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
-    className: "result result--die-area"
-  }, "Total Die Area: ", displayValue(props.results?.totalDies && totalDieAreaCm(props.dieWidth, props.dieHeight, props.results.totalDies - props.results.lostDies), "cm²")), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
-    className: "result result--waste-area"
+    className: "result-stats__result result-stats__result--die-area"
+  }, "Total Die Area:", " ", displayValue(props.results?.totalDies && totalDieAreaCm(props.dieWidth, props.dieHeight, props.results.totalDies - props.results.lostDies), "cm²")), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+    className: "result-stats__result result-stats__result--waste-area"
   }, "Total Waste Area: ", displayValue(wasteArea, "cm²"), " (", wasteArea && displayValue(wasteArea / waferArea * 100, "%"), ")")));
+}
+function ReticleStats(props) {
+  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "result-stats",
+    "aria-busy": !props.results
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("ul", {
+    className: "result-stats__list"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+    className: "result-stats__result result-stats__result--die-per-reticle"
+  }, "Die Per Reticle:", " ", displayValue((props.results?.diePerRow || 0) * (props.results?.diePerCol || 0)), " ", "(", displayValue(props.results?.diePerRow), "\u00D7", displayValue(props.results?.diePerCol), ")")), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("ul", {
+    className: "result-stats__list"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+    className: "result-stats__result result-stats__result--reticle-utilization"
+  }, "Reticle Utilization:", " ", displayValue(props.results?.reticleUtilization && props.results?.reticleUtilization * 100, "%"))));
+}
+
+/***/ }),
+
+/***/ "./src/components/ReticleCanvas/ReticleCanvas.tsx":
+/*!********************************************************!*\
+  !*** ./src/components/ReticleCanvas/ReticleCanvas.tsx ***!
+  \********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ReticleCanvas: () => (/* binding */ ReticleCanvas)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_parallax_tilt__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-parallax-tilt */ "./node_modules/react-parallax-tilt/dist/modern/index.js");
+/* harmony import */ var _utils_calculations__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../utils/calculations */ "./src/utils/calculations.ts");
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../config */ "./src/config/index.ts");
+
+
+
+
+function ReticleCanvas(props) {
+  const canvasEl = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
+  const [tiltX, setTiltX] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(0);
+  const [tiltY, setTiltY] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(0);
+  function onMove({
+    tiltAngleXPercentage,
+    tiltAngleYPercentage
+  }) {
+    setTiltX(tiltAngleXPercentage);
+    setTiltY(tiltAngleYPercentage);
+  }
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    if (!canvasEl.current) {
+      return;
+    }
+    const context = canvasEl.current.getContext("2d");
+    if (!context) {
+      return;
+    }
+    // Clear the canvases before drawing new die map
+    context.clearRect(0, 0, canvasEl.current.width, canvasEl.current.height);
+    // If “half-field” checkbox is checked, AKA High-NA, the reticle size doesn't
+    // change, but die and scribe lines appear double height on the reticle. In the
+    // real-world process, anamorphic mirrors are used to demagnify the reticle by 4x
+    // horizontally and 8x vertically.
+    const {
+      dieWidth,
+      scribeHoriz
+    } = props;
+    const dieHeight = props.halfField ? props.dieHeight * 2 : props.dieHeight;
+    const scribeVert = props.halfField ? props.scribeVert * 2 : props.scribeVert;
+    // Calculate the position of dies in a single shot
+    const diesInShot = (0,_utils_calculations__WEBPACK_IMPORTED_MODULE_1__.getRelativeDiePositions)(dieWidth, dieHeight, scribeHoriz, scribeVert, _config__WEBPACK_IMPORTED_MODULE_2__.defaultFieldWidth, _config__WEBPACK_IMPORTED_MODULE_2__.defaultFieldHeight);
+    context.fillRect(0, 0, canvasEl.current.width, canvasEl.current.height);
+    // Draw each die onto the canvas
+    diesInShot.positions.forEach(die => {
+      context.clearRect(props.mmToPxScale * die.x, props.mmToPxScale * die.y, props.mmToPxScale * dieWidth, props.mmToPxScale * dieHeight);
+    });
+  }, [props.dieWidth, props.dieHeight, props.scribeHoriz, props.scribeVert, props.halfField, props.showReticleBackground]);
+  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    role: "presentation",
+    "aria-label": "A rendering of the reticle"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_parallax_tilt__WEBPACK_IMPORTED_MODULE_3__["default"], {
+    key: props.showReticleBackground ? "background" : "no-background",
+    glareEnable: props.showReticleBackground,
+    glareMaxOpacity: 0.75,
+    scale: props.showReticleBackground ? 1.05 : 1,
+    tiltEnable: props.showReticleBackground,
+    className: props.showReticleBackground ? "reticle-canvas--background" : "reticle-canvas",
+    onMove: onMove
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("canvas", {
+    className: "reticle-canvas__inner",
+    ref: canvasEl,
+    width: _config__WEBPACK_IMPORTED_MODULE_2__.defaultFieldWidth * props.mmToPxScale,
+    height: _config__WEBPACK_IMPORTED_MODULE_2__.defaultFieldHeight * props.mmToPxScale,
+    style: {
+      backgroundPositionX: `${tiltY / 2 - 50}% `
+    }
+  })));
 }
 
 /***/ }),
@@ -1177,9 +1390,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var react_parallax_tilt__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-parallax-tilt */ "./node_modules/react-parallax-tilt/dist/modern/index.js");
+/* harmony import */ var react_parallax_tilt__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react-parallax-tilt */ "./node_modules/react-parallax-tilt/dist/modern/index.js");
 /* harmony import */ var _utils_canvas__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../utils/canvas */ "./src/utils/canvas.ts");
 /* harmony import */ var _assets_tsmc_logo_svg__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../assets/tsmc-logo.svg */ "./src/assets/tsmc-logo.svg");
+/* harmony import */ var _DieMapCanvas_DieMapCanvas__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../DieMapCanvas/DieMapCanvas */ "./src/components/DieMapCanvas/DieMapCanvas.tsx");
+
 
 
 
@@ -1189,87 +1404,6 @@ const mmToPxScale = 3;
 // Don't try and draw too many dies, or performance will suffer too much and the
 // page may hang or crash
 const maxDies = 50000;
-function DieMapCanvas(props) {
-  const canvasEl = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
-  const dieStateColors = {
-    good: "rgba(6,231,6,0.77)",
-    defective: "rgba(243,81,67,0.68)",
-    partial: "rgba(249,249,27,0.68)",
-    lost: "rgba(151,138,129,0.8)"
-  };
-  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
-    if (!canvasEl.current) {
-      return;
-    }
-    const context = canvasEl.current.getContext("2d");
-    if (!context) {
-      return;
-    }
-    // Clear the canvases before drawing new die map
-    context.clearRect(0, 0, canvasEl.current.width, canvasEl.current.height);
-    if (!props.results || props.results.dies.length > maxDies) {
-      return;
-    }
-    // Draw each die onto the canvas
-    props.results.dies.forEach(die => {
-      context.fillStyle = dieStateColors[die.dieState];
-      context.fillRect(mmToPxScale * die.x, mmToPxScale * die.y, mmToPxScale * die.width, mmToPxScale * die.height);
-    });
-  }, [JSON.stringify(props.results)]);
-  if (props.results === null) {
-    return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-      className: "wafer-canvas__message--error",
-      role: "status"
-    }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null, "Invalid input(s) provided"));
-  }
-  if (props.results.dies.length > maxDies) {
-    return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-      className: "wafer-canvas__message",
-      role: "status"
-    }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null, "Too many dies to visualize"));
-  }
-  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("canvas", {
-    className: "wafer-canvas__die-map",
-    ref: canvasEl,
-    width: props.waferWidth * mmToPxScale,
-    height: props.waferHeight * mmToPxScale
-  });
-}
-function DieDecorativeCanvas(props) {
-  const canvasEl = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
-  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
-    if (!canvasEl.current) {
-      return;
-    }
-    const context = canvasEl.current.getContext("2d");
-    if (!context) {
-      return;
-    }
-    context.clearRect(0, 0, canvasEl.current.width, canvasEl.current.height);
-    if (!props.results || props.results.dies.length > maxDies) {
-      return;
-    }
-    // Background color
-    context.fillStyle = "rgba(217,217,210,0.76)";
-    // Draw a background rectangle for a panel, or a background circle for a disc
-    if (props.shape === "Panel") {
-      context.fillRect(0, 0, canvasEl.current.width, canvasEl.current.height);
-    } else {
-      context.arc(canvasEl.current.width / 2, canvasEl.current.width / 2, canvasEl.current.width / 2, 0, 2 * Math.PI, false);
-      context.fill();
-    }
-    // Cut out each die from the background color of the canvas
-    props.results.dies.forEach(die => {
-      context.clearRect(mmToPxScale * die.x, mmToPxScale * die.y, mmToPxScale * die.width, mmToPxScale * die.height);
-    });
-  }, [JSON.stringify(props.results)]);
-  return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("canvas", {
-    className: "wafer-canvas__die-decorative",
-    ref: canvasEl,
-    width: props.waferWidth * mmToPxScale,
-    height: props.waferHeight * mmToPxScale
-  });
-}
 function ShotMap(props) {
   const canvasEl = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
@@ -1376,7 +1510,7 @@ function WaferCanvas(props) {
     setTiltY(tiltAngleYPercentage);
   }
   if (props.easterEggEnabled) {
-    return react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_parallax_tilt__WEBPACK_IMPORTED_MODULE_3__["default"], {
+    return react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_parallax_tilt__WEBPACK_IMPORTED_MODULE_4__["default"], {
       glareEnable: true,
       glareMaxOpacity: 0.75,
       scale: 1.05,
@@ -1386,10 +1520,10 @@ function WaferCanvas(props) {
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     role: "presentation",
     "aria-label": "A rendering of a silicon wafer"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_parallax_tilt__WEBPACK_IMPORTED_MODULE_3__["default"], {
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_parallax_tilt__WEBPACK_IMPORTED_MODULE_4__["default"], {
     key: props.shape,
     glareEnable: true,
-    glareMaxOpacity: 0.75,
+    glareMaxOpacity: 0.25,
     scale: 1.05,
     onMove: onMove,
     className: `wafer-canvas ${props.shape === "Wafer" ? "wafer-canvas--disc" : ""}`,
@@ -1399,15 +1533,19 @@ function WaferCanvas(props) {
     style: {
       backgroundPositionX: `${tiltY / 2 + tiltX / 4}% `
     }
-  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(DieDecorativeCanvas, {
+  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_DieMapCanvas_DieMapCanvas__WEBPACK_IMPORTED_MODULE_3__.DieDecorativeCanvas, {
     results: props.results,
     shape: props.shape,
     waferWidth: props.waferWidth,
-    waferHeight: props.waferHeight
-  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(DieMapCanvas, {
+    waferHeight: props.waferHeight,
+    mmToPxScale: mmToPxScale,
+    maxDies: maxDies
+  }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_DieMapCanvas_DieMapCanvas__WEBPACK_IMPORTED_MODULE_3__.DieMapCanvas, {
     results: props.results,
     waferWidth: props.waferWidth,
-    waferHeight: props.waferHeight
+    waferHeight: props.waferHeight,
+    mmToPxScale: mmToPxScale,
+    maxDies: maxDies
   }), props.showShotMap && react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ShotMap, {
     results: props.results,
     waferWidth: props.waferWidth,
@@ -1435,6 +1573,8 @@ function WaferCanvas(props) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   defaultFieldHeight: () => (/* reexport safe */ _sizes__WEBPACK_IMPORTED_MODULE_0__.defaultFieldHeight),
+/* harmony export */   defaultFieldWidth: () => (/* reexport safe */ _sizes__WEBPACK_IMPORTED_MODULE_0__.defaultFieldWidth),
 /* harmony export */   minDieEdge: () => (/* reexport safe */ _sizes__WEBPACK_IMPORTED_MODULE_0__.minDieEdge),
 /* harmony export */   panelSizes: () => (/* reexport safe */ _sizes__WEBPACK_IMPORTED_MODULE_0__.panelSizes),
 /* harmony export */   waferSizes: () => (/* reexport safe */ _sizes__WEBPACK_IMPORTED_MODULE_0__.waferSizes),
@@ -1455,6 +1595,8 @@ __webpack_require__.r(__webpack_exports__);
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   defaultFieldHeight: () => (/* binding */ defaultFieldHeight),
+/* harmony export */   defaultFieldWidth: () => (/* binding */ defaultFieldWidth),
 /* harmony export */   minDieEdge: () => (/* binding */ minDieEdge),
 /* harmony export */   panelSizes: () => (/* binding */ panelSizes),
 /* harmony export */   waferSizes: () => (/* binding */ waferSizes)
@@ -1535,6 +1677,11 @@ const waferSizes = {
     width: 450
   }
 };
+/**
+ * Default reticle field sizes, in mm
+ */
+const defaultFieldWidth = 26;
+const defaultFieldHeight = 33;
 
 /***/ }),
 
@@ -1748,6 +1895,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   evaluatePanelInputs: () => (/* binding */ evaluatePanelInputs),
 /* harmony export */   getDieStateCounts: () => (/* binding */ getDieStateCounts),
 /* harmony export */   getFabYield: () => (/* binding */ getFabYield),
+/* harmony export */   getRelativeDiePositions: () => (/* binding */ getRelativeDiePositions),
 /* harmony export */   randomNumberSetFromRange: () => (/* binding */ randomNumberSetFromRange)
 /* harmony export */ });
 /* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../config */ "./src/config/index.ts");
@@ -2297,8 +2445,8 @@ function rectanglesInRectangle(outerRectWidth, outerRectHeight, innerRectWidth, 
           x,
           y
         });
-        numRows = countY;
-        numCols = countX;
+        numRows = row + 1;
+        numCols = col + 1;
       }
     }
   }
@@ -2340,10 +2488,10 @@ function clampedInputDisplayValue(value, min, max) {
 
 /***/ }),
 
-/***/ "./src/editor.scss":
-/*!*************************!*\
-  !*** ./src/editor.scss ***!
-  \*************************/
+/***/ "./src/assets/scss/editor.scss":
+/*!*************************************!*\
+  !*** ./src/assets/scss/editor.scss ***!
+  \*************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -2352,10 +2500,10 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./src/style.scss":
-/*!************************!*\
-  !*** ./src/style.scss ***!
-  \************************/
+/***/ "./src/assets/scss/style.scss":
+/*!************************************!*\
+  !*** ./src/assets/scss/style.scss ***!
+  \************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);

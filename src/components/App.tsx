@@ -2,14 +2,22 @@ import React, { useState, useEffect, useRef } from "react";
 import { Checkbox } from "./Checkbox/Checkbox";
 import { NumberInput } from "./NumberInput/NumberInput";
 import { useInputs } from "../hooks/useInputs";
-import { panelSizes, waferSizes, yieldModels, minDieEdge } from "../config";
+import {
+	defaultFieldWidth,
+	defaultFieldHeight,
+	minDieEdge,
+	panelSizes,
+	waferSizes,
+	yieldModels,
+} from "../config";
 import { SubstrateShape } from "../types";
 import { WaferCanvas } from "./WaferCanvas/WaferCanvas";
-import { ResultsStats } from "./ResultsStats/ResultsStats";
+import { ReticleStats, WaferStats } from "./ResultsStats/ResultsStats";
 import semiAnalysisLogo from "../assets/semianalysis-logo-full-360px.png";
 import { useEasterEgg } from "../hooks/useEasterEgg";
 import { JumpToResults } from "./JumpToResults/JumpToResults";
 import { clampedInputDisplayValue } from "../utils/inputs";
+import { ReticleCanvas } from "./ReticleCanvas/ReticleCanvas";
 
 const ShapeSelector = (props: {
 	shape: SubstrateShape;
@@ -131,6 +139,7 @@ function App() {
 	const [allCritical, setAllCritical] = useState(true);
 	const [reticleLimit, setReticleLimit] = useState(true);
 	const [showShotMap, setShowShotMap] = useState(true);
+	const [showReticleBackground, setShowReticleBackground] = useState(true);
 	const [halfField, setHalfField] = useState(false);
 	const [scribeHoriz, setScribeHoriz] = useState<string>("0.2");
 	const [scribeVert, setScribeVert] = useState<string>("0.2");
@@ -143,8 +152,8 @@ function App() {
 		useState<keyof typeof yieldModels>("murphy");
 	const aspectRatio = useRef(parseFloat(dieWidth) / parseFloat(dieHeight));
 
-	const fieldWidthMM = halfField ? 13 : 26;
-	const fieldHeightMM = 33;
+	const fieldWidthMM =  defaultFieldWidth;
+	const fieldHeightMM = halfField ? defaultFieldHeight / 2 : defaultFieldHeight;
 
 	const results = useInputs(
 		{
@@ -280,6 +289,12 @@ function App() {
 		setShowShotMap(event.target.checked);
 	};
 
+	const handleShowReticleBackgroundChange = (
+		event: React.ChangeEvent<HTMLInputElement>,
+	) => {
+		setShowReticleBackground(event.target.checked);
+	}
+
 	const handleHalfFieldChange = (
 		event: React.ChangeEvent<HTMLInputElement>,
 	) => {
@@ -353,7 +368,7 @@ function App() {
 					<h2>Reticle</h2>
 					<div className="input-row">
 						<Checkbox
-							label="Half Field Exposures"
+							label="Half Field Exposures (High NA)"
 							onChange={handleHalfFieldChange}
 							checked={halfField}
 						/>
@@ -431,7 +446,8 @@ function App() {
 					<JumpToResults outputRef={outputRef} />
 				</div>
 				<div className="output" ref={outputRef}>
-					<div>
+					<div className="panel">
+						<h2>Wafer Results</h2>
 						<WaferCanvas
 							results={results}
 							shape={substrateShape}
@@ -449,25 +465,42 @@ function App() {
 							onChange={handleShowShotMapChange}
 							checked={showShotMap}
 						/>
-						<div className="panel">
-							<h2>Results</h2>
-							<ResultsStats
-								results={easterEggEnabled ? null : results}
-								shape={substrateShape}
-								dieWidth={parseFloat(dieWidth)}
-								dieHeight={parseFloat(dieHeight)}
-								waferWidth={
-									substrateShape === "Panel"
-										? panelSizes[panelSize].width
-										: waferSizes[waferSize].width
-								}
-								waferHeight={
-									substrateShape === "Panel"
-										? panelSizes[panelSize].height
-										: waferSizes[waferSize].width
-								}
-							/>
-						</div>
+						<hr />
+						<WaferStats
+							results={easterEggEnabled ? null : results}
+							shape={substrateShape}
+							dieWidth={parseFloat(dieWidth)}
+							dieHeight={parseFloat(dieHeight)}
+							waferWidth={
+								substrateShape === "Panel"
+									? panelSizes[panelSize].width
+									: waferSizes[waferSize].width
+							}
+							waferHeight={
+								substrateShape === "Panel"
+									? panelSizes[panelSize].height
+									: waferSizes[waferSize].width
+							}
+						/>
+					</div>
+					<div className="panel">
+						<h2>Reticle Results</h2>
+						<ReticleCanvas
+							dieWidth={parseFloat(dieWidth)}
+							dieHeight={parseFloat(dieHeight)}
+							scribeHoriz={parseFloat(scribeHoriz)}
+							scribeVert={parseFloat(scribeVert)}
+							mmToPxScale={12}
+							showReticleBackground={showReticleBackground}
+							halfField={halfField}
+						/>
+						<Checkbox
+							label="Show Illustrative Background"
+							onChange={handleShowReticleBackgroundChange}
+							checked={showReticleBackground}
+						/>
+						<hr />
+						<ReticleStats results={easterEggEnabled ? null : results} />
 					</div>
 					<a
 						href="https://www.semianalysis.com/"

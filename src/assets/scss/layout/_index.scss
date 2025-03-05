@@ -1,0 +1,39 @@
+.wp-block-create-block-die-yield-calculator {
+	.logo {
+		display: none;
+
+		@media (min-width: 768px) {
+			display: block;
+			margin: 0 0 0 auto;
+		}
+	}
+
+	.columns {
+		display: grid;
+		grid-template-columns: 1fr;
+		row-gap: 4em;
+
+		@media (min-width: 768px) {
+			grid-template-columns: 9fr 11fr;
+			column-gap: 2em;
+		}
+	}
+
+	.panel {
+		text-align: left;
+		margin-bottom: 2em;
+
+		@media (min-width: 768px) {
+			border-radius: 10px;
+			padding: 32px;
+			background-color: #141416;
+		}
+	}
+
+	.output {
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		text-align: center;
+	}
+}

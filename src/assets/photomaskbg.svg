@@ -1,0 +1,24 @@
+<svg
+	version="1.1"
+	baseProfile="full"
+	width="600"
+	height="600"
+	viewBox="0 0 600 600"
+	xmlns="http://www.w3.org/2000/svg"
+>
+	<rect x="0" y="0" width="600" height="600" fill="black" />
+	<g stroke="#ccc" stroke-width="2">
+		<line x1="10" y1="10" x2="30" y2="10" />
+		<line x1="10" y1="10" x2="10" y2="30" />
+		<line x1="590" y1="10" x2="570" y2="10" />
+		<line x1="590" y1="10" x2="590" y2="30" />
+		<line x1="10"  y1="590" x2="30"  y2="590" />
+		<line x1="10"  y1="590" x2="10"  y2="570" />
+		<line x1="590" y1="590" x2="570" y2="590" />
+		<line x1="590" y1="590" x2="590" y2="570" />
+	</g>
+	<rect x="100" y="10" width="10" height="10" fill="#ccc" />
+	<rect x="490" y="10" width="10" height="10" fill="#ccc" />
+	<rect x="100" y="580" width="10" height="10" fill="#ccc" />
+	<rect x="490" y="580" width="10" height="10" fill="#ccc" />
+</svg>
