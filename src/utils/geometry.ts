@@ -293,8 +293,8 @@ export function rectanglesInRectangle(
 
 			if (isInside) {
 				positions.push({ x, y });
-				numRows = countY;
-				numCols = countX;
+				numRows = row + 1;
+				numCols = col + 1;
 			}
 		}
 	}

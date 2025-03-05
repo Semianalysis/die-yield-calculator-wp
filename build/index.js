@@ -723,8 +723,8 @@ function App() {
   const [waferSize, setWaferSize] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("s300mm");
   const [selectedModel, setSelectedModel] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("murphy");
   const aspectRatio = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(parseFloat(dieWidth) / parseFloat(dieHeight));
-  const fieldWidthMM = halfField ? _config__WEBPACK_IMPORTED_MODULE_4__.defaultFieldWidth / 2 : _config__WEBPACK_IMPORTED_MODULE_4__.defaultFieldWidth;
-  const fieldHeightMM = _config__WEBPACK_IMPORTED_MODULE_4__.defaultFieldHeight;
+  const fieldWidthMM = _config__WEBPACK_IMPORTED_MODULE_4__.defaultFieldWidth;
+  const fieldHeightMM = halfField ? _config__WEBPACK_IMPORTED_MODULE_4__.defaultFieldHeight / 2 : _config__WEBPACK_IMPORTED_MODULE_4__.defaultFieldHeight;
   const results = (0,_hooks_useInputs__WEBPACK_IMPORTED_MODULE_3__.useInputs)({
     dieWidth: parseFloat(dieWidth),
     dieHeight: parseFloat(dieHeight),
@@ -1328,15 +1328,17 @@ function ReticleCanvas(props) {
     // Clear the canvases before drawing new die map
     context.clearRect(0, 0, canvasEl.current.width, canvasEl.current.height);
     // If “half-field” checkbox is checked, AKA High-NA, the reticle size doesn't
-    // change, but die appear double width on the reticle. In the real-world process,
-    // anamorphic mirrors are used to demagnify die by 8x horizontally and 4x
-    // vertically.
+    // change, but die and scribe lines appear double height on the reticle. In the
+    // real-world process, anamorphic mirrors are used to demagnify the reticle by 4x
+    // horizontally and 8x vertically.
     const {
-      dieHeight
+      dieWidth,
+      scribeHoriz
     } = props;
-    const dieWidth = props.halfField ? props.dieWidth * 2 : props.dieWidth;
+    const dieHeight = props.halfField ? props.dieHeight * 2 : props.dieHeight;
+    const scribeVert = props.halfField ? props.scribeVert * 2 : props.scribeVert;
     // Calculate the position of dies in a single shot
-    const diesInShot = (0,_utils_calculations__WEBPACK_IMPORTED_MODULE_1__.getRelativeDiePositions)(dieWidth, dieHeight, props.scribeHoriz, props.scribeVert, _config__WEBPACK_IMPORTED_MODULE_2__.defaultFieldWidth, _config__WEBPACK_IMPORTED_MODULE_2__.defaultFieldHeight);
+    const diesInShot = (0,_utils_calculations__WEBPACK_IMPORTED_MODULE_1__.getRelativeDiePositions)(dieWidth, dieHeight, scribeHoriz, scribeVert, _config__WEBPACK_IMPORTED_MODULE_2__.defaultFieldWidth, _config__WEBPACK_IMPORTED_MODULE_2__.defaultFieldHeight);
     context.fillStyle = "white";
     // Draw each die onto the canvas
     diesInShot.positions.forEach(die => {
@@ -2430,8 +2432,8 @@ function rectanglesInRectangle(outerRectWidth, outerRectHeight, innerRectWidth, 
           x,
           y
         });
-        numRows = countY;
-        numCols = countX;
+        numRows = row + 1;
+        numCols = col + 1;
       }
     }
   }

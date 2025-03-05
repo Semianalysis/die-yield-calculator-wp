@@ -152,8 +152,8 @@ function App() {
 		useState<keyof typeof yieldModels>("murphy");
 	const aspectRatio = useRef(parseFloat(dieWidth) / parseFloat(dieHeight));
 
-	const fieldWidthMM = halfField ? defaultFieldWidth / 2 : defaultFieldWidth;
-	const fieldHeightMM = defaultFieldHeight;
+	const fieldWidthMM =  defaultFieldWidth;
+	const fieldHeightMM = halfField ? defaultFieldHeight / 2 : defaultFieldHeight;
 
 	const results = useInputs(
 		{

@@ -31,18 +31,19 @@ export function ReticleCanvas(props: Props) {
 		context.clearRect(0, 0, canvasEl.current.width, canvasEl.current.height);
 
 		// If “half-field” checkbox is checked, AKA High-NA, the reticle size doesn't
-		// change, but die appear double width on the reticle. In the real-world process,
-		// anamorphic mirrors are used to demagnify die by 8x horizontally and 4x
-		// vertically.
-		const { dieHeight } = props;
-		const dieWidth = props.halfField ? props.dieWidth * 2 : props.dieWidth;
+		// change, but die and scribe lines appear double height on the reticle. In the
+		// real-world process, anamorphic mirrors are used to demagnify the reticle by 4x
+		// horizontally and 8x vertically.
+		const { dieWidth, scribeHoriz } = props;
+		const dieHeight = props.halfField ? props.dieHeight * 2 : props.dieHeight;
+		const scribeVert = props.halfField ? props.scribeVert * 2 : props.scribeVert;
 
 		// Calculate the position of dies in a single shot
 		const diesInShot = getRelativeDiePositions(
 			dieWidth,
 			dieHeight,
-			props.scribeHoriz,
-			props.scribeVert,
+			scribeHoriz,
+			scribeVert,
 			defaultFieldWidth,
 			defaultFieldHeight,
 		);
