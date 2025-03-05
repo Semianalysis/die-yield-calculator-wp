@@ -1,0 +1,36 @@
+@use "../abstract/colors" as colors;
+
+.wp-block-create-block-die-yield-calculator {
+	color: colors.$color-text;
+	font-family: Inter, sans-serif;
+	font-size: 14px;
+
+	&, * {
+		box-sizing: border-box;
+	}
+
+	h2 {
+		font-weight: 800;
+		line-height: 1.1;
+		font-size: 1.333333em;
+		margin: 0 0 1em;
+		color: inherit;
+	}
+
+	hr {
+		height: 0;
+		border: none;
+		border-bottom: 1px solid colors.$color-border;
+		margin: 2em 0;
+	}
+
+	label,
+	legend {
+		display: block;
+		cursor: pointer;
+
+		&.disabled {
+			color: #B4B9BC;
+		}
+	}
+}

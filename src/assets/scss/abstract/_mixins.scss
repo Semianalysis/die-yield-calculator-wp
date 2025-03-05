@@ -1,0 +1,14 @@
+@mixin rainbow-background($angle: 90deg) {
+	background-image: linear-gradient($angle,
+		#b88ecb, /* Purple */
+		#8eb4cd 12.5%, /* Blue */
+		#9ad9cc 40%, /* Teal */
+		#cc9e52 45%, /* Orange/Gold */
+		#e15a4d 50%, /* Pink/Red */
+		#e1b268 56%, /* Orange/Gold */
+		#8fd9ca 64%, /* Teal */
+		#8eb4cd 82.5%, /* Blue */
+		#b88ecb 100% /* Purple */
+	);
+	background-size: 440%;
+}

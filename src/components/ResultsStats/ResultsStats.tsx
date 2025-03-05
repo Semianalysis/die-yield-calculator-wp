@@ -57,24 +57,24 @@ export function WaferStats(props: {
 		);
 
 	return (
-		<div className="results" aria-busy={!props.results}>
-			<ul className="results__list">
-				<li className="result result--total-dies">
+		<div className="result-stats" aria-busy={!props.results}>
+			<ul className="result-stats__list">
+				<li className="result-stats__result result-stats__result--total-dies">
 					Total Dies: {displayValue(props.results?.totalDies)}
 				</li>
-				<li className="result result--good-dies">
+				<li className="result-stats__result result-stats__result--good-dies">
 					Good Dies: {displayValue(props.results?.goodDies)}
 				</li>
-				<li className="result result--defective-dies">
+				<li className="result-stats__result result-stats__result--defective-dies">
 					Defective Dies: {displayValue(props.results?.defectiveDies)}
 				</li>
-				<li className="result result--partial-dies">
+				<li className="result-stats__result result-stats__result--partial-dies">
 					Partial Dies: {displayValue(props.results?.partialDies)}
 				</li>
-				<li className="result result--lost-dies">
+				<li className="result-stats__result result-stats__result--lost-dies">
 					Excluded Dies: {displayValue(props.results?.lostDies)}
 				</li>
-				<li className="result result--yield">
+				<li className="result-stats__result result-stats__result--yield">
 					Fab Yield:{" "}
 					{displayValue(
 						props.results?.fabYield && props.results.fabYield * 100,
@@ -82,8 +82,8 @@ export function WaferStats(props: {
 					)}
 				</li>
 			</ul>
-			<ul className="results__list">
-				<li className="result result--shot-count">
+			<ul className="result-stats__list">
+				<li className="result-stats__result result-stats__result--shot-count">
 					Exposures:{" "}
 					{displayValue(
 						(props.results?.fullShotCount || 0) +
@@ -94,22 +94,22 @@ export function WaferStats(props: {
 				</li>
 				{props.shape === "Panel" ? (
 					<>
-						<li className="result result--panel-width">
+						<li className="result-stats__result result-stats__result--panel-width">
 							Panel Width: {props.waferWidth}mm
 						</li>
-						<li className="result result--panel-height">
+						<li className="result-stats__result result-stats__result--panel-height">
 							Panel Height: {props.waferHeight}mm
 						</li>
 					</>
 				) : (
-					<li className="result result--panel-diameter">
+					<li className="result-stats__result result-stats__result--panel-diameter">
 						Wafer Diameter: {props.waferWidth}mm
 					</li>
 				)}
-				<li className="result result--wafer-area">
+				<li className="result-stats__result result-stats__result--wafer-area">
 					{props.shape} Area: {displayValue(waferArea, "cm²")}
 				</li>
-				<li className="result result--die-area">
+				<li className="result-stats__result result-stats__result--die-area">
 					Total Die Area:{" "}
 					{displayValue(
 						props.results?.totalDies &&
@@ -121,7 +121,7 @@ export function WaferStats(props: {
 						"cm²",
 					)}
 				</li>
-				<li className="result result--waste-area">
+				<li className="result-stats__result result-stats__result--waste-area">
 					Total Waste Area: {displayValue(wasteArea, "cm²")} (
 					{wasteArea && displayValue((wasteArea / waferArea) * 100, "%")})
 				</li>
@@ -134,9 +134,9 @@ export function ReticleStats(props: {
 	results: FabResults;
 }) {
 	return (
-		<div className="results" aria-busy={!props.results}>
-			<ul className="results__list">
-				<li className="result result--die-per-reticle">
+		<div className="result-stats" aria-busy={!props.results}>
+			<ul className="result-stats__list">
+				<li className="result-stats__result result-stats__result--die-per-reticle">
 					Die Per Reticle:{" "}
 					{displayValue(
 						(props.results?.diePerRow || 0) * (props.results?.diePerCol || 0),
@@ -145,8 +145,8 @@ export function ReticleStats(props: {
 					{displayValue(props.results?.diePerCol)})
 				</li>
 			</ul>
-			<ul className="results__list">
-				<li className="result result--reticle-utilization">
+			<ul className="result-stats__list">
+				<li className="result-stats__result result-stats__result--reticle-utilization">
 					Reticle Utilization:{" "}
 					{displayValue(
 						props.results?.reticleUtilization &&

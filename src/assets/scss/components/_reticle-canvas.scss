@@ -1,0 +1,38 @@
+@use "../abstract/mixins" as mixins;
+
+.wp-block-create-block-die-yield-calculator {
+	.reticle-canvas {
+		margin: auto;
+		aspect-ratio: 1/1;
+		max-width: calc(152.4 * 3px);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		margin-bottom: 2em;
+	}
+
+	.reticle-canvas--background {
+		@extend .reticle-canvas;
+
+		background: url("/src/assets/photomaskbg.svg") no-repeat;
+		background-size: contain;
+		border-radius: 8px;
+		overflow: hidden;
+		border: 1px solid;
+		border-top-color: #666c72;
+		border-right-color: #46494c;
+		border-bottom-color: #2d2f32;
+		border-left-color: #46494c;
+	}
+
+	.reticle-canvas__inner {
+		@include mixins.rainbow-background;
+
+		width: calc(104 / 152.4 * 100%);
+		height: calc(132 / 152.4 * 100%);
+		outline: 1px solid blue;
+		opacity: 0.75;
+		background-position: 100%;
+		background-size: 300%;
+	}
+}
