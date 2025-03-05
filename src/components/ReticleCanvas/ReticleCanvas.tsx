@@ -1,7 +1,8 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Tilt from "react-parallax-tilt";
 import { getRelativeDiePositions } from "../../utils/calculations";
-import {defaultFieldWidth, defaultFieldHeight} from "../../config";
+import { defaultFieldWidth, defaultFieldHeight } from "../../config";
+import { OnMoveParams } from "react-parallax-tilt/dist/modern";
 
 type Props = {
 	mmToPxScale: number;
@@ -15,6 +16,16 @@ type Props = {
 
 export function ReticleCanvas(props: Props) {
 	const canvasEl = useRef<HTMLCanvasElement>(null);
+	const [tiltX, setTiltX] = useState(0);
+	const [tiltY, setTiltY] = useState(0);
+
+	function onMove({
+		tiltAngleXPercentage,
+		tiltAngleYPercentage,
+	}: OnMoveParams) {
+		setTiltX(tiltAngleXPercentage);
+		setTiltY(tiltAngleYPercentage);
+	}
 
 	useEffect(() => {
 		if (!canvasEl.current) {
@@ -36,7 +47,9 @@ export function ReticleCanvas(props: Props) {
 		// horizontally and 8x vertically.
 		const { dieWidth, scribeHoriz } = props;
 		const dieHeight = props.halfField ? props.dieHeight * 2 : props.dieHeight;
-		const scribeVert = props.halfField ? props.scribeVert * 2 : props.scribeVert;
+		const scribeVert = props.halfField
+			? props.scribeVert * 2
+			: props.scribeVert;
 
 		// Calculate the position of dies in a single shot
 		const diesInShot = getRelativeDiePositions(
@@ -48,11 +61,11 @@ export function ReticleCanvas(props: Props) {
 			defaultFieldHeight,
 		);
 
-		context.fillStyle = "white";
+		context.fillRect(0, 0, canvasEl.current.width, canvasEl.current.height);
 
 		// Draw each die onto the canvas
 		diesInShot.positions.forEach((die) => {
-			context.fillRect(
+			context.clearRect(
 				props.mmToPxScale * die.x,
 				props.mmToPxScale * die.y,
 				props.mmToPxScale * dieWidth,
@@ -81,12 +94,16 @@ export function ReticleCanvas(props: Props) {
 						? "reticle-canvas--background"
 						: "reticle-canvas"
 				}
+				onMove={onMove}
 			>
 				<canvas
 					className="reticle-canvas__inner"
 					ref={canvasEl}
 					width={defaultFieldWidth * props.mmToPxScale}
 					height={defaultFieldHeight * props.mmToPxScale}
+					style={{
+						backgroundPositionX: `${tiltY / 2 - 50}% `,
+					}}
 				></canvas>
 			</Tilt>
 		</div>

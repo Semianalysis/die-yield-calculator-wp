@@ -1317,6 +1317,15 @@ __webpack_require__.r(__webpack_exports__);
 
 function ReticleCanvas(props) {
   const canvasEl = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
+  const [tiltX, setTiltX] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(0);
+  const [tiltY, setTiltY] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(0);
+  function onMove({
+    tiltAngleXPercentage,
+    tiltAngleYPercentage
+  }) {
+    setTiltX(tiltAngleXPercentage);
+    setTiltY(tiltAngleYPercentage);
+  }
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     if (!canvasEl.current) {
       return;
@@ -1339,10 +1348,10 @@ function ReticleCanvas(props) {
     const scribeVert = props.halfField ? props.scribeVert * 2 : props.scribeVert;
     // Calculate the position of dies in a single shot
     const diesInShot = (0,_utils_calculations__WEBPACK_IMPORTED_MODULE_1__.getRelativeDiePositions)(dieWidth, dieHeight, scribeHoriz, scribeVert, _config__WEBPACK_IMPORTED_MODULE_2__.defaultFieldWidth, _config__WEBPACK_IMPORTED_MODULE_2__.defaultFieldHeight);
-    context.fillStyle = "white";
+    context.fillRect(0, 0, canvasEl.current.width, canvasEl.current.height);
     // Draw each die onto the canvas
     diesInShot.positions.forEach(die => {
-      context.fillRect(props.mmToPxScale * die.x, props.mmToPxScale * die.y, props.mmToPxScale * dieWidth, props.mmToPxScale * dieHeight);
+      context.clearRect(props.mmToPxScale * die.x, props.mmToPxScale * die.y, props.mmToPxScale * dieWidth, props.mmToPxScale * dieHeight);
     });
   }, [props.dieWidth, props.dieHeight, props.scribeHoriz, props.scribeVert, props.halfField, props.showReticleBackground]);
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
@@ -1354,12 +1363,16 @@ function ReticleCanvas(props) {
     glareMaxOpacity: 0.75,
     scale: props.showReticleBackground ? 1.05 : 1,
     tiltEnable: props.showReticleBackground,
-    className: props.showReticleBackground ? "reticle-canvas--background" : "reticle-canvas"
+    className: props.showReticleBackground ? "reticle-canvas--background" : "reticle-canvas",
+    onMove: onMove
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("canvas", {
     className: "reticle-canvas__inner",
     ref: canvasEl,
     width: _config__WEBPACK_IMPORTED_MODULE_2__.defaultFieldWidth * props.mmToPxScale,
-    height: _config__WEBPACK_IMPORTED_MODULE_2__.defaultFieldHeight * props.mmToPxScale
+    height: _config__WEBPACK_IMPORTED_MODULE_2__.defaultFieldHeight * props.mmToPxScale,
+    style: {
+      backgroundPositionX: `${tiltY / 2 - 50}% `
+    }
   })));
 }
 

@@ -306,10 +306,10 @@
   opacity: 0.075;
 }
 .wp-block-create-block-die-yield-calculator .wafer-canvas .wafer-canvas__mirror-background {
-  border-top: 1px solid rgba(255, 255, 255, 0.5);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.5);
   background-image: linear-gradient(90deg, #b88ecb, #8eb4cd 12.5%, #9ad9cc 40%, #cc9e52 45%, #e15a4d 50%, #e1b268 56%, #8fd9ca 64%, #8eb4cd 82.5%, #b88ecb 100%);
   background-size: 440%;
+  border-top: 1px solid rgba(255, 255, 255, 0.5);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.5);
   position: absolute;
   top: 0;
   right: 0;
@@ -450,9 +450,14 @@
 }
 
 .reticle-canvas__inner {
+  background-image: linear-gradient(90deg, #b88ecb, #8eb4cd 12.5%, #9ad9cc 40%, #cc9e52 45%, #e15a4d 50%, #e1b268 56%, #8fd9ca 64%, #8eb4cd 82.5%, #b88ecb 100%);
+  background-size: 440%;
   width: 68.2414698163%;
   height: 86.6141732283%;
   outline: 1px solid blue;
+  opacity: 0.75;
+  background-position: 100%;
+  background-size: 300%;
 }
 
 /*# sourceMappingURL=style-index.css.map*/
