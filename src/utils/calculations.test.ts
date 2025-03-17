@@ -92,7 +92,7 @@ describe("Calculations", () => {
 		it.each(Object.keys(yieldModels))(
 			"returns a full yield if the defect rate is 0 for the %s model",
 			(model) => {
-				expect(getFabYield(0, 1000, model as keyof typeof yieldModels, 50)).toEqual(
+				expect(getFabYield(0, 1000, model as keyof typeof yieldModels, 1)).toEqual(
 					1,
 				);
 			},

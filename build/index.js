@@ -1703,9 +1703,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   yieldModels: () => (/* binding */ yieldModels)
 /* harmony export */ });
-/**
- * Available mathematical models for calculating yield
- */
 // Assign the strongly typed models
 const yieldModels = {
   poisson: {

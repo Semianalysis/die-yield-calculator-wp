@@ -1,29 +1,16 @@
 /**
  * Available mathematical models for calculating yield
  */
-
-// Define a general yield function type for most models
-type YieldFunction = (defects: number) => number;
-
-// Define a specific yield function type for Bose-Einstein that requires criticalLayers
-type BoseEinsteinYieldFunction = (
-	defects: number,
-	criticalLayers: number,
-) => number;
-
-// Define the structure of standard yield models
 type StandardYieldModel = {
 	name: string;
-	yield: YieldFunction;
+	yield: (defects: number) => number;
 };
 
-// Define the structure of the Bose-Einstein model
 type BoseEinsteinModel = {
 	name: string;
-	yield: BoseEinsteinYieldFunction;
+	yield: (defects: number, criticalLayers: number) => number;
 };
 
-// Define the entire model structure using a discriminated union
 export type YieldModels = {
 	poisson: StandardYieldModel;
 	murphy: StandardYieldModel;
