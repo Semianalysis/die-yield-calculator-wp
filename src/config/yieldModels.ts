@@ -44,6 +44,7 @@ export const yieldModels: YieldModels = {
 	},
 	"bose-einstein": {
 		name: "Bose-Einstein Model",
+		// Simplistic model that assumes the same number of defects in each layer
 		yield: (defects, criticalLayers) =>
 			Math.pow(1 / (1 + defects), criticalLayers),
 	},
