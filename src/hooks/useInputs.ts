@@ -17,6 +17,7 @@ const validations : { [k in keyof InputValues] : (inputs: InputValues) => boolea
 	scribeVert: ({scribeVert}) => validPositiveInteger(scribeVert),
 	transHoriz: ({transHoriz}) => !isNaN(transHoriz),
 	transVert: ({transVert}) => !isNaN(transVert),
+	criticalLayers: ({criticalLayers}) => validPositiveInteger(criticalLayers),
 }
 
 /**

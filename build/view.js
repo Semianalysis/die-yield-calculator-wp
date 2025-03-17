@@ -614,6 +614,7 @@ function App() {
   const [panelSize, setPanelSize] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("s300mm");
   const [waferSize, setWaferSize] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("s300mm");
   const [selectedModel, setSelectedModel] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("murphy");
+  const [criticalLayers, setCriticalLayers] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("30");
   const aspectRatio = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(parseFloat(dieWidth) / parseFloat(dieHeight));
   const fieldWidthMM = _config__WEBPACK_IMPORTED_MODULE_4__.defaultFieldWidth;
   const fieldHeightMM = halfField ? _config__WEBPACK_IMPORTED_MODULE_4__.defaultFieldHeight / 2 : _config__WEBPACK_IMPORTED_MODULE_4__.defaultFieldHeight;
@@ -627,7 +628,8 @@ function App() {
     scribeHoriz: parseFloat(scribeHoriz),
     scribeVert: parseFloat(scribeVert),
     transHoriz: parseFloat(transHoriz),
-    transVert: parseFloat(transVert)
+    transVert: parseFloat(transVert),
+    criticalLayers: parseFloat(criticalLayers)
   }, selectedModel, substrateShape, panelSize, waferSize, fieldWidthMM, fieldHeightMM);
   const easterEggEnabled = (0,_hooks_useEasterEgg__WEBPACK_IMPORTED_MODULE_8__.useEasterEgg)();
   const outputRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
@@ -821,6 +823,12 @@ function App() {
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ModelSelector, {
     selectedModel: selectedModel,
     handleModelChange: event => setSelectedModel(event.target.value)
+  })), selectedModel === 'bose-einstein' && react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "input-row"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
+    label: "Critical Layers",
+    value: criticalLayers,
+    onChange: event => setCriticalLayers(event.target.value)
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_JumpToResults_JumpToResults__WEBPACK_IMPORTED_MODULE_9__.JumpToResults, {
     outputRef: outputRef
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
@@ -1590,6 +1598,7 @@ __webpack_require__.r(__webpack_exports__);
 /**
  * Available mathematical models for calculating yield
  */
+// Assign the strongly typed models
 const yieldModels = {
   poisson: {
     name: "Poisson Model",
@@ -1610,6 +1619,10 @@ const yieldModels = {
   seeds: {
     name: "Seeds Model",
     yield: defects => 1 / (1 + defects)
+  },
+  "bose-einstein": {
+    name: "Bose-Einstein Model",
+    yield: (defects, criticalLayers) => Math.pow(1 / (1 + defects), criticalLayers)
   }
 };
 
@@ -1741,7 +1754,10 @@ const validations = {
   }) => !isNaN(transHoriz),
   transVert: ({
     transVert
-  }) => !isNaN(transVert)
+  }) => !isNaN(transVert),
+  criticalLayers: ({
+    criticalLayers
+  }) => validPositiveInteger(criticalLayers)
 };
 /**
  * Given the numeric inputs, selected wafer properties, and a yield model, calculate
@@ -1799,13 +1815,17 @@ __webpack_require__.r(__webpack_exports__);
  * @param defectRate decimal representing how many dies will be defective
  * @param criticalArea die area
  * @param model model to calculate the yield
+ * @param criticalLayers number of critical layers for Bose-Einstein model
  * @returns yield percentage
  */
-function getFabYield(defectRate, criticalArea, model) {
+function getFabYield(defectRate, criticalArea, model, criticalLayers) {
   if (!defectRate) {
     return 1;
   }
   const defects = criticalArea * defectRate / 100;
+  if (model === 'bose-einstein') {
+    return _config__WEBPACK_IMPORTED_MODULE_0__.yieldModels[model].yield(defects, criticalLayers);
+  }
   return _config__WEBPACK_IMPORTED_MODULE_0__.yieldModels[model].yield(defects);
 }
 /**
@@ -1995,10 +2015,11 @@ function evaluatePanelInputs(inputVals, selectedSize, selectedModel, fieldWidth,
     defectRate,
     scribeHoriz,
     scribeVert,
-    lossyEdgeWidth
+    lossyEdgeWidth,
+    criticalLayers
   } = inputVals;
   let dies = [];
-  const fabYield = getFabYield(defectRate, criticalArea, selectedModel);
+  const fabYield = getFabYield(defectRate, criticalArea, selectedModel, criticalLayers);
   const {
     width,
     height
@@ -2055,9 +2076,10 @@ function evaluateDiscInputs(inputVals, selectedSize, selectedModel, fieldWidth, 
     lossyEdgeWidth,
     notchKeepOutHeight,
     scribeHoriz,
-    scribeVert
+    scribeVert,
+    criticalLayers
   } = inputVals;
-  const fabYield = getFabYield(defectRate, criticalArea, selectedModel);
+  const fabYield = getFabYield(defectRate, criticalArea, selectedModel, criticalLayers);
   const {
     width
   } = _config__WEBPACK_IMPORTED_MODULE_0__.waferSizes[selectedSize];
