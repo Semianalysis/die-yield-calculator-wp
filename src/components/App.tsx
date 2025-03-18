@@ -156,7 +156,7 @@ function App() {
 	const fieldWidthMM =  defaultFieldWidth;
 	const fieldHeightMM = halfField ? defaultFieldHeight / 2 : defaultFieldHeight;
 
-	const results = useInputs(
+	const { results, validationError } = useInputs(
 		{
 			dieWidth: parseFloat(dieWidth),
 			dieHeight: parseFloat(dieHeight),
@@ -472,6 +472,7 @@ function App() {
 							showShotMap={showShotMap}
 							fieldWidth={fieldWidthMM}
 							fieldHeight={fieldHeightMM}
+							validationError={validationError}
 						/>
 						<Checkbox
 							label="Show Reticle Shot Grid"

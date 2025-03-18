@@ -186,6 +186,7 @@ export function WaferCanvas(props: {
 	showShotMap: boolean;
 	fieldWidth: number;
 	fieldHeight: number;
+	validationError?: string;
 }) {
 	const [tiltX, setTiltX] = useState(0);
 	const [tiltY, setTiltY] = useState(0);
@@ -242,6 +243,7 @@ export function WaferCanvas(props: {
 					waferHeight={props.waferHeight}
 					mmToPxScale={mmToPxScale}
 					maxDies={maxDies}
+					validationError={props.validationError}
 				/>
 				{props.showShotMap && (
 					<ShotMap

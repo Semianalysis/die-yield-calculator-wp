@@ -4,6 +4,7 @@ import React, { useEffect, useRef } from "react";
 
 export function DieMapCanvas(props: {
 	results: FabResults;
+	validationError?: string;
 	waferWidth: number;
 	waferHeight: number;
 	mmToPxScale: number;
@@ -47,10 +48,11 @@ export function DieMapCanvas(props: {
 		});
 	}, [JSON.stringify(props.results)]);
 
-	if (props.results === null) {
+	if (!props.results) {
+		// Display the validation error or fallback message
 		return (
 			<div className="wafer-canvas__message--error" role="status">
-				<span>Invalid input(s) provided</span>
+				<span>{props.validationError || "Invalid input(s) provided"}</span>
 			</div>
 		);
 	}

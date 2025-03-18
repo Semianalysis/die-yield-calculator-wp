@@ -1,32 +1,13 @@
 import { useState } from "react";
 import { FabResults, SubstrateShape } from "../types";
 import { waferSizes, panelSizes, yieldModels, minDieEdge } from "../config";
-import { evaluateDiscInputs, evaluatePanelInputs, InputValues } from "../utils/calculations";
+import {
+	evaluateDiscInputs,
+	evaluatePanelInputs,
+	InputValues,
+} from "../utils/calculations";
 import { useDebouncedEffect } from "./useDebouncedEffect";
-
-const validPositiveInteger = (value: number) => !isNaN(value) && value >= 0;
-
-type Validator = (inputs: InputValues, fieldSize: { fieldWidth: number, fieldHeight: number }) => boolean;
-
-const validations : { [k in keyof InputValues] : Validator } = {
-	dieWidth: ({ dieWidth, scribeHoriz }, { fieldWidth }) =>
-		!isNaN(dieWidth) &&
-		dieWidth >= minDieEdge &&
-		dieWidth + scribeHoriz <= fieldWidth,
-	dieHeight: ({ dieHeight, scribeVert }, { fieldHeight }) =>
-		!isNaN(dieHeight) &&
-		dieHeight >= minDieEdge &&
-	  dieHeight + scribeVert <= fieldHeight,
-	criticalArea: ({criticalArea, dieHeight, dieWidth}) => !isNaN(criticalArea) && criticalArea >= 0 && criticalArea <= dieWidth * dieHeight,
-	defectRate: ({ defectRate }) => validPositiveInteger(defectRate),
-	lossyEdgeWidth: ({lossyEdgeWidth}) => validPositiveInteger(lossyEdgeWidth),
-	notchKeepOutHeight: ({notchKeepOutHeight}) => validPositiveInteger(notchKeepOutHeight),
-	scribeHoriz: ({scribeHoriz}) => validPositiveInteger(scribeHoriz),
-	scribeVert: ({scribeVert}) => validPositiveInteger(scribeVert),
-	transHoriz: ({transHoriz}) => !isNaN(transHoriz),
-	transVert: ({transVert}) => !isNaN(transVert),
-	criticalLayers: ({criticalLayers}) => validPositiveInteger(criticalLayers),
-}
+import { validations } from "../utils/validations";
 
 /**
  * Given the numeric inputs, selected wafer properties, and a yield model, calculate
@@ -49,24 +30,55 @@ export function useInputs(
 	fieldHeight: number,
 ) {
 	const [results, setResults] = useState<FabResults>(null);
+	const [validationError, setValidationError] = useState<string>();
 
-	useDebouncedEffect(() => {
-		// Reset to defaults if we can't use one or more values
-		const invalidValues = Object.keys(validations).filter((validation) => {
-			const validationFn = validations[validation as keyof typeof validations];
-			return !validationFn(values, { fieldWidth, fieldHeight });
-		});
+	useDebouncedEffect(
+		() => {
+			// Reset to defaults if we can't use one or more values
+			const validationErrors = Object.keys(validations).map((validation) => {
+				const validationFn =
+					validations[validation as keyof typeof validations];
+				return validationFn(values, { fieldWidth, fieldHeight });
+			}).filter(Boolean);
 
-		if (invalidValues.length) {
-			setResults(null);
-		} else {
-			if (shape === "Wafer") {
-				setResults(evaluateDiscInputs(values, discSize, yieldModel, fieldWidth, fieldHeight));
-			} else if (shape === "Panel") {
-				setResults(evaluatePanelInputs(values, panelSize, yieldModel, fieldWidth, fieldHeight));
+			if (validationErrors.length) {
+				setResults(null);
+				setValidationError(validationErrors[0]);
+			} else {
+				if (shape === "Wafer") {
+					setResults(
+						evaluateDiscInputs(
+							values,
+							discSize,
+							yieldModel,
+							fieldWidth,
+							fieldHeight,
+						),
+					);
+				} else if (shape === "Panel") {
+					setResults(
+						evaluatePanelInputs(
+							values,
+							panelSize,
+							yieldModel,
+							fieldWidth,
+							fieldHeight,
+						),
+					);
+				}
 			}
-		}
-	}, [JSON.stringify(values), shape, panelSize, discSize, yieldModel, fieldWidth, fieldHeight], 100);
+		},
+		[
+			JSON.stringify(values),
+			shape,
+			panelSize,
+			discSize,
+			yieldModel,
+			fieldWidth,
+			fieldHeight,
+		],
+		100,
+	);
 
-	return results;
+	return { results, validationError };
 }

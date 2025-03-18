@@ -95,13 +95,18 @@
 				top: 50%;
 				text-align: center;
 				transform: translateY(-50%);
-				line-height: 1;
-				color: rgba(0, 0, 0, 0.5);
+				line-height: 1.5;
+				color: rgba(0, 0, 0, 0.75);
 				text-shadow: 0 1px #ffffff2e;
+				font-size: 1.2em;
+				padding: 0 10%;
 			}
 
 			&--error {
-				color: colors.$color-die-lost;
+				text-decoration: underline;
+				text-decoration-color: colors.$color-die-defective;
+				text-underline-offset: 0.1em;
+				text-decoration-thickness: 1px;
 			}
 		}
 	}

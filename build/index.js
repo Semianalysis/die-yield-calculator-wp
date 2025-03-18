@@ -726,7 +726,10 @@ function App() {
   const aspectRatio = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(parseFloat(dieWidth) / parseFloat(dieHeight));
   const fieldWidthMM = _config__WEBPACK_IMPORTED_MODULE_4__.defaultFieldWidth;
   const fieldHeightMM = halfField ? _config__WEBPACK_IMPORTED_MODULE_4__.defaultFieldHeight / 2 : _config__WEBPACK_IMPORTED_MODULE_4__.defaultFieldHeight;
-  const results = (0,_hooks_useInputs__WEBPACK_IMPORTED_MODULE_3__.useInputs)({
+  const {
+    results,
+    validationError
+  } = (0,_hooks_useInputs__WEBPACK_IMPORTED_MODULE_3__.useInputs)({
     dieWidth: parseFloat(dieWidth),
     dieHeight: parseFloat(dieHeight),
     criticalArea: parseFloat(criticalArea),
@@ -954,7 +957,8 @@ function App() {
     easterEggEnabled: easterEggEnabled,
     showShotMap: showShotMap,
     fieldWidth: fieldWidthMM,
-    fieldHeight: fieldHeightMM
+    fieldHeight: fieldHeightMM,
+    validationError: validationError
   }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Checkbox_Checkbox__WEBPACK_IMPORTED_MODULE_1__.Checkbox, {
     label: "Show Reticle Shot Grid",
     onChange: handleShowShotMapChange,
@@ -1064,11 +1068,12 @@ function DieMapCanvas(props) {
       context.fillRect(props.mmToPxScale * die.x, props.mmToPxScale * die.y, props.mmToPxScale * die.width, props.mmToPxScale * die.height);
     });
   }, [JSON.stringify(props.results)]);
-  if (props.results === null) {
+  if (!props.results) {
+    // Display the validation error or fallback message
     return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
       className: "wafer-canvas__message--error",
       role: "status"
-    }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null, "Invalid input(s) provided"));
+    }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null, props.validationError || "Invalid input(s) provided"));
   }
   if (props.results.dies.length > props.maxDies) {
     return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
@@ -1553,7 +1558,8 @@ function WaferCanvas(props) {
     waferWidth: props.waferWidth,
     waferHeight: props.waferHeight,
     mmToPxScale: mmToPxScale,
-    maxDies: maxDies
+    maxDies: maxDies,
+    validationError: props.validationError
   }), props.showShotMap && react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ShotMap, {
     results: props.results,
     waferWidth: props.waferWidth,
@@ -1820,57 +1826,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../config */ "./src/config/index.ts");
-/* harmony import */ var _utils_calculations__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/calculations */ "./src/utils/calculations.ts");
-/* harmony import */ var _useDebouncedEffect__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./useDebouncedEffect */ "./src/hooks/useDebouncedEffect.ts");
+/* harmony import */ var _utils_calculations__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/calculations */ "./src/utils/calculations.ts");
+/* harmony import */ var _useDebouncedEffect__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./useDebouncedEffect */ "./src/hooks/useDebouncedEffect.ts");
+/* harmony import */ var _utils_validations__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/validations */ "./src/utils/validations.ts");
 
 
 
 
-const validPositiveInteger = value => !isNaN(value) && value >= 0;
-const validations = {
-  dieWidth: ({
-    dieWidth,
-    scribeHoriz
-  }, {
-    fieldWidth
-  }) => !isNaN(dieWidth) && dieWidth >= _config__WEBPACK_IMPORTED_MODULE_1__.minDieEdge && dieWidth + scribeHoriz <= fieldWidth,
-  dieHeight: ({
-    dieHeight,
-    scribeVert
-  }, {
-    fieldHeight
-  }) => !isNaN(dieHeight) && dieHeight >= _config__WEBPACK_IMPORTED_MODULE_1__.minDieEdge && dieHeight + scribeVert <= fieldHeight,
-  criticalArea: ({
-    criticalArea,
-    dieHeight,
-    dieWidth
-  }) => !isNaN(criticalArea) && criticalArea >= 0 && criticalArea <= dieWidth * dieHeight,
-  defectRate: ({
-    defectRate
-  }) => validPositiveInteger(defectRate),
-  lossyEdgeWidth: ({
-    lossyEdgeWidth
-  }) => validPositiveInteger(lossyEdgeWidth),
-  notchKeepOutHeight: ({
-    notchKeepOutHeight
-  }) => validPositiveInteger(notchKeepOutHeight),
-  scribeHoriz: ({
-    scribeHoriz
-  }) => validPositiveInteger(scribeHoriz),
-  scribeVert: ({
-    scribeVert
-  }) => validPositiveInteger(scribeVert),
-  transHoriz: ({
-    transHoriz
-  }) => !isNaN(transHoriz),
-  transVert: ({
-    transVert
-  }) => !isNaN(transVert),
-  criticalLayers: ({
-    criticalLayers
-  }) => validPositiveInteger(criticalLayers)
-};
 /**
  * Given the numeric inputs, selected wafer properties, and a yield model, calculate
  * the expected fabrication results.
@@ -1884,26 +1846,31 @@ const validations = {
  */
 function useInputs(values, yieldModel, shape, panelSize, discSize, fieldWidth, fieldHeight) {
   const [results, setResults] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
-  (0,_useDebouncedEffect__WEBPACK_IMPORTED_MODULE_3__.useDebouncedEffect)(() => {
+  const [validationError, setValidationError] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)();
+  (0,_useDebouncedEffect__WEBPACK_IMPORTED_MODULE_2__.useDebouncedEffect)(() => {
     // Reset to defaults if we can't use one or more values
-    const invalidValues = Object.keys(validations).filter(validation => {
-      const validationFn = validations[validation];
-      return !validationFn(values, {
+    const validationErrors = Object.keys(_utils_validations__WEBPACK_IMPORTED_MODULE_3__.validations).map(validation => {
+      const validationFn = _utils_validations__WEBPACK_IMPORTED_MODULE_3__.validations[validation];
+      return validationFn(values, {
         fieldWidth,
         fieldHeight
       });
-    });
-    if (invalidValues.length) {
+    }).filter(Boolean);
+    if (validationErrors.length) {
       setResults(null);
+      setValidationError(validationErrors[0]);
     } else {
       if (shape === "Wafer") {
-        setResults((0,_utils_calculations__WEBPACK_IMPORTED_MODULE_2__.evaluateDiscInputs)(values, discSize, yieldModel, fieldWidth, fieldHeight));
+        setResults((0,_utils_calculations__WEBPACK_IMPORTED_MODULE_1__.evaluateDiscInputs)(values, discSize, yieldModel, fieldWidth, fieldHeight));
       } else if (shape === "Panel") {
-        setResults((0,_utils_calculations__WEBPACK_IMPORTED_MODULE_2__.evaluatePanelInputs)(values, panelSize, yieldModel, fieldWidth, fieldHeight));
+        setResults((0,_utils_calculations__WEBPACK_IMPORTED_MODULE_1__.evaluatePanelInputs)(values, panelSize, yieldModel, fieldWidth, fieldHeight));
       }
     }
   }, [JSON.stringify(values), shape, panelSize, discSize, yieldModel, fieldWidth, fieldHeight], 100);
-  return results;
+  return {
+    results,
+    validationError
+  };
 }
 
 /***/ }),
@@ -2517,6 +2484,132 @@ function clampedInputDisplayValue(value, min, max) {
   }
   return value;
 }
+
+/***/ }),
+
+/***/ "./src/utils/validations.ts":
+/*!**********************************!*\
+  !*** ./src/utils/validations.ts ***!
+  \**********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   validations: () => (/* binding */ validations)
+/* harmony export */ });
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../config */ "./src/config/index.ts");
+
+const validPositiveInteger = value => !isNaN(value) && value >= 0;
+/**
+ * Validate the die width and horizontal scribe line width
+ * @param dieWidth
+ * @param scribeHoriz
+ * @param fieldWidth
+ */
+const dieWidthAndHorizontalScribe = ({
+  dieWidth,
+  scribeHoriz
+}, {
+  fieldWidth
+}) => {
+  if (!validPositiveInteger(dieWidth)) {
+    return "Invalid die width";
+  }
+  if (!validPositiveInteger(scribeHoriz)) {
+    return "Invalid horizontal scribe line width";
+  }
+  if (dieWidth < _config__WEBPACK_IMPORTED_MODULE_0__.minDieEdge) {
+    return `Die must be at least ${_config__WEBPACK_IMPORTED_MODULE_0__.minDieEdge}mm wide`;
+  }
+  if (dieWidth + scribeHoriz > fieldWidth) {
+    return `Die and scribe line width must be less than or equal to the field width (${fieldWidth}mm).`;
+  }
+};
+/**
+ * Validate the die height and vertical scribe line width
+ * @param dieHeight
+ * @param scribeVert
+ * @param fieldHeight
+ */
+const dieHeightAndVerticalScribe = ({
+  dieHeight,
+  scribeVert
+}, {
+  fieldHeight
+}) => {
+  if (!validPositiveInteger(dieHeight)) {
+    return "Invalid die height";
+  }
+  if (!validPositiveInteger(scribeVert)) {
+    return "Invalid vertical scribe line width";
+  }
+  if (dieHeight < _config__WEBPACK_IMPORTED_MODULE_0__.minDieEdge) {
+    return `Die must be at least ${_config__WEBPACK_IMPORTED_MODULE_0__.minDieEdge}mm tall`;
+  }
+  if (dieHeight + scribeVert > fieldHeight) {
+    return `Die and scribe line height must be less than or equal to the field height (${fieldHeight}mm).`;
+  }
+};
+const validations = {
+  dieWidth: dieWidthAndHorizontalScribe,
+  dieHeight: dieHeightAndVerticalScribe,
+  criticalArea: ({
+    criticalArea,
+    dieHeight,
+    dieWidth
+  }) => {
+    if (!validPositiveInteger(criticalArea)) {
+      return "Invalid critical area";
+    }
+    if (criticalArea > dieWidth * dieHeight) {
+      return "Critical area must be less than or equal to die area";
+    }
+  },
+  defectRate: ({
+    defectRate
+  }) => {
+    if (!validPositiveInteger(defectRate)) {
+      return "Invalid defect rate";
+    }
+  },
+  lossyEdgeWidth: ({
+    lossyEdgeWidth
+  }) => {
+    if (!validPositiveInteger(lossyEdgeWidth)) {
+      return "Invalid lossy edge width";
+    }
+  },
+  notchKeepOutHeight: ({
+    notchKeepOutHeight
+  }) => {
+    if (!validPositiveInteger(notchKeepOutHeight)) {
+      return "Invalid notch keep-out height";
+    }
+  },
+  scribeHoriz: dieWidthAndHorizontalScribe,
+  scribeVert: dieHeightAndVerticalScribe,
+  transHoriz: ({
+    transHoriz
+  }) => {
+    if (isNaN(transHoriz)) {
+      return "Invalid horizontal translation";
+    }
+  },
+  transVert: ({
+    transVert
+  }) => {
+    if (isNaN(transVert)) {
+      return "Invalid vertical translation";
+    }
+  },
+  criticalLayers: ({
+    criticalLayers
+  }) => {
+    if (!validPositiveInteger(criticalLayers) || criticalLayers > 100) {
+      return "Invalid critical layer count";
+    }
+  }
+};
 
 /***/ }),
 
