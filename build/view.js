@@ -1722,11 +1722,17 @@ __webpack_require__.r(__webpack_exports__);
 const validPositiveInteger = value => !isNaN(value) && value >= 0;
 const validations = {
   dieWidth: ({
-    dieWidth
-  }) => !isNaN(dieWidth) && dieWidth >= _config__WEBPACK_IMPORTED_MODULE_1__.minDieEdge,
+    dieWidth,
+    scribeHoriz
+  }, {
+    fieldWidth
+  }) => !isNaN(dieWidth) && dieWidth >= _config__WEBPACK_IMPORTED_MODULE_1__.minDieEdge && dieWidth + scribeHoriz <= fieldWidth,
   dieHeight: ({
-    dieHeight
-  }) => !isNaN(dieHeight) && dieHeight >= _config__WEBPACK_IMPORTED_MODULE_1__.minDieEdge,
+    dieHeight,
+    scribeVert
+  }, {
+    fieldHeight
+  }) => !isNaN(dieHeight) && dieHeight >= _config__WEBPACK_IMPORTED_MODULE_1__.minDieEdge && dieHeight + scribeVert <= fieldHeight,
   criticalArea: ({
     criticalArea,
     dieHeight,
@@ -1772,7 +1778,13 @@ function useInputs(values, yieldModel, shape, panelSize, discSize, fieldWidth, f
   const [results, setResults] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
   (0,_useDebouncedEffect__WEBPACK_IMPORTED_MODULE_3__.useDebouncedEffect)(() => {
     // Reset to defaults if we can't use one or more values
-    const invalidValues = Object.keys(validations).filter(validation => !validations[validation](values));
+    const invalidValues = Object.keys(validations).filter(validation => {
+      const validationFn = validations[validation];
+      return !validationFn(values, {
+        fieldWidth,
+        fieldHeight
+      });
+    });
     if (invalidValues.length) {
       setResults(null);
     } else {

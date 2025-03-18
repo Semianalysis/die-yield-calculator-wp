@@ -6,9 +6,17 @@ import { useDebouncedEffect } from "./useDebouncedEffect";
 
 const validPositiveInteger = (value: number) => !isNaN(value) && value >= 0;
 
-const validations : { [k in keyof InputValues] : (inputs: InputValues) => boolean } = {
-	dieWidth: ({ dieWidth }) => !isNaN(dieWidth) && dieWidth >= minDieEdge,
-	dieHeight: ({ dieHeight }) => !isNaN(dieHeight) && dieHeight >= minDieEdge,
+type Validator = (inputs: InputValues, fieldSize: { fieldWidth: number, fieldHeight: number }) => boolean;
+
+const validations : { [k in keyof InputValues] : Validator } = {
+	dieWidth: ({ dieWidth, scribeHoriz }, { fieldWidth }) =>
+		!isNaN(dieWidth) &&
+		dieWidth >= minDieEdge &&
+		dieWidth + scribeHoriz <= fieldWidth,
+	dieHeight: ({ dieHeight, scribeVert }, { fieldHeight }) =>
+		!isNaN(dieHeight) &&
+		dieHeight >= minDieEdge &&
+	  dieHeight + scribeVert <= fieldHeight,
 	criticalArea: ({criticalArea, dieHeight, dieWidth}) => !isNaN(criticalArea) && criticalArea >= 0 && criticalArea <= dieWidth * dieHeight,
 	defectRate: ({ defectRate }) => validPositiveInteger(defectRate),
 	lossyEdgeWidth: ({lossyEdgeWidth}) => validPositiveInteger(lossyEdgeWidth),
@@ -44,7 +52,10 @@ export function useInputs(
 
 	useDebouncedEffect(() => {
 		// Reset to defaults if we can't use one or more values
-		const invalidValues = Object.keys(validations).filter((validation) => !validations[validation as keyof typeof validations](values));
+		const invalidValues = Object.keys(validations).filter((validation) => {
+			const validationFn = validations[validation as keyof typeof validations];
+			return !validationFn(values, { fieldWidth, fieldHeight });
+		});
 
 		if (invalidValues.length) {
 			setResults(null);
