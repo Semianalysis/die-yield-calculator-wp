@@ -150,6 +150,7 @@ function App() {
 	const [waferSize, setWaferSize] = useState<keyof typeof waferSizes>("s300mm");
 	const [selectedModel, setSelectedModel] =
 		useState<keyof typeof yieldModels>("murphy");
+	const [criticalLayers, setCriticalLayers] = useState<string>("30");
 	const aspectRatio = useRef(parseFloat(dieWidth) / parseFloat(dieHeight));
 
 	const fieldWidthMM =  defaultFieldWidth;
@@ -167,6 +168,7 @@ function App() {
 			scribeVert: parseFloat(scribeVert),
 			transHoriz: parseFloat(transHoriz),
 			transVert: parseFloat(transVert),
+			criticalLayers: parseFloat(criticalLayers),
 		},
 		selectedModel,
 		substrateShape,
@@ -443,6 +445,17 @@ function App() {
 							}
 						/>
 					</div>
+					{
+						selectedModel === 'bose-einstein' && (
+							<div className="input-row">
+								<NumberInput
+									label="Critical Layers"
+									value={criticalLayers}
+									onChange={(event) => setCriticalLayers(event.target.value)}
+								/>
+							</div>
+						)
+					}
 					<JumpToResults outputRef={outputRef} />
 				</div>
 				<div className="output" ref={outputRef}>

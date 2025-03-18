@@ -17,18 +17,25 @@ import {
  * @param defectRate decimal representing how many dies will be defective
  * @param criticalArea die area
  * @param model model to calculate the yield
+ * @param criticalLayers number of critical layers for Bose-Einstein model
  * @returns yield percentage
  */
 export function getFabYield(
 	defectRate: number,
 	criticalArea: number,
-	model: keyof typeof yieldModels
+	model: keyof typeof yieldModels,
+	criticalLayers: number
 ) {
 	if (!defectRate) {
 		return 1;
 	}
 
 	const defects = (criticalArea * defectRate) / 100;
+
+	if(model === 'bose-einstein') {
+		return yieldModels[model].yield(defects, criticalLayers);
+	}
+
 	return yieldModels[model].yield(defects);
 }
 
@@ -96,6 +103,7 @@ export type InputValues = {
 	scribeVert: number;
 	transHoriz: number;
 	transVert: number;
+	criticalLayers: number;
 };
 
 /**
@@ -306,10 +314,11 @@ export function evaluatePanelInputs(
 		defectRate,
 		scribeHoriz,
 		scribeVert,
-		lossyEdgeWidth
+		lossyEdgeWidth,
+		criticalLayers
 	} = inputVals;
 	let dies = [];
-	const fabYield = getFabYield(defectRate, criticalArea, selectedModel);
+	const fabYield = getFabYield(defectRate, criticalArea, selectedModel, criticalLayers);
 	const { width, height } = panelSizes[selectedSize];
 
 	const { x: offsetX, y: offsetY } = getDieOffset(
@@ -412,10 +421,11 @@ export function evaluateDiscInputs(
 		lossyEdgeWidth,
 		notchKeepOutHeight,
 		scribeHoriz,
-		scribeVert
+		scribeVert,
+		criticalLayers
 	} = inputVals;
 
-	const fabYield = getFabYield(defectRate, criticalArea, selectedModel);
+	const fabYield = getFabYield(defectRate, criticalArea, selectedModel, criticalLayers);
 	const { width } = waferSizes[selectedSize];
 
 	const { x: offsetX, y: offsetY } = getDieOffset(
