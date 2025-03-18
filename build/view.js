@@ -2391,7 +2391,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../config */ "./src/config/index.ts");
 
-const validPositiveInteger = value => !isNaN(value) && value >= 0;
+const validPositiveNumber = value => !isNaN(value) && value >= 0;
 /**
  * Validate the die width and horizontal scribe line width
  * @param dieWidth
@@ -2404,10 +2404,10 @@ const dieWidthAndHorizontalScribe = ({
 }, {
   fieldWidth
 }) => {
-  if (!validPositiveInteger(dieWidth)) {
+  if (!validPositiveNumber(dieWidth)) {
     return "Invalid die width";
   }
-  if (!validPositiveInteger(scribeHoriz)) {
+  if (!validPositiveNumber(scribeHoriz)) {
     return "Invalid horizontal scribe line width";
   }
   if (dieWidth < _config__WEBPACK_IMPORTED_MODULE_0__.minDieEdge) {
@@ -2429,10 +2429,10 @@ const dieHeightAndVerticalScribe = ({
 }, {
   fieldHeight
 }) => {
-  if (!validPositiveInteger(dieHeight)) {
+  if (!validPositiveNumber(dieHeight)) {
     return "Invalid die height";
   }
-  if (!validPositiveInteger(scribeVert)) {
+  if (!validPositiveNumber(scribeVert)) {
     return "Invalid vertical scribe line width";
   }
   if (dieHeight < _config__WEBPACK_IMPORTED_MODULE_0__.minDieEdge) {
@@ -2450,31 +2450,38 @@ const validations = {
     dieHeight,
     dieWidth
   }) => {
-    if (!validPositiveInteger(criticalArea)) {
+    if (!validPositiveNumber(criticalArea)) {
       return "Invalid critical area";
     }
     if (criticalArea > dieWidth * dieHeight) {
       return "Critical area must be less than or equal to die area";
     }
   },
+  criticalLayers: ({
+    criticalLayers
+  }) => {
+    if (isNaN(criticalLayers) || criticalLayers < 1 || criticalLayers > 100) {
+      return "Invalid critical layer count";
+    }
+  },
   defectRate: ({
     defectRate
   }) => {
-    if (!validPositiveInteger(defectRate)) {
+    if (!validPositiveNumber(defectRate)) {
       return "Invalid defect rate";
     }
   },
   lossyEdgeWidth: ({
     lossyEdgeWidth
   }) => {
-    if (!validPositiveInteger(lossyEdgeWidth)) {
+    if (!validPositiveNumber(lossyEdgeWidth)) {
       return "Invalid lossy edge width";
     }
   },
   notchKeepOutHeight: ({
     notchKeepOutHeight
   }) => {
-    if (!validPositiveInteger(notchKeepOutHeight)) {
+    if (!validPositiveNumber(notchKeepOutHeight)) {
       return "Invalid notch keep-out height";
     }
   },
@@ -2492,13 +2499,6 @@ const validations = {
   }) => {
     if (isNaN(transVert)) {
       return "Invalid vertical translation";
-    }
-  },
-  criticalLayers: ({
-    criticalLayers
-  }) => {
-    if (!validPositiveInteger(criticalLayers) || criticalLayers > 100) {
-      return "Invalid critical layer count";
     }
   }
 };

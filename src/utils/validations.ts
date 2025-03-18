@@ -1,7 +1,7 @@
 import { InputValues } from "./calculations";
 import { minDieEdge } from "../config";
 
-const validPositiveInteger = (value: number) => !isNaN(value) && value >= 0;
+const validPositiveNumber = (value: number) => !isNaN(value) && value >= 0;
 
 // Validation function returns a message if the input is invalid, or null if it's valid
 type Validator = (
@@ -22,11 +22,11 @@ const dieWidthAndHorizontalScribe: Validator = (
 	{ dieWidth, scribeHoriz },
 	{ fieldWidth },
 ) => {
-	if (!validPositiveInteger(dieWidth)) {
+	if (!validPositiveNumber(dieWidth)) {
 		return "Invalid die width";
 	}
 
-	if (!validPositiveInteger(scribeHoriz)) {
+	if (!validPositiveNumber(scribeHoriz)) {
 		return "Invalid horizontal scribe line width";
 	}
 
@@ -49,11 +49,11 @@ const dieHeightAndVerticalScribe: Validator = (
 	{ dieHeight, scribeVert },
 	{ fieldHeight },
 ) => {
-	if (!validPositiveInteger(dieHeight)) {
+	if (!validPositiveNumber(dieHeight)) {
 		return "Invalid die height";
 	}
 
-	if (!validPositiveInteger(scribeVert)) {
+	if (!validPositiveNumber(scribeVert)) {
 		return "Invalid vertical scribe line width";
 	}
 
@@ -70,7 +70,7 @@ export const validations: { [k in keyof InputValues]: Validator } = {
 	dieWidth: dieWidthAndHorizontalScribe,
 	dieHeight: dieHeightAndVerticalScribe,
 	criticalArea: ({ criticalArea, dieHeight, dieWidth }) => {
-		if (!validPositiveInteger(criticalArea)) {
+		if (!validPositiveNumber(criticalArea)) {
 			return "Invalid critical area";
 		}
 
@@ -78,18 +78,23 @@ export const validations: { [k in keyof InputValues]: Validator } = {
 			return "Critical area must be less than or equal to die area";
 		}
 	},
+	criticalLayers: ({ criticalLayers }) => {
+		if (isNaN(criticalLayers) || criticalLayers < 1 || criticalLayers > 100) {
+			return "Invalid critical layer count";
+		}
+	},
 	defectRate: ({ defectRate }) => {
-		if (!validPositiveInteger(defectRate)) {
+		if (!validPositiveNumber(defectRate)) {
 			return "Invalid defect rate";
 		}
 	},
 	lossyEdgeWidth: ({ lossyEdgeWidth }) => {
-		if (!validPositiveInteger(lossyEdgeWidth)) {
+		if (!validPositiveNumber(lossyEdgeWidth)) {
 			return "Invalid lossy edge width";
 		}
 	},
 	notchKeepOutHeight: ({ notchKeepOutHeight }) => {
-		if (!validPositiveInteger(notchKeepOutHeight)) {
+		if (!validPositiveNumber(notchKeepOutHeight)) {
 			return "Invalid notch keep-out height";
 		}
 	},
@@ -103,11 +108,6 @@ export const validations: { [k in keyof InputValues]: Validator } = {
 	transVert: ({ transVert }) => {
 		if (isNaN(transVert)) {
 			return "Invalid vertical translation";
-		}
-	},
-	criticalLayers: ({ criticalLayers }) => {
-		if (!validPositiveInteger(criticalLayers) || criticalLayers > 100) {
-			return "Invalid critical layer count";
 		}
 	},
 };

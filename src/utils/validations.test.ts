@@ -247,15 +247,15 @@ describe("validations", () => {
 	});
 
 	describe("criticalLayers", () => {
-		it("returns 'Invalid critical layer count' if criticalLayers is negative or NaN and <= 100", () => {
+		it("returns 'Invalid critical layer count' if criticalLayers is < 1", () => {
 			const inputs: InputValues = {
-				criticalLayers: -1,
+				criticalLayers: 0.5,
 			} as any;
 			const result = validations.criticalLayers(inputs, fieldSize);
 			expect(result).toBe("Invalid critical layer count");
 		});
 
-		it("returns undefined if criticalLayers is a valid non-negative integer and <= 100", () => {
+		it("returns undefined if criticalLayers is a valid number from 1-100", () => {
 			const inputs: InputValues = {
 				criticalLayers: 50,
 			} as any;
@@ -265,7 +265,7 @@ describe("validations", () => {
 
 		it("returns an error if criticalLayers > 100", () => {
 			const inputs: InputValues = {
-				criticalLayers: 101,
+				criticalLayers: 100.5,
 			} as any;
 			const result = validations.criticalLayers(inputs, fieldSize);
 			expect(result).toBe("Invalid critical layer count");
