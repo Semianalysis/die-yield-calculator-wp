@@ -452,6 +452,8 @@ function App() {
 									label="Critical Layers"
 									value={criticalLayers}
 									onChange={(event) => setCriticalLayers(event.target.value)}
+									min={0}
+									max={100}
 								/>
 							</div>
 						)
