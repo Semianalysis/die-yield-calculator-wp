@@ -220,6 +220,59 @@ describe("Calculations", () => {
 
 			expect(fullShotCount + partialShotCount).toEqual(shotsOnWafer.length);
 		});
+
+		it('shows the correct total number of die based on the number of exposures and the number of dies in a shot', () => {
+			const dieEdge = 12;
+			const waferDiameter = 300;
+			const fabYield = 0.75;
+			const diesInShot = rectanglesInRectangle(
+				26,
+				33,
+				dieEdge,
+				dieEdge,
+				0.2,
+				0.2,
+				0,
+				0,
+				true,
+				false,
+			);
+			const shotPositions = rectanglesInCircle(
+				waferDiameter,
+				26,
+				33,
+				0,
+				0,
+				0,
+				0,
+				true,
+			);
+
+			const { shotsOnWafer, dies } = createDieMap(
+				shotPositions,
+				diesInShot.positions,
+				dieEdge,
+				dieEdge,
+				fabYield,
+				(coordinate) => {
+					const lossyEdgeWidth = 3;
+					const radiusInsideLossyEdge = waferDiameter / 2 - lossyEdgeWidth;
+					return isInsideCircle(
+						coordinate.x,
+						coordinate.y,
+						waferDiameter / 2,
+						waferDiameter / 2,
+						radiusInsideLossyEdge,
+					);
+				},
+			);
+
+			const excludedDies = dies.filter(die => die.dieState === "lost");
+			const goodDies = dies.filter(die => die.dieState === "good");
+			const defectiveDies = dies.filter(die => die.dieState === "defective");
+			const partialDies = dies.filter(die => die.dieState === "partial");
+			expect(excludedDies.length + goodDies.length + defectiveDies.length + partialDies.length).toEqual(shotsOnWafer.length * diesInShot.numCols * diesInShot.numRows);
+		});
 	});
 
 	describe("evaluateDiscInputs", () => {
