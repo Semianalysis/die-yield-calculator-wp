@@ -150,7 +150,7 @@ function App() {
 	const [waferSize, setWaferSize] = useState<keyof typeof waferSizes>("s300mm");
 	const [selectedModel, setSelectedModel] =
 		useState<keyof typeof yieldModels>("murphy");
-	const [criticalLayers, setCriticalLayers] = useState<string>("30");
+	const [criticalLayers, setCriticalLayers] = useState<string>("25");
 	const aspectRatio = useRef(parseFloat(dieWidth) / parseFloat(dieHeight));
 
 	const fieldWidthMM =  defaultFieldWidth;
