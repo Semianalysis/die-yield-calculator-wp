@@ -34,11 +34,11 @@ export const yieldModels: YieldModels = {
 	},
 	murphy: {
 		name: "Murphy's Model",
-		yield: (defects) => Math.pow((1 - Math.exp(-defects)) / defects, 2),
+		yield: (defects) => defects > 0 ? Math.pow((1 - Math.exp(-defects)) / defects, 2) : 1,
 	},
 	rect: {
 		name: "Rectangular Model",
-		yield: (defects) => (1 - Math.exp(-2 * defects)) / (2 * defects),
+		yield: (defects) => defects > 0 ? (1 - Math.exp(-2 * defects)) / (2 * defects) : 1,
 	},
 	moore: {
 		name: "Moore's Model",
