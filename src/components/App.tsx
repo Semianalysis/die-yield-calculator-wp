@@ -307,10 +307,10 @@ function App() {
 		<div className="container">
 			<div className="columns">
 				<div className="input panel">
-					<h2>Die size</h2>
+					<h2>Die Size</h2>
 					<div className="input-row--two-col">
 						<NumberInput
-							label="Width (mm)"
+							label="Die Width (mm)"
 							value={dieWidth}
 							onChange={(event) => {
 								handleDieWidthChange(event.target.value);
@@ -318,7 +318,7 @@ function App() {
 							max={maxDieWidth}
 						/>
 						<NumberInput
-							label="Height (mm)"
+							label="Die Height (mm)"
 							value={dieHeight}
 							onChange={(event) => {
 								handleDieHeightChange(event.target.value);
@@ -348,22 +348,6 @@ function App() {
 							label="Scribe Line Minimum Y (mm)"
 							value={scribeVert}
 							onChange={(event) => setScribeVert(event.target.value)}
-						/>
-					</div>
-					<div className="input-row">
-						<Checkbox
-							label="All Critical"
-							onChange={handleAllCriticalChange}
-							checked={allCritical}
-						/>
-					</div>
-					<div className="input-row">
-						<NumberInput
-							label="Critical Area (mm²)"
-							value={criticalArea}
-							isDisabled={allCritical}
-							onChange={(event) => setCriticalArea(event.target.value)}
-							max={parseFloat(criticalArea)}
 						/>
 					</div>
 					<hr />
@@ -411,14 +395,6 @@ function App() {
 					</div>
 					<div className="input-row">
 						<NumberInput
-							label="Defect Rate (#/cm²)"
-							value={defectRate}
-							min={0}
-							onChange={(event) => setDefectRate(event.target.value)}
-						/>
-					</div>
-					<div className="input-row">
-						<NumberInput
 							label="Edge Loss (mm)"
 							value={lossyEdgeWidth}
 							onChange={(event) => setLossyEdgeWidth(event.target.value)}
@@ -436,13 +412,37 @@ function App() {
 						</div>
 					)}
 					<hr />
-					<h2>Options</h2>
+					<h2>Defects</h2>
 					<div className="input-row">
 						<ModelSelector
 							selectedModel={selectedModel}
 							handleModelChange={(event) =>
 								setSelectedModel(event.target.value as keyof typeof yieldModels)
 							}
+						/>
+					</div>
+					<div className="input-row">
+						<NumberInput
+							label="Defect Rate (#/cm²)"
+							value={defectRate}
+							min={0}
+							onChange={(event) => setDefectRate(event.target.value)}
+						/>
+					</div>
+					<div className="input-row">
+						<Checkbox
+							label="All Die Area Critical"
+							onChange={handleAllCriticalChange}
+							checked={allCritical}
+						/>
+					</div>
+					<div className="input-row">
+						<NumberInput
+							label="Critical Die Area (mm²)"
+							value={criticalArea}
+							isDisabled={allCritical}
+							onChange={(event) => setCriticalArea(event.target.value)}
+							max={parseFloat(criticalArea)}
 						/>
 					</div>
 					{
