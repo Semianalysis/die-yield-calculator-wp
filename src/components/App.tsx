@@ -151,6 +151,7 @@ function App() {
 	const [selectedModel, setSelectedModel] =
 		useState<keyof typeof yieldModels>("murphy");
 	const [criticalLayers, setCriticalLayers] = useState<string>("25");
+	const [manualYield, setManualYield] = useState<string>("100");
 	const aspectRatio = useRef(parseFloat(dieWidth) / parseFloat(dieHeight));
 
 	const fieldWidthMM =  defaultFieldWidth;
@@ -169,6 +170,7 @@ function App() {
 			transHoriz: parseFloat(transHoriz),
 			transVert: parseFloat(transVert),
 			criticalLayers: parseFloat(criticalLayers),
+			manualYield: parseFloat(manualYield),
 		},
 		selectedModel,
 		substrateShape,
@@ -421,30 +423,36 @@ function App() {
 							}
 						/>
 					</div>
-					<div className="input-row">
-						<NumberInput
-							label="Defect Rate (#/cm²)"
-							value={defectRate}
-							min={0}
-							onChange={(event) => setDefectRate(event.target.value)}
-						/>
-					</div>
-					<div className="input-row">
-						<Checkbox
-							label="All Die Area Critical"
-							onChange={handleAllCriticalChange}
-							checked={allCritical}
-						/>
-					</div>
-					<div className="input-row">
-						<NumberInput
-							label="Critical Die Area (mm²)"
-							value={criticalArea}
-							isDisabled={allCritical}
-							onChange={(event) => setCriticalArea(event.target.value)}
-							max={parseFloat(criticalArea)}
-						/>
-					</div>
+					{
+						selectedModel !== 'manual' && (
+							<>
+								<div className="input-row">
+									<NumberInput
+										label="Defect Rate (#/cm²)"
+										value={defectRate}
+										min={0}
+										onChange={(event) => setDefectRate(event.target.value)}
+									/>
+								</div>
+								<div className="input-row">
+									<Checkbox
+										label="All Die Area Critical"
+										onChange={handleAllCriticalChange}
+										checked={allCritical}
+									/>
+								</div>
+								<div className="input-row">
+									<NumberInput
+										label="Critical Die Area (mm²)"
+										value={criticalArea}
+										isDisabled={allCritical}
+										onChange={(event) => setCriticalArea(event.target.value)}
+										max={parseFloat(criticalArea)}
+									/>
+								</div>
+							</>
+						)
+					}
 					{
 						selectedModel === 'bose-einstein' && (
 							<div className="input-row">
@@ -452,6 +460,19 @@ function App() {
 									label="Critical Layers"
 									value={criticalLayers}
 									onChange={(event) => setCriticalLayers(event.target.value)}
+									min={0}
+									max={100}
+								/>
+							</div>
+						)
+					}
+					{
+						selectedModel === 'manual' && (
+							<div className="input-row">
+								<NumberInput
+									label="Yield (%)"
+									value={manualYield}
+									onChange={(event) => setManualYield(event.target.value)}
 									min={0}
 									max={100}
 								/>

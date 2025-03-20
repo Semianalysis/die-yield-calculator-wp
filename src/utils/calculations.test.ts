@@ -85,14 +85,14 @@ describe("Calculations", () => {
 			"calculates a yield within the expected range for the %s model",
 			(model) => {
 				expect(
-					getFabYield(0.01, 1000, model as keyof typeof yieldModels, 1),
+					getFabYield(0.01, 1000, model as keyof typeof yieldModels, 1, 100),
 				).toBeCloseTo(0.9, 1);
 			},
 		);
 		it.each(Object.keys(yieldModels))(
 			"returns a full yield if the defect rate is 0 for the %s model",
 			(model) => {
-				expect(getFabYield(0, 1000, model as keyof typeof yieldModels, 1)).toEqual(
+				expect(getFabYield(0, 1000, model as keyof typeof yieldModels, 1, 100)).toEqual(
 					1,
 				);
 			},
@@ -289,6 +289,7 @@ describe("Calculations", () => {
 				transHoriz: 0,
 				transVert: 0,
 				criticalLayers: 50,
+				manualYield: 100,
 			};
 			const result = evaluateDiscInputs(inputVals, "s300mm", "murphy", 26, 33);
 			expect(result?.reticleUtilization).toBeCloseTo(0.895105, 6);
