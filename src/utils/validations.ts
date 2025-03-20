@@ -110,8 +110,12 @@ export const validations: { [k in keyof InputValues]: Validator } = {
 			return "Invalid vertical translation";
 		}
 	},
-	manualYield: ({manualYield}) => {
-		if (!validPositiveNumber(manualYield) || manualYield > 100 || manualYield < 0) {
+	manualYield: ({ manualYield }) => {
+		if (
+			!validPositiveNumber(manualYield) ||
+			manualYield > 100 ||
+			manualYield < 0
+		) {
 			return "Manual yield % must be a number from 0-100";
 		}
 	},
