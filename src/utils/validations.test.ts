@@ -271,4 +271,22 @@ describe("validations", () => {
 			expect(result).toBe("Invalid critical layer count");
 		});
 	});
+
+	describe("manualYield", () => {
+		it("returns 'Manual yield % must be a number from 0-100' if manualYield is NaN or not in range", () => {
+			const inputs: InputValues = {
+				manualYield: 101,
+			} as any;
+			const result = validations.manualYield(inputs, fieldSize);
+			expect(result).toBe("Manual yield % must be a number from 0-100");
+		});
+
+		it("returns undefined if manualYield is a valid number from 0-100", () => {
+			const inputs: InputValues = {
+				manualYield: 50,
+			} as any;
+			const result = validations.manualYield(inputs, fieldSize);
+			expect(result).toBeUndefined();
+		});
+	})
 });

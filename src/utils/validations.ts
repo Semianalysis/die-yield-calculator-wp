@@ -3,7 +3,7 @@ import { minDieEdge } from "../config";
 
 const validPositiveNumber = (value: number) => !isNaN(value) && value >= 0;
 
-// Validation function returns a message if the input is invalid, or null if it's valid
+// Validation function returns a message if the input is invalid, or undefined if it's valid
 type Validator = (
 	inputs: InputValues,
 	fieldSize: {
@@ -111,7 +111,7 @@ export const validations: { [k in keyof InputValues]: Validator } = {
 		}
 	},
 	manualYield: ({manualYield}) => {
-		if (!validPositiveNumber(manualYield)) {
+		if (!validPositiveNumber(manualYield) || manualYield > 100 || manualYield < 0) {
 			return "Manual yield % must be a number from 0-100";
 		}
 	},
