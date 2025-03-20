@@ -427,14 +427,6 @@ function App() {
 						selectedModel !== 'manual' && (
 							<>
 								<div className="input-row">
-									<NumberInput
-										label="Defect Rate (#/cm²)"
-										value={defectRate}
-										min={0}
-										onChange={(event) => setDefectRate(event.target.value)}
-									/>
-								</div>
-								<div className="input-row">
 									<Checkbox
 										label="All Die Area Critical"
 										onChange={handleAllCriticalChange}
@@ -448,6 +440,14 @@ function App() {
 										isDisabled={allCritical}
 										onChange={(event) => setCriticalArea(event.target.value)}
 										max={parseFloat(criticalArea)}
+									/>
+								</div>
+								<div className="input-row">
+									<NumberInput
+										label="Defect Rate (#/cm²)"
+										value={defectRate}
+										min={0}
+										onChange={(event) => setDefectRate(event.target.value)}
 									/>
 								</div>
 							</>
