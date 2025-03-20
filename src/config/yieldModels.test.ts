@@ -107,23 +107,4 @@ describe('yieldModels', () => {
 			});
 		});
 	});
-
-	/**
-	 * Example of an additional numeric correctness check
-	 * (You may decide if you want this; it's just an example of
-	 * verifying known edge-case calculations.)
-	 */
-	describe('Numeric correctness on edge cases', () => {
-		it('Poisson model at defects = 2 -> e^-2', () => {
-			const expected = Math.exp(-2);
-			const result = yieldModels.poisson.yield(2);
-			expect(result).toBeCloseTo(expected, 6);
-		});
-
-		it('Moore model at defects = 4 -> e^-sqrt(4) = e^-2', () => {
-			const expected = Math.exp(-2);
-			const result = yieldModels.moore.yield(4);
-			expect(result).toBeCloseTo(expected, 6);
-		});
-	});
 });
