@@ -139,7 +139,6 @@ describe("App", () => {
 
 	it("shows how many full and partial shots will be taken and how many die fit on a reticle", async () => {
 		render(<App />);
-		const user = userEvent.setup();
 		const totalDiesNode = await screen.findByText(/Total Dies: [0-9]+/);
 		const totalDies = parseInt(totalDiesNode.textContent?.match(/\d+/)?.[0] || "0");
 
@@ -154,4 +153,46 @@ describe("App", () => {
 		// The total number of dies should be the number of dies per shot times the number of shots
 		expect(totalDies).toEqual(diePerReticle * shotCount);
 	});
+
+	describe("defects inputs", () => {
+		const yieldModelOptions = [
+			"Poisson Model",
+			"Murphy's Model",
+			"Rectangular Model",
+			"Moore's Model",
+			"Seeds Model",
+			"Bose-Einstein Model",
+			"Manual",
+		];
+
+		it.each(yieldModelOptions)("shows the correct inputs for %s", async (model) => {
+			render(<App />);
+			const user = userEvent.setup();
+			const yieldModelSelect = await screen.findByRole("combobox", { name: "Yield Calculation Model" });
+			await user.selectOptions(yieldModelSelect, model);
+			switch (model) {
+				case "Poisson Model":
+				case "Murphy's Model":
+				case "Rectangular Model":
+				case "Moore's Model":
+				case "Seeds Model":
+					expect(screen.queryByRole("spinbutton", { name: /Defect Rate/ })).toBeInTheDocument();
+					expect(screen.queryByRole("spinbutton", { name: /Critical Die Area/ })).toBeInTheDocument();
+					expect(screen.queryByRole("spinbutton", { name: /Manual Yield/ })).not.toBeInTheDocument();
+					expect(screen.queryByRole("spinbutton", { name: /Critical Layers/ })).not.toBeInTheDocument();
+					break;
+				case "Bose-Einstein Model":
+					expect(screen.queryByRole("spinbutton", { name: /Defect Rate/ })).toBeInTheDocument();
+					expect(screen.queryByRole("spinbutton", { name: /Critical Die Area/ })).toBeInTheDocument();
+					expect(screen.queryByRole("spinbutton", { name: /Manual Yield/ })).not.toBeInTheDocument();
+					expect(screen.queryByRole("spinbutton", { name: /Critical Layers/ })).toBeInTheDocument();
+					break;
+				case "Manual":
+					expect(screen.queryByRole("spinbutton", { name: /Yield/ })).toBeInTheDocument()
+					expect(screen.queryByRole("spinbutton", { name: /Defect Rate/ })).not.toBeInTheDocument();
+					expect(screen.queryByRole("spinbutton", { name: /Critical Die Area/ })).not.toBeInTheDocument();
+					expect(screen.queryByRole("spinbutton", { name: /Critical Layers/ })).not.toBeInTheDocument();
+			}
+		});
+	})
 });

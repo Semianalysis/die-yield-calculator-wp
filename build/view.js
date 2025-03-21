@@ -615,6 +615,7 @@ function App() {
   const [waferSize, setWaferSize] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("s300mm");
   const [selectedModel, setSelectedModel] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("murphy");
   const [criticalLayers, setCriticalLayers] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("25");
+  const [manualYield, setManualYield] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("100");
   const aspectRatio = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(parseFloat(dieWidth) / parseFloat(dieHeight));
   const fieldWidthMM = _config__WEBPACK_IMPORTED_MODULE_4__.defaultFieldWidth;
   const fieldHeightMM = halfField ? _config__WEBPACK_IMPORTED_MODULE_4__.defaultFieldHeight / 2 : _config__WEBPACK_IMPORTED_MODULE_4__.defaultFieldHeight;
@@ -632,7 +633,8 @@ function App() {
     scribeVert: parseFloat(scribeVert),
     transHoriz: parseFloat(transHoriz),
     transVert: parseFloat(transVert),
-    criticalLayers: parseFloat(criticalLayers)
+    criticalLayers: parseFloat(criticalLayers),
+    manualYield: parseFloat(manualYield)
   }, selectedModel, substrateShape, panelSize, waferSize, fieldWidthMM, fieldHeightMM);
   const easterEggEnabled = (0,_hooks_useEasterEgg__WEBPACK_IMPORTED_MODULE_8__.useEasterEgg)();
   const outputRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
@@ -721,17 +723,17 @@ function App() {
     className: "columns"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "input panel"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", null, "Die size"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", null, "Die Size"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "input-row--two-col"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
-    label: "Width (mm)",
+    label: "Die Width (mm)",
     value: dieWidth,
     onChange: event => {
       handleDieWidthChange(event.target.value);
     },
     max: maxDieWidth
   }), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
-    label: "Height (mm)",
+    label: "Die Height (mm)",
     value: dieHeight,
     onChange: event => {
       handleDieHeightChange(event.target.value);
@@ -757,20 +759,6 @@ function App() {
     label: "Scribe Line Minimum Y (mm)",
     value: scribeVert,
     onChange: event => setScribeVert(event.target.value)
-  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    className: "input-row"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Checkbox_Checkbox__WEBPACK_IMPORTED_MODULE_1__.Checkbox, {
-    label: "All Critical",
-    onChange: handleAllCriticalChange,
-    checked: allCritical
-  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    className: "input-row"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
-    label: "Critical Area (mm\u00B2)",
-    value: criticalArea,
-    isDisabled: allCritical,
-    onChange: event => setCriticalArea(event.target.value),
-    max: parseFloat(criticalArea)
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("hr", null), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", null, "Reticle"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "input-row"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Checkbox_Checkbox__WEBPACK_IMPORTED_MODULE_1__.Checkbox, {
@@ -803,13 +791,6 @@ function App() {
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "input-row"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
-    label: "Defect Rate (#/cm\u00B2)",
-    value: defectRate,
-    min: 0,
-    onChange: event => setDefectRate(event.target.value)
-  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    className: "input-row"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
     label: "Edge Loss (mm)",
     value: lossyEdgeWidth,
     onChange: event => setLossyEdgeWidth(event.target.value),
@@ -821,17 +802,48 @@ function App() {
     value: notchKeepOutHeight,
     onChange: event => setNotchKeepOutHeight(event.target.value),
     max: Math.min(waferWidth, waferHeight) / 2
-  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("hr", null), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", null, "Options"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("hr", null), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", null, "Defects"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "input-row"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ModelSelector, {
     selectedModel: selectedModel,
     handleModelChange: event => setSelectedModel(event.target.value)
-  })), selectedModel === 'bose-einstein' && react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+  })), selectedModel !== 'manual' && react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "input-row"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Checkbox_Checkbox__WEBPACK_IMPORTED_MODULE_1__.Checkbox, {
+    label: "All Die Area Critical",
+    onChange: handleAllCriticalChange,
+    checked: allCritical
+  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "input-row"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
+    label: "Critical Die Area (mm\u00B2)",
+    value: criticalArea,
+    isDisabled: allCritical,
+    onChange: event => setCriticalArea(event.target.value),
+    max: parseFloat(criticalArea)
+  })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "input-row"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
+    label: "Defect Rate (#/cm\u00B2)",
+    value: defectRate,
+    min: 0,
+    onChange: event => setDefectRate(event.target.value)
+  }))), selectedModel === 'bose-einstein' && react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "input-row"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
     label: "Critical Layers",
     value: criticalLayers,
-    onChange: event => setCriticalLayers(event.target.value)
+    onChange: event => setCriticalLayers(event.target.value),
+    min: 0,
+    max: 100
+  })), selectedModel === 'manual' && react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "input-row"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
+    label: "Yield (%)",
+    value: manualYield,
+    onChange: event => setManualYield(event.target.value),
+    min: 0,
+    max: 100
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_JumpToResults_JumpToResults__WEBPACK_IMPORTED_MODULE_9__.JumpToResults, {
     outputRef: outputRef
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
@@ -1609,11 +1621,11 @@ const yieldModels = {
   },
   murphy: {
     name: "Murphy's Model",
-    yield: defects => Math.pow((1 - Math.exp(-defects)) / defects, 2)
+    yield: defects => defects > 0 ? Math.pow((1 - Math.exp(-defects)) / defects, 2) : 1
   },
   rect: {
     name: "Rectangular Model",
-    yield: defects => (1 - Math.exp(-2 * defects)) / (2 * defects)
+    yield: defects => defects > 0 ? (1 - Math.exp(-2 * defects)) / (2 * defects) : 1
   },
   moore: {
     name: "Moore's Model",
@@ -1627,6 +1639,10 @@ const yieldModels = {
     name: "Bose-Einstein Model",
     // Simplistic model that assumes the same number of defects in each layer
     yield: (defects, criticalLayers) => Math.pow(1 / (1 + defects), criticalLayers)
+  },
+  manual: {
+    name: "Manual",
+    yield: manualYield => manualYield / 100
   }
 };
 
@@ -1793,15 +1809,19 @@ __webpack_require__.r(__webpack_exports__);
  * @param criticalArea die area
  * @param model model to calculate the yield
  * @param criticalLayers number of critical layers for Bose-Einstein model
+ * @param manualYield manual yield percentage
  * @returns yield percentage
  */
-function getFabYield(defectRate, criticalArea, model, criticalLayers) {
+function getFabYield(defectRate, criticalArea, model, criticalLayers, manualYield) {
   if (!defectRate) {
     return 1;
   }
   const defects = criticalArea * defectRate / 100;
   if (model === 'bose-einstein') {
     return _config__WEBPACK_IMPORTED_MODULE_0__.yieldModels[model].yield(defects, criticalLayers);
+  }
+  if (model === 'manual') {
+    return _config__WEBPACK_IMPORTED_MODULE_0__.yieldModels[model].yield(manualYield);
   }
   return _config__WEBPACK_IMPORTED_MODULE_0__.yieldModels[model].yield(defects);
 }
@@ -1993,10 +2013,11 @@ function evaluatePanelInputs(inputVals, selectedSize, selectedModel, fieldWidth,
     scribeHoriz,
     scribeVert,
     lossyEdgeWidth,
-    criticalLayers
+    criticalLayers,
+    manualYield
   } = inputVals;
   let dies = [];
-  const fabYield = getFabYield(defectRate, criticalArea, selectedModel, criticalLayers);
+  const fabYield = getFabYield(defectRate, criticalArea, selectedModel, criticalLayers, manualYield);
   const {
     width,
     height
@@ -2054,9 +2075,10 @@ function evaluateDiscInputs(inputVals, selectedSize, selectedModel, fieldWidth, 
     notchKeepOutHeight,
     scribeHoriz,
     scribeVert,
-    criticalLayers
+    criticalLayers,
+    manualYield
   } = inputVals;
-  const fabYield = getFabYield(defectRate, criticalArea, selectedModel, criticalLayers);
+  const fabYield = getFabYield(defectRate, criticalArea, selectedModel, criticalLayers, manualYield);
   const {
     width
   } = _config__WEBPACK_IMPORTED_MODULE_0__.waferSizes[selectedSize];
@@ -2499,6 +2521,13 @@ const validations = {
   }) => {
     if (isNaN(transVert)) {
       return "Invalid vertical translation";
+    }
+  },
+  manualYield: ({
+    manualYield
+  }) => {
+    if (!validPositiveNumber(manualYield) || manualYield > 100 || manualYield < 0) {
+      return "Manual yield % must be a number from 0-100";
     }
   }
 };

@@ -11,6 +11,11 @@ type BoseEinsteinModel = {
 	yield: (defects: number, criticalLayers: number) => number;
 };
 
+type ManualYieldModel = {
+	name: string;
+	yield: (manualYield: number) => number;
+};
+
 export type YieldModels = {
 	poisson: StandardYieldModel;
 	murphy: StandardYieldModel;
@@ -18,6 +23,7 @@ export type YieldModels = {
 	moore: StandardYieldModel;
 	seeds: StandardYieldModel;
 	"bose-einstein": BoseEinsteinModel;
+	manual: ManualYieldModel;
 };
 
 // Assign the strongly typed models
@@ -28,11 +34,11 @@ export const yieldModels: YieldModels = {
 	},
 	murphy: {
 		name: "Murphy's Model",
-		yield: (defects) => Math.pow((1 - Math.exp(-defects)) / defects, 2),
+		yield: (defects) => defects > 0 ? Math.pow((1 - Math.exp(-defects)) / defects, 2) : 1,
 	},
 	rect: {
 		name: "Rectangular Model",
-		yield: (defects) => (1 - Math.exp(-2 * defects)) / (2 * defects),
+		yield: (defects) => defects > 0 ? (1 - Math.exp(-2 * defects)) / (2 * defects) : 1,
 	},
 	moore: {
 		name: "Moore's Model",
@@ -47,5 +53,9 @@ export const yieldModels: YieldModels = {
 		// Simplistic model that assumes the same number of defects in each layer
 		yield: (defects, criticalLayers) =>
 			Math.pow(1 / (1 + defects), criticalLayers),
+	},
+	manual: {
+		name: "Manual",
+		yield: (manualYield) => manualYield / 100,
 	},
 };
