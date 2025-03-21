@@ -1,1 +1,466 @@
-.wp-block-create-block-die-yield-calculator{color:#eaebec;font-family:Inter,sans-serif;font-size:14px}.wp-block-create-block-die-yield-calculator,.wp-block-create-block-die-yield-calculator *{box-sizing:border-box}.wp-block-create-block-die-yield-calculator h2{color:inherit;font-size:1.333333em;font-weight:800;line-height:1.1;margin:0 0 1em}.wp-block-create-block-die-yield-calculator hr{border:none;border-bottom:1px solid #656b72;height:0;margin:2em 0}.wp-block-create-block-die-yield-calculator label,.wp-block-create-block-die-yield-calculator legend{cursor:pointer;display:block}.wp-block-create-block-die-yield-calculator label.disabled,.wp-block-create-block-die-yield-calculator legend.disabled{color:#b4b9bc}.wp-block-create-block-die-yield-calculator input[type=checkbox],.wp-block-create-block-die-yield-calculator input[type=number],.wp-block-create-block-die-yield-calculator input[type=radio],.wp-block-create-block-die-yield-calculator input[type=text],.wp-block-create-block-die-yield-calculator select,.wp-block-create-block-die-yield-calculator textarea{background-color:transparent;border:1px solid #656b72;color:inherit;transition:border-color .2s ease-in-out}.wp-block-create-block-die-yield-calculator input[type=checkbox]:hover,.wp-block-create-block-die-yield-calculator input[type=number]:hover,.wp-block-create-block-die-yield-calculator input[type=radio]:hover,.wp-block-create-block-die-yield-calculator input[type=text]:hover,.wp-block-create-block-die-yield-calculator select:hover,.wp-block-create-block-die-yield-calculator textarea:hover{border-color:#eaebec}.wp-block-create-block-die-yield-calculator input[type=checkbox]:focus,.wp-block-create-block-die-yield-calculator input[type=number]:focus,.wp-block-create-block-die-yield-calculator input[type=radio]:focus,.wp-block-create-block-die-yield-calculator input[type=text]:focus,.wp-block-create-block-die-yield-calculator select:focus,.wp-block-create-block-die-yield-calculator textarea:focus{border-color:#f7b041;outline:none}.wp-block-create-block-die-yield-calculator input[type=checkbox]:disabled,.wp-block-create-block-die-yield-calculator input[type=number]:disabled,.wp-block-create-block-die-yield-calculator input[type=radio]:disabled,.wp-block-create-block-die-yield-calculator input[type=text]:disabled,.wp-block-create-block-die-yield-calculator select:disabled,.wp-block-create-block-die-yield-calculator textarea:disabled{border-color:#3e3e41;color:#b4b9bc;cursor:not-allowed}.wp-block-create-block-die-yield-calculator input[type=number],.wp-block-create-block-die-yield-calculator input[type=text],.wp-block-create-block-die-yield-calculator select,.wp-block-create-block-die-yield-calculator textarea{border-radius:10px;margin:0;padding:15px;width:100%}.wp-block-create-block-die-yield-calculator select{-webkit-appearance:none;-moz-appearance:none;appearance:none;background-image:url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbDpzcGFjZT0icHJlc2VydmUiIHdpZHRoPSI4MDAiIGhlaWdodD0iODAwIiB2aWV3Qm94PSIwIDAgMzg2LjI1NyAzODYuMjU3Ij48cGF0aCBmaWxsPSIjRUFFQkVDIiBkPSJtMCA5Ni44NzkgMTkzLjEyOSAxOTIuNSAxOTMuMTI4LTE5Mi41eiIvPjwvc3ZnPg==);background-position:right 15px center;background-repeat:no-repeat;background-size:.75em;border-radius:14px;cursor:pointer}.wp-block-create-block-die-yield-calculator select option{background-color:initial;color:initial}.wp-block-create-block-die-yield-calculator input[type=checkbox],.wp-block-create-block-die-yield-calculator input[type=radio]{-moz-appearance:none;appearance:none;-webkit-appearance:none;cursor:pointer;display:inline-block;height:1.5em;margin:0 .5em 0 0;outline:none;position:relative;width:1.5em}.wp-block-create-block-die-yield-calculator input[type=checkbox]:before,.wp-block-create-block-die-yield-calculator input[type=radio]:before{content:"";opacity:0;transition:opacity .1s ease-out}.wp-block-create-block-die-yield-calculator input[type=checkbox]:checked:before,.wp-block-create-block-die-yield-calculator input[type=radio]:checked:before{opacity:1}.wp-block-create-block-die-yield-calculator input[type=checkbox]{border-radius:4px}.wp-block-create-block-die-yield-calculator input[type=checkbox]:before{background-image:url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCI+PHBhdGggZmlsbD0iI0Y3QjA0MSIgZD0iTTIwLjI4NSAyIDkgMTMuNTY3IDMuNzE0IDguNTU2IDAgMTIuMjcyIDkgMjEgMjQgNS43MTV6Ii8+PC9zdmc+);background-position:50%;background-repeat:no-repeat;background-size:75%;height:100%;left:0;position:absolute;top:0;width:100%}.wp-block-create-block-die-yield-calculator input[type=radio]{border-radius:100%}.wp-block-create-block-die-yield-calculator input[type=radio]:before{background-color:#f7b041;border-radius:50%;height:50%;left:50%;position:absolute;top:50%;transform:translate(-50%,-50%);width:50%}.wp-block-create-block-die-yield-calculator .input-row,.wp-block-create-block-die-yield-calculator .input-row--two-col{margin-bottom:1rem}.wp-block-create-block-die-yield-calculator .input-row--two-col,.wp-block-create-block-die-yield-calculator .input-row--two-col--two-col{align-items:center;-moz-column-gap:1em;column-gap:1em;display:grid;grid-template-columns:1fr 1fr}.wp-block-create-block-die-yield-calculator .checkbox,.wp-block-create-block-die-yield-calculator .checkbox--disabled{margin-bottom:1em}.wp-block-create-block-die-yield-calculator .checkbox label,.wp-block-create-block-die-yield-calculator .checkbox--disabled label{align-items:center;display:flex}.wp-block-create-block-die-yield-calculator .checkbox input[type=checkbox],.wp-block-create-block-die-yield-calculator .checkbox--disabled input[type=checkbox]{margin-right:1em}.wp-block-create-block-die-yield-calculator .checkbox--disabled label{color:#b4b9bc;cursor:default}.wp-block-create-block-die-yield-calculator fieldset{border:0;padding:0}.wp-block-create-block-die-yield-calculator .radio-group{align-items:center;display:flex;margin:1em 0}.wp-block-create-block-die-yield-calculator .radio-item{align-items:center;display:flex;line-height:1;margin:0 1em 0 0}.wp-block-create-block-die-yield-calculator .logo{display:none}@media(min-width:768px){.wp-block-create-block-die-yield-calculator .logo{display:block;margin:0 0 0 auto}}.wp-block-create-block-die-yield-calculator .columns{display:grid;grid-template-columns:1fr;row-gap:4em}@media(min-width:768px){.wp-block-create-block-die-yield-calculator .columns{-moz-column-gap:2em;column-gap:2em;grid-template-columns:9fr 11fr}}.wp-block-create-block-die-yield-calculator .panel{margin-bottom:2em;text-align:left}@media(min-width:768px){.wp-block-create-block-die-yield-calculator .panel{background-color:#141416;border-radius:10px;padding:32px}}.wp-block-create-block-die-yield-calculator .output{display:flex;flex-direction:column;justify-content:space-between;text-align:center}.wp-block-create-block-die-yield-calculator .jump-to-results,.wp-block-create-block-die-yield-calculator .jump-to-results--hidden{background-color:#f7b041;border:0;border-radius:100px;bottom:2em;box-shadow:0 .5em 1em rgba(0,0,0,.75);color:#000;cursor:pointer;font-size:16px;left:50%;padding:10px 18px;position:fixed;transform:translateX(-50%);transition:opacity .3s ease}@media(min-width:768px){.wp-block-create-block-die-yield-calculator .jump-to-results,.wp-block-create-block-die-yield-calculator .jump-to-results--hidden{display:none}}.wp-block-create-block-die-yield-calculator .jump-to-results--hidden{opacity:0;pointer-events:none}.wp-block-create-block-die-yield-calculator .result-stats{display:grid;grid-template-columns:1fr 1fr}.wp-block-create-block-die-yield-calculator .result-stats__list{list-style:none;margin:0;padding:0}.wp-block-create-block-die-yield-calculator .result-stats__result{align-items:center;display:flex;margin-bottom:.5em}.wp-block-create-block-die-yield-calculator .result-stats__result:before{line-height:1rem;margin-right:.5rem;text-align:center;width:1rem}.wp-block-create-block-die-yield-calculator .result-stats__result--defective-dies:before,.wp-block-create-block-die-yield-calculator .result-stats__result--good-dies:before,.wp-block-create-block-die-yield-calculator .result-stats__result--lost-dies:before,.wp-block-create-block-die-yield-calculator .result-stats__result--partial-dies:before,.wp-block-create-block-die-yield-calculator .result-stats__result--total-dies:before{content:"■"}.wp-block-create-block-die-yield-calculator .result-stats__result--good-dies:before{color:#2ed92e}.wp-block-create-block-die-yield-calculator .result-stats__result--defective-dies:before{color:#d53f31}.wp-block-create-block-die-yield-calculator .result-stats__result--partial-dies:before{color:#f9f91b}.wp-block-create-block-die-yield-calculator .result-stats__result--lost-dies:before{color:#978a81}.wp-block-create-block-die-yield-calculator .result-stats__result--die-per-reticle:before{content:"▣"}.wp-block-create-block-die-yield-calculator .result-stats__result--yield:before{content:"◐";font-size:1.125em}.wp-block-create-block-die-yield-calculator .result-stats__result--panel-width:before{content:"↔"}.wp-block-create-block-die-yield-calculator .result-stats__result--panel-height:before{content:"↕"}.wp-block-create-block-die-yield-calculator .result-stats__result--panel-diameter:before{content:"⌀";font-size:1.5em}.wp-block-create-block-die-yield-calculator .result-stats__result--wafer-area:before{content:"◌"}.wp-block-create-block-die-yield-calculator .result-stats__result--die-area:before{content:"⬚"}.wp-block-create-block-die-yield-calculator .result-stats__result--shot-count:before{content:"☼"}.wp-block-create-block-die-yield-calculator .result-stats__result--reticle-utilization:before{content:"◰";font-size:1.33333em}.wp-block-create-block-die-yield-calculator .result-stats__result--waste-area:before{content:"⊗";font-size:1.33333em}.wp-block-create-block-die-yield-calculator .reticle-canvas,.wp-block-create-block-die-yield-calculator .reticle-canvas--background{align-items:center;aspect-ratio:1/1;display:flex;justify-content:center;margin:auto auto 2em;max-width:457.2px}.wp-block-create-block-die-yield-calculator .reticle-canvas--background{background:url(data:image/svg+xml;base64,PHN2ZwoJdmVyc2lvbj0iMS4xIgoJYmFzZVByb2ZpbGU9ImZ1bGwiCgl3aWR0aD0iNjAwIgoJaGVpZ2h0PSI2MDAiCgl2aWV3Qm94PSIwIDAgNjAwIDYwMCIKCXhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIKPgoJPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjYwMCIgaGVpZ2h0PSI2MDAiIGZpbGw9ImJsYWNrIiAvPgoJPGcgc3Ryb2tlPSIjY2NjIiBzdHJva2Utd2lkdGg9IjIiPgoJCTxsaW5lIHgxPSIxMCIgeTE9IjEwIiB4Mj0iMzAiIHkyPSIxMCIgLz4KCQk8bGluZSB4MT0iMTAiIHkxPSIxMCIgeDI9IjEwIiB5Mj0iMzAiIC8+CgkJPGxpbmUgeDE9IjU5MCIgeTE9IjEwIiB4Mj0iNTcwIiB5Mj0iMTAiIC8+CgkJPGxpbmUgeDE9IjU5MCIgeTE9IjEwIiB4Mj0iNTkwIiB5Mj0iMzAiIC8+CgkJPGxpbmUgeDE9IjEwIiAgeTE9IjU5MCIgeDI9IjMwIiAgeTI9IjU5MCIgLz4KCQk8bGluZSB4MT0iMTAiICB5MT0iNTkwIiB4Mj0iMTAiICB5Mj0iNTcwIiAvPgoJCTxsaW5lIHgxPSI1OTAiIHkxPSI1OTAiIHgyPSI1NzAiIHkyPSI1OTAiIC8+CgkJPGxpbmUgeDE9IjU5MCIgeTE9IjU5MCIgeDI9IjU5MCIgeTI9IjU3MCIgLz4KCTwvZz4KCTxyZWN0IHg9IjEwMCIgeT0iMTAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iI2NjYyIgLz4KCTxyZWN0IHg9IjQ5MCIgeT0iMTAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iI2NjYyIgLz4KCTxyZWN0IHg9IjEwMCIgeT0iNTgwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiNjY2MiIC8+Cgk8cmVjdCB4PSI0OTAiIHk9IjU4MCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjY2NjIiAvPgo8L3N2Zz4K) no-repeat;background-size:contain;border-color:#666c72 #46494c #2d2f32;border-radius:8px;border-style:solid;border-width:1px;overflow:hidden}.wp-block-create-block-die-yield-calculator .reticle-canvas__inner{background-image:linear-gradient(90deg,#b88ecb,#8eb4cd 12.5%,#9ad9cc 40%,#cc9e52 45%,#e15a4d 50%,#e1b268 56%,#8fd9ca 64%,#8eb4cd 82.5%,#b88ecb);background-position:100%;background-size:440%;background-size:300%;height:86.6141732283%;opacity:.75;outline:1px solid blue;width:68.2414698163%}.wp-block-create-block-die-yield-calculator .wafer-canvas{background-color:#b88ecb;box-shadow:.25em .5em 1.5em #000;display:inline-block;line-height:0;margin-bottom:2em;max-width:100%;touch-action:none;transform-style:preserve-3d}.wp-block-create-block-die-yield-calculator .wafer-canvas .wafer-canvas__watermark{background-image:url(images/semianalysis-logo-mark-only.7da88c9a.png);background-position:50% 50%;background-repeat:no-repeat;background-size:60%;bottom:0;left:0;opacity:.075;position:absolute;right:0;top:0}.wp-block-create-block-die-yield-calculator .wafer-canvas .wafer-canvas__mirror-background{background-image:linear-gradient(90deg,#b88ecb,#8eb4cd 12.5%,#9ad9cc 40%,#cc9e52 45%,#e15a4d 50%,#e1b268 56%,#8fd9ca 64%,#8eb4cd 82.5%,#b88ecb);background-size:440%;border-bottom:1px solid rgba(0,0,0,.5);border-top:1px solid hsla(0,0%,100%,.5);bottom:0;left:0;position:absolute;right:0;top:0}.wp-block-create-block-die-yield-calculator .wafer-canvas.wafer-canvas--disc,.wp-block-create-block-die-yield-calculator .wafer-canvas.wafer-canvas--disc .wafer-canvas__mirror-background{clip-path:ellipse(50% 50% at 50% 50%);overflow:hidden;transform:rotate(45deg)}.wp-block-create-block-die-yield-calculator .wafer-canvas.wafer-canvas--disc:after{background-color:#141416;content:"";display:block;height:3px;left:50%;position:absolute;top:100%;transform:translate(-50%,-50%) rotate(45deg);width:3px}.wp-block-create-block-die-yield-calculator .wafer-canvas .wafer-canvas__die-decorative{max-width:100%;position:relative}.wp-block-create-block-die-yield-calculator .wafer-canvas .wafer-canvas__die-map,.wp-block-create-block-die-yield-calculator .wafer-canvas .wafer-canvas__edge,.wp-block-create-block-die-yield-calculator .wafer-canvas .wafer-canvas__shot-map{height:100%;left:0;position:absolute;top:0;transition:transform .3s ease-out,opacity .3s ease-out;width:100%}.wp-block-create-block-die-yield-calculator .wafer-canvas:hover{box-shadow:.125em .25em 4em rgba(0,0,0,.75)}.wp-block-create-block-die-yield-calculator .wafer-canvas:hover .wafer-canvas__die-map,.wp-block-create-block-die-yield-calculator .wafer-canvas:hover .wafer-canvas__edge,.wp-block-create-block-die-yield-calculator .wafer-canvas:hover .wafer-canvas__shot-map{opacity:0}.wp-block-create-block-die-yield-calculator .wafer-canvas .wafer-canvas__message,.wp-block-create-block-die-yield-calculator .wafer-canvas .wafer-canvas__message--error{color:rgba(0,0,0,.75);font-size:1.2em;left:0;line-height:1.5;padding:0 10%;position:absolute;right:0;text-align:center;text-shadow:0 1px hsla(0,0%,100%,.18);top:50%;transform:translateY(-50%)}.wp-block-create-block-die-yield-calculator .wafer-canvas .wafer-canvas__message--error{text-decoration:underline;text-decoration-color:#d53f31;text-decoration-thickness:1px;text-underline-offset:.1em}.wp-block-create-block-die-yield-calculator .tsmc-logo{border-radius:100%;margin-bottom:2em;overflow:hidden;padding-bottom:100%;position:relative}.wp-block-create-block-die-yield-calculator .tsmc-logo .glare-wrapper{height:95.6%!important}.wp-block-create-block-die-yield-calculator .tsmc-logo svg{height:auto;left:0;position:absolute;top:0;width:100%}
+/*!***************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[4].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[4].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[4].use[3]!./src/assets/scss/style.scss ***!
+  \***************************************************************************************************************************************************************************************************************************************************/
+@charset "UTF-8";
+.wp-block-create-block-die-yield-calculator {
+  color: rgb(234, 235, 236);
+  font-family: Inter, sans-serif;
+  font-size: 14px;
+}
+.wp-block-create-block-die-yield-calculator, .wp-block-create-block-die-yield-calculator * {
+  box-sizing: border-box;
+}
+.wp-block-create-block-die-yield-calculator h2 {
+  font-weight: 800;
+  line-height: 1.1;
+  font-size: 1.333333em;
+  margin: 0 0 1em;
+  color: inherit;
+}
+.wp-block-create-block-die-yield-calculator hr {
+  height: 0;
+  border: none;
+  border-bottom: 1px solid #656b72;
+  margin: 2em 0;
+}
+.wp-block-create-block-die-yield-calculator label,
+.wp-block-create-block-die-yield-calculator legend {
+  display: block;
+  cursor: pointer;
+}
+.wp-block-create-block-die-yield-calculator label.disabled,
+.wp-block-create-block-die-yield-calculator legend.disabled {
+  color: #B4B9BC;
+}
+
+.wp-block-create-block-die-yield-calculator input[type=text],
+.wp-block-create-block-die-yield-calculator input[type=number],
+.wp-block-create-block-die-yield-calculator select,
+.wp-block-create-block-die-yield-calculator textarea,
+.wp-block-create-block-die-yield-calculator input[type=checkbox],
+.wp-block-create-block-die-yield-calculator input[type=radio] {
+  background-color: transparent;
+  border: 1px solid #656b72;
+  color: inherit;
+  transition: border-color 0.2s ease-in-out;
+}
+.wp-block-create-block-die-yield-calculator input[type=text]:hover,
+.wp-block-create-block-die-yield-calculator input[type=number]:hover,
+.wp-block-create-block-die-yield-calculator select:hover,
+.wp-block-create-block-die-yield-calculator textarea:hover,
+.wp-block-create-block-die-yield-calculator input[type=checkbox]:hover,
+.wp-block-create-block-die-yield-calculator input[type=radio]:hover {
+  border-color: #EAEBEC;
+}
+.wp-block-create-block-die-yield-calculator input[type=text]:focus,
+.wp-block-create-block-die-yield-calculator input[type=number]:focus,
+.wp-block-create-block-die-yield-calculator select:focus,
+.wp-block-create-block-die-yield-calculator textarea:focus,
+.wp-block-create-block-die-yield-calculator input[type=checkbox]:focus,
+.wp-block-create-block-die-yield-calculator input[type=radio]:focus {
+  border-color: #F7B041;
+  outline: none;
+}
+.wp-block-create-block-die-yield-calculator input[type=text]:disabled,
+.wp-block-create-block-die-yield-calculator input[type=number]:disabled,
+.wp-block-create-block-die-yield-calculator select:disabled,
+.wp-block-create-block-die-yield-calculator textarea:disabled,
+.wp-block-create-block-die-yield-calculator input[type=checkbox]:disabled,
+.wp-block-create-block-die-yield-calculator input[type=radio]:disabled {
+  cursor: not-allowed;
+  border-color: #3e3e41;
+  color: #B4B9BC;
+}
+.wp-block-create-block-die-yield-calculator input[type=text],
+.wp-block-create-block-die-yield-calculator input[type=number],
+.wp-block-create-block-die-yield-calculator select,
+.wp-block-create-block-die-yield-calculator textarea {
+  margin: 0;
+  width: 100%;
+  padding: 15px;
+  border-radius: 10px;
+  font-size: inherit;
+}
+.wp-block-create-block-die-yield-calculator select {
+  border-radius: 14px;
+  cursor: pointer;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIFVwbG9hZGVkIHRvOiBTVkcgUmVwbywgd3d3LnN2Z3JlcG8uY29tLCBHZW5lcmF0b3I6IFNWRyBSZXBvIE1peGVyIFRvb2xzIC0tPgo8c3ZnIGZpbGw9IiMwMDAwMDAiIGhlaWdodD0iODAwcHgiIHdpZHRoPSI4MDBweCIgdmVyc2lvbj0iMS4xIiBpZD0iTGF5ZXJfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgCgkgdmlld0JveD0iMCAwIDM4Ni4yNTcgMzg2LjI1NyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+Cjxwb2x5Z29uIHBvaW50cz0iMCw5Ni44NzkgMTkzLjEyOSwyODkuMzc5IDM4Ni4yNTcsOTYuODc5ICIgZmlsbD0iI0VBRUJFQyIvPgo8L3N2Zz4=);
+  background-position: right 15px center;
+  background-repeat: no-repeat;
+  background-size: 0.75em;
+}
+.wp-block-create-block-die-yield-calculator select option {
+  background-color: initial;
+  color: initial;
+}
+.wp-block-create-block-die-yield-calculator input[type=checkbox],
+.wp-block-create-block-die-yield-calculator input[type=radio] {
+  cursor: pointer;
+  margin: 0 0.5em 0 0;
+  -moz-appearance: none;
+       appearance: none;
+  -webkit-appearance: none;
+  width: 1.5em;
+  height: 1.5em;
+  outline: none;
+  display: inline-block;
+  position: relative;
+}
+.wp-block-create-block-die-yield-calculator input[type=checkbox]::before,
+.wp-block-create-block-die-yield-calculator input[type=radio]::before {
+  content: "";
+  opacity: 0;
+  transition: opacity ease-out 0.1s;
+}
+.wp-block-create-block-die-yield-calculator input[type=checkbox]:checked::before,
+.wp-block-create-block-die-yield-calculator input[type=radio]:checked::before {
+  opacity: 1;
+}
+.wp-block-create-block-die-yield-calculator input[type=checkbox] {
+  border-radius: 4px;
+}
+.wp-block-create-block-die-yield-calculator input[type=checkbox]::before {
+  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij4KICA8cGF0aCBkPSJNMjAuMjg1IDJsLTExLjI4NSAxMS41NjctNS4yODYtNS4wMTEtMy43MTQgMy43MTYgOSA4LjcyOCAxNS0xNS4yODV6IiBmaWxsPSIjRjdCMDQxIiAvPgo8L3N2Zz4=);
+  background-size: 75%;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+.wp-block-create-block-die-yield-calculator input[type=radio] {
+  border-radius: 100%;
+}
+.wp-block-create-block-die-yield-calculator input[type=radio]::before {
+  width: 50%;
+  height: 50%;
+  background-color: #F7B041;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.wp-block-create-block-die-yield-calculator .input-row,
+.wp-block-create-block-die-yield-calculator .input-row--two-col {
+  margin-bottom: 1rem;
+}
+.wp-block-create-block-die-yield-calculator .input-row--two-col,
+.wp-block-create-block-die-yield-calculator .input-row--two-col--two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  -moz-column-gap: 1em;
+       column-gap: 1em;
+  align-items: center;
+}
+.wp-block-create-block-die-yield-calculator .checkbox, .wp-block-create-block-die-yield-calculator .checkbox--disabled {
+  margin-bottom: 1em;
+}
+.wp-block-create-block-die-yield-calculator .checkbox label, .wp-block-create-block-die-yield-calculator .checkbox--disabled label {
+  display: flex;
+  align-items: center;
+}
+.wp-block-create-block-die-yield-calculator .checkbox input[type=checkbox], .wp-block-create-block-die-yield-calculator .checkbox--disabled input[type=checkbox] {
+  margin-right: 1em;
+}
+.wp-block-create-block-die-yield-calculator .checkbox--disabled label {
+  color: #B4B9BC;
+  cursor: default;
+}
+.wp-block-create-block-die-yield-calculator fieldset {
+  padding: 0;
+  border: 0;
+}
+.wp-block-create-block-die-yield-calculator .radio-group {
+  margin: 1em 0;
+  display: flex;
+  align-items: center;
+}
+.wp-block-create-block-die-yield-calculator .radio-item {
+  display: flex;
+  align-items: center;
+  line-height: 1;
+  margin: 0 1em 0 0;
+}
+
+.wp-block-create-block-die-yield-calculator .logo {
+  display: none;
+}
+@media (min-width: 768px) {
+  .wp-block-create-block-die-yield-calculator .logo {
+    display: block;
+    margin: 0 0 0 auto;
+  }
+}
+.wp-block-create-block-die-yield-calculator .columns {
+  display: grid;
+  grid-template-columns: 1fr;
+  row-gap: 4em;
+}
+@media (min-width: 768px) {
+  .wp-block-create-block-die-yield-calculator .columns {
+    grid-template-columns: 9fr 11fr;
+    -moz-column-gap: 2em;
+         column-gap: 2em;
+  }
+}
+.wp-block-create-block-die-yield-calculator .panel {
+  text-align: left;
+  margin-bottom: 2em;
+}
+@media (min-width: 768px) {
+  .wp-block-create-block-die-yield-calculator .panel {
+    border-radius: 10px;
+    padding: 32px;
+    background-color: #141416;
+  }
+}
+.wp-block-create-block-die-yield-calculator .output {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: center;
+}
+
+.wp-block-create-block-die-yield-calculator .jump-to-results, .wp-block-create-block-die-yield-calculator .jump-to-results--hidden {
+  position: fixed;
+  bottom: 2em;
+  left: 50%;
+  padding: 10px 18px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: #F7B041;
+  color: black;
+  border: none;
+  border-radius: 100px;
+  transform: translateX(-50%);
+  transition: opacity 0.3s ease;
+  border: 0;
+  box-shadow: 0 0.5em 1em rgba(0, 0, 0, 0.75);
+}
+@media (min-width: 768px) {
+  .wp-block-create-block-die-yield-calculator .jump-to-results, .wp-block-create-block-die-yield-calculator .jump-to-results--hidden {
+    display: none;
+  }
+}
+.wp-block-create-block-die-yield-calculator .jump-to-results--hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.wp-block-create-block-die-yield-calculator .result-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.wp-block-create-block-die-yield-calculator .result-stats__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.wp-block-create-block-die-yield-calculator .result-stats__result {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5em;
+}
+.wp-block-create-block-die-yield-calculator .result-stats__result::before {
+  width: 1rem;
+  margin-right: 0.5rem;
+  line-height: 1rem;
+  text-align: center;
+}
+.wp-block-create-block-die-yield-calculator .result-stats__result--good-dies::before, .wp-block-create-block-die-yield-calculator .result-stats__result--defective-dies::before, .wp-block-create-block-die-yield-calculator .result-stats__result--partial-dies::before, .wp-block-create-block-die-yield-calculator .result-stats__result--lost-dies::before, .wp-block-create-block-die-yield-calculator .result-stats__result--total-dies::before {
+  content: "■";
+}
+.wp-block-create-block-die-yield-calculator .result-stats__result--good-dies::before {
+  color: rgb(46, 217, 46);
+}
+.wp-block-create-block-die-yield-calculator .result-stats__result--defective-dies::before {
+  color: rgb(213, 63, 49);
+}
+.wp-block-create-block-die-yield-calculator .result-stats__result--partial-dies::before {
+  color: rgb(249, 249, 27);
+}
+.wp-block-create-block-die-yield-calculator .result-stats__result--lost-dies::before {
+  color: rgb(151, 138, 129);
+}
+.wp-block-create-block-die-yield-calculator .result-stats__result--die-per-reticle::before {
+  content: "▣";
+}
+.wp-block-create-block-die-yield-calculator .result-stats__result--yield::before {
+  content: "◐";
+  font-size: 1.125em;
+}
+.wp-block-create-block-die-yield-calculator .result-stats__result--panel-width::before {
+  content: "↔";
+}
+.wp-block-create-block-die-yield-calculator .result-stats__result--panel-height::before {
+  content: "↕";
+}
+.wp-block-create-block-die-yield-calculator .result-stats__result--panel-diameter::before {
+  content: "⌀";
+  font-size: 1.5em;
+}
+.wp-block-create-block-die-yield-calculator .result-stats__result--wafer-area::before {
+  content: "◌";
+}
+.wp-block-create-block-die-yield-calculator .result-stats__result--die-area::before {
+  content: "⬚";
+}
+.wp-block-create-block-die-yield-calculator .result-stats__result--shot-count::before {
+  content: "☼";
+}
+.wp-block-create-block-die-yield-calculator .result-stats__result--reticle-utilization::before {
+  content: "◰";
+  font-size: 1.33333em;
+}
+.wp-block-create-block-die-yield-calculator .result-stats__result--waste-area::before {
+  content: "⊗";
+  font-size: 1.33333em;
+}
+
+.wp-block-create-block-die-yield-calculator .reticle-canvas, .wp-block-create-block-die-yield-calculator .reticle-canvas--background {
+  margin: auto;
+  aspect-ratio: 1/1;
+  max-width: 457.2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2em;
+}
+.wp-block-create-block-die-yield-calculator .reticle-canvas--background {
+  background: url(data:image/svg+xml;base64,PHN2ZwoJdmVyc2lvbj0iMS4xIgoJYmFzZVByb2ZpbGU9ImZ1bGwiCgl3aWR0aD0iNjAwIgoJaGVpZ2h0PSI2MDAiCgl2aWV3Qm94PSIwIDAgNjAwIDYwMCIKCXhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIKPgoJPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjYwMCIgaGVpZ2h0PSI2MDAiIGZpbGw9ImJsYWNrIiAvPgoJPGcgc3Ryb2tlPSIjY2NjIiBzdHJva2Utd2lkdGg9IjIiPgoJCTxsaW5lIHgxPSIxMCIgeTE9IjEwIiB4Mj0iMzAiIHkyPSIxMCIgLz4KCQk8bGluZSB4MT0iMTAiIHkxPSIxMCIgeDI9IjEwIiB5Mj0iMzAiIC8+CgkJPGxpbmUgeDE9IjU5MCIgeTE9IjEwIiB4Mj0iNTcwIiB5Mj0iMTAiIC8+CgkJPGxpbmUgeDE9IjU5MCIgeTE9IjEwIiB4Mj0iNTkwIiB5Mj0iMzAiIC8+CgkJPGxpbmUgeDE9IjEwIiAgeTE9IjU5MCIgeDI9IjMwIiAgeTI9IjU5MCIgLz4KCQk8bGluZSB4MT0iMTAiICB5MT0iNTkwIiB4Mj0iMTAiICB5Mj0iNTcwIiAvPgoJCTxsaW5lIHgxPSI1OTAiIHkxPSI1OTAiIHgyPSI1NzAiIHkyPSI1OTAiIC8+CgkJPGxpbmUgeDE9IjU5MCIgeTE9IjU5MCIgeDI9IjU5MCIgeTI9IjU3MCIgLz4KCTwvZz4KCTxyZWN0IHg9IjEwMCIgeT0iMTAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iI2NjYyIgLz4KCTxyZWN0IHg9IjQ5MCIgeT0iMTAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iI2NjYyIgLz4KCTxyZWN0IHg9IjEwMCIgeT0iNTgwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiNjY2MiIC8+Cgk8cmVjdCB4PSI0OTAiIHk9IjU4MCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjY2NjIiAvPgo8L3N2Zz4K) no-repeat;
+  background-size: contain;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid;
+  border-top-color: #666c72;
+  border-right-color: #46494c;
+  border-bottom-color: #2d2f32;
+  border-left-color: #46494c;
+}
+.wp-block-create-block-die-yield-calculator .reticle-canvas__inner {
+  background-image: linear-gradient(90deg, #b88ecb, #8eb4cd 12.5%, #9ad9cc 40%, #cc9e52 45%, #e15a4d 50%, #e1b268 56%, #8fd9ca 64%, #8eb4cd 82.5%, #b88ecb 100%);
+  background-size: 440%;
+  width: 68.2414698163%;
+  height: 86.6141732283%;
+  outline: 1px solid blue;
+  opacity: 0.75;
+  background-position: 100%;
+  background-size: 300%;
+}
+
+.wp-block-create-block-die-yield-calculator .wafer-canvas {
+  display: inline-block;
+  line-height: 0;
+  margin-bottom: 2em;
+  box-shadow: 0.25em 0.5em 1.5em black;
+  transform-style: preserve-3d;
+  background-color: #b88ecb;
+  touch-action: none;
+  max-width: 100%;
+}
+.wp-block-create-block-die-yield-calculator .wafer-canvas .wafer-canvas__watermark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-image: url(images/semianalysis-logo-mark-only.7da88c9a.png);
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  background-size: 60%;
+  opacity: 0.075;
+}
+.wp-block-create-block-die-yield-calculator .wafer-canvas .wafer-canvas__mirror-background {
+  background-image: linear-gradient(90deg, #b88ecb, #8eb4cd 12.5%, #9ad9cc 40%, #cc9e52 45%, #e15a4d 50%, #e1b268 56%, #8fd9ca 64%, #8eb4cd 82.5%, #b88ecb 100%);
+  background-size: 440%;
+  border-top: 1px solid rgba(255, 255, 255, 0.5);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+.wp-block-create-block-die-yield-calculator .wafer-canvas.wafer-canvas--disc,
+.wp-block-create-block-die-yield-calculator .wafer-canvas.wafer-canvas--disc .wafer-canvas__mirror-background {
+  clip-path: ellipse(50% 50% at 50% 50%);
+  transform: rotate(45deg);
+  overflow: hidden;
+}
+.wp-block-create-block-die-yield-calculator .wafer-canvas.wafer-canvas--disc::after {
+  content: "";
+  display: block;
+  width: 3px;
+  height: 3px;
+  background-color: #141416;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+.wp-block-create-block-die-yield-calculator .wafer-canvas .wafer-canvas__die-decorative {
+  max-width: 100%;
+  position: relative;
+}
+.wp-block-create-block-die-yield-calculator .wafer-canvas .wafer-canvas__shot-map,
+.wp-block-create-block-die-yield-calculator .wafer-canvas .wafer-canvas__edge,
+.wp-block-create-block-die-yield-calculator .wafer-canvas .wafer-canvas__die-map {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  transition: transform ease-out 0.3s, opacity ease-out 0.3s;
+}
+.wp-block-create-block-die-yield-calculator .wafer-canvas:hover {
+  box-shadow: 0.125em 0.25em 4em rgba(0, 0, 0, 0.75);
+}
+.wp-block-create-block-die-yield-calculator .wafer-canvas:hover .wafer-canvas__shot-map,
+.wp-block-create-block-die-yield-calculator .wafer-canvas:hover .wafer-canvas__die-map,
+.wp-block-create-block-die-yield-calculator .wafer-canvas:hover .wafer-canvas__edge {
+  opacity: 0;
+}
+.wp-block-create-block-die-yield-calculator .wafer-canvas .wafer-canvas__message, .wp-block-create-block-die-yield-calculator .wafer-canvas .wafer-canvas__message--error {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  text-align: center;
+  transform: translateY(-50%);
+  line-height: 1.5;
+  color: rgba(0, 0, 0, 0.75);
+  text-shadow: 0 1px rgba(255, 255, 255, 0.1803921569);
+  font-size: 1.2em;
+  padding: 0 10%;
+}
+.wp-block-create-block-die-yield-calculator .wafer-canvas .wafer-canvas__message--error {
+  text-decoration: underline;
+  text-decoration-color: rgb(213, 63, 49);
+  text-underline-offset: 0.1em;
+  text-decoration-thickness: 1px;
+}
+.wp-block-create-block-die-yield-calculator .tsmc-logo {
+  position: relative;
+  padding-bottom: 100%;
+  margin-bottom: 2em;
+  border-radius: 100%;
+  overflow: hidden;
+}
+.wp-block-create-block-die-yield-calculator .tsmc-logo .glare-wrapper {
+  height: 95.6% !important;
+}
+.wp-block-create-block-die-yield-calculator .tsmc-logo svg {
+  width: 100%;
+  height: auto;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/*# sourceMappingURL=style-index.css.map*/
