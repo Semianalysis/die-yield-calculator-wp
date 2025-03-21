@@ -270,11 +270,14 @@
 .wp-block-create-block-die-yield-calculator .result-stats__result::before {
   width: 1rem;
   margin-left: 0.5rem;
-  line-height: 1rem;
+  line-height: 1;
   text-align: center;
+  font-family: Arial, sans-serif;
+  font-size: 1em;
 }
 .wp-block-create-block-die-yield-calculator .result-stats__result--good-dies::before, .wp-block-create-block-die-yield-calculator .result-stats__result--defective-dies::before, .wp-block-create-block-die-yield-calculator .result-stats__result--partial-dies::before, .wp-block-create-block-die-yield-calculator .result-stats__result--lost-dies::before, .wp-block-create-block-die-yield-calculator .result-stats__result--total-dies::before {
   content: "■";
+  font-size: 1.666666em;
 }
 .wp-block-create-block-die-yield-calculator .result-stats__result--good-dies::before {
   color: rgb(46, 217, 46);
@@ -290,10 +293,10 @@
 }
 .wp-block-create-block-die-yield-calculator .result-stats__result--die-per-reticle::before {
   content: "▣";
+  font-size: 1.2em;
 }
 .wp-block-create-block-die-yield-calculator .result-stats__result--yield::before {
   content: "◐";
-  font-size: 1.125em;
 }
 .wp-block-create-block-die-yield-calculator .result-stats__result--panel-width::before {
   content: "↔";
@@ -313,14 +316,15 @@
 }
 .wp-block-create-block-die-yield-calculator .result-stats__result--shot-count::before {
   content: "☼";
+  font-size: 1.25em;
 }
 .wp-block-create-block-die-yield-calculator .result-stats__result--reticle-utilization::before {
   content: "◰";
-  font-size: 1.33333em;
+  font-size: 1.333333em;
 }
 .wp-block-create-block-die-yield-calculator .result-stats__result--waste-area::before {
   content: "⊗";
-  font-size: 1.33333em;
+  font-size: 1.5em;
 }
 
 .wp-block-create-block-die-yield-calculator .reticle-canvas, .wp-block-create-block-die-yield-calculator .reticle-canvas--background {
