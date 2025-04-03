@@ -20,8 +20,10 @@
 		&::before {
 			width: 1rem;
 			margin-right: 0.5rem;
-			line-height: 1rem;
+			line-height: 1;
 			text-align: center;
+			font-family: Arial, sans-serif;
+			font-size: 1em;
 		}
 
 		&--good-dies,
@@ -31,6 +33,7 @@
 		&--total-dies {
 			&::before {
 				content: "■";
+				font-size: 1.666666em;
 			}
 		}
 
@@ -52,11 +55,11 @@
 
 		&--die-per-reticle::before {
 			content: "▣";
+			font-size: 1.2em;
 		}
 
 		&--yield::before {
 			content: "◐";
-			font-size: 1.125em;
 		}
 
 		&--panel-width::before {
@@ -82,16 +85,17 @@
 
 		&--shot-count::before {
 			content: "☼";
+			font-size: 1.25em;
 		}
 
 		&--reticle-utilization::before {
 			content: "◰";
-			font-size: 1.33333em;
+			font-size: 1.333333em;
 		}
 
 		&--waste-area::before {
 			content: "⊗";
-			font-size: 1.33333em;
+			font-size: 1.5em;
 		}
 	}
 }
