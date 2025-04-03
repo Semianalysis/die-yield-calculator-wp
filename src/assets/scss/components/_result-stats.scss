@@ -1,9 +1,12 @@
 @use "../abstract/colors" as colors;
+@use "../abstract/mixins" as mixins;
 
 .wp-block-create-block-die-yield-calculator {
 	.result-stats {
-		display: grid;
-		grid-template-columns: 1fr 1fr;
+		@include mixins.larger-than-tablet {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+		}
 	}
 
 	.result-stats__list {
@@ -14,88 +17,29 @@
 
 	.result-stats__result {
 		display: flex;
-		align-items: center;
 		margin-bottom: 0.5em;
+		gap: 0.75em;
+		line-height: 1.6666;
 
-		&::before {
-			width: 1rem;
-			margin-right: 0.5rem;
-			line-height: 1;
-			text-align: center;
-			font-family: Arial, sans-serif;
-			font-size: 1em;
+		svg {
+			transform: scale(0.9);
+			flex-shrink: 0;
 		}
 
-		&--good-dies,
-		&--defective-dies,
-		&--partial-dies,
-		&--lost-dies,
-		&--total-dies {
-			&::before {
-				content: "■";
-				font-size: 1.666666em;
-			}
+		&--good-dies svg {
+			stroke: colors.$color-die-good;
 		}
 
-		&--good-dies::before {
-			color: colors.$color-die-good;
+		&--defective-dies svg {
+			stroke: colors.$color-die-defective;
 		}
 
-		&--defective-dies::before {
-			color: colors.$color-die-defective;
+		&--partial-dies svg {
+			stroke: colors.$color-die-partial;
 		}
 
-		&--partial-dies::before {
-			color: colors.$color-die-partial;
-		}
-
-		&--lost-dies::before {
-			color: colors.$color-die-lost;
-		}
-
-		&--die-per-reticle::before {
-			content: "▣";
-			font-size: 1.2em;
-		}
-
-		&--yield::before {
-			content: "◐";
-		}
-
-		&--panel-width::before {
-			content: "↔";
-		}
-
-		&--panel-height::before {
-			content: "↕";
-		}
-
-		&--panel-diameter::before {
-			content: "⌀";
-			font-size: 1.5em;
-		}
-
-		&--wafer-area::before {
-			content: "◌";
-		}
-
-		&--die-area::before {
-			content: "⬚";
-		}
-
-		&--shot-count::before {
-			content: "☼";
-			font-size: 1.25em;
-		}
-
-		&--reticle-utilization::before {
-			content: "◰";
-			font-size: 1.333333em;
-		}
-
-		&--waste-area::before {
-			content: "⊗";
-			font-size: 1.5em;
+		&--lost-dies svg {
+			stroke: colors.$color-die-lost;
 		}
 	}
 }

@@ -1,8 +1,10 @@
+@use "../abstract/mixins" as mixins;
+
 .wp-block-create-block-die-yield-calculator {
 	.logo {
 		display: none;
 
-		@media (min-width: 768px) {
+		@include mixins.larger-than-mobile {
 			display: block;
 			margin: 0 0 0 auto;
 		}
@@ -13,7 +15,7 @@
 		grid-template-columns: 1fr;
 		row-gap: 4em;
 
-		@media (min-width: 768px) {
+		@include mixins.larger-than-mobile {
 			grid-template-columns: 9fr 11fr;
 			column-gap: 2em;
 		}
@@ -23,7 +25,7 @@
 		text-align: left;
 		margin-bottom: 2em;
 
-		@media (min-width: 768px) {
+		@include mixins.larger-than-mobile {
 			border-radius: 10px;
 			padding: 32px;
 			background-color: #141416;
