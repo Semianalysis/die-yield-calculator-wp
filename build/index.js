@@ -72,6 +72,40 @@ var SvgDimensions = function SvgDimensions(props) {
 
 /***/ }),
 
+/***/ "./src/assets/icons/dollar.svg":
+/*!*************************************!*\
+  !*** ./src/assets/icons/dollar.svg ***!
+  \*************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ReactComponent: () => (/* binding */ SvgDollar),
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+var _path;
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
+
+var SvgDollar = function SvgDollar(props) {
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("svg", _extends({
+    xmlns: "http://www.w3.org/2000/svg",
+    width: 24,
+    height: 24,
+    fill: "none",
+    stroke: "currentColor",
+    strokeLinecap: "round",
+    strokeLinejoin: "round"
+  }, props), _path || (_path = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("path", {
+    d: "M12.696 18v-1.062c1.085-.056 1.91-.351 2.548-.886.637-.534.956-1.244.956-2.067 0-.886-.258-1.54-.827-1.955-.577-.47-1.402-.83-2.616-1.061h-.06V8.245c.826.12 1.53.352 2.228.83l1.022-1.3c-1.022-.655-2.107-1.006-3.253-1.062V6h-.956v.71c-.957.056-1.789.352-2.426.886s-.957 1.245-.957 2.067.258 1.477.828 1.892c.508.415 1.401.766 2.547 1.005v2.778q-1.343-.18-2.676-1.245l-1.146 1.245c1.146.949 2.426 1.476 3.827 1.596V18zm.061-5.147c.638.176 1.022.352 1.275.535.19.239.319.47.319.83s-.13.59-.448.829c-.319.239-.705.351-1.146.415zm-2.229-2.54a1.08 1.08 0 0 1-.319-.767c0-.351.13-.59.38-.83.319-.239.638-.351 1.146-.414v2.545c-.637-.183-1.017-.359-1.207-.534"
+  })));
+};
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJjdXJyZW50Q29sb3IiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiBzdHJva2Utd2lkdGg9IjEiPg0KICA8cGF0aCBkPSJNMTIuNjk2MDkzNzUwMDAwMDAxIDE4LjB2LTEuMDYxNzE4NzQ5OTk5OTk5OGMxLjA4NTE1NjI0OTk5OTk5OTgtMC4wNTYyNDk5OTk5OTk5OTk5OTQgMS45MTAxNTYyNS0wLjM1MTU2MjUgMi41NDc2NTYyNS0wLjg4NTkzNzQ5OTk5OTk5OTkgMC42Mzc1LTAuNTM0Mzc1IDAuOTU2MjQ5OTk5OTk5OTk5OS0xLjI0NDUzMTI1IDAuOTU2MjQ5OTk5OTk5OTk5OS0yLjA2NzE4NzUgMC4wLTAuODg1OTM3NDk5OTk5OTk5OS0wLjI1NzgxMjUtMS41Mzk4NDM3NTAwMDAwMDAyLTAuODI3MzQzNzQ5OTk5OTk5OS0xLjk1NDY4NzUwMDAwMDAwMDEtMC41NzY1NjI1MDAwMDAwMDAxLTAuNDcxMDkzNzUwMDAwMDAwMDMtMS40MDE1NjI0OTk5OTk5OTk4LTAuODI5Njg3NDk5OTk5OTk5OS0yLjYxNTYyNDk5OTk5OTk5OTYtMS4wNjE3MTg3NDk5OTk5OTk4aC0wLjA2MDkzNzUwMDAwMDAwMDAwNlY4LjI0NTMxMjVjMC44MjczNDM3NDk5OTk5OTk5IDAuMTE5NTMxMjQ5OTk5OTk5OTkgMS41MzA0Njg3NDk5OTk5OTk4IDAuMzUxNTYyNSAyLjIyODkwNjI0OTk5OTk5OTYgMC44Mjk2ODc0OTk5OTk5OTk5bDEuMDIxODc1LTEuMzAwNzgxMjVjLTEuMDIxODc1LTAuNjUzOTA2MjQ5OTk5OTk5OS0yLjEwNzAzMTI1MDAwMDAwMDQtMS4wMDU0Njg3NS0zLjI1MzEyNTAwMDAwMDAwMDMtMS4wNjE3MTg3NDk5OTk5OTk4VjYuMGgtMC45NTYyNDk5OTk5OTk5OTk5djAuNzEwMTU2MjVjLTAuOTU2MjQ5OTk5OTk5OTk5OSAwLjA1NjI0OTk5OTk5OTk5OTk5NC0xLjc4ODI4MTI0OTk5OTk5OTggMC4zNTE1NjI1LTIuNDI1NzgxMjUgMC44ODU5Mzc0OTk5OTk5OTk5LTAuNjM3NSAwLjUzNDM3NS0wLjk1NjI0OTk5OTk5OTk5OTkgMS4yNDQ1MzEyNS0wLjk1NjI0OTk5OTk5OTk5OTkgMi4wNjcxODc1czAuMjU3ODEyNSAxLjQ3NjU2MjUgMC44MjczNDM3NDk5OTk5OTk5IDEuODkxNDA2MjUwMDAwMDAwMmMwLjUwODU5Mzc1IDAuNDE0ODQzNzQ5OTk5OTk5OTYgMS40MDE1NjI0OTk5OTk5OTk4IDAuNzY2NDA2MjUwMDAwMDAwMSAyLjU0NzY1NjI1IDEuMDA1NDY4NzV2Mi43NzczNDM3NWMtMC44OTUzMTI1MDAwMDAwMDAxLTAuMTE5NTMxMjQ5OTk5OTk5OTktMS43ODgyODEyNDk5OTk5OTk4LTAuNTM0Mzc1LTIuNjc2NTYyNS0xLjI0NDUzMTI1bC0xLjE0NjA5Mzc1IDEuMjQ0NTMxMjVjMS4xNDYwOTM3NSAwLjk0OTIxODc1IDIuNDI1NzgxMjUgMS40NzY1NjI1IDMuODI3MzQzNzUwMDAwMDAwMyAxLjU5NjA5Mzc0OTk5OTk5OTlWMTguMGgwLjk2MDkzNzV6bTAuMDYwOTM3NTAwMDAwMDAwMDA2LTUuMTQ2ODc1YzAuNjM3NSAwLjE3NTc4MTI1IDEuMDIxODc1IDAuMzUxNTYyNSAxLjI3NSAwLjUzNDM3NSAwLjE4OTg0Mzc0OTk5OTk5OTk4IDAuMjM5MDYyNDk5OTk5OTk5OTggMC4zMTg3NSAwLjQ3MTA5Mzc1MDAwMDAwMDAzIDAuMzE4NzUgMC44Mjk2ODc0OTk5OTk5OTk5cy0wLjEyODkwNjI1IDAuNTkwNjI1LTAuNDQ3NjU2MjUwMDAwMDAwMDMgMC44Mjk2ODc0OTk5OTk5OTk5Yy0wLjMxODc1IDAuMjM5MDYyNDk5OTk5OTk5OTgtMC43MDU0Njg3NTAwMDAwMDAxIDAuMzUxNTYyNS0xLjE0NjA5Mzc1IDAuNDE0ODQzNzQ5OTk5OTk5OTZWMTIuODUzMTI0OTk5OTk5OTk5ek0xMC41MjgxMjUgMTAuMzEyNWMtMC4xODk4NDM3NDk5OTk5OTk5OC0wLjE3NTc4MTI1LTAuMzE4NzUtMC40NzEwOTM3NTAwMDAwMDAwMy0wLjMxODc1LTAuNzY2NDA2MjUwMDAwMDAwMSAwLjAtMC4zNTE1NjI1IDAuMTI4OTA2MjUtMC41OTA2MjUgMC4zNzk2ODc0OTk5OTk5OTk5Ni0wLjgyOTY4NzQ5OTk5OTk5OTkgMC4zMTg3NS0wLjIzOTA2MjQ5OTk5OTk5OTk4IDAuNjM3NS0wLjM1MTU2MjUgMS4xNDYwOTM3NS0wLjQxNDg0Mzc0OTk5OTk5OTk2djIuNTQ1MzEyNDk5OTk5OTk5NmMtMC42Mzc1LTAuMTgyODEyNS0xLjAxNzE4NzUtMC4zNTg1OTM3NTAwMDAwMDAwNC0xLjIwNzAzMTI1LTAuNTM0Mzc1eiIgLz4NCjwvc3ZnPg==");
+
+/***/ }),
+
 /***/ "./src/assets/icons/grid-4x4.svg":
 /*!***************************************!*\
   !*** ./src/assets/icons/grid-4x4.svg ***!
@@ -1413,7 +1447,7 @@ function App() {
   })), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "input-row"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NumberInput_NumberInput__WEBPACK_IMPORTED_MODULE_2__.NumberInput, {
-    label: "Substrate Cost ('$')",
+    label: "Substrate Cost ($)",
     value: substrateCost,
     onChange: event => setSubstrateCost(event.target.value),
     min: 0,
@@ -1762,14 +1796,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _assets_icons_square_slash_svg__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../assets/icons/square-slash.svg */ "./src/assets/icons/square-slash.svg");
 /* harmony import */ var _assets_icons_square_off_svg__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../assets/icons/square-off.svg */ "./src/assets/icons/square-off.svg");
 /* harmony import */ var _assets_icons_circle_percentage_svg__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../assets/icons/circle-percentage.svg */ "./src/assets/icons/circle-percentage.svg");
-/* harmony import */ var _assets_icons_dimensions_svg__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../assets/icons/dimensions.svg */ "./src/assets/icons/dimensions.svg");
-/* harmony import */ var _assets_icons_grid_4x4_svg__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../assets/icons/grid-4x4.svg */ "./src/assets/icons/grid-4x4.svg");
-/* harmony import */ var _assets_icons_height_svg__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../assets/icons/height.svg */ "./src/assets/icons/height.svg");
-/* harmony import */ var _assets_icons_layout_grid_svg__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../assets/icons/layout-grid.svg */ "./src/assets/icons/layout-grid.svg");
-/* harmony import */ var _assets_icons_scissors_svg__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../assets/icons/scissors.svg */ "./src/assets/icons/scissors.svg");
-/* harmony import */ var _assets_icons_shutter_svg__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../assets/icons/shutter.svg */ "./src/assets/icons/shutter.svg");
-/* harmony import */ var _assets_icons_square_percentage_svg__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../../assets/icons/square-percentage.svg */ "./src/assets/icons/square-percentage.svg");
-/* harmony import */ var _assets_icons_width_svg__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../../assets/icons/width.svg */ "./src/assets/icons/width.svg");
+/* harmony import */ var _assets_icons_dollar_svg__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../assets/icons/dollar.svg */ "./src/assets/icons/dollar.svg");
+/* harmony import */ var _assets_icons_dimensions_svg__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../assets/icons/dimensions.svg */ "./src/assets/icons/dimensions.svg");
+/* harmony import */ var _assets_icons_grid_4x4_svg__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../assets/icons/grid-4x4.svg */ "./src/assets/icons/grid-4x4.svg");
+/* harmony import */ var _assets_icons_height_svg__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../assets/icons/height.svg */ "./src/assets/icons/height.svg");
+/* harmony import */ var _assets_icons_layout_grid_svg__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../assets/icons/layout-grid.svg */ "./src/assets/icons/layout-grid.svg");
+/* harmony import */ var _assets_icons_scissors_svg__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../assets/icons/scissors.svg */ "./src/assets/icons/scissors.svg");
+/* harmony import */ var _assets_icons_shutter_svg__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../../assets/icons/shutter.svg */ "./src/assets/icons/shutter.svg");
+/* harmony import */ var _assets_icons_square_percentage_svg__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../../assets/icons/square-percentage.svg */ "./src/assets/icons/square-percentage.svg");
+/* harmony import */ var _assets_icons_width_svg__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../../assets/icons/width.svg */ "./src/assets/icons/width.svg");
+
 
 
 
@@ -1823,23 +1859,25 @@ function WaferStats(props) {
     className: "result-stats__result result-stats__result--lost-dies"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_assets_icons_square_off_svg__WEBPACK_IMPORTED_MODULE_5__.ReactComponent, null), "Excluded Dies: ", displayValue(props.results?.lostDies)), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result-stats__result result-stats__result--yield"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_assets_icons_circle_percentage_svg__WEBPACK_IMPORTED_MODULE_6__.ReactComponent, null), "Fab Yield:", " ", displayValue(props.results?.fabYield && props.results.fabYield * 100, "%"))), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("ul", {
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_assets_icons_circle_percentage_svg__WEBPACK_IMPORTED_MODULE_6__.ReactComponent, null), "Fab Yield:", " ", displayValue(props.results?.fabYield && props.results.fabYield * 100, "%")), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+    className: "result-stats__result result-stats__result--die-cost"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_assets_icons_dollar_svg__WEBPACK_IMPORTED_MODULE_7__.ReactComponent, null), "Die Cost: ", displayValue(props.results?.dieCost))), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("ul", {
     className: "result-stats__list"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result-stats__result result-stats__result--shot-count"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_assets_icons_shutter_svg__WEBPACK_IMPORTED_MODULE_12__.ReactComponent, null), "Exposures:", " ", displayValue((props.results?.fullShotCount || 0) + (props.results?.partialShotCount || 0)), " ", "(", displayValue(props.results?.fullShotCount), " full,", " ", displayValue(props.results?.partialShotCount), " partial)"), props.shape === "Panel" ? react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_assets_icons_shutter_svg__WEBPACK_IMPORTED_MODULE_13__.ReactComponent, null), "Exposures:", " ", displayValue((props.results?.fullShotCount || 0) + (props.results?.partialShotCount || 0)), " ", "(", displayValue(props.results?.fullShotCount), " full,", " ", displayValue(props.results?.partialShotCount), " partial)"), props.shape === "Panel" ? react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result-stats__result result-stats__result--panel-width"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_assets_icons_width_svg__WEBPACK_IMPORTED_MODULE_14__.ReactComponent, null), "Panel Width: ", props.waferWidth, "mm"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_assets_icons_width_svg__WEBPACK_IMPORTED_MODULE_15__.ReactComponent, null), "Panel Width: ", props.waferWidth, "mm"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result-stats__result result-stats__result--panel-height"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_assets_icons_height_svg__WEBPACK_IMPORTED_MODULE_9__.ReactComponent, null), "Panel Height: ", props.waferHeight, "mm")) : react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_assets_icons_height_svg__WEBPACK_IMPORTED_MODULE_10__.ReactComponent, null), "Panel Height: ", props.waferHeight, "mm")) : react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result-stats__result result-stats__result--panel-diameter"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_assets_icons_width_svg__WEBPACK_IMPORTED_MODULE_14__.ReactComponent, null), "Wafer Diameter: ", props.waferWidth, "mm"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_assets_icons_width_svg__WEBPACK_IMPORTED_MODULE_15__.ReactComponent, null), "Wafer Diameter: ", props.waferWidth, "mm"), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result-stats__result result-stats__result--wafer-area"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_assets_icons_dimensions_svg__WEBPACK_IMPORTED_MODULE_7__.ReactComponent, null), props.shape, " Area: ", displayValue(waferArea, "cm²")), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_assets_icons_dimensions_svg__WEBPACK_IMPORTED_MODULE_8__.ReactComponent, null), props.shape, " Area: ", displayValue(waferArea, "cm²")), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result-stats__result result-stats__result--die-area"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_assets_icons_grid_4x4_svg__WEBPACK_IMPORTED_MODULE_8__.ReactComponent, null), "Total Die Area:", " ", displayValue(props.results?.totalDies && totalDieAreaCm(props.dieWidth, props.dieHeight, props.results.totalDies - props.results.lostDies), "cm²")), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_assets_icons_grid_4x4_svg__WEBPACK_IMPORTED_MODULE_9__.ReactComponent, null), "Total Die Area:", " ", displayValue(props.results?.totalDies && totalDieAreaCm(props.dieWidth, props.dieHeight, props.results.totalDies - props.results.lostDies), "cm²")), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result-stats__result result-stats__result--waste-area"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_assets_icons_scissors_svg__WEBPACK_IMPORTED_MODULE_11__.ReactComponent, null), "Total Waste Area: ", displayValue(wasteArea, "cm²"), " (", wasteArea && displayValue(wasteArea / waferArea * 100, "%"), ")")));
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_assets_icons_scissors_svg__WEBPACK_IMPORTED_MODULE_12__.ReactComponent, null), "Total Waste Area: ", displayValue(wasteArea, "cm²"), " (", wasteArea && displayValue(wasteArea / waferArea * 100, "%"), ")")));
 }
 function ReticleStats(props) {
   return react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
@@ -1849,11 +1887,11 @@ function ReticleStats(props) {
     className: "result-stats__list"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result-stats__result result-stats__result--die-per-reticle"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_assets_icons_layout_grid_svg__WEBPACK_IMPORTED_MODULE_10__.ReactComponent, null), "Die Per Reticle:", " ", displayValue((props.results?.diePerRow || 0) * (props.results?.diePerCol || 0)), " ", "(", displayValue(props.results?.diePerRow), "\u00D7", displayValue(props.results?.diePerCol), ")")), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("ul", {
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_assets_icons_layout_grid_svg__WEBPACK_IMPORTED_MODULE_11__.ReactComponent, null), "Die Per Reticle:", " ", displayValue((props.results?.diePerRow || 0) * (props.results?.diePerCol || 0)), " ", "(", displayValue(props.results?.diePerRow), "\u00D7", displayValue(props.results?.diePerCol), ")")), react__WEBPACK_IMPORTED_MODULE_0___default().createElement("ul", {
     className: "result-stats__list"
   }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
     className: "result-stats__result result-stats__result--reticle-utilization"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_assets_icons_square_percentage_svg__WEBPACK_IMPORTED_MODULE_13__.ReactComponent, null), "Reticle Utilization:", " ", displayValue(props.results?.reticleUtilization && props.results?.reticleUtilization * 100, "%"))));
+  }, react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_assets_icons_square_percentage_svg__WEBPACK_IMPORTED_MODULE_14__.ReactComponent, null), "Reticle Utilization:", " ", displayValue(props.results?.reticleUtilization && props.results?.reticleUtilization * 100, "%"))));
 }
 
 /***/ }),
@@ -2659,7 +2697,8 @@ function evaluatePanelInputs(inputVals, selectedSize, selectedModel, fieldWidth,
     scribeVert,
     lossyEdgeWidth,
     criticalLayers,
-    manualYield
+    manualYield,
+    substrateCost
   } = inputVals;
   let dies = [];
   const fabYield = getFabYield(defectRate, criticalArea, selectedModel, criticalLayers, manualYield);
@@ -2684,6 +2723,7 @@ function evaluatePanelInputs(inputVals, selectedSize, selectedModel, fieldWidth,
     lostDies,
     goodDies
   } = getDieStateCounts(dieMap.dies.map(die => die.dieState));
+  const dieCost = goodDies > 0 ? substrateCost / goodDies : 0;
   return {
     dies: dieMap.dies,
     diePerRow: diesInShot.numCols,
@@ -2697,7 +2737,8 @@ function evaluatePanelInputs(inputVals, selectedSize, selectedModel, fieldWidth,
     fields: shotPositions,
     fullShotCount: dieMap.fullShotCount,
     partialShotCount: dieMap.partialShotCount,
-    reticleUtilization: getReticleUtilization(fieldWidth, fieldHeight, dieWidth, dieHeight, diesInShot.positions.length)
+    reticleUtilization: getReticleUtilization(fieldWidth, fieldHeight, dieWidth, dieHeight, diesInShot.positions.length),
+    dieCost
   };
 }
 /**
@@ -2721,7 +2762,8 @@ function evaluateDiscInputs(inputVals, selectedSize, selectedModel, fieldWidth, 
     scribeHoriz,
     scribeVert,
     criticalLayers,
-    manualYield
+    manualYield,
+    substrateCost
   } = inputVals;
   const fabYield = getFabYield(defectRate, criticalArea, selectedModel, criticalLayers, manualYield);
   const {
@@ -2747,6 +2789,7 @@ function evaluateDiscInputs(inputVals, selectedSize, selectedModel, fieldWidth, 
     lostDies,
     goodDies
   } = getDieStateCounts(dieMap.dies.map(die => die.dieState));
+  const dieCost = goodDies > 0 ? substrateCost / goodDies : 0;
   return {
     dies: dieMap.dies,
     totalDies: dieMap.dies.length,
@@ -2760,7 +2803,8 @@ function evaluateDiscInputs(inputVals, selectedSize, selectedModel, fieldWidth, 
     fields: shotPositions,
     fullShotCount: dieMap.fullShotCount,
     partialShotCount: dieMap.partialShotCount,
-    reticleUtilization: getReticleUtilization(fieldWidth, fieldHeight, dieWidth, dieHeight, diesInShot.positions.length)
+    reticleUtilization: getReticleUtilization(fieldWidth, fieldHeight, dieWidth, dieHeight, diesInShot.positions.length),
+    dieCost
   };
 }
 

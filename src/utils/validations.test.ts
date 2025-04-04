@@ -288,5 +288,5 @@ describe("validations", () => {
 			const result = validations.manualYield(inputs, fieldSize);
 			expect(result).toBeUndefined();
 		});
-	})
+	});
 });

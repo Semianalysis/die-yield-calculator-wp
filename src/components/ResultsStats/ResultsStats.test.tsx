@@ -17,6 +17,7 @@ const results: FabResults = {
 	fullShotCount: 20,
 	partialShotCount: 5,
 	reticleUtilization: 0.75,
+	dieCost: 5.25,
 };
 
 describe("ResultStats", () => {
@@ -29,7 +30,7 @@ describe("ResultStats", () => {
 				dieHeight={10}
 				waferWidth={300}
 				waferHeight={400}
-			/>
+			/>,
 		);
 
 		expect(screen.getByText(/Total Dies: 100/i)).toBeInTheDocument();
@@ -50,7 +51,7 @@ describe("ResultStats", () => {
 				dieHeight={10}
 				waferWidth={200}
 				waferHeight={200}
-			/>
+			/>,
 		);
 
 		expect(screen.getByText(/Wafer Diameter: 200mm/i)).toBeInTheDocument();
@@ -66,7 +67,7 @@ describe("ResultStats", () => {
 				dieHeight={10}
 				waferWidth={200}
 				waferHeight={200}
-			/>
+			/>,
 		);
 
 		expect(screen.getByText(/Panel Width: 200/i)).toBeInTheDocument();
@@ -74,7 +75,7 @@ describe("ResultStats", () => {
 		expect(screen.getByText(/Panel Area: 400/i)).toBeInTheDocument();
 	});
 
-	it('calculates and displays the waste area (area of wafer not made up of good die)', () => {
+	it("calculates and displays the waste area (area of wafer not made up of good die)", () => {
 		const dieWidth = 6;
 		const dieHeight = 4;
 		const waferWidth = 200;
@@ -87,18 +88,20 @@ describe("ResultStats", () => {
 				dieHeight={dieHeight}
 				waferWidth={waferWidth}
 				waferHeight={waferHeight}
-			/>
+			/>,
 		);
 
-		const expected = ((waferWidth * waferHeight) - (results.goodDies * dieWidth * dieHeight)) / 100;
+		const expected =
+			(waferWidth * waferHeight - results.goodDies * dieWidth * dieHeight) /
+			100;
 
-		expect(screen.getByText(new RegExp(`Total Waste Area: ${expected}cm²`, 'ig'))).toBeInTheDocument();
+		expect(
+			screen.getByText(new RegExp(`Total Waste Area: ${expected}cm²`, "ig")),
+		).toBeInTheDocument();
 	});
 
-	it('renders the ReticleStats component with correct values', () => {
-		render(
-			<ReticleStats results={results} />
-		);
+	it("renders the ReticleStats component with correct values", () => {
+		render(<ReticleStats results={results} />);
 
 		expect(screen.getByText(/Die Per Reticle: 4/i)).toBeInTheDocument();
 		expect(screen.getByText(/Reticle Utilization: 75%/i)).toBeInTheDocument();

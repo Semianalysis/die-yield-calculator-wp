@@ -4,7 +4,11 @@
  * @param min
  * @param max
  */
-export function clampedInputDisplayValue(value: string, min: number, max: number) {
+export function clampedInputDisplayValue(
+	value: string,
+	min: number,
+	max: number,
+) {
 	const numValue = parseFloat(value);
 
 	if (numValue < min) {

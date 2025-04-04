@@ -1,4 +1,4 @@
-import React, { useState, useEffect, RefObject } from 'react';
+import React, { useState, useEffect, RefObject } from "react";
 
 interface JumpToResultsProps {
 	outputRef: RefObject<HTMLDivElement>;
@@ -9,7 +9,7 @@ export function JumpToResults({ outputRef }: JumpToResultsProps) {
 
 	useEffect(() => {
 		const handleIntersection = (entries: IntersectionObserverEntry[]) => {
-			entries.forEach(entry => {
+			entries.forEach((entry) => {
 				// Update state based on visibility of the output element
 				setIsVisible(!entry.isIntersecting);
 			});
@@ -17,7 +17,7 @@ export function JumpToResults({ outputRef }: JumpToResultsProps) {
 
 		const observer = new IntersectionObserver(handleIntersection, {
 			root: null, // Use the viewport as the root
-			threshold: 0 // Trigger when the element is not visible
+			threshold: 0, // Trigger when the element is not visible
 		});
 
 		if (outputRef.current) {
@@ -34,14 +34,14 @@ export function JumpToResults({ outputRef }: JumpToResultsProps) {
 
 	const scrollToOutput = () => {
 		if (outputRef.current) {
-			outputRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+			outputRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
 		}
 	};
 
 	return (
 		<button
 			type="button"
-			className={isVisible ? 'jump-to-results' : 'jump-to-results--hidden'}
+			className={isVisible ? "jump-to-results" : "jump-to-results--hidden"}
 			onClick={scrollToOutput}
 		>
 			Jump to Results

@@ -6,6 +6,7 @@ import { ReactComponent as SquareXIcon } from "../../assets/icons/square-x.svg";
 import { ReactComponent as SquareSlashIcon } from "../../assets/icons/square-slash.svg";
 import { ReactComponent as SquareOffIcon } from "../../assets/icons/square-off.svg";
 import { ReactComponent as CirclePecentageIcon } from "../../assets/icons/circle-percentage.svg";
+import { ReactComponent as DollarIcon } from "../../assets/icons/dollar.svg";
 import { ReactComponent as DimensionsIcon } from "../../assets/icons/dimensions.svg";
 import { ReactComponent as Grid4x4Icon } from "../../assets/icons/grid-4x4.svg";
 import { ReactComponent as HeightIcon } from "../../assets/icons/height.svg";
@@ -101,6 +102,10 @@ export function WaferStats(props: {
 						"%",
 					)}
 				</li>
+				<li className="result-stats__result result-stats__result--die-cost">
+					<DollarIcon />
+					Die Cost: {displayValue(props.results?.dieCost)}
+				</li>
 			</ul>
 			<ul className="result-stats__list">
 				<li className="result-stats__result result-stats__result--shot-count">
@@ -157,9 +162,7 @@ export function WaferStats(props: {
 	);
 }
 
-export function ReticleStats(props: {
-	results: FabResults;
-}) {
+export function ReticleStats(props: { results: FabResults }) {
 	return (
 		<div className="result-stats" aria-busy={!props.results}>
 			<ul className="result-stats__list">
@@ -179,7 +182,7 @@ export function ReticleStats(props: {
 					Reticle Utilization:{" "}
 					{displayValue(
 						props.results?.reticleUtilization &&
-						props.results?.reticleUtilization * 100,
+							props.results?.reticleUtilization * 100,
 						"%",
 					)}
 				</li>

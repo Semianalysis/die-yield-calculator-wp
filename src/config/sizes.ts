@@ -12,7 +12,7 @@ export const panelSizes = {
 	s457mmsq: { name: "457 mm² (18 in)", height: 457, width: 457 },
 	s457x600mm: { name: "457 x 600 mm² (18 x 24 in²)", width: 457, height: 600 },
 	s510mm: { name: "510 x 515 mm² (21 in)", height: 510, width: 515 },
-	s600m: { name: "600 mm (24 in)", height: 600, width: 600 }
+	s600m: { name: "600 mm (24 in)", height: 600, width: 600 },
 };
 
 /**
@@ -26,7 +26,7 @@ export const waferSizes = {
 	s150mm: { name: "150 mm (6 in)", width: 150 },
 	s200mm: { name: "200 mm (8 in)", width: 200 },
 	s300mm: { name: "300 mm (12 in)", width: 300 },
-	s450mm: { name: "450 mm (18 in)", width: 450 }
+	s450mm: { name: "450 mm (18 in)", width: 450 },
 };
 
 /**

@@ -92,9 +92,9 @@ describe("Calculations", () => {
 		it.each(Object.keys(yieldModels))(
 			"returns a full yield if the defect rate is 0 for the %s model",
 			(model) => {
-				expect(getFabYield(0, 1000, model as keyof typeof yieldModels, 1, 100)).toEqual(
-					1,
-				);
+				expect(
+					getFabYield(0, 1000, model as keyof typeof yieldModels, 1, 100),
+				).toEqual(1);
 			},
 		);
 	});
@@ -221,7 +221,7 @@ describe("Calculations", () => {
 			expect(fullShotCount + partialShotCount).toEqual(shotsOnWafer.length);
 		});
 
-		it('shows the correct total number of die based on the number of exposures and the number of dies in a shot', () => {
+		it("shows the correct total number of die based on the number of exposures and the number of dies in a shot", () => {
 			const dieEdge = 12;
 			const waferDiameter = 300;
 			const fabYield = 0.75;
@@ -267,11 +267,16 @@ describe("Calculations", () => {
 				},
 			);
 
-			const excludedDies = dies.filter(die => die.dieState === "lost");
-			const goodDies = dies.filter(die => die.dieState === "good");
-			const defectiveDies = dies.filter(die => die.dieState === "defective");
-			const partialDies = dies.filter(die => die.dieState === "partial");
-			expect(excludedDies.length + goodDies.length + defectiveDies.length + partialDies.length).toEqual(shotsOnWafer.length * diesInShot.numCols * diesInShot.numRows);
+			const excludedDies = dies.filter((die) => die.dieState === "lost");
+			const goodDies = dies.filter((die) => die.dieState === "good");
+			const defectiveDies = dies.filter((die) => die.dieState === "defective");
+			const partialDies = dies.filter((die) => die.dieState === "partial");
+			expect(
+				excludedDies.length +
+					goodDies.length +
+					defectiveDies.length +
+					partialDies.length,
+			).toEqual(shotsOnWafer.length * diesInShot.numCols * diesInShot.numRows);
 		});
 	});
 

@@ -1,14 +1,14 @@
 import React, { useEffect, useRef } from "react";
 
 export function NumberInput(props: {
-	label: string,
-	value: string,
-	onChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
-	isDisabled?: boolean
-	onBlur?: (e: React.ChangeEvent<HTMLInputElement>) => void,
-	max?: number,
-	min?: number,
-	step?: string | number,
+	label: string;
+	value: string;
+	onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+	isDisabled?: boolean;
+	onBlur?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+	max?: number;
+	min?: number;
+	step?: string | number;
 }) {
 	// Use an event listener to prevent scroll events from bubbling and causing the
 	// document to scroll. See https://github.com/facebook/react/issues/5845#issuecomment-492955321

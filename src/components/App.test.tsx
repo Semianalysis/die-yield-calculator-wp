@@ -7,20 +7,24 @@ describe("App", () => {
 	it("calculates the correct number of total 5mm dies on a 300mm panel with no scribe lines", async () => {
 		render(<App />);
 		const user = userEvent.setup();
-		await user.click(screen.getByRole("radio", {
-			name: /Panel/
-		}));
+		await user.click(
+			screen.getByRole("radio", {
+				name: /Panel/,
+			}),
+		);
 
 		const widthInput = screen.getByRole("spinbutton", {
-			name: /Width/
+			name: /Width/,
 		});
 		const scribeLinesXInput = screen.getByRole("spinbutton", {
-			name: /Scribe Line Minimum X/
+			name: /Scribe Line Minimum X/,
 		});
 		const scribeLinesYInput = screen.getByRole("spinbutton", {
-			name: /Scribe Line Minimum Y/
+			name: /Scribe Line Minimum Y/,
 		});
-		const maintainAspectRatioCheckbox = screen.getByRole("checkbox", { name: /Aspect Ratio/ });
+		const maintainAspectRatioCheckbox = screen.getByRole("checkbox", {
+			name: /Aspect Ratio/,
+		});
 
 		await user.click(maintainAspectRatioCheckbox);
 		await user.clear(widthInput);
@@ -41,19 +45,26 @@ describe("App", () => {
 		// How many dies can we fit in the entire panel?
 		const totalDieCount = fieldCount * dieCount;
 
-		expect(await screen.findByText(new RegExp(totalDieCount.toString()))).toBeInTheDocument();
+		expect(
+			await screen.findByText(new RegExp(totalDieCount.toString())),
+		).toBeInTheDocument();
 	});
 
 	it("calculates yields for wafer shape", async () => {
 		render(<App />);
 		const user = userEvent.setup();
-		await user.click(screen.getByRole("radio", {
-			name: /Wafer/
-		}));
+		await user.click(
+			screen.getByRole("radio", {
+				name: /Wafer/,
+			}),
+		);
 		// No notch keepout
-		await user.type(screen.getByRole("spinbutton", {
-			name: /Notch keep-out/
-		}), "{backspace}0");
+		await user.type(
+			screen.getByRole("spinbutton", {
+				name: /Notch keep-out/,
+			}),
+			"{backspace}0",
+		);
 		await waitFor(() => expect(screen.getByText(/1104/)).toBeInTheDocument());
 	});
 
@@ -63,32 +74,30 @@ describe("App", () => {
 		// Get the number of dies displayed for each state and the total number of dies.
 		let totalDiesCount = 0;
 		let allStatesCount = 0;
-		await Promise.all([
-			"Total",
-			"Good",
-			"Defective",
-			"Partial",
-			"Excluded"
-		].map(async (label) => {
-			const regex = new RegExp(`${label} Dies`);
-			const textNode = await screen.findByText(regex);
+		await Promise.all(
+			["Total", "Good", "Defective", "Partial", "Excluded"].map(
+				async (label) => {
+					const regex = new RegExp(`${label} Dies`);
+					const textNode = await screen.findByText(regex);
 
-			if (textNode.textContent) {
-				// Wait for the calculation to appear
-				const countStr = await within(textNode).findByText(/\d+/);
+					if (textNode.textContent) {
+						// Wait for the calculation to appear
+						const countStr = await within(textNode).findByText(/\d+/);
 
-				if (countStr.textContent) {
-					const countMatch = countStr.textContent.match(/\d+/)?.[0];
-					const countNum = countMatch ? parseInt(countMatch) : 0;
+						if (countStr.textContent) {
+							const countMatch = countStr.textContent.match(/\d+/)?.[0];
+							const countNum = countMatch ? parseInt(countMatch) : 0;
 
-					if (label === "Total") {
-						totalDiesCount = countNum;
-					} else {
-						allStatesCount += countNum;
+							if (label === "Total") {
+								totalDiesCount = countNum;
+							} else {
+								allStatesCount += countNum;
+							}
+						}
 					}
-				}
-			}
-		}));
+				},
+			),
+		);
 
 		expect(totalDiesCount).toBeGreaterThan(0);
 		expect(totalDiesCount).toEqual(allStatesCount);
@@ -97,7 +106,9 @@ describe("App", () => {
 	it("automatically adjusts the other die dimension input when one is changed with maintain aspect ratio on", async () => {
 		render(<App />);
 		const user = userEvent.setup();
-		const maintainAspectRatioCheckbox = screen.getByRole("checkbox", { name: /Aspect Ratio/ });
+		const maintainAspectRatioCheckbox = screen.getByRole("checkbox", {
+			name: /Aspect Ratio/,
+		});
 		const dieWidthInput = screen.getByRole("spinbutton", { name: /Width/ });
 		const dieHeightInput = screen.getByRole("spinbutton", { name: /Height/ });
 
@@ -140,15 +151,23 @@ describe("App", () => {
 	it("shows how many full and partial shots will be taken and how many die fit on a reticle", async () => {
 		render(<App />);
 		const totalDiesNode = await screen.findByText(/Total Dies: [0-9]+/);
-		const totalDies = parseInt(totalDiesNode.textContent?.match(/\d+/)?.[0] || "0");
+		const totalDies = parseInt(
+			totalDiesNode.textContent?.match(/\d+/)?.[0] || "0",
+		);
 
 		// Get the number of dies per shot
-		const diePerReticleNode = await screen.findByText(/Die Per Reticle: [0-9]+/);
-		const diePerReticle = parseInt(diePerReticleNode.textContent?.match(/\d+/)?.[0] || "0");
+		const diePerReticleNode = await screen.findByText(
+			/Die Per Reticle: [0-9]+/,
+		);
+		const diePerReticle = parseInt(
+			diePerReticleNode.textContent?.match(/\d+/)?.[0] || "0",
+		);
 
 		// Get the number of shots
 		const shotCountNode = await screen.findByText(/Exposures: [0-9]+/);
-		const shotCount = parseInt(shotCountNode.textContent?.match(/\d+/)?.[0] || "0");
+		const shotCount = parseInt(
+			shotCountNode.textContent?.match(/\d+/)?.[0] || "0",
+		);
 
 		// The total number of dies should be the number of dies per shot times the number of shots
 		expect(totalDies).toEqual(diePerReticle * shotCount);
@@ -165,34 +184,63 @@ describe("App", () => {
 			"Manual",
 		];
 
-		it.each(yieldModelOptions)("shows the correct inputs for %s", async (model) => {
-			render(<App />);
-			const user = userEvent.setup();
-			const yieldModelSelect = await screen.findByRole("combobox", { name: "Yield Calculation Model" });
-			await user.selectOptions(yieldModelSelect, model);
-			switch (model) {
-				case "Poisson Model":
-				case "Murphy's Model":
-				case "Rectangular Model":
-				case "Moore's Model":
-				case "Seeds Model":
-					expect(screen.queryByRole("spinbutton", { name: /Defect Rate/ })).toBeInTheDocument();
-					expect(screen.queryByRole("spinbutton", { name: /Critical Die Area/ })).toBeInTheDocument();
-					expect(screen.queryByRole("spinbutton", { name: /Manual Yield/ })).not.toBeInTheDocument();
-					expect(screen.queryByRole("spinbutton", { name: /Critical Layers/ })).not.toBeInTheDocument();
-					break;
-				case "Bose-Einstein Model":
-					expect(screen.queryByRole("spinbutton", { name: /Defect Rate/ })).toBeInTheDocument();
-					expect(screen.queryByRole("spinbutton", { name: /Critical Die Area/ })).toBeInTheDocument();
-					expect(screen.queryByRole("spinbutton", { name: /Manual Yield/ })).not.toBeInTheDocument();
-					expect(screen.queryByRole("spinbutton", { name: /Critical Layers/ })).toBeInTheDocument();
-					break;
-				case "Manual":
-					expect(screen.queryByRole("spinbutton", { name: /Yield/ })).toBeInTheDocument()
-					expect(screen.queryByRole("spinbutton", { name: /Defect Rate/ })).not.toBeInTheDocument();
-					expect(screen.queryByRole("spinbutton", { name: /Critical Die Area/ })).not.toBeInTheDocument();
-					expect(screen.queryByRole("spinbutton", { name: /Critical Layers/ })).not.toBeInTheDocument();
-			}
-		});
-	})
+		it.each(yieldModelOptions)(
+			"shows the correct inputs for %s",
+			async (model) => {
+				render(<App />);
+				const user = userEvent.setup();
+				const yieldModelSelect = await screen.findByRole("combobox", {
+					name: "Yield Calculation Model",
+				});
+				await user.selectOptions(yieldModelSelect, model);
+				switch (model) {
+					case "Poisson Model":
+					case "Murphy's Model":
+					case "Rectangular Model":
+					case "Moore's Model":
+					case "Seeds Model":
+						expect(
+							screen.queryByRole("spinbutton", { name: /Defect Rate/ }),
+						).toBeInTheDocument();
+						expect(
+							screen.queryByRole("spinbutton", { name: /Critical Die Area/ }),
+						).toBeInTheDocument();
+						expect(
+							screen.queryByRole("spinbutton", { name: /Manual Yield/ }),
+						).not.toBeInTheDocument();
+						expect(
+							screen.queryByRole("spinbutton", { name: /Critical Layers/ }),
+						).not.toBeInTheDocument();
+						break;
+					case "Bose-Einstein Model":
+						expect(
+							screen.queryByRole("spinbutton", { name: /Defect Rate/ }),
+						).toBeInTheDocument();
+						expect(
+							screen.queryByRole("spinbutton", { name: /Critical Die Area/ }),
+						).toBeInTheDocument();
+						expect(
+							screen.queryByRole("spinbutton", { name: /Manual Yield/ }),
+						).not.toBeInTheDocument();
+						expect(
+							screen.queryByRole("spinbutton", { name: /Critical Layers/ }),
+						).toBeInTheDocument();
+						break;
+					case "Manual":
+						expect(
+							screen.queryByRole("spinbutton", { name: /Yield/ }),
+						).toBeInTheDocument();
+						expect(
+							screen.queryByRole("spinbutton", { name: /Defect Rate/ }),
+						).not.toBeInTheDocument();
+						expect(
+							screen.queryByRole("spinbutton", { name: /Critical Die Area/ }),
+						).not.toBeInTheDocument();
+						expect(
+							screen.queryByRole("spinbutton", { name: /Critical Layers/ }),
+						).not.toBeInTheDocument();
+				}
+			},
+		);
+	});
 });

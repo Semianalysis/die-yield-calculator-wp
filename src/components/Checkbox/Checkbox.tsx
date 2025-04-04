@@ -1,10 +1,10 @@
 import React from "react";
 
 export function Checkbox(props: {
-	label: string,
-	onChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
-	checked: boolean,
-	disabled?: boolean,
+	label: string;
+	onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+	checked: boolean;
+	disabled?: boolean;
 }) {
 	return (
 		<div className={props.disabled ? "checkbox--disabled" : "checkbox"}>

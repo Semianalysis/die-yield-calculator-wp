@@ -4,7 +4,7 @@ export function useEasterEgg() {
 	const [easterEggEnabled, setEasterEggEnabled] = useState(false);
 
 	useEffect(() => {
-		const sequence = ['t', 's', 'm', 'c'];
+		const sequence = ["t", "s", "m", "c"];
 		let keyIndex = 0;
 		let timeOut: ReturnType<typeof setTimeout>;
 
@@ -26,12 +26,12 @@ export function useEasterEgg() {
 			}
 
 			// User has 2s between key entries before sequence resets
-			timeOut = setTimeout(() => keyIndex = 0, 2000);
+			timeOut = setTimeout(() => (keyIndex = 0), 2000);
 		};
-		window.addEventListener('keydown', listenerCb);
+		window.addEventListener("keydown", listenerCb);
 
 		// Remove key listener when component unmounts
-		return () => window.removeEventListener('keydown', listenerCb)
+		return () => window.removeEventListener("keydown", listenerCb);
 	}, []);
 
 	return easterEggEnabled;

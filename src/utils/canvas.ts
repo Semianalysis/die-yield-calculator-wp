@@ -1,6 +1,5 @@
-
-type Color = string
-let patterns: {[key: Color]: CanvasPattern} = {};
+type Color = string;
+let patterns: { [key: Color]: CanvasPattern } = {};
 
 /**
  * Create a memoized hatch-effect canvas pattern on the given canvas context
@@ -8,9 +7,9 @@ let patterns: {[key: Color]: CanvasPattern} = {};
  */
 export function createHatchingCanvasPattern(
 	context: CanvasRenderingContext2D,
-	color: Color = "rgba(90,79,69,0.8)"
+	color: Color = "rgba(90,79,69,0.8)",
 ) {
-	if(patterns[color]) {
+	if (patterns[color]) {
 		return patterns[color];
 	}
 
@@ -23,7 +22,7 @@ export function createHatchingCanvasPattern(
 	}
 
 	// Set pattern canvas dimensions (small for tight hatching)
-	patternCanvas.width = 8;  // Size of one diagonal repetition
+	patternCanvas.width = 8; // Size of one diagonal repetition
 	patternCanvas.height = 8;
 
 	// Draw diagonal lines on the pattern canvas

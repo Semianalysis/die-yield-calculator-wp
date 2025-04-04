@@ -155,7 +155,7 @@ function App() {
 	const [manualYield, setManualYield] = useState<string>("100");
 	const aspectRatio = useRef(parseFloat(dieWidth) / parseFloat(dieHeight));
 
-	const fieldWidthMM =  defaultFieldWidth;
+	const fieldWidthMM = defaultFieldWidth;
 	const fieldHeightMM = halfField ? defaultFieldHeight / 2 : defaultFieldHeight;
 
 	const { results, validationError } = useInputs(
@@ -225,11 +225,19 @@ function App() {
 			return;
 		}
 
-		const clampedWidth = clampedInputDisplayValue(value, minDieEdge, maxDieWidth);
+		const clampedWidth = clampedInputDisplayValue(
+			value,
+			minDieEdge,
+			maxDieWidth,
+		);
 		setDieWidth(clampedWidth);
 
 		if (maintainAspectRatio) {
-			const clampedHeight = clampedInputDisplayValue(clampedWidth, minDieEdge, maxDieWidth);
+			const clampedHeight = clampedInputDisplayValue(
+				clampedWidth,
+				minDieEdge,
+				maxDieWidth,
+			);
 			setDieHeight(clampedHeight);
 		}
 	};
@@ -242,11 +250,19 @@ function App() {
 			return;
 		}
 
-		const clampedHeight = clampedInputDisplayValue(value, minDieEdge, maxDieHeight);
+		const clampedHeight = clampedInputDisplayValue(
+			value,
+			minDieEdge,
+			maxDieHeight,
+		);
 		setDieHeight(clampedHeight);
 
 		if (maintainAspectRatio) {
-			const clampedWidth = clampedInputDisplayValue(clampedHeight, minDieEdge, maxDieHeight);
+			const clampedWidth = clampedInputDisplayValue(
+				clampedHeight,
+				minDieEdge,
+				maxDieHeight,
+			);
 			setDieWidth(clampedWidth);
 		}
 	};
@@ -299,7 +315,7 @@ function App() {
 		event: React.ChangeEvent<HTMLInputElement>,
 	) => {
 		setShowReticleBackground(event.target.checked);
-	}
+	};
 
 	const handleHalfFieldChange = (
 		event: React.ChangeEvent<HTMLInputElement>,
@@ -417,7 +433,7 @@ function App() {
 					)}
 					<div className="input-row">
 						<NumberInput
-							label="Substrate Cost ('$')"
+							label="Substrate Cost ($)"
 							value={substrateCost}
 							onChange={(event) => setSubstrateCost(event.target.value)}
 							min={0}
@@ -434,62 +450,56 @@ function App() {
 							}
 						/>
 					</div>
-					{
-						selectedModel !== 'manual' && (
-							<>
-								<div className="input-row">
-									<Checkbox
-										label="All Die Area Critical"
-										onChange={handleAllCriticalChange}
-										checked={allCritical}
-									/>
-								</div>
-								<div className="input-row">
-									<NumberInput
-										label="Critical Die Area (mm²)"
-										value={criticalArea}
-										isDisabled={allCritical}
-										onChange={(event) => setCriticalArea(event.target.value)}
-										max={parseFloat(criticalArea)}
-									/>
-								</div>
-								<div className="input-row">
-									<NumberInput
-										label="Defect Rate (#/cm²)"
-										value={defectRate}
-										min={0}
-										onChange={(event) => setDefectRate(event.target.value)}
-									/>
-								</div>
-							</>
-						)
-					}
-					{
-						selectedModel === 'bose-einstein' && (
+					{selectedModel !== "manual" && (
+						<>
 							<div className="input-row">
-								<NumberInput
-									label="Critical Layers"
-									value={criticalLayers}
-									onChange={(event) => setCriticalLayers(event.target.value)}
-									min={0}
-									max={100}
+								<Checkbox
+									label="All Die Area Critical"
+									onChange={handleAllCriticalChange}
+									checked={allCritical}
 								/>
 							</div>
-						)
-					}
-					{
-						selectedModel === 'manual' && (
 							<div className="input-row">
 								<NumberInput
-									label="Yield (%)"
-									value={manualYield}
-									onChange={(event) => setManualYield(event.target.value)}
-									min={0}
-									max={100}
+									label="Critical Die Area (mm²)"
+									value={criticalArea}
+									isDisabled={allCritical}
+									onChange={(event) => setCriticalArea(event.target.value)}
+									max={parseFloat(criticalArea)}
 								/>
 							</div>
-						)
-					}
+							<div className="input-row">
+								<NumberInput
+									label="Defect Rate (#/cm²)"
+									value={defectRate}
+									min={0}
+									onChange={(event) => setDefectRate(event.target.value)}
+								/>
+							</div>
+						</>
+					)}
+					{selectedModel === "bose-einstein" && (
+						<div className="input-row">
+							<NumberInput
+								label="Critical Layers"
+								value={criticalLayers}
+								onChange={(event) => setCriticalLayers(event.target.value)}
+								min={0}
+								max={100}
+							/>
+						</div>
+					)}
+					{selectedModel === "manual" && (
+						<div className="input-row">
+							<NumberInput
+								label="Yield (%)"
+								value={manualYield}
+								onChange={(event) => setManualYield(event.target.value)}
+								min={0}
+								max={100}
+							/>
+						</div>
+					)}
 					<JumpToResults outputRef={outputRef} />
 				</div>
 				<div className="output" ref={outputRef}>

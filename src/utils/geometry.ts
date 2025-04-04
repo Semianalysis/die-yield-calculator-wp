@@ -12,29 +12,29 @@ export function getRectCorners(
 	x: number,
 	y: number,
 	width: number,
-	height: number
+	height: number,
 ) {
 	return [
 		{
 			// top left
 			x: x,
-			y: y
+			y: y,
 		},
 		{
 			// top right
 			x: x + width,
-			y: y
+			y: y,
 		},
 		{
 			// bottom left
 			x: x,
-			y: y + height
+			y: y + height,
 		},
 		{
 			// bottom right
 			x: x + width,
-			y: y + height
-		}
+			y: y + height,
+		},
 	];
 }
 
@@ -53,7 +53,7 @@ export function isInsideCircle(
 	y: number,
 	centerX: number,
 	centerY: number,
-	radius: number
+	radius: number,
 ) {
 	return Math.sqrt((x - centerX) ** 2 + (y - centerY) ** 2) <= radius;
 }
@@ -73,7 +73,7 @@ export function isInsideRectangle(
 	rectangleX: number,
 	rectangleY: number,
 	rectangleWidth: number,
-	rectangleHeight: number
+	rectangleHeight: number,
 ) {
 	return (
 		x >= rectangleX &&
@@ -106,13 +106,13 @@ function rectangleIsInsideRectangle(
 	outerRectY: number,
 	outerRectWidth: number,
 	outerRectHeight: number,
-	allowPartial: boolean
+	allowPartial: boolean,
 ) {
 	const innerRectCorners = getRectCorners(
 		innerRectX,
 		innerRectY,
 		innerRectWidth,
-		innerRectHeight
+		innerRectHeight,
 	);
 	const cornersInsideOuterRectangle = innerRectCorners.filter((corner) =>
 		isInsideRectangle(
@@ -121,8 +121,8 @@ function rectangleIsInsideRectangle(
 			outerRectX,
 			outerRectY,
 			outerRectWidth,
-			outerRectHeight
-		)
+			outerRectHeight,
+		),
 	);
 
 	if (allowPartial) {
@@ -139,7 +139,7 @@ function rectangleIsInsideRectangle(
 				}
 
 				return true;
-			}
+			},
 		);
 
 		return nonEdgeCornersInsideOuterRect.length > 0;
@@ -189,10 +189,10 @@ export function rectanglesInCircle(
 					offsetRectX,
 					offsetRectY,
 					rectWidth,
-					rectHeight
+					rectHeight,
 				);
 				const cornersWithinCircle = corners.filter((corner) =>
-					isInsideCircle(corner.x, corner.y, 0, 0, radius)
+					isInsideCircle(corner.x, corner.y, 0, 0, radius),
 				);
 
 				// If partials are allowed, only one corner must overlap, otherwise all must.
@@ -207,7 +207,7 @@ export function rectanglesInCircle(
 					positions.push({
 						// Add the radius back to the final coordinates so all are positive integers
 						x: offsetRectX + radius,
-						y: offsetRectY + radius
+						y: offsetRectY + radius,
 					});
 				}
 			}
@@ -242,12 +242,12 @@ export function rectanglesInRectangle(
 	offsetX: number,
 	offsetY: number,
 	center: boolean,
-	includePartials: boolean
+	includePartials: boolean,
 ): {
-	positions: Array<Position>,
-	numRows: number,
-	numCols: number
-}{
+	positions: Array<Position>;
+	numRows: number;
+	numCols: number;
+} {
 	const positions: Array<Position> = [];
 
 	// Adjust the effective size of inner rectangles including gaps split evenly on both sides
@@ -288,7 +288,7 @@ export function rectanglesInRectangle(
 				0,
 				outerRectWidth,
 				outerRectHeight,
-				includePartials
+				includePartials,
 			);
 
 			if (isInside) {

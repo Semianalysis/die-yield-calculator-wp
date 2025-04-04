@@ -3,7 +3,10 @@ import { FabResults, SubstrateShape } from "../../types";
 import Tilt, { OnMoveParams } from "react-parallax-tilt";
 import { createHatchingCanvasPattern } from "../../utils/canvas";
 import { ReactComponent as TSMCLogo } from "../../assets/tsmc-logo.svg";
-import { DieDecorativeCanvas, DieMapCanvas } from "../DieMapCanvas/DieMapCanvas";
+import {
+	DieDecorativeCanvas,
+	DieMapCanvas,
+} from "../DieMapCanvas/DieMapCanvas";
 
 // How many pixels should be rendered for every mm of wafer size
 const mmToPxScale = 3;
@@ -130,7 +133,8 @@ function LossyEdgeMarker(props: {
 			context.fill();
 
 			// Clear the notch keep-out area so we can color it differently
-			const keepOutY = (props.waferHeight - props.notchKeepOutHeight) * mmToPxScale;
+			const keepOutY =
+				(props.waferHeight - props.notchKeepOutHeight) * mmToPxScale;
 			context.clearRect(
 				0,
 				keepOutY,
@@ -158,7 +162,13 @@ function LossyEdgeMarker(props: {
 				waferHeightPx - lossyEdgeWidthInPx * 2,
 			);
 		}
-	}, [props.lossyEdgeWidth, props.notchKeepOutHeight, props.shape, props.waferWidth, props.waferHeight]);
+	}, [
+		props.lossyEdgeWidth,
+		props.notchKeepOutHeight,
+		props.shape,
+		props.waferWidth,
+		props.waferHeight,
+	]);
 
 	return (
 		<canvas

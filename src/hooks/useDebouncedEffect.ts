@@ -9,7 +9,7 @@ import { useEffect, EffectCallback, DependencyList } from "react";
 export function useDebouncedEffect(
 	effect: EffectCallback,
 	deps: DependencyList | undefined,
-	delay: number
+	delay: number,
 ) {
 	useEffect(() => {
 		const handler = setTimeout(() => effect(), delay);

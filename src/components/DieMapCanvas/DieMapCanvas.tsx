@@ -1,7 +1,6 @@
 import { FabResults, SubstrateShape } from "../../types";
 import React, { useEffect, useRef } from "react";
 
-
 export function DieMapCanvas(props: {
 	results: FabResults;
 	validationError?: string;

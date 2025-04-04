@@ -35,11 +35,13 @@ export function useInputs(
 	useDebouncedEffect(
 		() => {
 			// Reset to defaults if we can't use one or more values
-			const validationErrors = Object.keys(validations).map((validation) => {
-				const validationFn =
-					validations[validation as keyof typeof validations];
-				return validationFn(values, { fieldWidth, fieldHeight });
-			}).filter(Boolean);
+			const validationErrors = Object.keys(validations)
+				.map((validation) => {
+					const validationFn =
+						validations[validation as keyof typeof validations];
+					return validationFn(values, { fieldWidth, fieldHeight });
+				})
+				.filter(Boolean);
 
 			if (validationErrors.length) {
 				setResults(null);

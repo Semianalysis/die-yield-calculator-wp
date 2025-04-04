@@ -3,7 +3,7 @@
  *
  * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-i18n/
  */
-import { __ } from '@wordpress/i18n';
+import { __ } from "@wordpress/i18n";
 
 /**
  * React hook that is used to mark the block wrapper element.
@@ -11,7 +11,7 @@ import { __ } from '@wordpress/i18n';
  *
  * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-block-editor/#useblockprops
  */
-import { useBlockProps } from '@wordpress/block-editor';
+import { useBlockProps } from "@wordpress/block-editor";
 
 /**
  * Lets webpack process CSS, SASS or SCSS files referenced in JavaScript files.
@@ -19,9 +19,9 @@ import { useBlockProps } from '@wordpress/block-editor';
  *
  * @see https://www.npmjs.com/package/@wordpress/scripts#using-css
  */
-import './assets/scss/editor.scss';
+import "./assets/scss/editor.scss";
 
-import App from './components/App';
+import App from "./components/App";
 
 /**
  * The edit function describes the structure of your block in the context of the
@@ -33,7 +33,7 @@ import App from './components/App';
  */
 export default function Edit() {
 	return (
-		<div { ...useBlockProps() }>
+		<div {...useBlockProps()}>
 			<App />
 		</div>
 	);

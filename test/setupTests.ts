@@ -2,7 +2,7 @@
 import "@testing-library/jest-dom";
 
 // For mocking the <canvas> element
-import 'jest-canvas-mock';
+import "jest-canvas-mock";
 
 const mockIntersectionObserver = jest.fn();
 mockIntersectionObserver.mockReturnValue({
