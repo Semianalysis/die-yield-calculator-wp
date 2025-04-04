@@ -105,6 +105,7 @@ export type InputValues = {
 	defectRate: number;
 	lossyEdgeWidth: number;
 	notchKeepOutHeight: number;
+	substrateCost: number;
 	scribeHoriz: number;
 	scribeVert: number;
 	transHoriz: number;

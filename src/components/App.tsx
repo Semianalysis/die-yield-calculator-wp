@@ -136,6 +136,7 @@ function App() {
 	const [defectRate, setDefectRate] = useState<string>("0.1");
 	const [lossyEdgeWidth, setLossyEdgeWidth] = useState<string>("3");
 	const [notchKeepOutHeight, setNotchKeepOutHeight] = useState<string>("5");
+	const [substrateCost, setSubstrateCost] = useState<string>("20000");
 	const [allCritical, setAllCritical] = useState(true);
 	const [reticleLimit, setReticleLimit] = useState(true);
 	const [showShotMap, setShowShotMap] = useState(true);
@@ -165,6 +166,7 @@ function App() {
 			defectRate: parseFloat(defectRate),
 			lossyEdgeWidth: parseFloat(lossyEdgeWidth),
 			notchKeepOutHeight: parseFloat(notchKeepOutHeight),
+			substrateCost: parseFloat(substrateCost),
 			scribeHoriz: parseFloat(scribeHoriz),
 			scribeVert: parseFloat(scribeVert),
 			transHoriz: parseFloat(transHoriz),
@@ -413,6 +415,15 @@ function App() {
 							/>
 						</div>
 					)}
+					<div className="input-row">
+						<NumberInput
+							label="Substrate Cost ('$')"
+							value={substrateCost}
+							onChange={(event) => setSubstrateCost(event.target.value)}
+							min={0}
+							step={100}
+						/>
+					</div>
 					<hr />
 					<h2>Defects</h2>
 					<div className="input-row">

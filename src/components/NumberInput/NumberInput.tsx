@@ -8,6 +8,7 @@ export function NumberInput(props: {
 	onBlur?: (e: React.ChangeEvent<HTMLInputElement>) => void,
 	max?: number,
 	min?: number,
+	step?: string | number,
 }) {
 	// Use an event listener to prevent scroll events from bubbling and causing the
 	// document to scroll. See https://github.com/facebook/react/issues/5845#issuecomment-492955321
@@ -31,7 +32,7 @@ export function NumberInput(props: {
 					onChange={props.onChange}
 					onBlur={props.onBlur}
 					ref={inputElRef}
-					step="0.01"
+					step={props.step ?? "0.01"}
 					max={props.max}
 					min={props.min}
 				/>
