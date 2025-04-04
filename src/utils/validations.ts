@@ -119,4 +119,9 @@ export const validations: { [k in keyof InputValues]: Validator } = {
 			return "Manual yield % must be a number from 0-100";
 		}
 	},
+	substrateCost: ({ substrateCost }) => {
+		if (!validPositiveNumber(substrateCost)) {
+			return "Substrate cost must be a positive number";
+		}
+	},
 };

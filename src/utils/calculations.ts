@@ -105,6 +105,7 @@ export type InputValues = {
 	defectRate: number;
 	lossyEdgeWidth: number;
 	notchKeepOutHeight: number;
+	substrateCost: number;
 	scribeHoriz: number;
 	scribeVert: number;
 	transHoriz: number;
@@ -324,6 +325,7 @@ export function evaluatePanelInputs(
 		lossyEdgeWidth,
 		criticalLayers,
 		manualYield,
+		substrateCost,
 	} = inputVals;
 	let dies = [];
 	const fabYield = getFabYield(
@@ -386,6 +388,8 @@ export function evaluatePanelInputs(
 		dieMap.dies.map((die) => die.dieState)
 	);
 
+	const dieCost = goodDies > 0 ? substrateCost / goodDies : 0;
+
 
 	return {
 		dies: dieMap.dies,
@@ -406,7 +410,8 @@ export function evaluatePanelInputs(
 			dieWidth,
 			dieHeight,
 			diesInShot.positions.length
-		)
+		),
+		dieCost
 	};
 }
 
@@ -434,6 +439,7 @@ export function evaluateDiscInputs(
 		defectRate,
 		lossyEdgeWidth,
 		notchKeepOutHeight,
+		substrateCost,
 		scribeHoriz,
 		scribeVert,
 		criticalLayers,
@@ -499,6 +505,8 @@ export function evaluateDiscInputs(
 		dieMap.dies.map((die) => die.dieState)
 	);
 
+	const dieCost = goodDies > 0 ? substrateCost / goodDies : 0;
+
 	return {
 		dies: dieMap.dies,
 		totalDies: dieMap.dies.length,
@@ -518,6 +526,7 @@ export function evaluateDiscInputs(
 			dieWidth,
 			dieHeight,
 			diesInShot.positions.length
-		)
+		),
+		dieCost
 	};
 }
