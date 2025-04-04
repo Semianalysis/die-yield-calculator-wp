@@ -6,6 +6,7 @@ module.exports = {
 	],
 	moduleNameMapper: {
 		'^.+\\.s?css$': 'identity-obj-proxy',
+		'\\.svg$': '<rootDir>/src/__mocks__/svgMock.js',
 	},
 	testEnvironment: 'jsdom',
 	testEnvironmentOptions: {
