@@ -104,7 +104,7 @@ export function WaferStats(props: {
 				</li>
 				<li className="result-stats__result result-stats__result--die-cost">
 					<DollarIcon />
-					Die Cost: {displayValue(props.results?.dieCost)}
+					Cost Per Die: {`$${displayValue(props.results?.dieCost)}`}
 				</li>
 			</ul>
 			<ul className="result-stats__list">
