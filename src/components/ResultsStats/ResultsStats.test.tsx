@@ -17,6 +17,7 @@ const results: FabResults = {
 	fullShotCount: 20,
 	partialShotCount: 5,
 	reticleUtilization: 0.75,
+	dieCost: 5.25,
 };
 
 describe("ResultStats", () => {

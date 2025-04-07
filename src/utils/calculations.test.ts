@@ -284,6 +284,7 @@ describe("Calculations", () => {
 				defectRate: 0.1,
 				lossyEdgeWidth: 3,
 				notchKeepOutHeight: 5,
+				substrateCost: 20000,
 				scribeHoriz: 0.2,
 				scribeVert: 0.2,
 				transHoriz: 0,
