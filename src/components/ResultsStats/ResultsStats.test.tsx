@@ -30,6 +30,7 @@ describe("ResultStats", () => {
 				dieHeight={10}
 				waferWidth={300}
 				waferHeight={400}
+				reticleLimit={true}
 			/>
 		);
 
@@ -51,6 +52,7 @@ describe("ResultStats", () => {
 				dieHeight={10}
 				waferWidth={200}
 				waferHeight={200}
+				reticleLimit={true}
 			/>
 		);
 
@@ -67,6 +69,7 @@ describe("ResultStats", () => {
 				dieHeight={10}
 				waferWidth={200}
 				waferHeight={200}
+				reticleLimit={true}
 			/>
 		);
 
@@ -88,6 +91,7 @@ describe("ResultStats", () => {
 				dieHeight={dieHeight}
 				waferWidth={waferWidth}
 				waferHeight={waferHeight}
+				reticleLimit={true}
 			/>
 		);
 
@@ -95,6 +99,22 @@ describe("ResultStats", () => {
 
 		expect(screen.getByText(new RegExp(`Total Waste Area: ${expected}cm²`, 'ig'))).toBeInTheDocument();
 	});
+
+	it('does not show exposure count if reticle limit is turned off', () => {
+		render(
+			<WaferStats
+				results={results}
+				shape="Panel"
+				dieWidth={10}
+				dieHeight={10}
+				waferWidth={200}
+				waferHeight={200}
+				reticleLimit={false}
+			/>
+		);
+
+		expect(screen.queryByText(/Exposures/i)).not.toBeInTheDocument();
+	})
 
 	it('renders the ReticleStats component with correct values', () => {
 		render(
