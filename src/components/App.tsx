@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { Checkbox } from "./Checkbox/Checkbox";
 import { NumberInput } from "./NumberInput/NumberInput";
 import { useInputs } from "../hooks/useInputs";
@@ -97,37 +97,6 @@ const ModelSelector = (props: {
 	</label>
 );
 
-/**
- * Get the maximum possible die size based on whether reticle limiting is enabled
- * and what the aspect ratio is, if any, falling back to a % of wafer dimensions
- * as a sane default
- */
-function getDieMaxDimensions(
-	reticleLimit: boolean,
-	waferWidth: number,
-	waferHeight: number,
-	maintainAspectRatio: boolean,
-	aspectRatio: number,
-	fieldWidthMM: number,
-	fieldHeightMM: number,
-) {
-	// Cannot exceed reticle dimensions
-	const boundingSquareWidth = reticleLimit ? fieldWidthMM : waferWidth / 4;
-	const boundingSquareHeight = reticleLimit ? fieldHeightMM : waferHeight / 4;
-
-	if (!maintainAspectRatio) {
-		return {
-			width: boundingSquareWidth,
-			height: boundingSquareHeight,
-		};
-	}
-
-	return {
-		width: Math.min(boundingSquareWidth, boundingSquareHeight * aspectRatio),
-		height: Math.min(boundingSquareHeight, boundingSquareWidth / aspectRatio),
-	};
-}
-
 function App() {
 	const [dieWidth, setDieWidth] = useState<string>("8");
 	const [dieHeight, setDieHeight] = useState<string>("8");
@@ -155,8 +124,34 @@ function App() {
 	const [manualYield, setManualYield] = useState<string>("100");
 	const aspectRatio = useRef(parseFloat(dieWidth) / parseFloat(dieHeight));
 
-	const fieldWidthMM =  defaultFieldWidth;
-	const fieldHeightMM = halfField ? defaultFieldHeight / 2 : defaultFieldHeight;
+	const waferWidth =
+		substrateShape === "Panel"
+			? panelSizes[panelSize].width
+			: waferSizes[waferSize].width;
+	const waferHeight =
+		substrateShape === "Panel"
+			? panelSizes[panelSize].height
+			: waferSizes[waferSize].width;
+
+	const { width: fieldWidthMM, height: fieldHeightMM } = useMemo(() => {
+
+		if (!reticleLimit) {
+			return {
+				width: waferWidth,
+				height: waferHeight,
+			}
+		}
+
+		return {
+			width: defaultFieldWidth,
+			height: halfField ? defaultFieldHeight / 2 : defaultFieldHeight
+		};
+	}, [
+		reticleLimit,
+		halfField,
+		waferWidth,
+		waferHeight,
+	]);
 
 	const { results, validationError } = useInputs(
 		{
@@ -184,38 +179,17 @@ function App() {
 	const easterEggEnabled = useEasterEgg();
 	const outputRef = useRef<HTMLDivElement | null>(null);
 
-	const waferWidth =
-		substrateShape === "Panel"
-			? panelSizes[panelSize].width
-			: waferSizes[waferSize].width;
-	const waferHeight =
-		substrateShape === "Panel"
-			? panelSizes[panelSize].height
-			: waferSizes[waferSize].width;
-
-	// Derive max die width/height based on whether reticle limit is set.
-	// Fall back to wafer dimensions / 4 as a sane max.
-	const { width: maxDieWidth, height: maxDieHeight } = getDieMaxDimensions(
-		reticleLimit,
-		waferWidth,
-		waferHeight,
-		maintainAspectRatio,
-		aspectRatio.current,
-		fieldWidthMM,
-		fieldHeightMM,
-	);
+	useEffect(() => {
+		if (parseFloat(dieWidth) > fieldWidthMM) {
+			setDieWidth(fieldWidthMM.toString());
+		}
+	}, [fieldWidthMM]);
 
 	useEffect(() => {
-		if (parseFloat(dieWidth) > maxDieWidth) {
-			setDieWidth(maxDieWidth.toString());
+		if (parseFloat(dieHeight) > fieldHeightMM) {
+			setDieHeight(fieldHeightMM.toString());
 		}
-	}, [maxDieWidth]);
-
-	useEffect(() => {
-		if (parseFloat(dieHeight) > maxDieHeight) {
-			setDieHeight(maxDieHeight.toString());
-		}
-	}, [maxDieHeight]);
+	}, [fieldHeightMM]);
 
 	const handleDieWidthChange = (value: string) => {
 		const inputValNum = parseFloat(value);
@@ -225,11 +199,11 @@ function App() {
 			return;
 		}
 
-		const clampedWidth = clampedInputDisplayValue(value, minDieEdge, maxDieWidth);
+		const clampedWidth = clampedInputDisplayValue(value, minDieEdge, fieldWidthMM);
 		setDieWidth(clampedWidth);
 
 		if (maintainAspectRatio) {
-			const clampedHeight = clampedInputDisplayValue(clampedWidth, minDieEdge, maxDieWidth);
+			const clampedHeight = clampedInputDisplayValue(clampedWidth, minDieEdge, fieldHeightMM);
 			setDieHeight(clampedHeight);
 		}
 	};
@@ -242,11 +216,11 @@ function App() {
 			return;
 		}
 
-		const clampedHeight = clampedInputDisplayValue(value, minDieEdge, maxDieHeight);
+		const clampedHeight = clampedInputDisplayValue(value, minDieEdge, fieldHeightMM);
 		setDieHeight(clampedHeight);
 
 		if (maintainAspectRatio) {
-			const clampedWidth = clampedInputDisplayValue(clampedHeight, minDieEdge, maxDieHeight);
+			const clampedWidth = clampedInputDisplayValue(clampedHeight, minDieEdge, fieldHeightMM);
 			setDieWidth(clampedWidth);
 		}
 	};
@@ -319,7 +293,7 @@ function App() {
 							onChange={(event) => {
 								handleDieWidthChange(event.target.value);
 							}}
-							max={maxDieWidth}
+							max={fieldWidthMM}
 						/>
 						<NumberInput
 							label="Die Height (mm)"
@@ -327,7 +301,7 @@ function App() {
 							onChange={(event) => {
 								handleDieHeightChange(event.target.value);
 							}}
-							max={maxDieHeight}
+							max={fieldHeightMM}
 						/>
 					</div>
 					<div className="input-row">
@@ -337,7 +311,7 @@ function App() {
 							checked={maintainAspectRatio}
 						/>
 						<Checkbox
-							label={`Reticle Limit (${fieldWidthMM}mm x ${fieldHeightMM}mm)`}
+							label={`Reticle Limit (${defaultFieldWidth}mm x ${defaultFieldHeight}mm)`}
 							onChange={handleReticleLimitChange}
 							checked={reticleLimit}
 						/>
@@ -360,7 +334,8 @@ function App() {
 						<Checkbox
 							label="Half Field Exposures (High NA)"
 							onChange={handleHalfFieldChange}
-							checked={halfField}
+							checked={reticleLimit ? halfField : false}
+							disabled={!reticleLimit}
 						/>
 					</div>
 					<div className="input-row--two-col">
