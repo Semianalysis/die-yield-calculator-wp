@@ -35,7 +35,7 @@ const dieWidthAndHorizontalScribe: Validator = (
 	}
 
 	if (dieWidth + scribeHoriz > fieldWidth) {
-		return `Die and scribe line width must be less than or equal to the field width (${fieldWidth}mm).`;
+		return `Die and scribe line width must be less than or equal to the field width (${fieldWidth}mm). Reduce the total width or disable Reticle Limit.`;
 	}
 };
 
@@ -62,7 +62,7 @@ const dieHeightAndVerticalScribe: Validator = (
 	}
 
 	if (dieHeight + scribeVert > fieldHeight) {
-		return `Die and scribe line height must be less than or equal to the field height (${fieldHeight}mm).`;
+		return `Die and scribe line height must be less than or equal to the field height (${fieldHeight}mm). Reduce the total height or disable Reticle Limit.`;
 	}
 };
 
