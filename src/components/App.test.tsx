@@ -2,6 +2,7 @@ import React from "react";
 import App from "./App";
 import { render, screen, waitFor, within } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
+import { defaultFieldWidth, defaultFieldHeight } from "../config";
 
 describe("App", () => {
 	it("calculates the correct number of total 5mm dies on a 300mm panel with no scribe lines", async () => {
@@ -152,6 +153,76 @@ describe("App", () => {
 
 		// The total number of dies should be the number of dies per shot times the number of shots
 		expect(totalDies).toEqual(diePerReticle * shotCount);
+	});
+
+	it("enforces die size limits only when the Reticle Limit checkbox is checked", async () => {
+		render(<App />);
+		const user = userEvent.setup();
+
+		// Get the input elements and the Reticle Limit checkbox
+		const dieWidthInput = screen.getByRole("spinbutton", { name: /Width/ });
+		const dieHeightInput = screen.getByRole("spinbutton", { name: /Height/ });
+		const reticleLimitCheckbox = screen.getByRole("checkbox", {
+			name: new RegExp(`Reticle Limit \\(${defaultFieldWidth}mm x ${defaultFieldHeight}mm\\)`)
+		});
+
+		// By default, Reticle Limit should be checked
+		expect(reticleLimitCheckbox).toBeChecked();
+
+		// Try entering a die width larger than the field width
+		await user.clear(dieWidthInput);
+		await user.type(dieWidthInput, (defaultFieldWidth + 1).toString());
+
+		// Input should be clamped to the field width and show validation error
+		expect(dieWidthInput).toHaveDisplayValue(defaultFieldWidth.toString());
+
+		// Wait for validation error to appear
+		await waitFor(() => {
+			const errorText = screen.getByText(
+				new RegExp(`Die and scribe line width must be less than or equal to the field width \\(${defaultFieldWidth}mm\\)`, 'g')
+			);
+			expect(errorText).toBeInTheDocument();
+		});
+
+		// Uncheck the Reticle Limit checkbox
+		await user.click(reticleLimitCheckbox);
+		expect(reticleLimitCheckbox).not.toBeChecked();
+
+		// Now we should be able to enter larger die dimensions
+		await user.clear(dieWidthInput);
+		await user.type(dieWidthInput, (defaultFieldWidth + 10).toString());
+
+		// Input should accept the larger value
+		expect(dieWidthInput).toHaveDisplayValue((defaultFieldWidth + 10).toString());
+
+		// Wait for the validation error to disappear
+		await waitFor(() => {
+			// This looks for any validation error with the text containing "field width"
+			const errorText = screen.queryByText(/field width/i);
+			expect(errorText).not.toBeInTheDocument();
+		});
+
+		// Try a large height too
+		await user.clear(dieHeightInput);
+		await user.type(dieHeightInput, (defaultFieldHeight + 10).toString());
+
+		// Input should accept the larger value
+		expect(dieHeightInput).toHaveDisplayValue((defaultFieldHeight + 10).toString());
+
+		// Check the Reticle Limit checkbox again
+		await user.click(reticleLimitCheckbox);
+		expect(reticleLimitCheckbox).toBeChecked();
+
+		// Die dimensions should be clamped to field dimensions again
+		expect(dieWidthInput).toHaveDisplayValue(defaultFieldWidth.toString());
+		expect(dieHeightInput).toHaveDisplayValue(defaultFieldHeight.toString());
+
+		// And validation error should reappear
+		await waitFor(() => {
+			// We should see at least one validation error about field dimensions
+			const errorText = screen.getByText(/must be less than or equal to the field (width|height)/i);
+			expect(errorText).toBeInTheDocument();
+		});
 	});
 
 	describe("defects inputs", () => {

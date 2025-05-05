@@ -9,7 +9,7 @@ type Validator = (
 	fieldSize: {
 		fieldWidth: number;
 		fieldHeight: number;
-	},
+	}
 ) => string | undefined;
 
 /**
