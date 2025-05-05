@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { FabResults, SubstrateShape } from "../types";
-import { waferSizes, panelSizes, yieldModels, minDieEdge } from "../config";
+import { waferSizes, panelSizes, yieldModels } from "../config";
 import {
 	evaluateDiscInputs,
 	evaluatePanelInputs,
@@ -31,15 +31,32 @@ export function useInputs(
 ) {
 	const [results, setResults] = useState<FabResults>(null);
 	const [validationError, setValidationError] = useState<string>();
+	const waferWidth =
+		shape === "Panel"
+			? panelSizes[panelSize].width
+			: waferSizes[discSize].width;
+	const waferHeight =
+		shape === "Panel"
+			? panelSizes[panelSize].height
+			: waferSizes[discSize].width;
 
 	useDebouncedEffect(
 		() => {
 			// Reset to defaults if we can't use one or more values
-			const validationErrors = Object.keys(validations).map((validation) => {
-				const validationFn =
-					validations[validation as keyof typeof validations];
-				return validationFn(values, { fieldWidth, fieldHeight });
-			}).filter(Boolean);
+			const validationErrors = Object.keys(validations)
+				.map((validation) => {
+					const validationFn =
+						validations[validation as keyof typeof validations];
+					return validationFn(
+						values,
+						{ fieldWidth, fieldHeight },
+						{
+							waferWidth,
+							waferHeight,
+						},
+					);
+				})
+				.filter(Boolean);
 
 			if (validationErrors.length) {
 				setResults(null);
