@@ -398,8 +398,7 @@ export function evaluatePanelInputs(
 		dieMap.dies.map((die) => die.dieState)
 	);
 
-	const dieCost = goodDies > 0 ? substrateCost / goodDies : 0;
-
+	const dieCost = goodDies > 0 ? substrateCost / goodDies : undefined;
 
 	return {
 		dies: dieMap.dies,
@@ -519,7 +518,7 @@ export function evaluateDiscInputs(
 		dieMap.dies.map((die) => die.dieState)
 	);
 
-	const dieCost = goodDies > 0 ? substrateCost / goodDies : 0;
+	const dieCost = goodDies > 0 ? substrateCost / goodDies : undefined;
 
 	return {
 		dies: dieMap.dies,
