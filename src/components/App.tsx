@@ -1,9 +1,4 @@
-import React, {
-	useState,
-	useEffect,
-	useRef,
-	useMemo,
-} from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { Checkbox } from "./Checkbox/Checkbox";
 import { NumberInput } from "./NumberInput/NumberInput";
 import { useInputs } from "../hooks/useInputs";
@@ -168,12 +163,15 @@ function App() {
 			criticalLayers: parseFloat(criticalLayers),
 			manualYield: parseFloat(manualYield),
 		},
-		selectedModel,
-		substrateShape,
-		panelSize,
-		waferSize,
-		fieldWidthMM,
-		fieldHeightMM,
+		{
+			yieldModel: selectedModel,
+			substrateShape,
+			panelSize,
+			discSize: waferSize,
+			fieldWidth: fieldWidthMM,
+			fieldHeight: fieldHeightMM,
+			reticleLimit,
+		},
 	);
 	const easterEggEnabled = useEasterEgg();
 	const outputRef = useRef<HTMLDivElement | null>(null);

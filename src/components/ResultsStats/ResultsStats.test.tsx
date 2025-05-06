@@ -97,7 +97,7 @@ describe("ResultStats", () => {
 
 		const expected = ((waferWidth * waferHeight) - (results.goodDies * dieWidth * dieHeight)) / 100;
 
-		expect(screen.getByText(new RegExp(`Total Waste Area: ${expected}cm²`, 'ig'))).toBeInTheDocument();
+		expect(screen.getByText(new RegExp(`Total Waste Area: ${expected}cm²`, 'i'))).toBeInTheDocument();
 	});
 
 	it('does not show exposure count if reticle limit is turned off', () => {

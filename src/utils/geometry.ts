@@ -39,6 +39,25 @@ export function getRectCorners(
 }
 
 /**
+ * Calculate the center point of a rectangle, given a starting point and its dimensions.
+ * @param x
+ * @param y
+ * @param width
+ * @param height
+ */
+export function getRectCenter(
+	x: number,
+	y: number,
+	width: number,
+	height: number
+) {
+	return {
+		x: x + width / 2,
+		y: y + height / 2
+	};
+}
+
+/**
  * Determine whether a target position (x, y) is inside or outside a circle
  * drawn from a center point (centerX, centerY) and extends outward to a given
  * size (radius)
@@ -84,9 +103,9 @@ export function isInsideRectangle(
 }
 
 /**
- * Determines if one rectangle is inside another, i.e. it overlaps with the outer
- * rectangle. A partial overlap (>0 corners inside the outer rectangle) is allowed if
- * `allowPartial` is true.
+ * Determines if one rectangle is inside another, i.e. its corners and center overlap
+ * with the outer rectangle. A partial overlap (>0 corners inside the outer
+ * rectangle) is allowed if `allowPartial` is true.
  * @param innerRectX top left x coordinate of inner rectangle
  * @param innerRectY top left y coordinate of inner rectangle
  * @param innerRectWidth width of inner rectangle
@@ -114,10 +133,16 @@ function rectangleIsInsideRectangle(
 		innerRectWidth,
 		innerRectHeight
 	);
-	const cornersInsideOuterRectangle = innerRectCorners.filter((corner) =>
+	const innerRectCenter = getRectCenter(
+		innerRectX,
+		innerRectY,
+		innerRectWidth,
+		innerRectHeight
+	);
+	const pointsInsideOuterRectangle = [...innerRectCorners, innerRectCenter].filter((point) =>
 		isInsideRectangle(
-			corner.x,
-			corner.y,
+			point.x,
+			point.y,
 			outerRectX,
 			outerRectY,
 			outerRectWidth,
@@ -127,13 +152,13 @@ function rectangleIsInsideRectangle(
 
 	if (allowPartial) {
 		// Filter out corners that are on the edge of the outer rectangle
-		const nonEdgeCornersInsideOuterRect = cornersInsideOuterRectangle.filter(
-			(corner) => {
+		const nonEdgeCornersInsideOuterRect = pointsInsideOuterRectangle.filter(
+			(point) => {
 				if (
-					corner.x === outerRectX ||
-					corner.x === outerRectX + outerRectWidth ||
-					corner.y === outerRectY ||
-					corner.y === outerRectY + outerRectHeight
+					point.x === outerRectX ||
+					point.x === outerRectX + outerRectWidth ||
+					point.y === outerRectY ||
+					point.y === outerRectY + outerRectHeight
 				) {
 					return false;
 				}
@@ -145,7 +170,7 @@ function rectangleIsInsideRectangle(
 		return nonEdgeCornersInsideOuterRect.length > 0;
 	}
 
-	return cornersInsideOuterRectangle.length === 4;
+	return pointsInsideOuterRectangle.length === 5;
 }
 
 /**
@@ -191,19 +216,21 @@ export function rectanglesInCircle(
 					rectWidth,
 					rectHeight
 				);
-				const cornersWithinCircle = corners.filter((corner) =>
-					isInsideCircle(corner.x, corner.y, 0, 0, radius)
+				const center = getRectCenter(
+					offsetRectX,
+					offsetRectY,
+					rectWidth,
+					rectHeight
+				);
+				const pointsWithinCircle = [...corners, center].filter((point) =>
+					isInsideCircle(point.x, point.y, 0, 0, radius)
 				);
 
-				// If partials are allowed, only one corner must overlap, otherwise all must.
-				// Note that technically a square could overlap a circle without any corners
-				// being within the circle. However given the scales we are working with and
-				// the complexity of the maths involved in calculating this, we are not
-				// accounting for that possibility here.
-				const minOverlappingCorners = includePartials ? 1 : 4;
+				// If partials are allowed, only one point must overlap, otherwise all must.
+				const minOverlappingPoints = includePartials ? 1 : 5;
 
 				// If the rectangle fits within the circle, add it to the result
-				if (cornersWithinCircle.length >= minOverlappingCorners) {
+				if (pointsWithinCircle.length >= minOverlappingPoints) {
 					positions.push({
 						// Add the radius back to the final coordinates so all are positive integers
 						x: offsetRectX + radius,

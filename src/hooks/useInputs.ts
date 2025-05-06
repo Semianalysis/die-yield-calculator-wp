@@ -9,34 +9,40 @@ import {
 import { useDebouncedEffect } from "./useDebouncedEffect";
 import { validations } from "../utils/validations";
 
+interface Options {
+	discSize: keyof typeof waferSizes;
+	fieldHeight: number;
+	fieldWidth: number;
+	panelSize: keyof typeof panelSizes;
+	reticleLimit: boolean;
+	substrateShape: SubstrateShape;
+	yieldModel: keyof typeof yieldModels;
+}
+
 /**
  * Given the numeric inputs, selected wafer properties, and a yield model, calculate
  * the expected fabrication results.
  * @param values numeric values provided by the user via inputs
- * @param yieldModel mathematical model for calculating yield
- * @param shape wafer shape
- * @param panelSize chosen size of panel wafer
- * @param discSize chosen size of disc wafer
- * @param fieldWidth width of one shot/field
- * @param fieldHeight height of one shot/field
+ * @param options wafer properties, yield model, etc.
  */
-export function useInputs(
-	values: InputValues,
-	yieldModel: keyof typeof yieldModels,
-	shape: SubstrateShape,
-	panelSize: keyof typeof panelSizes,
-	discSize: keyof typeof waferSizes,
-	fieldWidth: number,
-	fieldHeight: number,
-) {
+export function useInputs(values: InputValues, options: Options) {
+	const {
+		substrateShape,
+		panelSize,
+		discSize,
+		yieldModel,
+		fieldWidth,
+		fieldHeight,
+		reticleLimit,
+	} = options;
 	const [results, setResults] = useState<FabResults>(null);
 	const [validationError, setValidationError] = useState<string>();
 	const waferWidth =
-		shape === "Panel"
+		substrateShape === "Panel"
 			? panelSizes[panelSize].width
 			: waferSizes[discSize].width;
 	const waferHeight =
-		shape === "Panel"
+		substrateShape === "Panel"
 			? panelSizes[panelSize].height
 			: waferSizes[discSize].width;
 
@@ -62,7 +68,7 @@ export function useInputs(
 				setResults(null);
 				setValidationError(validationErrors[0]);
 			} else {
-				if (shape === "Wafer") {
+				if (substrateShape === "Wafer") {
 					setResults(
 						evaluateDiscInputs(
 							values,
@@ -70,9 +76,11 @@ export function useInputs(
 							yieldModel,
 							fieldWidth,
 							fieldHeight,
+							// Center die on the wafer if Reticle Limit is turned off
+							reticleLimit,
 						),
 					);
-				} else if (shape === "Panel") {
+				} else if (substrateShape === "Panel") {
 					setResults(
 						evaluatePanelInputs(
 							values,
@@ -80,6 +88,8 @@ export function useInputs(
 							yieldModel,
 							fieldWidth,
 							fieldHeight,
+							// Center die on the panel if Reticle Limit is turned off
+							reticleLimit,
 						),
 					);
 				}
@@ -87,7 +97,7 @@ export function useInputs(
 		},
 		[
 			JSON.stringify(values),
-			shape,
+			substrateShape,
 			panelSize,
 			discSize,
 			yieldModel,

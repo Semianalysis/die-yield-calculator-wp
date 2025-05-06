@@ -32,9 +32,9 @@ describe("App", () => {
 		await user.type(scribeLinesYInput, "0");
 
 		// How many 26mm x 33mm field shots can we fit in the panel?
-		const fielCountX = Math.ceil(300 / 26);
+		const fieldCountX = Math.ceil(300 / 26);
 		const fieldCountY = Math.ceil(300 / 33);
-		const fieldCount = fielCountX * fieldCountY;
+		const fieldCount = fieldCountX * fieldCountY;
 		// How many 5mm square dies can we fit in a single field shot?
 		const dieCountX = Math.floor(26 / 5);
 		const dieCountY = Math.floor(33 / 5);
@@ -179,7 +179,7 @@ describe("App", () => {
 		// Wait for validation error to appear
 		await waitFor(() => {
 			const errorText = screen.getByText(
-				new RegExp(`Die and scribe line width must be less than or equal to the field width \\(${defaultFieldWidth}mm\\)`, 'g')
+				new RegExp(`Die and scribe line width must be less than or equal to the field width \\(${defaultFieldWidth}mm\\)`)
 			);
 			expect(errorText).toBeInTheDocument();
 		});

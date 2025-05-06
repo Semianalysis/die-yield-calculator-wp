@@ -1,4 +1,5 @@
 import {
+	getRectCenter,
 	getRectCorners,
 	isInsideCircle,
 	isInsideRectangle,
@@ -7,6 +8,40 @@ import {
 } from "./geometry";
 
 describe("geometry utils", () => {
+	describe("getRectCenter", () => {
+		it("should calculate the center of a rectangle with positive width and height", () => {
+			const x = 0;
+			const y = 0;
+			const width = 10;
+			const height = 5;
+
+			const result = getRectCenter(x, y, width, height);
+
+			expect(result).toEqual({ x: 5, y: 2.5 });
+		});
+
+		it("should handle rectangles with negative coordinates", () => {
+			const x = -5;
+			const y = -5;
+			const width = 10;
+			const height = 5;
+
+			const result = getRectCenter(x, y, width, height);
+
+			expect(result).toEqual({ x: 0, y: -2.5 });
+		});
+
+		it("should handle rectangles with zero width and height", () => {
+			const x = 10;
+			const y = 20;
+			const width = 0;
+			const height = 0;
+
+			const result = getRectCenter(x, y, width, height);
+
+			expect(result).toEqual({ x: 10, y: 20 });
+		});
+	})
 	describe("getRectCorners", () => {
 		it("should calculate the corners of a rectangle with positive width and height", () => {
 			const x = 0;
