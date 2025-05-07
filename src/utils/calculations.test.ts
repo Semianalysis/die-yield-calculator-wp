@@ -292,7 +292,7 @@ describe("Calculations", () => {
 				criticalLayers: 50,
 				manualYield: 100,
 			};
-			const result = evaluateDiscInputs(inputVals, "s300mm", "murphy", 26, 33);
+			const result = evaluateDiscInputs(inputVals, "s300mm", "murphy", 26, 33, false);
 			expect(result?.reticleUtilization).toBeCloseTo(0.895105, 6);
 		});
 	});

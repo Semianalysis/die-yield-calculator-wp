@@ -56,6 +56,7 @@ export function WaferStats(props: {
 	dieHeight: number;
 	waferWidth: number;
 	waferHeight: number;
+	reticleLimit: boolean;
 }) {
 	const waferArea = waferAreaCm(
 		props.shape,
@@ -102,22 +103,24 @@ export function WaferStats(props: {
 						"%",
 					)}
 				</li>
+			</ul>
+			<ul className="result-stats__list">
 				<li className="result-stats__result result-stats__result--die-cost">
 					<DollarIcon />
 					Cost Per Die: {`$${displayValue(props.results?.dieCost)}`}
 				</li>
-			</ul>
-			<ul className="result-stats__list">
-				<li className="result-stats__result result-stats__result--shot-count">
-					<ShutterIcon />
-					Exposures:{" "}
-					{displayValue(
-						(props.results?.fullShotCount || 0) +
-							(props.results?.partialShotCount || 0),
-					)}{" "}
-					({displayValue(props.results?.fullShotCount)} full,{" "}
-					{displayValue(props.results?.partialShotCount)} partial)
-				</li>
+				{props.reticleLimit && (
+					<li className="result-stats__result result-stats__result--shot-count">
+						<ShutterIcon />
+						Exposures:{" "}
+						{displayValue(
+							(props.results?.fullShotCount || 0) +
+								(props.results?.partialShotCount || 0),
+						)}{" "}
+						({displayValue(props.results?.fullShotCount)} full,{" "}
+						{displayValue(props.results?.partialShotCount)} partial)
+					</li>
+				)}
 				{props.shape === "Panel" ? (
 					<>
 						<li className="result-stats__result result-stats__result--panel-width">
@@ -162,9 +165,7 @@ export function WaferStats(props: {
 	);
 }
 
-export function ReticleStats(props: {
-	results: FabResults;
-}) {
+export function ReticleStats(props: { results: FabResults }) {
 	return (
 		<div className="result-stats" aria-busy={!props.results}>
 			<ul className="result-stats__list">
@@ -184,7 +185,7 @@ export function ReticleStats(props: {
 					Reticle Utilization:{" "}
 					{displayValue(
 						props.results?.reticleUtilization &&
-						props.results?.reticleUtilization * 100,
+							props.results?.reticleUtilization * 100,
 						"%",
 					)}
 				</li>

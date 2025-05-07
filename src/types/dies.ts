@@ -25,5 +25,5 @@ export type FabResults = null | {
 	fullShotCount: number,
 	partialShotCount: number,
 	reticleUtilization: number,
-	dieCost: number;
+	dieCost?: number;
 };

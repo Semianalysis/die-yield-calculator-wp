@@ -10,6 +10,10 @@ type Validator = (
 		fieldWidth: number;
 		fieldHeight: number;
 	},
+	waferSize: {
+		waferWidth: number;
+		waferHeight: number;
+	}
 ) => string | undefined;
 
 /**
@@ -17,10 +21,12 @@ type Validator = (
  * @param dieWidth
  * @param scribeHoriz
  * @param fieldWidth
+ * @param waferWidth
  */
 const dieWidthAndHorizontalScribe: Validator = (
 	{ dieWidth, scribeHoriz },
 	{ fieldWidth },
+	{ waferWidth },
 ) => {
 	if (!validPositiveNumber(dieWidth)) {
 		return "Invalid die width";
@@ -34,8 +40,12 @@ const dieWidthAndHorizontalScribe: Validator = (
 		return `Die must be at least ${minDieEdge}mm wide`;
 	}
 
+	if (dieWidth + scribeHoriz > waferWidth) {
+		return `Die and scribe line width must be less than or equal to the wafer width (${waferWidth}mm).`;
+	}
+
 	if (dieWidth + scribeHoriz > fieldWidth) {
-		return `Die and scribe line width must be less than or equal to the field width (${fieldWidth}mm).`;
+		return `Die and scribe line width must be less than or equal to the field width (${fieldWidth}mm). Reduce the total width or disable Reticle Limit.`;
 	}
 };
 
@@ -44,10 +54,12 @@ const dieWidthAndHorizontalScribe: Validator = (
  * @param dieHeight
  * @param scribeVert
  * @param fieldHeight
+ * @param waferHeight
  */
 const dieHeightAndVerticalScribe: Validator = (
 	{ dieHeight, scribeVert },
 	{ fieldHeight },
+	{ waferHeight },
 ) => {
 	if (!validPositiveNumber(dieHeight)) {
 		return "Invalid die height";
@@ -61,8 +73,12 @@ const dieHeightAndVerticalScribe: Validator = (
 		return `Die must be at least ${minDieEdge}mm tall`;
 	}
 
+	if (dieHeight + scribeVert > waferHeight) {
+		return `Die and scribe line height must be less than or equal to the wafer height (${waferHeight}mm).`;
+	}
+
 	if (dieHeight + scribeVert > fieldHeight) {
-		return `Die and scribe line height must be less than or equal to the field height (${fieldHeight}mm).`;
+		return `Die and scribe line height must be less than or equal to the field height (${fieldHeight}mm). Reduce the total height or disable Reticle Limit.`;
 	}
 };
 

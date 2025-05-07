@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { Checkbox } from "./Checkbox/Checkbox";
 import { NumberInput } from "./NumberInput/NumberInput";
 import { useInputs } from "../hooks/useInputs";
@@ -97,37 +97,6 @@ const ModelSelector = (props: {
 	</label>
 );
 
-/**
- * Get the maximum possible die size based on whether reticle limiting is enabled
- * and what the aspect ratio is, if any, falling back to a % of wafer dimensions
- * as a sane default
- */
-function getDieMaxDimensions(
-	reticleLimit: boolean,
-	waferWidth: number,
-	waferHeight: number,
-	maintainAspectRatio: boolean,
-	aspectRatio: number,
-	fieldWidthMM: number,
-	fieldHeightMM: number,
-) {
-	// Cannot exceed reticle dimensions
-	const boundingSquareWidth = reticleLimit ? fieldWidthMM : waferWidth / 4;
-	const boundingSquareHeight = reticleLimit ? fieldHeightMM : waferHeight / 4;
-
-	if (!maintainAspectRatio) {
-		return {
-			width: boundingSquareWidth,
-			height: boundingSquareHeight,
-		};
-	}
-
-	return {
-		width: Math.min(boundingSquareWidth, boundingSquareHeight * aspectRatio),
-		height: Math.min(boundingSquareHeight, boundingSquareWidth / aspectRatio),
-	};
-}
-
 function App() {
 	const [dieWidth, setDieWidth] = useState<string>("8");
 	const [dieHeight, setDieHeight] = useState<string>("8");
@@ -155,8 +124,28 @@ function App() {
 	const [manualYield, setManualYield] = useState<string>("100");
 	const aspectRatio = useRef(parseFloat(dieWidth) / parseFloat(dieHeight));
 
-	const fieldWidthMM =  defaultFieldWidth;
-	const fieldHeightMM = halfField ? defaultFieldHeight / 2 : defaultFieldHeight;
+	const waferWidth =
+		substrateShape === "Panel"
+			? panelSizes[panelSize].width
+			: waferSizes[waferSize].width;
+	const waferHeight =
+		substrateShape === "Panel"
+			? panelSizes[panelSize].height
+			: waferSizes[waferSize].width;
+
+	const { width: fieldWidthMM, height: fieldHeightMM } = useMemo(() => {
+		if (!reticleLimit) {
+			return {
+				width: waferWidth,
+				height: waferHeight,
+			};
+		}
+
+		return {
+			width: defaultFieldWidth,
+			height: halfField ? defaultFieldHeight / 2 : defaultFieldHeight,
+		};
+	}, [reticleLimit, halfField, waferWidth, waferHeight]);
 
 	const { results, validationError } = useInputs(
 		{
@@ -174,48 +163,39 @@ function App() {
 			criticalLayers: parseFloat(criticalLayers),
 			manualYield: parseFloat(manualYield),
 		},
-		selectedModel,
-		substrateShape,
-		panelSize,
-		waferSize,
-		fieldWidthMM,
-		fieldHeightMM,
+		{
+			yieldModel: selectedModel,
+			substrateShape,
+			panelSize,
+			discSize: waferSize,
+			fieldWidth: fieldWidthMM,
+			fieldHeight: fieldHeightMM,
+			reticleLimit,
+		},
 	);
 	const easterEggEnabled = useEasterEgg();
 	const outputRef = useRef<HTMLDivElement | null>(null);
 
-	const waferWidth =
-		substrateShape === "Panel"
-			? panelSizes[panelSize].width
-			: waferSizes[waferSize].width;
-	const waferHeight =
-		substrateShape === "Panel"
-			? panelSizes[panelSize].height
-			: waferSizes[waferSize].width;
-
-	// Derive max die width/height based on whether reticle limit is set.
-	// Fall back to wafer dimensions / 4 as a sane max.
-	const { width: maxDieWidth, height: maxDieHeight } = getDieMaxDimensions(
-		reticleLimit,
-		waferWidth,
-		waferHeight,
-		maintainAspectRatio,
-		aspectRatio.current,
-		fieldWidthMM,
-		fieldHeightMM,
-	);
+	useEffect(() => {
+		if (parseFloat(dieWidth) > fieldWidthMM) {
+			setDieWidth(fieldWidthMM.toString());
+		}
+	}, [fieldWidthMM]);
 
 	useEffect(() => {
-		if (parseFloat(dieWidth) > maxDieWidth) {
-			setDieWidth(maxDieWidth.toString());
+		if (parseFloat(dieHeight) > fieldHeightMM) {
+			setDieHeight(fieldHeightMM.toString());
 		}
-	}, [maxDieWidth]);
+	}, [fieldHeightMM]);
 
 	useEffect(() => {
-		if (parseFloat(dieHeight) > maxDieHeight) {
-			setDieHeight(maxDieHeight.toString());
+		if (!reticleLimit) {
+			setShowShotMap(false);
+			setHalfField(false);
+		} else {
+			setShowShotMap(true);
 		}
-	}, [maxDieHeight]);
+	}, [reticleLimit]);
 
 	const handleDieWidthChange = (value: string) => {
 		const inputValNum = parseFloat(value);
@@ -225,11 +205,19 @@ function App() {
 			return;
 		}
 
-		const clampedWidth = clampedInputDisplayValue(value, minDieEdge, maxDieWidth);
+		const clampedWidth = clampedInputDisplayValue(
+			value,
+			minDieEdge,
+			fieldWidthMM,
+		);
 		setDieWidth(clampedWidth);
 
 		if (maintainAspectRatio) {
-			const clampedHeight = clampedInputDisplayValue(clampedWidth, minDieEdge, maxDieWidth);
+			const clampedHeight = clampedInputDisplayValue(
+				clampedWidth,
+				minDieEdge,
+				fieldHeightMM,
+			);
 			setDieHeight(clampedHeight);
 		}
 	};
@@ -242,11 +230,19 @@ function App() {
 			return;
 		}
 
-		const clampedHeight = clampedInputDisplayValue(value, minDieEdge, maxDieHeight);
+		const clampedHeight = clampedInputDisplayValue(
+			value,
+			minDieEdge,
+			fieldHeightMM,
+		);
 		setDieHeight(clampedHeight);
 
 		if (maintainAspectRatio) {
-			const clampedWidth = clampedInputDisplayValue(clampedHeight, minDieEdge, maxDieHeight);
+			const clampedWidth = clampedInputDisplayValue(
+				clampedHeight,
+				minDieEdge,
+				fieldHeightMM,
+			);
 			setDieWidth(clampedWidth);
 		}
 	};
@@ -299,7 +295,7 @@ function App() {
 		event: React.ChangeEvent<HTMLInputElement>,
 	) => {
 		setShowReticleBackground(event.target.checked);
-	}
+	};
 
 	const handleHalfFieldChange = (
 		event: React.ChangeEvent<HTMLInputElement>,
@@ -319,7 +315,7 @@ function App() {
 							onChange={(event) => {
 								handleDieWidthChange(event.target.value);
 							}}
-							max={maxDieWidth}
+							max={fieldWidthMM}
 						/>
 						<NumberInput
 							label="Die Height (mm)"
@@ -327,7 +323,7 @@ function App() {
 							onChange={(event) => {
 								handleDieHeightChange(event.target.value);
 							}}
-							max={maxDieHeight}
+							max={fieldHeightMM}
 						/>
 					</div>
 					<div className="input-row">
@@ -337,7 +333,7 @@ function App() {
 							checked={maintainAspectRatio}
 						/>
 						<Checkbox
-							label={`Reticle Limit (${fieldWidthMM}mm x ${fieldHeightMM}mm)`}
+							label={`Reticle Limit (${defaultFieldWidth}mm x ${defaultFieldHeight}mm)`}
 							onChange={handleReticleLimitChange}
 							checked={reticleLimit}
 						/>
@@ -361,6 +357,7 @@ function App() {
 							label="Half Field Exposures (High NA)"
 							onChange={handleHalfFieldChange}
 							checked={halfField}
+							disabled={!reticleLimit}
 						/>
 					</div>
 					<div className="input-row--two-col">
@@ -434,62 +431,56 @@ function App() {
 							}
 						/>
 					</div>
-					{
-						selectedModel !== 'manual' && (
-							<>
-								<div className="input-row">
-									<Checkbox
-										label="All Die Area Critical"
-										onChange={handleAllCriticalChange}
-										checked={allCritical}
-									/>
-								</div>
-								<div className="input-row">
-									<NumberInput
-										label="Critical Die Area (mm²)"
-										value={criticalArea}
-										isDisabled={allCritical}
-										onChange={(event) => setCriticalArea(event.target.value)}
-										max={parseFloat(criticalArea)}
-									/>
-								</div>
-								<div className="input-row">
-									<NumberInput
-										label="Defect Rate (#/cm²)"
-										value={defectRate}
-										min={0}
-										onChange={(event) => setDefectRate(event.target.value)}
-									/>
-								</div>
-							</>
-						)
-					}
-					{
-						selectedModel === 'bose-einstein' && (
+					{selectedModel !== "manual" && (
+						<>
 							<div className="input-row">
-								<NumberInput
-									label="Critical Layers"
-									value={criticalLayers}
-									onChange={(event) => setCriticalLayers(event.target.value)}
-									min={0}
-									max={100}
+								<Checkbox
+									label="All Die Area Critical"
+									onChange={handleAllCriticalChange}
+									checked={allCritical}
 								/>
 							</div>
-						)
-					}
-					{
-						selectedModel === 'manual' && (
 							<div className="input-row">
 								<NumberInput
-									label="Yield (%)"
-									value={manualYield}
-									onChange={(event) => setManualYield(event.target.value)}
-									min={0}
-									max={100}
+									label="Critical Die Area (mm²)"
+									value={criticalArea}
+									isDisabled={allCritical}
+									onChange={(event) => setCriticalArea(event.target.value)}
+									max={parseFloat(criticalArea)}
 								/>
 							</div>
-						)
-					}
+							<div className="input-row">
+								<NumberInput
+									label="Defect Rate (#/cm²)"
+									value={defectRate}
+									min={0}
+									onChange={(event) => setDefectRate(event.target.value)}
+								/>
+							</div>
+						</>
+					)}
+					{selectedModel === "bose-einstein" && (
+						<div className="input-row">
+							<NumberInput
+								label="Critical Layers"
+								value={criticalLayers}
+								onChange={(event) => setCriticalLayers(event.target.value)}
+								min={0}
+								max={100}
+							/>
+						</div>
+					)}
+					{selectedModel === "manual" && (
+						<div className="input-row">
+							<NumberInput
+								label="Yield (%)"
+								value={manualYield}
+								onChange={(event) => setManualYield(event.target.value)}
+								min={0}
+								max={100}
+							/>
+						</div>
+					)}
 					<JumpToResults outputRef={outputRef} />
 				</div>
 				<div className="output" ref={outputRef}>
@@ -512,6 +503,7 @@ function App() {
 							label="Show Reticle Shot Grid"
 							onChange={handleShowShotMapChange}
 							checked={showShotMap}
+							disabled={!reticleLimit}
 						/>
 						<hr />
 						<WaferStats
@@ -529,27 +521,30 @@ function App() {
 									? panelSizes[panelSize].height
 									: waferSizes[waferSize].width
 							}
+							reticleLimit={reticleLimit}
 						/>
 					</div>
-					<div className="panel">
-						<h2>Reticle Results</h2>
-						<ReticleCanvas
-							dieWidth={parseFloat(dieWidth)}
-							dieHeight={parseFloat(dieHeight)}
-							scribeHoriz={parseFloat(scribeHoriz)}
-							scribeVert={parseFloat(scribeVert)}
-							mmToPxScale={12}
-							showReticleBackground={showReticleBackground}
-							halfField={halfField}
-						/>
-						<Checkbox
-							label="Show Illustrative Background"
-							onChange={handleShowReticleBackgroundChange}
-							checked={showReticleBackground}
-						/>
-						<hr />
-						<ReticleStats results={easterEggEnabled ? null : results} />
-					</div>
+					{reticleLimit && (
+						<div className="panel">
+							<h2>Reticle Results</h2>
+							<ReticleCanvas
+								dieWidth={parseFloat(dieWidth)}
+								dieHeight={parseFloat(dieHeight)}
+								scribeHoriz={parseFloat(scribeHoriz)}
+								scribeVert={parseFloat(scribeVert)}
+								mmToPxScale={12}
+								showReticleBackground={showReticleBackground}
+								halfField={halfField}
+							/>
+							<Checkbox
+								label="Show Illustrative Background"
+								onChange={handleShowReticleBackgroundChange}
+								checked={showReticleBackground}
+							/>
+							<hr />
+							<ReticleStats results={easterEggEnabled ? null : results} />
+						</div>
+					)}
 					<a
 						href="https://www.semianalysis.com/"
 						target="_blank"

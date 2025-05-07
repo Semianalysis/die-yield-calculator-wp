@@ -5,6 +5,7 @@ import { minDieEdge } from "../config";
 
 describe("validations", () => {
 	const fieldSize = { fieldWidth: 26, fieldHeight: 33 };
+	const waferSize = { waferWidth: 300, waferHeight: 300 };
 
 	describe("dieWidthAndHorizontalScribe (validations.dieWidth / validations.scribeHoriz)", () => {
 		it("returns 'Invalid die width' if dieWidth is NaN", () => {
@@ -12,7 +13,7 @@ describe("validations", () => {
 				dieWidth: NaN,
 				scribeHoriz: 10,
 			} as any; // Casting so we don't need every property
-			const result = validations.dieWidth(inputs, fieldSize);
+			const result = validations.dieWidth(inputs, fieldSize, waferSize);
 			expect(result).toBe("Invalid die width");
 		});
 
@@ -21,7 +22,7 @@ describe("validations", () => {
 				dieWidth: 10,
 				scribeHoriz: NaN,
 			} as any;
-			const result = validations.dieWidth(inputs, fieldSize);
+			const result = validations.dieWidth(inputs, fieldSize, waferSize);
 			expect(result).toBe("Invalid horizontal scribe line width");
 		});
 
@@ -30,7 +31,7 @@ describe("validations", () => {
 				dieWidth: minDieEdge - 0.01,
 				scribeHoriz: 1,
 			} as any;
-			const result = validations.dieWidth(inputs, fieldSize);
+			const result = validations.dieWidth(inputs, fieldSize, waferSize);
 			expect(result).toBe(`Die must be at least ${minDieEdge}mm wide`);
 		});
 
@@ -39,8 +40,8 @@ describe("validations", () => {
 				dieWidth: 26,
 				scribeHoriz: 0.1,
 			} as any;
-			const result = validations.dieWidth(inputs, fieldSize);
-			expect(result).toBe(
+			const result = validations.dieWidth(inputs, fieldSize, waferSize);
+			expect(result).toContain(
 				`Die and scribe line width must be less than or equal to the field width (${fieldSize.fieldWidth}mm).`,
 			);
 		});
@@ -50,7 +51,7 @@ describe("validations", () => {
 				dieWidth: minDieEdge,
 				scribeHoriz: 1,
 			} as any;
-			const result = validations.dieWidth(inputs, fieldSize);
+			const result = validations.dieWidth(inputs, fieldSize, waferSize);
 			expect(result).toBeUndefined();
 		});
 
@@ -59,7 +60,7 @@ describe("validations", () => {
 				dieWidth: NaN,
 				scribeHoriz: 1,
 			} as any;
-			const result = validations.scribeHoriz(inputs, fieldSize);
+			const result = validations.scribeHoriz(inputs, fieldSize, waferSize);
 			expect(result).toBe("Invalid die width");
 		});
 	});
@@ -70,7 +71,7 @@ describe("validations", () => {
 				dieHeight: NaN,
 				scribeVert: 1,
 			} as any;
-			const result = validations.dieHeight(inputs, fieldSize);
+			const result = validations.dieHeight(inputs, fieldSize, waferSize);
 			expect(result).toBe("Invalid die height");
 		});
 
@@ -79,7 +80,7 @@ describe("validations", () => {
 				dieHeight: 10,
 				scribeVert: NaN,
 			} as any;
-			const result = validations.dieHeight(inputs, fieldSize);
+			const result = validations.dieHeight(inputs, fieldSize, waferSize);
 			expect(result).toBe("Invalid vertical scribe line width");
 		});
 
@@ -88,7 +89,7 @@ describe("validations", () => {
 				dieHeight: minDieEdge - 0.01,
 				scribeVert: 1,
 			} as any;
-			const result = validations.dieHeight(inputs, fieldSize);
+			const result = validations.dieHeight(inputs, fieldSize, waferSize);
 			expect(result).toBe(`Die must be at least ${minDieEdge}mm tall`);
 		});
 
@@ -97,8 +98,8 @@ describe("validations", () => {
 				dieHeight: 33,
 				scribeVert: 0.1,
 			} as any;
-			const result = validations.dieHeight(inputs, fieldSize);
-			expect(result).toBe(
+			const result = validations.dieHeight(inputs, fieldSize, waferSize);
+			expect(result).toContain(
 				`Die and scribe line height must be less than or equal to the field height (${fieldSize.fieldHeight}mm).`,
 			);
 		});
@@ -108,7 +109,7 @@ describe("validations", () => {
 				dieHeight: minDieEdge,
 				scribeVert: 1,
 			} as any;
-			const result = validations.dieHeight(inputs, fieldSize);
+			const result = validations.dieHeight(inputs, fieldSize, waferSize);
 			expect(result).toBeUndefined();
 		});
 
@@ -117,7 +118,7 @@ describe("validations", () => {
 				dieHeight: NaN,
 				scribeVert: 1,
 			} as any;
-			const result = validations.scribeVert(inputs, fieldSize);
+			const result = validations.scribeVert(inputs, fieldSize, waferSize);
 			expect(result).toBe("Invalid die height");
 		});
 	});
@@ -129,7 +130,7 @@ describe("validations", () => {
 				dieWidth: 10,
 				dieHeight: 10,
 			} as any;
-			const result = validations.criticalArea(inputs, fieldSize);
+			const result = validations.criticalArea(inputs, fieldSize, waferSize);
 			expect(result).toBe("Invalid critical area");
 		});
 
@@ -139,7 +140,7 @@ describe("validations", () => {
 				dieWidth: 10,
 				dieHeight: 10,
 			} as any;
-			const result = validations.criticalArea(inputs, fieldSize);
+			const result = validations.criticalArea(inputs, fieldSize, waferSize);
 			expect(result).toBe(
 				"Critical area must be less than or equal to die area",
 			);
@@ -151,7 +152,7 @@ describe("validations", () => {
 				dieWidth: 10,
 				dieHeight: 10,
 			} as any;
-			const result = validations.criticalArea(inputs, fieldSize);
+			const result = validations.criticalArea(inputs, fieldSize, waferSize);
 			expect(result).toBeUndefined();
 		});
 	});
@@ -161,7 +162,7 @@ describe("validations", () => {
 			const inputs: InputValues = {
 				defectRate: -1,
 			} as any;
-			const result = validations.defectRate(inputs, fieldSize);
+			const result = validations.defectRate(inputs, fieldSize, waferSize);
 			expect(result).toBe("Invalid defect rate");
 		});
 
@@ -169,7 +170,7 @@ describe("validations", () => {
 			const inputs: InputValues = {
 				defectRate: 10,
 			} as any;
-			const result = validations.defectRate(inputs, fieldSize);
+			const result = validations.defectRate(inputs, fieldSize, waferSize);
 			expect(result).toBeUndefined();
 		});
 	});
@@ -179,7 +180,7 @@ describe("validations", () => {
 			const inputs: InputValues = {
 				lossyEdgeWidth: -5,
 			} as any;
-			const result = validations.lossyEdgeWidth(inputs, fieldSize);
+			const result = validations.lossyEdgeWidth(inputs, fieldSize, waferSize);
 			expect(result).toBe("Invalid lossy edge width");
 		});
 
@@ -187,7 +188,7 @@ describe("validations", () => {
 			const inputs: InputValues = {
 				lossyEdgeWidth: 0,
 			} as any;
-			const result = validations.lossyEdgeWidth(inputs, fieldSize);
+			const result = validations.lossyEdgeWidth(inputs, fieldSize, waferSize);
 			expect(result).toBeUndefined();
 		});
 	});
@@ -197,7 +198,7 @@ describe("validations", () => {
 			const inputs: InputValues = {
 				notchKeepOutHeight: -2,
 			} as any;
-			const result = validations.notchKeepOutHeight(inputs, fieldSize);
+			const result = validations.notchKeepOutHeight(inputs, fieldSize, waferSize);
 			expect(result).toBe("Invalid notch keep-out height");
 		});
 
@@ -205,7 +206,7 @@ describe("validations", () => {
 			const inputs: InputValues = {
 				notchKeepOutHeight: 10,
 			} as any;
-			const result = validations.notchKeepOutHeight(inputs, fieldSize);
+			const result = validations.notchKeepOutHeight(inputs, fieldSize, waferSize);
 			expect(result).toBeUndefined();
 		});
 	});
@@ -215,7 +216,7 @@ describe("validations", () => {
 			const inputs: InputValues = {
 				transHoriz: NaN,
 			} as any;
-			const result = validations.transHoriz(inputs, fieldSize);
+			const result = validations.transHoriz(inputs, fieldSize, waferSize);
 			expect(result).toBe("Invalid horizontal translation");
 		});
 
@@ -223,7 +224,7 @@ describe("validations", () => {
 			const inputs: InputValues = {
 				transHoriz: 5,
 			} as any;
-			const result = validations.transHoriz(inputs, fieldSize);
+			const result = validations.transHoriz(inputs, fieldSize, waferSize);
 			expect(result).toBeUndefined();
 		});
 	});
@@ -233,7 +234,7 @@ describe("validations", () => {
 			const inputs: InputValues = {
 				transVert: NaN,
 			} as any;
-			const result = validations.transVert(inputs, fieldSize);
+			const result = validations.transVert(inputs, fieldSize, waferSize);
 			expect(result).toBe("Invalid vertical translation");
 		});
 
@@ -241,7 +242,7 @@ describe("validations", () => {
 			const inputs: InputValues = {
 				transVert: 5,
 			} as any;
-			const result = validations.transVert(inputs, fieldSize);
+			const result = validations.transVert(inputs, fieldSize, waferSize);
 			expect(result).toBeUndefined();
 		});
 	});
@@ -251,7 +252,7 @@ describe("validations", () => {
 			const inputs: InputValues = {
 				criticalLayers: 0.5,
 			} as any;
-			const result = validations.criticalLayers(inputs, fieldSize);
+			const result = validations.criticalLayers(inputs, fieldSize, waferSize);
 			expect(result).toBe("Invalid critical layer count");
 		});
 
@@ -259,7 +260,7 @@ describe("validations", () => {
 			const inputs: InputValues = {
 				criticalLayers: 50,
 			} as any;
-			const result = validations.criticalLayers(inputs, fieldSize);
+			const result = validations.criticalLayers(inputs, fieldSize, waferSize);
 			expect(result).toBeUndefined();
 		});
 
@@ -267,7 +268,7 @@ describe("validations", () => {
 			const inputs: InputValues = {
 				criticalLayers: 100.5,
 			} as any;
-			const result = validations.criticalLayers(inputs, fieldSize);
+			const result = validations.criticalLayers(inputs, fieldSize, waferSize);
 			expect(result).toBe("Invalid critical layer count");
 		});
 	});
@@ -277,7 +278,7 @@ describe("validations", () => {
 			const inputs: InputValues = {
 				manualYield: 101,
 			} as any;
-			const result = validations.manualYield(inputs, fieldSize);
+			const result = validations.manualYield(inputs, fieldSize, waferSize);
 			expect(result).toBe("Manual yield % must be a number from 0-100");
 		});
 
@@ -285,7 +286,7 @@ describe("validations", () => {
 			const inputs: InputValues = {
 				manualYield: 50,
 			} as any;
-			const result = validations.manualYield(inputs, fieldSize);
+			const result = validations.manualYield(inputs, fieldSize, waferSize);
 			expect(result).toBeUndefined();
 		});
 	})

@@ -117,16 +117,23 @@ export type InputValues = {
 /**
  * Get the offset (x, y) to apply to all dies.
  * @param inputs
- * @param waferCenteringEnabled center by wafer or by die
+ * @param fieldWidth
+ * @param fieldHeight
+ * @param fieldCenteringEnabled center by shot or by shot grid
  * @returns object containing x and y offsets
  */
-function getDieOffset(inputs: InputValues, waferCenteringEnabled: boolean) {
-	const dieOffsetX = waferCenteringEnabled
+function getDieOffset(
+	inputs: InputValues,
+	fieldWidth: number,
+	fieldHeight: number,
+	fieldCenteringEnabled: boolean
+) {
+	const dieOffsetX = fieldCenteringEnabled
 		? inputs.scribeHoriz * 0.5
-		: inputs.dieWidth * -0.5;
-	const dieOffsetY = waferCenteringEnabled
+		: fieldWidth * -0.5;
+	const dieOffsetY = fieldCenteringEnabled
 		? inputs.scribeVert * 0.5
-		: inputs.dieHeight * -0.5;
+		: fieldHeight * -0.5;
 	return {
 		x: dieOffsetX + inputs.transHoriz,
 		y: dieOffsetY + inputs.transVert
@@ -258,7 +265,7 @@ export function createDieMap(
 	});
 
 	// Randomly distribute n defective dies amongst good dies on the map based on fab yield
-	const numDefectiveDies = goodDies - Math.floor(fabYield * goodDies);
+	const numDefectiveDies = Math.round((1 - fabYield) * goodDies);
 	const defectiveDieKeys = randomNumberSetFromRange(
 		0,
 		goodDies - 1,
@@ -306,6 +313,7 @@ function getReticleUtilization(
  * @param selectedModel selected yield model
  * @param fieldWidth reticle width
  * @param fieldHeight reticle height
+ * @param fieldCenteringEnabled whether to center-align the shot(s) on the wafer vs the shot grid
  * @returns object containing all dies, full and partial shot counts, and positions
  */
 export function evaluatePanelInputs(
@@ -314,6 +322,7 @@ export function evaluatePanelInputs(
 	selectedModel: keyof typeof yieldModels,
 	fieldWidth: number,
 	fieldHeight: number,
+	fieldCenteringEnabled: boolean,
 ): FabResults {
 	const {
 		dieWidth,
@@ -327,7 +336,6 @@ export function evaluatePanelInputs(
 		manualYield,
 		substrateCost,
 	} = inputVals;
-	let dies = [];
 	const fabYield = getFabYield(
 		defectRate,
 		criticalArea,
@@ -339,7 +347,9 @@ export function evaluatePanelInputs(
 
 	const { x: offsetX, y: offsetY } = getDieOffset(
 		inputVals,
-		true
+		fieldWidth,
+		fieldHeight,
+		fieldCenteringEnabled
 	);
 
 	// First, calculate the reticle shot map
@@ -388,8 +398,7 @@ export function evaluatePanelInputs(
 		dieMap.dies.map((die) => die.dieState)
 	);
 
-	const dieCost = goodDies > 0 ? substrateCost / goodDies : 0;
-
+	const dieCost = goodDies > 0 ? substrateCost / goodDies : undefined;
 
 	return {
 		dies: dieMap.dies,
@@ -423,6 +432,7 @@ export function evaluatePanelInputs(
  * @param selectedModel selected yield model
  * @param fieldWidth reticle width
  * @param fieldHeight reticle height
+ * @param fieldCenteringEnabled whether to center-align the shot(s) on the wafer vs the shot grid
  * @returns object containing all dies, full and partial shot counts, and positions
  */
 export function evaluateDiscInputs(
@@ -431,6 +441,7 @@ export function evaluateDiscInputs(
 	selectedModel: keyof typeof yieldModels,
 	fieldWidth: number,
 	fieldHeight: number,
+	fieldCenteringEnabled: boolean,
 ): FabResults {
 	const {
 		dieWidth,
@@ -456,7 +467,9 @@ export function evaluateDiscInputs(
 
 	const { x: offsetX, y: offsetY } = getDieOffset(
 		inputVals,
-		true
+		fieldWidth,
+		fieldHeight,
+		fieldCenteringEnabled
 	);
 
 	// First, calculate the reticle shot map
@@ -505,7 +518,7 @@ export function evaluateDiscInputs(
 		dieMap.dies.map((die) => die.dieState)
 	);
 
-	const dieCost = goodDies > 0 ? substrateCost / goodDies : 0;
+	const dieCost = goodDies > 0 ? substrateCost / goodDies : undefined;
 
 	return {
 		dies: dieMap.dies,
