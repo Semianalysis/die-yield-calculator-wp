@@ -409,7 +409,7 @@ export function evaluatePanelInputs(
 		fieldHeight
 	});
 
-	// First, calculate the reticle shot map
+	// Calculate the reticle shot map
 	const shotPositions = rectanglesInRectangle(
 		width,
 		height,
@@ -417,9 +417,9 @@ export function evaluatePanelInputs(
 		trimmedFieldHeight,
 		0,
 		0,
-		offsetX - fieldWidth / 2,
-		offsetY - fieldHeight / 2,
-		true,
+		offsetX,
+		offsetY,
+		fieldCenteringEnabled,
 		true
 	).positions;
 

@@ -284,8 +284,8 @@ export function rectanglesInRectangle(
 	const halfGapY = gapY / 2;
 
 	// Compute the number of inner rectangles that can fit in each direction
-	const countX = Math.floor(outerRectWidth / effectiveWidth);
-	const countY = Math.floor(outerRectHeight / effectiveHeight);
+	const countX = Math.ceil(outerRectWidth / effectiveWidth);
+	const countY = Math.ceil(outerRectHeight / effectiveHeight);
 
 	// If center alignment is enabled, calculate the padding to center the rectangles
 	let startX = 0;
