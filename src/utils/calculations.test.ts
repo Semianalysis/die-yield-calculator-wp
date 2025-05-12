@@ -2,8 +2,8 @@ import {
 	createDieMap,
 	evaluateDiscInputs,
 	getDieStateCounts,
-	getFabYield,
-	randomNumberSetFromRange,
+	getFabYield, getRelativeDiePositions, getTrimmedFieldDimensions,
+	randomNumberSetFromRange
 } from "./calculations";
 import { yieldModels } from "../config";
 import { DieState } from "../types";
@@ -225,27 +225,40 @@ describe("Calculations", () => {
 			const dieEdge = 12;
 			const waferDiameter = 300;
 			const fabYield = 0.75;
-			const diesInShot = rectanglesInRectangle(
+
+			const diesInShot = getRelativeDiePositions(
+				dieEdge,
+				dieEdge,
+				0.2,
+				0.2,
 				26,
 				33,
-				dieEdge,
-				dieEdge,
-				0.2,
-				0.2,
-				0,
-				0,
-				true,
-				false,
 			);
+
+			// Trim the reticle to get the true shot size
+			const {
+				width: trimmedFieldWidth,
+				height: trimmedFieldHeight
+			} = getTrimmedFieldDimensions({
+				diesInShotPositions: diesInShot.positions,
+				dieWidth: dieEdge,
+				dieHeight: dieEdge,
+				scribeHoriz: 0.2,
+				scribeVert: 0.2,
+				fieldWidth: 26,
+				fieldHeight: 33,
+			});
+
+			// Calculate the reticle shot map
 			const shotPositions = rectanglesInCircle(
 				waferDiameter,
-				26,
-				33,
+				trimmedFieldWidth,
+				trimmedFieldHeight,
 				0,
 				0,
 				0,
 				0,
-				true,
+				true
 			);
 
 			const { shotsOnWafer, dies } = createDieMap(

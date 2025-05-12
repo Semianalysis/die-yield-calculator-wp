@@ -215,17 +215,17 @@ describe("geometry utils", () => {
 		});
 
 		it("calculates partial overlaps when starting from the center", () => {
-			// Inner squares are 90% the area of the outer square, but we can fit 4 squares
+			// Inner squares are 90% the area of the outer square, but we can fit 9 squares
 			// because we allow partial overlaps
 			expect(
 				rectanglesInRectangle(100, 100, 90, 90, 0, 0, 0, 0, true, true).positions.length
-			).toBe(4);
+			).toBe(9);
 
 			// Inner square is slightly less than 1/3 the size of the outer square, and we
 			// can fit 16 squares because we allow the outer squares to overlap
 			expect(
 				rectanglesInRectangle(70, 70, 20, 20, 0, 0, 0, 0, true, true).positions.length
-			).toBe(16);
+			).toBe(25);
 		});
 
 		it('calculates the correct number of rows and columns', () => {

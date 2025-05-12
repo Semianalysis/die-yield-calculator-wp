@@ -57,7 +57,6 @@ export function ReticleCanvas(props: Props) {
 			scribeVert,
 			defaultFieldWidth,
 			defaultFieldHeight,
-			false,
 		);
 
 		// Trim the reticle to get the true shot size

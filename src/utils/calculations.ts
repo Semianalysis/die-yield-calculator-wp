@@ -158,7 +158,6 @@ export function getRelativeDiePositions(
 	scribeVert: number,
 	fieldWidth: number,
 	fieldHeight: number,
-	center: boolean,
 ) {
 	return rectanglesInRectangle(
 		fieldWidth,
@@ -169,7 +168,7 @@ export function getRelativeDiePositions(
 		scribeVert,
 		0,
 		0,
-		center,
+		false,
 		false
 	);
 }
@@ -306,6 +305,11 @@ function getReticleUtilization(
 	return dieAreaPerShot / reticleArea;
 }
 
+/**
+ * Calculate the trimmed field dimensions based on the last (bottom right) die in the shot
+ * @param params object containing die positions, die dimensions, scribe dimensions, and field dimensions
+ * @returns object containing trimmed field width and height
+ */
 export function getTrimmedFieldDimensions(params: {
 	 diesInShotPositions: Array<Position>,
 	 dieWidth: number,
@@ -395,7 +399,6 @@ export function evaluatePanelInputs(
 		scribeVert,
 		fieldWidth,
 		fieldHeight,
-		false
 	);
 
 	// Trim the reticle to get the true shot size
@@ -533,7 +536,6 @@ export function evaluateDiscInputs(
 		scribeVert,
 		fieldWidth,
 		fieldHeight,
-		false
 	);
 
 	// Trim the reticle to get the true shot size
