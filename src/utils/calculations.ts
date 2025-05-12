@@ -157,7 +157,8 @@ export function getRelativeDiePositions(
 	scribeHoriz: number,
 	scribeVert: number,
 	fieldWidth: number,
-	fieldHeight: number
+	fieldHeight: number,
+	center: boolean,
 ) {
 	return rectanglesInRectangle(
 		fieldWidth,
@@ -168,7 +169,7 @@ export function getRelativeDiePositions(
 		scribeVert,
 		0,
 		0,
-		false,
+		center,
 		false
 	);
 }
@@ -305,7 +306,7 @@ function getReticleUtilization(
 	return dieAreaPerShot / reticleArea;
 }
 
-function getTrimmedFieldDimensions(params: {
+export function getTrimmedFieldDimensions(params: {
 	 diesInShotPositions: Array<Position>,
 	 dieWidth: number,
 	 dieHeight: number,
@@ -385,14 +386,16 @@ export function evaluatePanelInputs(
 		fieldCenteringEnabled
 	);
 
-	// First, calculate the position of dies in a single shot
+	// First, calculate the position of dies in a single shot. Die should NOT be centered
+	// as the shot will be trimmed from the bottom right corner to get the true shot size
 	const diesInShot = getRelativeDiePositions(
 		dieWidth,
 		dieHeight,
 		scribeHoriz,
 		scribeVert,
 		fieldWidth,
-		fieldHeight
+		fieldHeight,
+		false
 	);
 
 	// Trim the reticle to get the true shot size
@@ -521,14 +524,16 @@ export function evaluateDiscInputs(
 		fieldCenteringEnabled
 	);
 
-	// First, calculate the position of dies in a single shot
+	// First, calculate the position of dies in a single shot. Die should NOT be centered
+	// as the shot will be trimmed from the bottom right corner to get the true shot size
 	const diesInShot = getRelativeDiePositions(
 		dieWidth,
 		dieHeight,
 		scribeHoriz,
 		scribeVert,
 		fieldWidth,
-		fieldHeight
+		fieldHeight,
+		false
 	);
 
 	// Trim the reticle to get the true shot size
@@ -545,7 +550,7 @@ export function evaluateDiscInputs(
 		fieldHeight
 	});
 
-	// First, calculate the reticle shot map
+	// Calculate the reticle shot map
 	const shotPositions = rectanglesInCircle(
 		width,
 		trimmedFieldWidth,

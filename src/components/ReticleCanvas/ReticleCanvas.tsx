@@ -1,6 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import Tilt from "react-parallax-tilt";
-import { getRelativeDiePositions } from "../../utils/calculations";
+import {
+	getRelativeDiePositions,
+	getTrimmedFieldDimensions,
+} from "../../utils/calculations";
 import { defaultFieldWidth, defaultFieldHeight } from "../../config";
 import { OnMoveParams } from "react-parallax-tilt/dist/modern";
 
@@ -16,14 +19,9 @@ type Props = {
 
 export function ReticleCanvas(props: Props) {
 	const canvasEl = useRef<HTMLCanvasElement>(null);
-	const [tiltX, setTiltX] = useState(0);
 	const [tiltY, setTiltY] = useState(0);
 
-	function onMove({
-		tiltAngleXPercentage,
-		tiltAngleYPercentage,
-	}: OnMoveParams) {
-		setTiltX(tiltAngleXPercentage);
+	function onMove({ tiltAngleYPercentage }: OnMoveParams) {
 		setTiltY(tiltAngleYPercentage);
 	}
 
@@ -59,7 +57,24 @@ export function ReticleCanvas(props: Props) {
 			scribeVert,
 			defaultFieldWidth,
 			defaultFieldHeight,
+			false,
 		);
+
+		// Trim the reticle to get the true shot size
+		const { width: trimmedFieldWidth, height: trimmedFieldHeight } =
+			getTrimmedFieldDimensions({
+				diesInShotPositions: diesInShot.positions,
+				dieWidth,
+				dieHeight,
+				scribeHoriz,
+				scribeVert,
+				fieldWidth: defaultFieldWidth,
+				fieldHeight: defaultFieldHeight,
+			});
+
+		// Update canvas dimensions
+		canvasEl.current.width = trimmedFieldWidth * props.mmToPxScale;
+		canvasEl.current.height = trimmedFieldHeight * props.mmToPxScale;
 
 		context.fillRect(0, 0, canvasEl.current.width, canvasEl.current.height);
 

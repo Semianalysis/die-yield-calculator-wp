@@ -29,9 +29,9 @@
 	.reticle-canvas__inner {
 		@include mixins.rainbow-background;
 
-		width: calc(104 / 152.4 * 100%);
-		height: calc(132 / 152.4 * 100%);
-		outline: 1px solid blue;
+		border: 1px solid blue;
+		max-width: 100%;
+		max-height: 100%;
 		opacity: 0.75;
 		background-position: 100%;
 		background-size: 300%;
