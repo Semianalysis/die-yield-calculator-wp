@@ -26,7 +26,7 @@ export function getFabYield(
 	criticalArea: number,
 	model: keyof typeof yieldModels,
 	criticalLayers: number,
-	manualYield: number,
+	manualYield: number
 ) {
 	if (!defectRate) {
 		return 1;
@@ -34,11 +34,11 @@ export function getFabYield(
 
 	const defects = (criticalArea * defectRate) / 100;
 
-	if(model === 'bose-einstein') {
+	if (model === "bose-einstein") {
 		return yieldModels[model].yield(defects, criticalLayers);
 	}
 
-	if(model === 'manual') {
+	if (model === "manual") {
 		return yieldModels[model].yield(manualYield);
 	}
 
@@ -157,7 +157,7 @@ export function getRelativeDiePositions(
 	scribeHoriz: number,
 	scribeVert: number,
 	fieldWidth: number,
-	fieldHeight: number,
+	fieldHeight: number
 ) {
 	return rectanglesInRectangle(
 		fieldWidth,
@@ -168,7 +168,7 @@ export function getRelativeDiePositions(
 		scribeVert,
 		0,
 		0,
-		true,
+		false,
 		false
 	);
 }
@@ -280,7 +280,7 @@ export function createDieMap(
 		dies,
 		fullShotCount,
 		partialShotCount,
-		shotsOnWafer,
+		shotsOnWafer
 	};
 }
 
@@ -303,6 +303,39 @@ function getReticleUtilization(
 	const reticleArea = fieldWidth * fieldHeight;
 	const dieAreaPerShot = dieWidth * dieHeight * diesPerShot;
 	return dieAreaPerShot / reticleArea;
+}
+
+function getTrimmedFieldDimensions(params: {
+	 diesInShotPositions: Array<Position>,
+	 dieWidth: number,
+	 dieHeight: number,
+	 scribeHoriz: number,
+	 scribeVert: number,
+	 fieldWidth: number,
+	 fieldHeight: number
+}) {
+	const {
+		diesInShotPositions,
+		dieWidth,
+		dieHeight,
+		scribeHoriz,
+		scribeVert,
+		fieldWidth,
+		fieldHeight
+	} = params;
+	const lastDieInShot = diesInShotPositions.at(-1);
+
+	if (lastDieInShot) {
+		return {
+			width: lastDieInShot?.x + dieWidth + scribeHoriz / 2,
+			height: lastDieInShot?.y + dieHeight + scribeVert / 2
+		};
+	}
+
+	return {
+		width: fieldWidth,
+		height: fieldHeight
+	};
 }
 
 /**
@@ -334,14 +367,14 @@ export function evaluatePanelInputs(
 		lossyEdgeWidth,
 		criticalLayers,
 		manualYield,
-		substrateCost,
+		substrateCost
 	} = inputVals;
 	const fabYield = getFabYield(
 		defectRate,
 		criticalArea,
 		selectedModel,
 		criticalLayers,
-		manualYield,
+		manualYield
 	);
 	const { width, height } = panelSizes[selectedSize];
 
@@ -352,21 +385,7 @@ export function evaluatePanelInputs(
 		fieldCenteringEnabled
 	);
 
-	// First, calculate the reticle shot map
-	const shotPositions = rectanglesInRectangle(
-		width,
-		height,
-		fieldWidth,
-		fieldHeight,
-		0,
-		0,
-		offsetX - fieldWidth / 2,
-		offsetY - fieldHeight / 2,
-		true,
-		true
-	).positions;
-
-	// Calculate the position of dies in a single shot
+	// First, calculate the position of dies in a single shot
 	const diesInShot = getRelativeDiePositions(
 		dieWidth,
 		dieHeight,
@@ -375,6 +394,34 @@ export function evaluatePanelInputs(
 		fieldWidth,
 		fieldHeight
 	);
+
+	// Trim the reticle to get the true shot size
+	const {
+		width: trimmedFieldWidth,
+		height: trimmedFieldHeight
+	} = getTrimmedFieldDimensions({
+		diesInShotPositions: diesInShot.positions,
+		dieWidth,
+		dieHeight,
+		scribeHoriz,
+		scribeVert,
+		fieldWidth,
+		fieldHeight
+	});
+
+	// First, calculate the reticle shot map
+	const shotPositions = rectanglesInRectangle(
+		width,
+		height,
+		trimmedFieldWidth,
+		trimmedFieldHeight,
+		0,
+		0,
+		offsetX - fieldWidth / 2,
+		offsetY - fieldHeight / 2,
+		true,
+		true
+	).positions;
 
 	const dieMap = createDieMap(
 		shotPositions,
@@ -420,7 +467,9 @@ export function evaluatePanelInputs(
 			dieHeight,
 			diesInShot.positions.length
 		),
-		dieCost
+		dieCost,
+		trimmedFieldWidth,
+		trimmedFieldHeight
 	};
 }
 
@@ -454,14 +503,14 @@ export function evaluateDiscInputs(
 		scribeHoriz,
 		scribeVert,
 		criticalLayers,
-		manualYield,
+		manualYield
 	} = inputVals;
 	const fabYield = getFabYield(
 		defectRate,
 		criticalArea,
 		selectedModel,
 		criticalLayers,
-		manualYield,
+		manualYield
 	);
 	const { width } = waferSizes[selectedSize];
 
@@ -472,19 +521,7 @@ export function evaluateDiscInputs(
 		fieldCenteringEnabled
 	);
 
-	// First, calculate the reticle shot map
-	const shotPositions = rectanglesInCircle(
-		width,
-		fieldWidth,
-		fieldHeight,
-		0,
-		0,
-		offsetX,
-		offsetY,
-		true
-	);
-
-	// Calculate the position of dies in a single shot
+	// First, calculate the position of dies in a single shot
 	const diesInShot = getRelativeDiePositions(
 		dieWidth,
 		dieHeight,
@@ -493,6 +530,33 @@ export function evaluateDiscInputs(
 		fieldWidth,
 		fieldHeight
 	);
+
+	// Trim the reticle to get the true shot size
+	const {
+		width: trimmedFieldWidth,
+		height: trimmedFieldHeight
+	} = getTrimmedFieldDimensions({
+		diesInShotPositions: diesInShot.positions,
+		dieWidth,
+		dieHeight,
+		scribeHoriz,
+		scribeVert,
+		fieldWidth,
+		fieldHeight
+	});
+
+	// First, calculate the reticle shot map
+	const shotPositions = rectanglesInCircle(
+		width,
+		trimmedFieldWidth,
+		trimmedFieldHeight,
+		0,
+		0,
+		offsetX,
+		offsetY,
+		true
+	);
+
 
 	const dieMap = createDieMap(
 		shotPositions,
@@ -534,12 +598,14 @@ export function evaluateDiscInputs(
 		fullShotCount: dieMap.fullShotCount,
 		partialShotCount: dieMap.partialShotCount,
 		reticleUtilization: getReticleUtilization(
-			fieldWidth,
-			fieldHeight,
+			trimmedFieldWidth,
+			trimmedFieldHeight,
 			dieWidth,
 			dieHeight,
 			diesInShot.positions.length
 		),
-		dieCost
+		dieCost,
+		trimmedFieldWidth,
+		trimmedFieldHeight
 	};
 }

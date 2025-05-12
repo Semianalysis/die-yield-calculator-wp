@@ -495,8 +495,6 @@ function App() {
 							waferHeight={waferHeight}
 							easterEggEnabled={easterEggEnabled}
 							showShotMap={showShotMap}
-							fieldWidth={fieldWidthMM}
-							fieldHeight={fieldHeightMM}
 							validationError={validationError}
 						/>
 						<Checkbox
