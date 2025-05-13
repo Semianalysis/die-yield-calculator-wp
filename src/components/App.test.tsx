@@ -22,10 +22,10 @@ describe("App", () => {
 			name: /Width/,
 		});
 		const scribeLinesXInput = screen.getByRole("spinbutton", {
-			name: /Scribe Line Minimum X/,
+			name: /Scribe Line X/,
 		});
 		const scribeLinesYInput = screen.getByRole("spinbutton", {
-			name: /Scribe Line Minimum Y/,
+			name: /Scribe Line Y/,
 		});
 		const maintainAspectRatioCheckbox = screen.getByRole("checkbox", {
 			name: /Aspect Ratio/,
