@@ -334,4 +334,39 @@ describe("Calculations", () => {
 			);
 		});
 	});
+
+	describe("getTrimmedFieldDimensions", () => {
+		it ("calculates the trimmed field dimensions correctly", () => {
+			const dieWidth = 12;
+			const dieHeight = 12;
+			const scribeHoriz = 0.2;
+			const scribeVert = 0.2;
+			const fieldWidth = 26;
+			const fieldHeight = 33;
+			const diesInShot = getRelativeDiePositions(
+				dieWidth,
+				dieHeight,
+				scribeHoriz,
+				scribeVert,
+				fieldWidth,
+				fieldHeight,
+			);
+
+			const { width, height } = getTrimmedFieldDimensions({
+				diesInShotPositions: diesInShot.positions,
+				dieWidth,
+				dieHeight,
+				scribeHoriz,
+				scribeVert,
+				fieldWidth,
+				fieldHeight,
+			});
+
+			const expectedWidth = Math.floor(fieldWidth / (dieWidth + scribeHoriz)) * (dieWidth + scribeHoriz);
+			const expectedHeight = Math.floor(fieldHeight / (12 + scribeVert)) * (dieHeight + scribeVert);
+
+			expect(width).toEqual(expectedWidth);
+			expect(height).toEqual(expectedHeight);
+		})
+	});
 });
