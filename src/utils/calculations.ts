@@ -176,11 +176,8 @@ export function getRelativeDiePositions(
 		false
 	);
 
-	let trimmedFieldWidth = fieldWidth;
-	let trimmedFieldHeight = fieldHeight;
-
 	if(trimShotWaste) {
-		// If shot mapping is enabled, trim excess waste area from the shot
+		// Trim excess waste area from the shot and return trimmed dimensions
 		const trimmedFieldDimensions = getTrimmedFieldDimensions({
 			diesInShotPositions: diesInShot.positions,
 			dieWidth,
@@ -191,14 +188,17 @@ export function getRelativeDiePositions(
 			fieldHeight
 		});
 
-		trimmedFieldWidth = trimmedFieldDimensions.width;
-		trimmedFieldHeight = trimmedFieldDimensions.height;
+		return {
+			diesInShot,
+			trimmedFieldWidth: trimmedFieldDimensions.width,
+			trimmedFieldHeight: trimmedFieldDimensions.height
+		}
 	}
 
 	return {
 		diesInShot,
-		trimmedFieldWidth,
-		trimmedFieldHeight,
+		trimmedFieldWidth: fieldWidth,
+		trimmedFieldHeight: fieldHeight,
 	}
 }
 
