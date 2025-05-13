@@ -76,7 +76,6 @@ export function useInputs(values: InputValues, options: Options) {
 							yieldModel,
 							fieldWidth,
 							fieldHeight,
-							// Center die on the wafer if Reticle Limit is turned off
 							reticleLimit,
 						),
 					);
@@ -88,7 +87,6 @@ export function useInputs(values: InputValues, options: Options) {
 							yieldModel,
 							fieldWidth,
 							fieldHeight,
-							// Center die on the panel if Reticle Limit is turned off
 							reticleLimit,
 						),
 					);

@@ -2,8 +2,10 @@ import {
 	createDieMap,
 	evaluateDiscInputs,
 	getDieStateCounts,
-	getFabYield, getRelativeDiePositions, getTrimmedFieldDimensions,
-	randomNumberSetFromRange
+	getFabYield,
+	getRelativeDiePositions,
+	getTrimmedFieldDimensions,
+	randomNumberSetFromRange,
 } from "./calculations";
 import { yieldModels } from "../config";
 import { DieState } from "../types";
@@ -226,28 +228,15 @@ describe("Calculations", () => {
 			const waferDiameter = 300;
 			const fabYield = 0.75;
 
-			const diesInShot = getRelativeDiePositions(
+			const { diesInShot, trimmedFieldWidth, trimmedFieldHeight } = getRelativeDiePositions(
 				dieEdge,
 				dieEdge,
 				0.2,
 				0.2,
 				26,
 				33,
+				true,
 			);
-
-			// Trim the reticle to get the true shot size
-			const {
-				width: trimmedFieldWidth,
-				height: trimmedFieldHeight
-			} = getTrimmedFieldDimensions({
-				diesInShotPositions: diesInShot.positions,
-				dieWidth: dieEdge,
-				dieHeight: dieEdge,
-				scribeHoriz: 0.2,
-				scribeVert: 0.2,
-				fieldWidth: 26,
-				fieldHeight: 33,
-			});
 
 			// Calculate the reticle shot map
 			const shotPositions = rectanglesInCircle(
@@ -258,7 +247,7 @@ describe("Calculations", () => {
 				0,
 				0,
 				0,
-				true
+				true,
 			);
 
 			const { shotsOnWafer, dies } = createDieMap(
@@ -316,7 +305,7 @@ describe("Calculations", () => {
 				"murphy",
 				26,
 				33,
-				false,
+				true,
 			);
 			const expectedDieArea = 8 * 8;
 			const expectedHorizontalScribeLineAreaPerDie =
@@ -336,37 +325,31 @@ describe("Calculations", () => {
 	});
 
 	describe("getTrimmedFieldDimensions", () => {
-		it ("calculates the trimmed field dimensions correctly", () => {
+		it("calculates the trimmed field dimensions correctly", () => {
 			const dieWidth = 12;
 			const dieHeight = 12;
 			const scribeHoriz = 0.2;
 			const scribeVert = 0.2;
 			const fieldWidth = 26;
 			const fieldHeight = 33;
-			const diesInShot = getRelativeDiePositions(
+			const { trimmedFieldWidth, trimmedFieldHeight } = getRelativeDiePositions(
 				dieWidth,
 				dieHeight,
 				scribeHoriz,
 				scribeVert,
 				fieldWidth,
 				fieldHeight,
+				true,
 			);
 
-			const { width, height } = getTrimmedFieldDimensions({
-				diesInShotPositions: diesInShot.positions,
-				dieWidth,
-				dieHeight,
-				scribeHoriz,
-				scribeVert,
-				fieldWidth,
-				fieldHeight,
-			});
+			const expectedWidth =
+				Math.floor(fieldWidth / (dieWidth + scribeHoriz)) *
+				(dieWidth + scribeHoriz);
+			const expectedHeight =
+				Math.floor(fieldHeight / (12 + scribeVert)) * (dieHeight + scribeVert);
 
-			const expectedWidth = Math.floor(fieldWidth / (dieWidth + scribeHoriz)) * (dieWidth + scribeHoriz);
-			const expectedHeight = Math.floor(fieldHeight / (12 + scribeVert)) * (dieHeight + scribeVert);
-
-			expect(width).toEqual(expectedWidth);
-			expect(height).toEqual(expectedHeight);
-		})
+			expect(trimmedFieldWidth).toEqual(expectedWidth);
+			expect(trimmedFieldHeight).toEqual(expectedHeight);
+		});
 	});
 });

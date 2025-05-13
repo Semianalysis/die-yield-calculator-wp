@@ -50,26 +50,15 @@ export function ReticleCanvas(props: Props) {
 			: props.scribeVert;
 
 		// Calculate the position of dies in a single shot
-		const diesInShot = getRelativeDiePositions(
+		const { diesInShot, trimmedFieldHeight, trimmedFieldWidth } = getRelativeDiePositions(
 			dieWidth,
 			dieHeight,
 			scribeHoriz,
 			scribeVert,
 			defaultFieldWidth,
 			defaultFieldHeight,
+			false,
 		);
-
-		// Trim the reticle to get the true shot size
-		const { width: trimmedFieldWidth, height: trimmedFieldHeight } =
-			getTrimmedFieldDimensions({
-				diesInShotPositions: diesInShot.positions,
-				dieWidth,
-				dieHeight,
-				scribeHoriz,
-				scribeVert,
-				fieldWidth: defaultFieldWidth,
-				fieldHeight: defaultFieldHeight,
-			});
 
 		// Update canvas dimensions
 		canvasEl.current.width = trimmedFieldWidth * props.mmToPxScale;

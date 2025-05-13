@@ -115,28 +115,29 @@ export type InputValues = {
 };
 
 /**
- * Get the offset (x, y) to apply to all dies.
+ * Get the offset (x, y) to apply to all exposures on disc-shaped wafers
  * @param inputs
  * @param fieldWidth
  * @param fieldHeight
  * @param fieldCenteringEnabled center by shot or by shot grid
  * @returns object containing x and y offsets
  */
-function getDieOffset(
+function getDiscShotOffset(
 	inputs: InputValues,
 	fieldWidth: number,
 	fieldHeight: number,
 	fieldCenteringEnabled: boolean
 ) {
-	const dieOffsetX = fieldCenteringEnabled
-		? inputs.scribeHoriz * 0.5
-		: fieldWidth * -0.5;
-	const dieOffsetY = fieldCenteringEnabled
-		? inputs.scribeVert * 0.5
-		: fieldHeight * -0.5;
+	if(fieldCenteringEnabled) {
+		return {
+			x: inputs.transHoriz + (fieldWidth * -0.5),
+			y: inputs.transVert + (fieldHeight * -0.5)
+		};
+	}
+
 	return {
-		x: dieOffsetX + inputs.transHoriz,
-		y: dieOffsetY + inputs.transVert
+		x: inputs.transHoriz,
+		y: inputs.transVert
 	};
 }
 
@@ -150,6 +151,7 @@ function getDieOffset(
  * @param scribeVert minimum scribe line height between any 2 die
  * @param fieldWidth width of the reticle
  * @param fieldHeight height of the reticle
+ * @param trimShotWaste whether to trim the shot to fit the dies
  */
 export function getRelativeDiePositions(
 	dieWidth: number,
@@ -158,8 +160,9 @@ export function getRelativeDiePositions(
 	scribeVert: number,
 	fieldWidth: number,
 	fieldHeight: number,
+	trimShotWaste: boolean,
 ) {
-	return rectanglesInRectangle(
+	const diesInShot = rectanglesInRectangle(
 		fieldWidth,
 		fieldHeight,
 		dieWidth,
@@ -168,10 +171,37 @@ export function getRelativeDiePositions(
 		scribeVert,
 		0,
 		0,
-		false,
+		// Only center die in the shot if we aren't going to trim the waste area afterwards
+		!trimShotWaste,
 		false
 	);
+
+	let trimmedFieldWidth = fieldWidth;
+	let trimmedFieldHeight = fieldHeight;
+
+	if(trimShotWaste) {
+		// If shot mapping is enabled, trim excess waste area from the shot
+		const trimmedFieldDimensions = getTrimmedFieldDimensions({
+			diesInShotPositions: diesInShot.positions,
+			dieWidth,
+			dieHeight,
+			scribeHoriz,
+			scribeVert,
+			fieldWidth,
+			fieldHeight
+		});
+
+		trimmedFieldWidth = trimmedFieldDimensions.width;
+		trimmedFieldHeight = trimmedFieldDimensions.height;
+	}
+
+	return {
+		diesInShot,
+		trimmedFieldWidth,
+		trimmedFieldHeight,
+	}
 }
+
 
 /**
  * Calculate the absolute position of each die based on shot coordinates + die
@@ -351,7 +381,7 @@ export function getTrimmedFieldDimensions(params: {
  * @param selectedModel selected yield model
  * @param fieldWidth reticle width
  * @param fieldHeight reticle height
- * @param fieldCenteringEnabled whether to center-align the shot(s) on the wafer vs the shot grid
+ * @param reticleLimit whether shot mapping is enabled
  * @returns object containing all dies, full and partial shot counts, and positions
  */
 export function evaluatePanelInputs(
@@ -360,7 +390,7 @@ export function evaluatePanelInputs(
 	selectedModel: keyof typeof yieldModels,
 	fieldWidth: number,
 	fieldHeight: number,
-	fieldCenteringEnabled: boolean,
+	reticleLimit: boolean,
 ): FabResults {
 	const {
 		dieWidth,
@@ -383,37 +413,16 @@ export function evaluatePanelInputs(
 	);
 	const { width, height } = panelSizes[selectedSize];
 
-	const { x: offsetX, y: offsetY } = getDieOffset(
-		inputVals,
-		fieldWidth,
-		fieldHeight,
-		fieldCenteringEnabled
-	);
-
-	// First, calculate the position of dies in a single shot. Die should NOT be centered
-	// as the shot will be trimmed from the bottom right corner to get the true shot size
-	const diesInShot = getRelativeDiePositions(
+	const { diesInShot, trimmedFieldWidth, trimmedFieldHeight } = getRelativeDiePositions(
 		dieWidth,
 		dieHeight,
 		scribeHoriz,
 		scribeVert,
 		fieldWidth,
 		fieldHeight,
+		// Trim waste area from shot if shot mapping is enabled
+		reticleLimit
 	);
-
-	// Trim the reticle to get the true shot size
-	const {
-		width: trimmedFieldWidth,
-		height: trimmedFieldHeight
-	} = getTrimmedFieldDimensions({
-		diesInShotPositions: diesInShot.positions,
-		dieWidth,
-		dieHeight,
-		scribeHoriz,
-		scribeVert,
-		fieldWidth,
-		fieldHeight
-	});
 
 	// Calculate the reticle shot map
 	const shotPositions = rectanglesInRectangle(
@@ -423,9 +432,9 @@ export function evaluatePanelInputs(
 		trimmedFieldHeight,
 		0,
 		0,
-		offsetX,
-		offsetY,
-		fieldCenteringEnabled,
+		inputVals.scribeHoriz,
+		inputVals.scribeVert,
+		true,
 		true
 	).positions;
 
@@ -487,7 +496,7 @@ export function evaluatePanelInputs(
  * @param selectedModel selected yield model
  * @param fieldWidth reticle width
  * @param fieldHeight reticle height
- * @param fieldCenteringEnabled whether to center-align the shot(s) on the wafer vs the shot grid
+ * @param reticleLimit whether shot mapping is enabled
  * @returns object containing all dies, full and partial shot counts, and positions
  */
 export function evaluateDiscInputs(
@@ -496,7 +505,7 @@ export function evaluateDiscInputs(
 	selectedModel: keyof typeof yieldModels,
 	fieldWidth: number,
 	fieldHeight: number,
-	fieldCenteringEnabled: boolean,
+	reticleLimit: boolean,
 ): FabResults {
 	const {
 		dieWidth,
@@ -520,37 +529,23 @@ export function evaluateDiscInputs(
 	);
 	const { width } = waferSizes[selectedSize];
 
-	const { x: offsetX, y: offsetY } = getDieOffset(
+	const { diesInShot, trimmedFieldWidth, trimmedFieldHeight } = getRelativeDiePositions(
+		dieWidth,
+		dieHeight,
+		scribeHoriz,
+		scribeVert,
+		fieldWidth,
+		fieldHeight,
+		// Trim waste area from shot if shot mapping is enabled
+		reticleLimit
+	);
+
+	const { x: offsetX, y: offsetY } = getDiscShotOffset(
 		inputVals,
 		fieldWidth,
 		fieldHeight,
-		fieldCenteringEnabled
+		!reticleLimit
 	);
-
-	// First, calculate the position of dies in a single shot. Die should NOT be centered
-	// as the shot will be trimmed from the bottom right corner to get the true shot size
-	const diesInShot = getRelativeDiePositions(
-		dieWidth,
-		dieHeight,
-		scribeHoriz,
-		scribeVert,
-		fieldWidth,
-		fieldHeight,
-	);
-
-	// Trim the reticle to get the true shot size
-	const {
-		width: trimmedFieldWidth,
-		height: trimmedFieldHeight
-	} = getTrimmedFieldDimensions({
-		diesInShotPositions: diesInShot.positions,
-		dieWidth,
-		dieHeight,
-		scribeHoriz,
-		scribeVert,
-		fieldWidth,
-		fieldHeight
-	});
 
 	// Calculate the reticle shot map
 	const shotPositions = rectanglesInCircle(
