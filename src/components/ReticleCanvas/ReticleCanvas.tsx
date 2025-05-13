@@ -57,7 +57,7 @@ export function ReticleCanvas(props: Props) {
 			scribeVert,
 			defaultFieldWidth,
 			defaultFieldHeight,
-			false,
+			true,
 		);
 
 		// Update canvas dimensions

@@ -432,8 +432,8 @@ export function evaluatePanelInputs(
 		trimmedFieldHeight,
 		0,
 		0,
-		inputVals.scribeHoriz,
-		inputVals.scribeVert,
+		inputVals.transHoriz,
+		inputVals.transVert,
 		true,
 		true
 	).positions;

@@ -288,8 +288,8 @@ export function rectanglesInRectangle(
 	let countY = Math.floor(outerRectHeight / effectiveHeight);
 
 	// If center alignment is enabled, calculate the padding to center the rectangles
-	let startX = 0;
-	let startY = 0;
+	let startX = halfGapX;
+	let startY = halfGapY;
 	if (center) {
 		// Attempt to fit one more rectangle in each direction when centering is enabled
 		countX += 2;
@@ -306,8 +306,8 @@ export function rectanglesInRectangle(
 	// Iterate through potential positions and calculate coordinates
 	for (let row = 0; row <= countY; row++) {
 		for (let col = 0; col <= countX; col++) {
-			const x = startX + col * effectiveWidth + offsetX + halfGapX;
-			const y = startY + row * effectiveHeight + offsetY + halfGapY;
+			const x = startX + (col * effectiveWidth) + offsetX;
+			const y = startY + (row * effectiveHeight) + offsetY;
 
 			const isInside = rectangleIsInsideRectangle(
 				x,
