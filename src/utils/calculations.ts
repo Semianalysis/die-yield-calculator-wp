@@ -1,7 +1,7 @@
 import {
 	waferSizes,
 	panelSizes,
-	yieldModels
+	yieldModels,
 } from "../config";
 import { Die, DieState, FabResults, Position } from "../types";
 import {
@@ -600,8 +600,8 @@ export function evaluateDiscInputs(
 		fullShotCount: dieMap.fullShotCount,
 		partialShotCount: dieMap.partialShotCount,
 		reticleUtilization: getReticleUtilization(
-			trimmedFieldWidth,
-			trimmedFieldHeight,
+			fieldWidth,
+			fieldHeight,
 			dieWidth,
 			dieHeight,
 			diesInShot.positions.length

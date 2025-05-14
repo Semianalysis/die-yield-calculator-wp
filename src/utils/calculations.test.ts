@@ -4,10 +4,9 @@ import {
 	getDieStateCounts,
 	getFabYield,
 	getRelativeDiePositions,
-	getTrimmedFieldDimensions,
 	randomNumberSetFromRange,
 } from "./calculations";
-import { yieldModels } from "../config";
+import { defaultFieldHeight, defaultFieldWidth, yieldModels } from "../config";
 import { DieState } from "../types";
 import {
 	isInsideCircle,
@@ -307,16 +306,9 @@ describe("Calculations", () => {
 				33,
 				true,
 			);
-			const expectedDieArea = 8 * 8;
-			const expectedHorizontalScribeLineAreaPerDie =
-				inputVals.scribeHoriz * inputVals.dieHeight;
-			const expectedVerticalScribeLineAreaPerDie =
-				inputVals.scribeVert * inputVals.dieWidth;
-			const expectedTotalWasteArea =
-				expectedHorizontalScribeLineAreaPerDie +
-				expectedVerticalScribeLineAreaPerDie;
+			const expectedDieArea = 8 * 8 * (result?.diePerCol || 0) * (result?.diePerRow || 0);
 			const expectedReticleUtilization =
-				expectedDieArea / (expectedDieArea + expectedTotalWasteArea);
+				expectedDieArea / (defaultFieldWidth * defaultFieldHeight);
 			expect(result?.reticleUtilization).toBeCloseTo(
 				expectedReticleUtilization,
 				2,
@@ -324,7 +316,7 @@ describe("Calculations", () => {
 		});
 	});
 
-	describe("getTrimmedFieldDimensions", () => {
+	describe("getRelativeDiePositions", () => {
 		it("calculates the trimmed field dimensions correctly", () => {
 			const dieWidth = 12;
 			const dieHeight = 12;
