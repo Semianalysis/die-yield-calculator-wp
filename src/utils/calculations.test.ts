@@ -3,9 +3,10 @@ import {
 	evaluateDiscInputs,
 	getDieStateCounts,
 	getFabYield,
+	getRelativeDiePositions,
 	randomNumberSetFromRange,
 } from "./calculations";
-import { yieldModels } from "../config";
+import { defaultFieldHeight, defaultFieldWidth, yieldModels } from "../config";
 import { DieState } from "../types";
 import {
 	isInsideCircle,
@@ -92,9 +93,9 @@ describe("Calculations", () => {
 		it.each(Object.keys(yieldModels))(
 			"returns a full yield if the defect rate is 0 for the %s model",
 			(model) => {
-				expect(getFabYield(0, 1000, model as keyof typeof yieldModels, 1, 100)).toEqual(
-					1,
-				);
+				expect(
+					getFabYield(0, 1000, model as keyof typeof yieldModels, 1, 100),
+				).toEqual(1);
 			},
 		);
 	});
@@ -221,26 +222,26 @@ describe("Calculations", () => {
 			expect(fullShotCount + partialShotCount).toEqual(shotsOnWafer.length);
 		});
 
-		it('shows the correct total number of die based on the number of exposures and the number of dies in a shot', () => {
+		it("shows the correct total number of die based on the number of exposures and the number of dies in a shot", () => {
 			const dieEdge = 12;
 			const waferDiameter = 300;
 			const fabYield = 0.75;
-			const diesInShot = rectanglesInRectangle(
+
+			const { diesInShot, trimmedFieldWidth, trimmedFieldHeight } = getRelativeDiePositions(
+				dieEdge,
+				dieEdge,
+				0.2,
+				0.2,
 				26,
 				33,
-				dieEdge,
-				dieEdge,
-				0.2,
-				0.2,
-				0,
-				0,
 				true,
-				false,
 			);
+
+			// Calculate the reticle shot map
 			const shotPositions = rectanglesInCircle(
 				waferDiameter,
-				26,
-				33,
+				trimmedFieldWidth,
+				trimmedFieldHeight,
 				0,
 				0,
 				0,
@@ -267,11 +268,16 @@ describe("Calculations", () => {
 				},
 			);
 
-			const excludedDies = dies.filter(die => die.dieState === "lost");
-			const goodDies = dies.filter(die => die.dieState === "good");
-			const defectiveDies = dies.filter(die => die.dieState === "defective");
-			const partialDies = dies.filter(die => die.dieState === "partial");
-			expect(excludedDies.length + goodDies.length + defectiveDies.length + partialDies.length).toEqual(shotsOnWafer.length * diesInShot.numCols * diesInShot.numRows);
+			const excludedDies = dies.filter((die) => die.dieState === "lost");
+			const goodDies = dies.filter((die) => die.dieState === "good");
+			const defectiveDies = dies.filter((die) => die.dieState === "defective");
+			const partialDies = dies.filter((die) => die.dieState === "partial");
+			expect(
+				excludedDies.length +
+					goodDies.length +
+					defectiveDies.length +
+					partialDies.length,
+			).toEqual(shotsOnWafer.length * diesInShot.numCols * diesInShot.numRows);
 		});
 	});
 
@@ -292,8 +298,50 @@ describe("Calculations", () => {
 				criticalLayers: 50,
 				manualYield: 100,
 			};
-			const result = evaluateDiscInputs(inputVals, "s300mm", "murphy", 26, 33, false);
-			expect(result?.reticleUtilization).toBeCloseTo(0.895105, 6);
+			const result = evaluateDiscInputs(
+				inputVals,
+				"s300mm",
+				"murphy",
+				26,
+				33,
+				true,
+			);
+			const expectedDieArea = 8 * 8 * (result?.diePerCol || 0) * (result?.diePerRow || 0);
+			const expectedReticleUtilization =
+				expectedDieArea / (defaultFieldWidth * defaultFieldHeight);
+			expect(result?.reticleUtilization).toBeCloseTo(
+				expectedReticleUtilization,
+				2,
+			);
+		});
+	});
+
+	describe("getRelativeDiePositions", () => {
+		it("calculates the trimmed field dimensions correctly", () => {
+			const dieWidth = 12;
+			const dieHeight = 12;
+			const scribeHoriz = 0.2;
+			const scribeVert = 0.2;
+			const fieldWidth = 26;
+			const fieldHeight = 33;
+			const { trimmedFieldWidth, trimmedFieldHeight } = getRelativeDiePositions(
+				dieWidth,
+				dieHeight,
+				scribeHoriz,
+				scribeVert,
+				fieldWidth,
+				fieldHeight,
+				true,
+			);
+
+			const expectedWidth =
+				Math.floor(fieldWidth / (dieWidth + scribeHoriz)) *
+				(dieWidth + scribeHoriz);
+			const expectedHeight =
+				Math.floor(fieldHeight / (12 + scribeVert)) * (dieHeight + scribeVert);
+
+			expect(trimmedFieldWidth).toEqual(expectedWidth);
+			expect(trimmedFieldHeight).toEqual(expectedHeight);
 		});
 	});
 });

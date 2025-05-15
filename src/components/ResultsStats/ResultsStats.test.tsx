@@ -18,6 +18,8 @@ const results: FabResults = {
 	partialShotCount: 5,
 	reticleUtilization: 0.75,
 	dieCost: 5.25,
+	trimmedFieldHeight: 180,
+	trimmedFieldWidth: 180,
 };
 
 describe("ResultStats", () => {

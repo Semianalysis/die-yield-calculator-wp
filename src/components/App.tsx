@@ -340,12 +340,12 @@ function App() {
 					</div>
 					<div className="input-row--two-col">
 						<NumberInput
-							label="Scribe Line Minimum X (mm)"
+							label="Scribe Line X (mm)"
 							value={scribeHoriz}
 							onChange={(event) => setScribeHoriz(event.target.value)}
 						/>
 						<NumberInput
-							label="Scribe Line Minimum Y (mm)"
+							label="Scribe Line Y (mm)"
 							value={scribeVert}
 							onChange={(event) => setScribeVert(event.target.value)}
 						/>
@@ -495,8 +495,6 @@ function App() {
 							waferHeight={waferHeight}
 							easterEggEnabled={easterEggEnabled}
 							showShotMap={showShotMap}
-							fieldWidth={fieldWidthMM}
-							fieldHeight={fieldHeightMM}
 							validationError={validationError}
 						/>
 						<Checkbox

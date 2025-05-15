@@ -1,6 +1,6 @@
 {
 	"name": "die-yield-calculator-wp",
-	"version": "0.2.2",
+	"version": "0.3.0",
 	"description": "Gutenberg block for embedding the SemiAnalysis die yield calculator React application in posts and pages.",
 	"author": "SemiAnalysis",
 	"license": "GPL-2.0-or-later",

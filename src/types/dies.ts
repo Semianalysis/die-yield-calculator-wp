@@ -26,4 +26,6 @@ export type FabResults = null | {
 	partialShotCount: number,
 	reticleUtilization: number,
 	dieCost?: number;
+	trimmedFieldWidth: number;
+	trimmedFieldHeight: number;
 };

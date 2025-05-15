@@ -184,8 +184,6 @@ export function WaferCanvas(props: {
 	waferHeight: number;
 	easterEggEnabled: boolean;
 	showShotMap: boolean;
-	fieldWidth: number;
-	fieldHeight: number;
 	validationError?: string;
 }) {
 	const [tiltX, setTiltX] = useState(0);
@@ -245,13 +243,13 @@ export function WaferCanvas(props: {
 					maxDies={maxDies}
 					validationError={props.validationError}
 				/>
-				{props.showShotMap && (
+				{props.showShotMap && props.results && (
 					<ShotMap
 						results={props.results}
 						waferWidth={props.waferWidth}
 						waferHeight={props.waferHeight}
-						fieldWidth={props.fieldWidth}
-						fieldHeight={props.fieldHeight}
+						fieldWidth={props.results.trimmedFieldWidth}
+						fieldHeight={props.results.trimmedFieldHeight}
 					/>
 				)}
 				<LossyEdgeMarker
