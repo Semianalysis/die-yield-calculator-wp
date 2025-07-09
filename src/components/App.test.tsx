@@ -92,36 +92,44 @@ describe("App", () => {
 	it("displays a breakdown of die states whose sum equals the total number of dies", async () => {
 		render(<App />);
 
-		// Get the number of dies displayed for each state and the total number of dies.
-		let totalDiesCount = 0;
-		let allStatesCount = 0;
+		// Collect counts for each die state
+		const counts: Record<string, number> = {};
+		const labels = ["Full", "Good", "Defective", "Partial", "Excluded"] as const;
+
 		await Promise.all(
-			["Total", "Good", "Defective", "Partial", "Excluded"].map(
-				async (label) => {
-					const regex = new RegExp(`${label} Dies`);
-					const textNode = await screen.findByText(regex);
+			labels.map(async (label) => {
+				const regex = new RegExp(`${label} Dies`);
+				const textNode = await screen.findByText(regex);
 
-					if (textNode.textContent) {
-						// Wait for the calculation to appear
-						const countStr = await within(textNode).findByText(/\d+/);
+				if (textNode.textContent) {
+					// Wait for the calculation to appear
+					const countStr = await within(textNode).findByText(/\d+/);
 
-						if (countStr.textContent) {
-							const countMatch = countStr.textContent.match(/\d+/)?.[0];
-							const countNum = countMatch ? parseInt(countMatch) : 0;
-
-							if (label === "Total") {
-								totalDiesCount = countNum;
-							} else {
-								allStatesCount += countNum;
-							}
-						}
+					if (countStr.textContent) {
+						const countMatch = countStr.textContent.match(/\d+/)?.[0];
+						const countNum = countMatch ? parseInt(countMatch) : 0;
+						counts[label] = countNum;
 					}
-				},
-			),
+				}
+			})
 		);
+
+		const totalDiesCount = (counts["Full"] ?? 0) + (counts["Partial"] ?? 0);
+		const allStatesCount =
+			(counts["Good"] ?? 0) +
+			(counts["Defective"] ?? 0) +
+			(counts["Partial"] ?? 0) +
+			(counts["Excluded"] ?? 0);
 
 		expect(totalDiesCount).toBeGreaterThan(0);
 		expect(totalDiesCount).toEqual(allStatesCount);
+	});
+
+	it("displays the die area statistic with correct value", async () => {
+		render(<App />);
+
+		const dieAreaNode = await screen.findByText(/Die Area: 64mm²/i);
+		expect(dieAreaNode).toBeInTheDocument();
 	});
 
 	it("automatically adjusts the other die dimension input when one is changed with maintain aspect ratio on", async () => {
