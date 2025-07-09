@@ -8,6 +8,7 @@ describe("App", () => {
 	it("calculates the correct number of total 5mm dies on a 300mm panel with no scribe lines", async () => {
 		let excludedCountNum = 0;
 		let totalCountNum = 0;
+		let partialCountNum = 0;
 
 		render(<App />);
 		const user = userEvent.setup();
@@ -64,10 +65,22 @@ describe("App", () => {
 				}
 			}
 
+			// Get partial die count as well
+			const partialTextNode = await screen.findByText(/Partial Dies/);
+
+			if (partialTextNode.textContent) {
+				const countStr = await within(partialTextNode).findByText(/\d+/);
+
+				if (countStr.textContent) {
+					const countMatch = countStr.textContent.match(/\d+/)?.[0];
+					partialCountNum = countMatch ? parseInt(countMatch) : 0;
+				}
+			}
+
 			// How many die can we fit in the entire panel?
 			const expectedTotalDieCount = 300 * 300 / (5 * 5);
 
-			expect(totalCountNum - excludedCountNum).toEqual(expectedTotalDieCount);
+			expect(totalCountNum + partialCountNum - excludedCountNum).toEqual(expectedTotalDieCount);
 		}, { timeout: 200 });
 	});
 
@@ -92,37 +105,36 @@ describe("App", () => {
 	it("displays a breakdown of die states whose sum equals the total number of dies", async () => {
 		render(<App />);
 
-		// Collect counts for each die state
-		const counts: Record<string, number> = {};
-		const labels = ["Full", "Good", "Defective", "Partial", "Excluded"] as const;
+		await waitFor(() => {
+			const labels = [
+				"Full",
+				"Good",
+				"Defective",
+				"Partial",
+				"Excluded",
+			] as const;
 
-		await Promise.all(
-			labels.map(async (label) => {
+			const counts: Record<string, number> = {};
+
+			labels.forEach((label) => {
 				const regex = new RegExp(`${label} Dies`);
-				const textNode = await screen.findByText(regex);
+				const textNode = screen.getByText(regex);
+				const countStr = within(textNode).getByText(/\d+/);
+				const countMatch = countStr.textContent?.match(/\d+/)?.[0];
+				counts[label] = countMatch ? parseInt(countMatch) : 0;
+			});
 
-				if (textNode.textContent) {
-					// Wait for the calculation to appear
-					const countStr = await within(textNode).findByText(/\d+/);
+			const totalDiesCount =
+				(counts["Full"] ?? 0) + (counts["Partial"] ?? 0);
+			const allStatesCount =
+				(counts["Good"] ?? 0) +
+				(counts["Defective"] ?? 0) +
+				(counts["Partial"] ?? 0) +
+				(counts["Excluded"] ?? 0);
 
-					if (countStr.textContent) {
-						const countMatch = countStr.textContent.match(/\d+/)?.[0];
-						const countNum = countMatch ? parseInt(countMatch) : 0;
-						counts[label] = countNum;
-					}
-				}
-			})
-		);
-
-		const totalDiesCount = (counts["Full"] ?? 0) + (counts["Partial"] ?? 0);
-		const allStatesCount =
-			(counts["Good"] ?? 0) +
-			(counts["Defective"] ?? 0) +
-			(counts["Partial"] ?? 0) +
-			(counts["Excluded"] ?? 0);
-
-		expect(totalDiesCount).toBeGreaterThan(0);
-		expect(totalDiesCount).toEqual(allStatesCount);
+			expect(totalDiesCount).toBeGreaterThan(0);
+			expect(totalDiesCount).toEqual(allStatesCount);
+		});
 	});
 
 	it("displays the die area statistic with correct value", async () => {
