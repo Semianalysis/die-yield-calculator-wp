@@ -145,7 +145,7 @@ export function WaferStats(props: {
 				</li>
 				<li className="result-stats__result result-stats__result--single-die-area">
 					<CircleDotIcon />
-					Die Area: {displayValue(props.dieWidth * props.dieHeight, "mm²")}
+					Per Die Area: {displayValue(props.dieWidth * props.dieHeight, "mm²")}
 				</li>
 				<li className="result-stats__result result-stats__result--total-die-area">
 					<Grid4x4Icon />

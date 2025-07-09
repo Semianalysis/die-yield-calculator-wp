@@ -31,6 +31,10 @@ describe("App", () => {
 		const maintainAspectRatioCheckbox = screen.getByRole("checkbox", {
 			name: /Aspect Ratio/,
 		});
+		const reticleLimitCheckbox = screen.getByRole("checkbox", {
+			name: new RegExp(`Reticle Limit \\(${defaultFieldWidth}mm x ${defaultFieldHeight}mm\\)`),
+		});
+		const edgeLossInput = screen.getByRole("spinbutton", { name: /Edge Loss/ });
 
 		await user.click(maintainAspectRatioCheckbox);
 		await user.clear(widthInput);
@@ -39,6 +43,12 @@ describe("App", () => {
 		await user.type(scribeLinesXInput, "0");
 		await user.clear(scribeLinesYInput);
 		await user.type(scribeLinesYInput, "0");
+
+		// Disable Reticle Limit to allow full panel coverage
+		await user.click(reticleLimitCheckbox);
+		// Remove Edge Loss to count dice to the edge
+		await user.clear(edgeLossInput);
+		await user.type(edgeLossInput, "0");
 
 		await waitFor(async () => {
 			const totalTextNode = await screen.findByText(/Full Dies/);
