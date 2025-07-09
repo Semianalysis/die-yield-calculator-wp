@@ -40,7 +40,7 @@ describe("App", () => {
 		await user.type(scribeLinesYInput, "0");
 
 		await waitFor(async () => {
-			const totalTextNode = await screen.findByText(/Total Dies/);
+			const totalTextNode = await screen.findByText(/Full Dies/);
 
 			if (totalTextNode.textContent) {
 				// Wait for the calculation to appear
@@ -86,7 +86,7 @@ describe("App", () => {
 			}),
 			"{backspace}0",
 		);
-		await waitFor(() => expect(screen.getByText(/1104/)).toBeInTheDocument());
+		await waitFor(() => expect(screen.getByText(/1000/)).toBeInTheDocument());
 	});
 
 	it("displays a breakdown of die states whose sum equals the total number of dies", async () => {
@@ -171,7 +171,7 @@ describe("App", () => {
 
 	it("shows how many full and partial shots will be taken and how many die fit on a reticle", async () => {
 		render(<App />);
-		const totalDiesNode = await screen.findByText(/Total Dies: [0-9]+/);
+		const totalDiesNode = await screen.findByText(/Full Dies: [0-9]+/);
 		const totalDies = parseInt(
 			totalDiesNode.textContent?.match(/\d+/)?.[0] || "0",
 		);

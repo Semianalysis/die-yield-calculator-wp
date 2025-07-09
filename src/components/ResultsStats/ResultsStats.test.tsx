@@ -36,7 +36,7 @@ describe("ResultStats", () => {
 			/>
 		);
 
-		expect(screen.getByText(/Total Dies: 100/i)).toBeInTheDocument();
+		expect(screen.getByText(/Full Dies: 97/i)).toBeInTheDocument();
 		expect(screen.getByText(/Good Dies: 90/i)).toBeInTheDocument();
 		expect(screen.getByText(/Defective Dies: 5/i)).toBeInTheDocument();
 		expect(screen.getByText(/Partial Dies: 3/i)).toBeInTheDocument();

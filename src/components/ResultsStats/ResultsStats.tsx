@@ -77,7 +77,7 @@ export function WaferStats(props: {
 			<ul className="result-stats__list">
 				<li className="result-stats__result result-stats__result--total-dies">
 					<SquareIcon />
-					Full Dies: {displayValue(props.results?.totalDies - props.results?.partialDies)}
+					Full Dies: {displayValue((props.results?.totalDies ?? 0) - (props.results?.partialDies ?? 0))}
 				</li>
 				<li className="result-stats__result result-stats__result--good-dies">
 					<SquareCheckIcon />
