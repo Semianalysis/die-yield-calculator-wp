@@ -109,7 +109,7 @@ describe("App", () => {
 			}),
 			"{backspace}0",
 		);
-		await waitFor(() => expect(screen.getByText(/1000/)).toBeInTheDocument());
+		await waitFor(() => expect(screen.getByText(/936/)).toBeInTheDocument());
 	});
 
 	it("displays a breakdown of die states whose sum equals the total number of dies", async () => {
@@ -135,7 +135,7 @@ describe("App", () => {
 			});
 
 			const totalDiesCount =
-				(counts["Full"] ?? 0) + (counts["Partial"] ?? 0);
+				(counts["Full"] ?? 0) + (counts["Partial"] ?? 0) + (counts["Excluded"] ?? 0);
 			const allStatesCount =
 				(counts["Good"] ?? 0) +
 				(counts["Defective"] ?? 0) +
