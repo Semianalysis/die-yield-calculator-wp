@@ -15,6 +15,7 @@ import { ReactComponent as ScissorsIcon } from "../../assets/icons/scissors.svg"
 import { ReactComponent as ShutterIcon } from "../../assets/icons/shutter.svg";
 import { ReactComponent as SquarePercentageIcon } from "../../assets/icons/square-percentage.svg";
 import { ReactComponent as WidthIcon } from "../../assets/icons/width.svg";
+import { ReactComponent as CircleDotIcon } from "../../assets/icons/circle-dot.svg";
 
 function waferAreaCm(shape: SubstrateShape, widthMM: number, heightMM: number) {
 	if (shape === "Panel") {
@@ -77,7 +78,7 @@ export function WaferStats(props: {
 			<ul className="result-stats__list">
 				<li className="result-stats__result result-stats__result--total-dies">
 					<SquareIcon />
-					Total Dies: {displayValue(props.results?.totalDies)}
+					Full Dies: {displayValue((props.results?.totalDies ?? 0) - (props.results?.partialDies ?? 0))}
 				</li>
 				<li className="result-stats__result result-stats__result--good-dies">
 					<SquareCheckIcon />
@@ -142,7 +143,11 @@ export function WaferStats(props: {
 					<DimensionsIcon />
 					{props.shape} Area: {displayValue(waferArea, "cm²")}
 				</li>
-				<li className="result-stats__result result-stats__result--die-area">
+				<li className="result-stats__result result-stats__result--single-die-area">
+					<CircleDotIcon />
+					Per Die Area: {displayValue(props.dieWidth * props.dieHeight, "mm²")}
+				</li>
+				<li className="result-stats__result result-stats__result--total-die-area">
 					<Grid4x4Icon />
 					Total Die Area:{" "}
 					{displayValue(

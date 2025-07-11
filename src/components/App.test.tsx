@@ -8,6 +8,7 @@ describe("App", () => {
 	it("calculates the correct number of total 5mm dies on a 300mm panel with no scribe lines", async () => {
 		let excludedCountNum = 0;
 		let totalCountNum = 0;
+		let partialCountNum = 0;
 
 		render(<App />);
 		const user = userEvent.setup();
@@ -30,6 +31,10 @@ describe("App", () => {
 		const maintainAspectRatioCheckbox = screen.getByRole("checkbox", {
 			name: /Aspect Ratio/,
 		});
+		const reticleLimitCheckbox = screen.getByRole("checkbox", {
+			name: new RegExp(`Reticle Limit \\(${defaultFieldWidth}mm x ${defaultFieldHeight}mm\\)`),
+		});
+		const edgeLossInput = screen.getByRole("spinbutton", { name: /Edge Loss/ });
 
 		await user.click(maintainAspectRatioCheckbox);
 		await user.clear(widthInput);
@@ -39,8 +44,14 @@ describe("App", () => {
 		await user.clear(scribeLinesYInput);
 		await user.type(scribeLinesYInput, "0");
 
+		// Disable Reticle Limit to allow full panel coverage
+		await user.click(reticleLimitCheckbox);
+		// Remove Edge Loss to count dice to the edge
+		await user.clear(edgeLossInput);
+		await user.type(edgeLossInput, "0");
+
 		await waitFor(async () => {
-			const totalTextNode = await screen.findByText(/Total Dies/);
+			const totalTextNode = await screen.findByText(/Full Dies/);
 
 			if (totalTextNode.textContent) {
 				// Wait for the calculation to appear
@@ -64,10 +75,22 @@ describe("App", () => {
 				}
 			}
 
+			// Get partial die count as well
+			const partialTextNode = await screen.findByText(/Partial Dies/);
+
+			if (partialTextNode.textContent) {
+				const countStr = await within(partialTextNode).findByText(/\d+/);
+
+				if (countStr.textContent) {
+					const countMatch = countStr.textContent.match(/\d+/)?.[0];
+					partialCountNum = countMatch ? parseInt(countMatch) : 0;
+				}
+			}
+
 			// How many die can we fit in the entire panel?
 			const expectedTotalDieCount = 300 * 300 / (5 * 5);
 
-			expect(totalCountNum - excludedCountNum).toEqual(expectedTotalDieCount);
+			expect(totalCountNum + partialCountNum - excludedCountNum).toEqual(expectedTotalDieCount);
 		}, { timeout: 200 });
 	});
 
@@ -86,42 +109,49 @@ describe("App", () => {
 			}),
 			"{backspace}0",
 		);
-		await waitFor(() => expect(screen.getByText(/1104/)).toBeInTheDocument());
+		await waitFor(() => expect(screen.getByText(/1000/)).toBeInTheDocument());
 	});
 
 	it("displays a breakdown of die states whose sum equals the total number of dies", async () => {
 		render(<App />);
 
-		// Get the number of dies displayed for each state and the total number of dies.
-		let totalDiesCount = 0;
-		let allStatesCount = 0;
-		await Promise.all(
-			["Total", "Good", "Defective", "Partial", "Excluded"].map(
-				async (label) => {
-					const regex = new RegExp(`${label} Dies`);
-					const textNode = await screen.findByText(regex);
+		await waitFor(() => {
+			const labels = [
+				"Full",
+				"Good",
+				"Defective",
+				"Partial",
+				"Excluded",
+			] as const;
 
-					if (textNode.textContent) {
-						// Wait for the calculation to appear
-						const countStr = await within(textNode).findByText(/\d+/);
+			const counts: Record<string, number> = {};
 
-						if (countStr.textContent) {
-							const countMatch = countStr.textContent.match(/\d+/)?.[0];
-							const countNum = countMatch ? parseInt(countMatch) : 0;
+			labels.forEach((label) => {
+				const regex = new RegExp(`${label} Dies`);
+				const textNode = screen.getByText(regex);
+				const countStr = within(textNode).getByText(/\d+/);
+				const countMatch = countStr.textContent?.match(/\d+/)?.[0];
+				counts[label] = countMatch ? parseInt(countMatch) : 0;
+			});
 
-							if (label === "Total") {
-								totalDiesCount = countNum;
-							} else {
-								allStatesCount += countNum;
-							}
-						}
-					}
-				},
-			),
-		);
+			const totalDiesCount =
+				(counts["Full"] ?? 0) + (counts["Partial"] ?? 0);
+			const allStatesCount =
+				(counts["Good"] ?? 0) +
+				(counts["Defective"] ?? 0) +
+				(counts["Partial"] ?? 0) +
+				(counts["Excluded"] ?? 0);
 
-		expect(totalDiesCount).toBeGreaterThan(0);
-		expect(totalDiesCount).toEqual(allStatesCount);
+			expect(totalDiesCount).toBeGreaterThan(0);
+			expect(totalDiesCount).toEqual(allStatesCount);
+		});
+	});
+
+	it("displays the die area statistic with correct value", async () => {
+		render(<App />);
+
+		const dieAreaNode = await screen.findByText(/Die Area: 64mm²/i);
+		expect(dieAreaNode).toBeInTheDocument();
 	});
 
 	it("automatically adjusts the other die dimension input when one is changed with maintain aspect ratio on", async () => {
@@ -171,7 +201,7 @@ describe("App", () => {
 
 	it("shows how many full and partial shots will be taken and how many die fit on a reticle", async () => {
 		render(<App />);
-		const totalDiesNode = await screen.findByText(/Total Dies: [0-9]+/);
+		const totalDiesNode = await screen.findByText(/Full Dies: [0-9]+/);
 		const totalDies = parseInt(
 			totalDiesNode.textContent?.match(/\d+/)?.[0] || "0",
 		);
