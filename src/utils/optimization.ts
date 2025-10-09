@@ -58,49 +58,55 @@ export function optimizeDieOffset(
 ): OptimizationResult {
 	const { dieWidth, dieHeight } = values;
 
-	// Offset is periodic with period equal to die dimensions
-	const horizontalRange = [0, dieWidth];
-	const verticalRange = [0, dieHeight];
-
-	// Step size precision
-	const horizontalStep = Math.min(0.1, dieWidth * 0.1);
-	const verticalStep = Math.min(0.1, dieWidth * 0.1);
-
 	let maxGoodDies = 0;
 	let optimalTransHoriz = values.transHoriz;
 	let optimalTransVert = values.transVert;
 
-	// Optimize one dimension at a time (X then Y):
+	// Stage 1: Coarse grid search with 0.5mm step
+	const coarseStep = 0.5;
 
-	// Step 1: Optimize horizontal offset while keeping vertical constant
-	for (let transHoriz = horizontalRange[0]; transHoriz <= horizontalRange[1]; transHoriz += horizontalStep) {
-		const testValues: InputValues = {
-			...values,
-			transHoriz: parseFloat(transHoriz.toFixed(3)),
-			transVert: values.transVert
-		};
+	for (let transVert = 0; transVert <= dieHeight; transVert += coarseStep) {
+		for (let transHoriz = 0; transHoriz <= dieWidth; transHoriz += coarseStep) {
+			const testValues: InputValues = {
+				...values,
+				transHoriz: parseFloat(transHoriz.toFixed(3)),
+				transVert: parseFloat(transVert.toFixed(3))
+			};
 
-		const goodDies = evaluateOffset(testValues, options);
+			const goodDies = evaluateOffset(testValues, options);
 
-		if (goodDies > maxGoodDies) {
-			maxGoodDies = goodDies;
-			optimalTransHoriz = testValues.transHoriz;
+			if (goodDies > maxGoodDies) {
+				maxGoodDies = goodDies;
+				optimalTransHoriz = testValues.transHoriz;
+				optimalTransVert = testValues.transVert;
+			}
 		}
 	}
 
-	// Step 2: Optimize vertical offset using the optimal horizontal offset
-	for (let transVert = verticalRange[0]; transVert <= verticalRange[1]; transVert += verticalStep) {
-		const testValues: InputValues = {
-			...values,
-			transHoriz: optimalTransHoriz,
-			transVert: parseFloat(transVert.toFixed(3))
-		};
+	// Stage 2: Fine grid search with 0.1mm step around coarse optimum
+	const fineStep = 0.1;
+	const fineRadius = 0.5;
 
-		const goodDies = evaluateOffset(testValues, options);
+	const fineHorizMin = Math.max(0, optimalTransHoriz - fineRadius);
+	const fineHorizMax = Math.min(dieWidth, optimalTransHoriz + fineRadius);
+	const fineVertMin = Math.max(0, optimalTransVert - fineRadius);
+	const fineVertMax = Math.min(dieHeight, optimalTransVert + fineRadius);
 
-		if (goodDies > maxGoodDies) {
-			maxGoodDies = goodDies;
-			optimalTransVert = testValues.transVert;
+	for (let transVert = fineVertMin; transVert <= fineVertMax; transVert += fineStep) {
+		for (let transHoriz = fineHorizMin; transHoriz <= fineHorizMax; transHoriz += fineStep) {
+			const testValues: InputValues = {
+				...values,
+				transHoriz: parseFloat(transHoriz.toFixed(3)),
+				transVert: parseFloat(transVert.toFixed(3))
+			};
+
+			const goodDies = evaluateOffset(testValues, options);
+
+			if (goodDies > maxGoodDies) {
+				maxGoodDies = goodDies;
+				optimalTransHoriz = testValues.transHoriz;
+				optimalTransVert = testValues.transVert;
+			}
 		}
 	}
 
