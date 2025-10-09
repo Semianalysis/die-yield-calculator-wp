@@ -177,11 +177,12 @@ describe("optimizeDieOffset", () => {
 	});
 
 	describe("Silicon Edge DYC benchmark comparison", () => {
-		// Silicon Edge benchmark values (DPW) fetched from:
-		// https://www.silicon-edge.co.uk/toys/dpw/wafer_png.php
+		// Silicon Edge benchmark DPW values fetched from:
+		// https://www.silicon-edge.co.uk/j/index.php/resources/die-per-wafer
+		// We should match or exceed these values.
 
-		it("matches Silicon Edge benchmark for 9.2x9.6mm die", () => {
-			const siliconEdgeDPW = 712;
+		it("matches/beats Silicon Edge benchmark for 9.2x9.6mm die, 0.1mm scribe lines", () => {
+			const siliconEdgeDPW = 697;
 
 			const inputValues: InputValues = {
 				dieWidth: 9.2,
@@ -189,10 +190,10 @@ describe("optimizeDieOffset", () => {
 				criticalArea: 88.32,
 				defectRate: 0,
 				lossyEdgeWidth: 3,
-				notchKeepOutHeight: 0,
+				notchKeepOutHeight: 5,
 				substrateCost: 20000,
-				scribeHoriz: 0,
-				scribeVert: 0,
+				scribeHoriz: 0.1,
+				scribeVert: 0.1,
 				transHoriz: 0,
 				transVert: 0,
 				criticalLayers: 25,
@@ -204,8 +205,8 @@ describe("optimizeDieOffset", () => {
 			expect(optimizationResult.maxGoodDies).toBeGreaterThanOrEqual(siliconEdgeDPW);
 		});
 
-		it("matches Silicon Edge benchmark for 10x10mm die", () => {
-			const siliconEdgeDPW = 625;
+		it("matches/beats Silicon Edge benchmark for 10x10mm die, 0.1mm scribes", () => {
+			const siliconEdgeDPW = 612;
 
 			const inputValues: InputValues = {
 				dieWidth: 10,
@@ -213,10 +214,10 @@ describe("optimizeDieOffset", () => {
 				criticalArea: 100,
 				defectRate: 0,
 				lossyEdgeWidth: 3,
-				notchKeepOutHeight: 0,
+				notchKeepOutHeight: 5,
 				substrateCost: 20000,
-				scribeHoriz: 0,
-				scribeVert: 0,
+				scribeHoriz: 0.1,
+				scribeVert: 0.1,
 				transHoriz: 0,
 				transVert: 0,
 				criticalLayers: 25,
@@ -228,7 +229,7 @@ describe("optimizeDieOffset", () => {
 			expect(optimizationResult.maxGoodDies).toBeGreaterThanOrEqual(siliconEdgeDPW);
 		});
 
-		it("matches Silicon Edge benchmark for 12x12mm die", () => {
+		it("matches/beats Silicon Edge benchmark for 12x12mm die, no scribe line", () => {
 			const siliconEdgeDPW = 432;
 
 			const inputValues: InputValues = {
@@ -237,7 +238,7 @@ describe("optimizeDieOffset", () => {
 				criticalArea: 144,
 				defectRate: 0,
 				lossyEdgeWidth: 3,
-				notchKeepOutHeight: 0,
+				notchKeepOutHeight: 5,
 				substrateCost: 20000,
 				scribeHoriz: 0,
 				scribeVert: 0,
@@ -252,7 +253,7 @@ describe("optimizeDieOffset", () => {
 			expect(optimizationResult.maxGoodDies).toBeGreaterThanOrEqual(siliconEdgeDPW);
 		});
 
-		it("matches Silicon Edge benchmark for 8x16mm die", () => {
+		it("matches/beats Silicon Edge benchmark for 8x16mm die, no scribe line", () => {
 			const siliconEdgeDPW = 481;
 
 			const inputValues: InputValues = {
@@ -261,7 +262,7 @@ describe("optimizeDieOffset", () => {
 				criticalArea: 128,
 				defectRate: 0,
 				lossyEdgeWidth: 3,
-				notchKeepOutHeight: 0,
+				notchKeepOutHeight: 5,
 				substrateCost: 20000,
 				scribeHoriz: 0,
 				scribeVert: 0,
@@ -276,19 +277,43 @@ describe("optimizeDieOffset", () => {
 			expect(optimizationResult.maxGoodDies).toBeGreaterThanOrEqual(siliconEdgeDPW);
 		});
 
-		it("matches Silicon Edge benchmark for 15x15mm die with scribe lines and notch", () => {
-			const siliconEdgeDPW = 261;
+		it("matches/beats Silicon Edge benchmark for 15x15mm die, 1mm scribe lines, 10mm notch, 5mm edge", () => {
+			const siliconEdgeDPW = 229;
 
 			const inputValues: InputValues = {
 				dieWidth: 15,
 				dieHeight: 15,
 				criticalArea: 225,
 				defectRate: 0,
+				lossyEdgeWidth: 5,
+				notchKeepOutHeight: 10,
+				substrateCost: 20000,
+				scribeHoriz: 1,
+				scribeVert: 1,
+				transHoriz: 0,
+				transVert: 0,
+				criticalLayers: 25,
+				manualYield: 100,
+			};
+
+			const optimizationResult = optimizeDieOffset(inputValues, baseOptions);
+
+			expect(optimizationResult.maxGoodDies).toBeGreaterThanOrEqual(siliconEdgeDPW);
+		});
+
+		it("matches/beats Silicon Edge benchmark for 2x6mm die, 0.08mm scribe lines", () => {
+			const siliconEdgeDPW = 5186;
+
+			const inputValues: InputValues = {
+				dieWidth: 2,
+				dieHeight: 6,
+				criticalArea: 225,
+				defectRate: 0,
 				lossyEdgeWidth: 3,
 				notchKeepOutHeight: 5,
 				substrateCost: 20000,
-				scribeHoriz: 0.2,
-				scribeVert: 0.2,
+				scribeHoriz: 0.08,
+				scribeVert: 0.08,
 				transHoriz: 0,
 				transVert: 0,
 				criticalLayers: 25,
