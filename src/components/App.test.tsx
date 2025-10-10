@@ -36,6 +36,13 @@ describe("App", () => {
 		});
 		const edgeLossInput = screen.getByRole("spinbutton", { name: /Edge Loss/ });
 
+		// Disable Reticle Limit FIRST to allow full panel coverage
+		await user.click(reticleLimitCheckbox);
+		// Remove Edge Loss to count dice to the edge
+		await user.clear(edgeLossInput);
+		await user.type(edgeLossInput, "0");
+
+		// Now set die dimensions and scribe lines
 		await user.click(maintainAspectRatioCheckbox);
 		await user.clear(widthInput);
 		await user.type(widthInput, "5");
@@ -44,54 +51,27 @@ describe("App", () => {
 		await user.clear(scribeLinesYInput);
 		await user.type(scribeLinesYInput, "0");
 
-		// Disable Reticle Limit to allow full panel coverage
-		await user.click(reticleLimitCheckbox);
-		// Remove Edge Loss to count dice to the edge
-		await user.clear(edgeLossInput);
-		await user.type(edgeLossInput, "0");
+		await waitFor(() => {
+			const totalTextNode = screen.getByText(/Full Dies/);
+			const countStr = within(totalTextNode).getByText(/\d+/);
+			const countMatch = countStr.textContent?.match(/\d+/)?.[0];
+			totalCountNum = countMatch ? parseInt(countMatch) : 0;
 
-		await waitFor(async () => {
-			const totalTextNode = await screen.findByText(/Full Dies/);
+			const excludedTextNode = screen.getByText(/Excluded Dies/);
+			const excludedCountStr = within(excludedTextNode).getByText(/\d+/);
+			const excludedMatch = excludedCountStr.textContent?.match(/\d+/)?.[0];
+			excludedCountNum = excludedMatch ? parseInt(excludedMatch) : 0;
 
-			if (totalTextNode.textContent) {
-				// Wait for the calculation to appear
-				const countStr = await within(totalTextNode).findByText(/\d+/);
-
-				if (countStr.textContent) {
-					const countMatch = countStr.textContent.match(/\d+/)?.[0];
-					totalCountNum = countMatch ? parseInt(countMatch) : 0;
-				}
-			}
-
-			const excludedTextNode = await screen.findByText(/Excluded Dies/);
-
-			if (excludedTextNode.textContent) {
-				// Wait for the calculation to appear
-				const countStr = await within(excludedTextNode).findByText(/\d+/);
-
-				if (countStr.textContent) {
-					const countMatch = countStr.textContent.match(/\d+/)?.[0];
-					excludedCountNum = countMatch ? parseInt(countMatch) : 0;
-				}
-			}
-
-			// Get partial die count as well
-			const partialTextNode = await screen.findByText(/Partial Dies/);
-
-			if (partialTextNode.textContent) {
-				const countStr = await within(partialTextNode).findByText(/\d+/);
-
-				if (countStr.textContent) {
-					const countMatch = countStr.textContent.match(/\d+/)?.[0];
-					partialCountNum = countMatch ? parseInt(countMatch) : 0;
-				}
-			}
+			const partialTextNode = screen.getByText(/Partial Dies/);
+			const partialCountStr = within(partialTextNode).getByText(/\d+/);
+			const partialMatch = partialCountStr.textContent?.match(/\d+/)?.[0];
+			partialCountNum = partialMatch ? parseInt(partialMatch) : 0;
 
 			// How many die can we fit in the entire panel?
 			const expectedTotalDieCount = 300 * 300 / (5 * 5);
 
 			expect(totalCountNum + partialCountNum - excludedCountNum).toEqual(expectedTotalDieCount);
-		}, { timeout: 200 });
+		});
 	});
 
 	it("calculates yields for wafer shape", async () => {
