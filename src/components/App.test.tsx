@@ -304,6 +304,106 @@ describe("App", () => {
 		});
 	});
 
+	it("auto-optimize increases full die count", async () => {
+		render(<App />);
+		const user = userEvent.setup();
+
+		const autoOptimizeCheckbox = screen.getByRole("checkbox", {
+			name: /Auto-optimize die placement/,
+		});
+
+		let fullDiesWithoutOptimization = 0;
+		await waitFor(() => {
+			const fullDiesNode = screen.getByText(/Full Dies/);
+			const countStr = within(fullDiesNode).getByText(/\d+/);
+			const countMatch = countStr.textContent?.match(/\d+/)?.[0];
+			fullDiesWithoutOptimization = countMatch ? parseInt(countMatch) : 0;
+			expect(fullDiesWithoutOptimization).toBeGreaterThan(0);
+		});
+
+		await user.click(autoOptimizeCheckbox);
+		expect(autoOptimizeCheckbox).toBeChecked();
+
+		await waitFor(() => {
+			const fullDiesNode = screen.getByText(/Full Dies/);
+			const countStr = within(fullDiesNode).getByText(/\d+/);
+			const countMatch = countStr.textContent?.match(/\d+/)?.[0];
+			const fullDiesWithOptimization = countMatch ? parseInt(countMatch) : 0;
+			expect(fullDiesWithOptimization).toBeGreaterThan(fullDiesWithoutOptimization);
+		});
+	});
+
+	it("auto-optimize works after validation error is cleared by unchecking reticle limit", async () => {
+		render(<App />);
+		const user = userEvent.setup();
+
+		const dieWidthInput = screen.getByRole("spinbutton", { name: /Width/ });
+		const dieHeightInput = screen.getByRole("spinbutton", { name: /Height/ });
+		const reticleLimitCheckbox = screen.getByRole("checkbox", {
+			name: new RegExp(`Reticle Limit \\(${defaultFieldWidth}mm x ${defaultFieldHeight}mm\\)`),
+		});
+		const autoOptimizeCheckbox = screen.getByRole("checkbox", {
+			name: /Auto-optimize die placement/,
+		});
+		const scribeLinesXInput = screen.getByRole("spinbutton", { name: /Scribe Line X/ });
+		const scribeLinesYInput = screen.getByRole("spinbutton", { name: /Scribe Line Y/ });
+		const edgeLossInput = screen.getByRole("spinbutton", { name: /Edge Loss/ });
+		const notchKeepOutInput = screen.getByRole("spinbutton", { name: /Notch keep-out/ });
+		const waferSizeSelect = screen.getByRole("combobox", { name: /Diameter/ });
+
+		// Try to enter a die size larger than reticle limit, see validation error
+		await user.clear(dieWidthInput);
+		await user.type(dieWidthInput, "45");
+		await user.clear(dieHeightInput);
+		await user.type(dieHeightInput, "45");
+
+		await waitFor(() => {
+			const errorText = screen.getByText(/must be less than or equal to the field/i);
+			expect(errorText).toBeInTheDocument();
+		});
+
+		// Uncheck reticle limit checkbox
+		await user.click(reticleLimitCheckbox);
+		expect(reticleLimitCheckbox).not.toBeChecked();
+
+		// Configure for large die (45x45mm, 0.08mm scribes, 200mm wafer, 5mm edge, 10mm notch)
+		await user.selectOptions(waferSizeSelect, "s200mm");
+		await user.clear(dieWidthInput);
+		await user.type(dieWidthInput, "45");
+		await user.clear(dieHeightInput);
+		await user.type(dieHeightInput, "45");
+		await user.clear(scribeLinesXInput);
+		await user.type(scribeLinesXInput, "0.08");
+		await user.clear(scribeLinesYInput);
+		await user.type(scribeLinesYInput, "0.08");
+		await user.clear(edgeLossInput);
+		await user.type(edgeLossInput, "5");
+		await user.clear(notchKeepOutInput);
+		await user.type(notchKeepOutInput, "10");
+
+		// Ensure we get some full dies
+		let fullDiesBeforeOptimization = 0;
+		await waitFor(() => {
+			const fullDiesNode = screen.getByText(/Full Dies/);
+			const countStr = within(fullDiesNode).getByText(/\d+/);
+			const countMatch = countStr.textContent?.match(/\d+/)?.[0];
+			fullDiesBeforeOptimization = countMatch ? parseInt(countMatch) : 0;
+			expect(fullDiesBeforeOptimization).toBeGreaterThanOrEqual(4);
+		});
+
+		// Check auto-optimize, ensure we get more full dies
+		await user.click(autoOptimizeCheckbox);
+		expect(autoOptimizeCheckbox).toBeChecked();
+
+		await waitFor(() => {
+			const fullDiesNode = screen.getByText(/Full Dies/);
+			const countStr = within(fullDiesNode).getByText(/\d+/);
+			const countMatch = countStr.textContent?.match(/\d+/)?.[0];
+			const fullDiesAfterOptimization = countMatch ? parseInt(countMatch) : 0;
+			expect(fullDiesAfterOptimization).toBeGreaterThan(fullDiesBeforeOptimization);
+		});
+	});
+
 	describe("defects inputs", () => {
 		const yieldModelOptions = [
 			"Poisson Model",
