@@ -68,6 +68,7 @@ export function useInputs(values: InputValues, options: Options) {
 				setResults(null);
 				setValidationError(validationErrors[0]);
 			} else {
+				setValidationError(undefined);
 				if (substrateShape === "Wafer") {
 					setResults(
 						evaluateDiscInputs(
