@@ -18,6 +18,7 @@ import { useEasterEgg } from "../hooks/useEasterEgg";
 import { JumpToResults } from "./JumpToResults/JumpToResults";
 import { clampedInputDisplayValue } from "../utils/inputs";
 import { ReticleCanvas } from "./ReticleCanvas/ReticleCanvas";
+import { optimizeDieOffset } from "../utils/optimization";
 
 const ShapeSelector = (props: {
 	shape: SubstrateShape;
@@ -115,6 +116,7 @@ function App() {
 	const [scribeVert, setScribeVert] = useState<string>("0.2");
 	const [transHoriz, setTransHoriz] = useState<string>("0");
 	const [transVert, setTransVert] = useState<string>("0");
+	const [autoOptimize, setAutoOptimize] = useState(true);
 	const [substrateShape, setSubstrateShape] = useState<SubstrateShape>("Wafer");
 	const [panelSize, setPanelSize] = useState<keyof typeof panelSizes>("s300mm");
 	const [waferSize, setWaferSize] = useState<keyof typeof waferSizes>("s300mm");
@@ -303,6 +305,54 @@ function App() {
 		setHalfField(event.target.checked);
 	};
 
+	const handleAutoOptimizeChange = (
+		event: React.ChangeEvent<HTMLInputElement>,
+	) => {
+		setAutoOptimize(event.target.checked);
+	};
+
+	// Auto-optimize effect - runs when relevant parameters change and auto-optimize is enabled
+	useEffect(() => {
+		if (!autoOptimize || !results || validationError) return;
+
+		const inputVals = {
+			dieWidth: parseFloat(dieWidth),
+			dieHeight: parseFloat(dieHeight),
+			criticalArea: parseFloat(criticalArea),
+			defectRate: parseFloat(defectRate),
+			lossyEdgeWidth: parseFloat(lossyEdgeWidth),
+			notchKeepOutHeight: parseFloat(notchKeepOutHeight),
+			substrateCost: parseFloat(substrateCost),
+			scribeHoriz: parseFloat(scribeHoriz),
+			scribeVert: parseFloat(scribeVert),
+			transHoriz: parseFloat(transHoriz),
+			transVert: parseFloat(transVert),
+			criticalLayers: parseFloat(criticalLayers),
+			manualYield: parseFloat(manualYield),
+		};
+
+		const options = {
+			yieldModel: selectedModel,
+			substrateShape,
+			panelSize,
+			discSize: waferSize,
+			fieldWidth: fieldWidthMM,
+			fieldHeight: fieldHeightMM,
+			reticleLimit,
+		};
+
+		const { optimalTransHoriz, optimalTransVert } = optimizeDieOffset(inputVals, options);
+
+		// Only update if the optimal values are significantly different
+		const horizontalDiff = Math.abs(optimalTransHoriz - inputVals.transHoriz);
+		const verticalDiff = Math.abs(optimalTransVert - inputVals.transVert);
+
+		if (horizontalDiff > 0.001 || verticalDiff > 0.001) {
+			setTransHoriz(optimalTransHoriz.toString());
+			setTransVert(optimalTransVert.toString());
+		}
+	}, [autoOptimize, results, validationError]);
+
 	return (
 		<div className="container">
 			<div className="columns">
@@ -359,17 +409,24 @@ function App() {
 							checked={halfField}
 							disabled={!reticleLimit}
 						/>
+						<Checkbox
+							label="Auto-optimize die placement"
+							onChange={handleAutoOptimizeChange}
+							checked={autoOptimize}
+						/>
 					</div>
 					<div className="input-row--two-col">
 						<NumberInput
 							label="Reticle Offset Horizontal (mm)"
 							value={transHoriz}
 							onChange={(event) => setTransHoriz(event.target.value)}
+							isDisabled={autoOptimize}
 						/>
 						<NumberInput
 							label="Reticle Offset Vertical (mm)"
 							value={transVert}
 							onChange={(event) => setTransVert(event.target.value)}
+							isDisabled={autoOptimize}
 						/>
 					</div>
 					<hr />

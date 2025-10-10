@@ -13,6 +13,12 @@ describe("App", () => {
 		render(<App />);
 		const user = userEvent.setup();
 
+		// Disable auto-optimize for this test - we're only testing die count calculation
+		const autoOptimizeCheckbox = screen.getByRole("checkbox", {
+			name: /Auto-optimize die placement/,
+		});
+		await user.click(autoOptimizeCheckbox);
+
 		await user.click(
 			screen.getByRole("radio", {
 				name: /Panel/,
@@ -36,6 +42,13 @@ describe("App", () => {
 		});
 		const edgeLossInput = screen.getByRole("spinbutton", { name: /Edge Loss/ });
 
+		// Disable Reticle Limit FIRST to allow full panel coverage
+		await user.click(reticleLimitCheckbox);
+		// Remove Edge Loss to count dice to the edge
+		await user.clear(edgeLossInput);
+		await user.type(edgeLossInput, "0");
+
+		// Now set die dimensions and scribe lines
 		await user.click(maintainAspectRatioCheckbox);
 		await user.clear(widthInput);
 		await user.type(widthInput, "5");
@@ -44,54 +57,27 @@ describe("App", () => {
 		await user.clear(scribeLinesYInput);
 		await user.type(scribeLinesYInput, "0");
 
-		// Disable Reticle Limit to allow full panel coverage
-		await user.click(reticleLimitCheckbox);
-		// Remove Edge Loss to count dice to the edge
-		await user.clear(edgeLossInput);
-		await user.type(edgeLossInput, "0");
+		await waitFor(() => {
+			const totalTextNode = screen.getByText(/Full Dies/);
+			const countStr = within(totalTextNode).getByText(/\d+/);
+			const countMatch = countStr.textContent?.match(/\d+/)?.[0];
+			totalCountNum = countMatch ? parseInt(countMatch) : 0;
 
-		await waitFor(async () => {
-			const totalTextNode = await screen.findByText(/Full Dies/);
+			const excludedTextNode = screen.getByText(/Excluded Dies/);
+			const excludedCountStr = within(excludedTextNode).getByText(/\d+/);
+			const excludedMatch = excludedCountStr.textContent?.match(/\d+/)?.[0];
+			excludedCountNum = excludedMatch ? parseInt(excludedMatch) : 0;
 
-			if (totalTextNode.textContent) {
-				// Wait for the calculation to appear
-				const countStr = await within(totalTextNode).findByText(/\d+/);
-
-				if (countStr.textContent) {
-					const countMatch = countStr.textContent.match(/\d+/)?.[0];
-					totalCountNum = countMatch ? parseInt(countMatch) : 0;
-				}
-			}
-
-			const excludedTextNode = await screen.findByText(/Excluded Dies/);
-
-			if (excludedTextNode.textContent) {
-				// Wait for the calculation to appear
-				const countStr = await within(excludedTextNode).findByText(/\d+/);
-
-				if (countStr.textContent) {
-					const countMatch = countStr.textContent.match(/\d+/)?.[0];
-					excludedCountNum = countMatch ? parseInt(countMatch) : 0;
-				}
-			}
-
-			// Get partial die count as well
-			const partialTextNode = await screen.findByText(/Partial Dies/);
-
-			if (partialTextNode.textContent) {
-				const countStr = await within(partialTextNode).findByText(/\d+/);
-
-				if (countStr.textContent) {
-					const countMatch = countStr.textContent.match(/\d+/)?.[0];
-					partialCountNum = countMatch ? parseInt(countMatch) : 0;
-				}
-			}
+			const partialTextNode = screen.getByText(/Partial Dies/);
+			const partialCountStr = within(partialTextNode).getByText(/\d+/);
+			const partialMatch = partialCountStr.textContent?.match(/\d+/)?.[0];
+			partialCountNum = partialMatch ? parseInt(partialMatch) : 0;
 
 			// How many die can we fit in the entire panel?
 			const expectedTotalDieCount = 300 * 300 / (5 * 5);
 
 			expect(totalCountNum + partialCountNum - excludedCountNum).toEqual(expectedTotalDieCount);
-		}, { timeout: 200 });
+		});
 	});
 
 	it("calculates yields for wafer shape", async () => {
@@ -301,6 +287,119 @@ describe("App", () => {
 				/must be less than or equal to the field (width|height)/i,
 			);
 			expect(errorText).toBeInTheDocument();
+		});
+	});
+
+	it("auto-optimize increases full die count", async () => {
+		render(<App />);
+		const user = userEvent.setup();
+
+		const autoOptimizeCheckbox = screen.getByRole("checkbox", {
+			name: /Auto-optimize die placement/,
+		});
+
+		// Auto-optimize is enabled by default, disable it first
+		expect(autoOptimizeCheckbox).toBeChecked();
+		await user.click(autoOptimizeCheckbox);
+		expect(autoOptimizeCheckbox).not.toBeChecked();
+
+		// Get baseline full dies count without optimization
+		let fullDiesWithoutOptimization = 0;
+		await waitFor(() => {
+			const fullDiesNode = screen.getByText(/Full Dies/);
+			const countStr = within(fullDiesNode).getByText(/\d+/);
+			const countMatch = countStr.textContent?.match(/\d+/)?.[0];
+			fullDiesWithoutOptimization = countMatch ? parseInt(countMatch) : 0;
+			expect(fullDiesWithoutOptimization).toBeGreaterThan(0);
+		});
+
+		// Re-enable auto-optimize
+		await user.click(autoOptimizeCheckbox);
+		expect(autoOptimizeCheckbox).toBeChecked();
+
+		// Verify full dies count increased
+		await waitFor(() => {
+			const fullDiesNode = screen.getByText(/Full Dies/);
+			const countStr = within(fullDiesNode).getByText(/\d+/);
+			const countMatch = countStr.textContent?.match(/\d+/)?.[0];
+			const fullDiesWithOptimization = countMatch ? parseInt(countMatch) : 0;
+			expect(fullDiesWithOptimization).toBeGreaterThan(fullDiesWithoutOptimization);
+		});
+	});
+
+	it("auto-optimize works after validation error is cleared by unchecking reticle limit", async () => {
+		render(<App />);
+		const user = userEvent.setup();
+
+		const dieWidthInput = screen.getByRole("spinbutton", { name: /Width/ });
+		const dieHeightInput = screen.getByRole("spinbutton", { name: /Height/ });
+		const reticleLimitCheckbox = screen.getByRole("checkbox", {
+			name: new RegExp(`Reticle Limit \\(${defaultFieldWidth}mm x ${defaultFieldHeight}mm\\)`),
+		});
+		const autoOptimizeCheckbox = screen.getByRole("checkbox", {
+			name: /Auto-optimize die placement/,
+		});
+		const scribeLinesXInput = screen.getByRole("spinbutton", { name: /Scribe Line X/ });
+		const scribeLinesYInput = screen.getByRole("spinbutton", { name: /Scribe Line Y/ });
+		const edgeLossInput = screen.getByRole("spinbutton", { name: /Edge Loss/ });
+		const notchKeepOutInput = screen.getByRole("spinbutton", { name: /Notch keep-out/ });
+		const waferSizeSelect = screen.getByRole("combobox", { name: /Diameter/ });
+
+		// Auto-optimize is enabled by default, disable it first
+		expect(autoOptimizeCheckbox).toBeChecked();
+		await user.click(autoOptimizeCheckbox);
+		expect(autoOptimizeCheckbox).not.toBeChecked();
+
+		// Try to enter a die size larger than reticle limit, see validation error
+		await user.clear(dieWidthInput);
+		await user.type(dieWidthInput, "45");
+		await user.clear(dieHeightInput);
+		await user.type(dieHeightInput, "45");
+
+		await waitFor(() => {
+			const errorText = screen.getByText(/must be less than or equal to the field/i);
+			expect(errorText).toBeInTheDocument();
+		});
+
+		// Uncheck reticle limit checkbox
+		await user.click(reticleLimitCheckbox);
+		expect(reticleLimitCheckbox).not.toBeChecked();
+
+		// Configure for large die (45x45mm, 0.08mm scribes, 200mm wafer, 5mm edge, 10mm notch)
+		await user.selectOptions(waferSizeSelect, "s200mm");
+		await user.clear(dieWidthInput);
+		await user.type(dieWidthInput, "45");
+		await user.clear(dieHeightInput);
+		await user.type(dieHeightInput, "45");
+		await user.clear(scribeLinesXInput);
+		await user.type(scribeLinesXInput, "0.08");
+		await user.clear(scribeLinesYInput);
+		await user.type(scribeLinesYInput, "0.08");
+		await user.clear(edgeLossInput);
+		await user.type(edgeLossInput, "5");
+		await user.clear(notchKeepOutInput);
+		await user.type(notchKeepOutInput, "10");
+
+		// Ensure we get some full dies without optimization
+		let fullDiesBeforeOptimization = 0;
+		await waitFor(() => {
+			const fullDiesNode = screen.getByText(/Full Dies/);
+			const countStr = within(fullDiesNode).getByText(/\d+/);
+			const countMatch = countStr.textContent?.match(/\d+/)?.[0];
+			fullDiesBeforeOptimization = countMatch ? parseInt(countMatch) : 0;
+			expect(fullDiesBeforeOptimization).toBeGreaterThanOrEqual(4);
+		});
+
+		// Re-enable auto-optimize, ensure we get more full dies
+		await user.click(autoOptimizeCheckbox);
+		expect(autoOptimizeCheckbox).toBeChecked();
+
+		await waitFor(() => {
+			const fullDiesNode = screen.getByText(/Full Dies/);
+			const countStr = within(fullDiesNode).getByText(/\d+/);
+			const countMatch = countStr.textContent?.match(/\d+/)?.[0];
+			const fullDiesAfterOptimization = countMatch ? parseInt(countMatch) : 0;
+			expect(fullDiesAfterOptimization).toBeGreaterThan(fullDiesBeforeOptimization);
 		});
 	});
 
