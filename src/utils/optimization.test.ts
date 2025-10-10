@@ -128,31 +128,6 @@ describe("optimizeDieOffset", () => {
 	});
 
 	describe("optimization characteristics", () => {
-		it("returns offsets within valid range [0, die dimension]", () => {
-			const inputValues: InputValues = {
-				dieWidth: 9.2,
-				dieHeight: 9.6,
-				criticalArea: 88.32,
-				defectRate: 0.1,
-				lossyEdgeWidth: 3,
-				notchKeepOutHeight: 5,
-				substrateCost: 20000,
-				scribeHoriz: 0.2,
-				scribeVert: 0.2,
-				transHoriz: 0,
-				transVert: 0,
-				criticalLayers: 25,
-				manualYield: 100,
-			};
-
-			const result = optimizeDieOffset(inputValues, baseOptions);
-
-			expect(result.optimalTransHoriz).toBeGreaterThanOrEqual(0);
-			expect(result.optimalTransHoriz).toBeLessThanOrEqual(inputValues.dieWidth);
-			expect(result.optimalTransVert).toBeGreaterThanOrEqual(0);
-			expect(result.optimalTransVert).toBeLessThanOrEqual(inputValues.dieHeight);
-		});
-
 		it("returns a positive number of good dies", () => {
 			const inputValues: InputValues = {
 				dieWidth: 9.2,
@@ -324,5 +299,65 @@ describe("optimizeDieOffset", () => {
 
 			expect(optimizationResult.maxGoodDies).toBeGreaterThanOrEqual(siliconEdgeDPW);
 		});
+	});
+
+
+	it("matches/beats Silicon Edge benchmark for 67.7x60.5mm die, 0.08mm scribes, 5mm edge, 10mm notch", () => {
+		const siliconEdgeDPW = 10;
+
+		const inputValues: InputValues = {
+			dieWidth: 67.7,
+			dieHeight: 60.5,
+			criticalArea: 4095.85,
+			defectRate: 0,
+			lossyEdgeWidth: 5,
+			notchKeepOutHeight: 10,
+			substrateCost: 20000,
+			scribeHoriz: 0.08,
+			scribeVert: 0.08,
+			transHoriz: 0,
+			transVert: 0,
+			criticalLayers: 25,
+			manualYield: 100,
+		};
+
+		const optimizationResult = optimizeDieOffset(inputValues, {
+			...baseOptions,
+			reticleLimit: false,
+			fieldHeight: 300,
+			fieldWidth: 300,
+		});
+
+		expect(optimizationResult.maxGoodDies).toBeGreaterThanOrEqual(siliconEdgeDPW);
+	});
+
+	it("matches/beats Silicon Edge benchmark for 200mm wafer, 45x45mm die, 0.08mm scribes, 5mm edge, 10mm notch", () => {
+		const siliconEdgeDPW = 8;
+
+		const inputValues: InputValues = {
+			dieWidth: 45,
+			dieHeight: 45,
+			criticalArea: 2025,
+			defectRate: 0,
+			lossyEdgeWidth: 5,
+			notchKeepOutHeight: 10,
+			substrateCost: 20000,
+			scribeHoriz: 0.08,
+			scribeVert: 0.08,
+			transHoriz: 0,
+			transVert: 0,
+			criticalLayers: 25,
+			manualYield: 100,
+		};
+
+		const optimizationResult = optimizeDieOffset(inputValues, {
+			...baseOptions,
+			discSize: "s200mm",
+			reticleLimit: false,
+			fieldHeight: 200,
+			fieldWidth: 200,
+		});
+
+		expect(optimizationResult.maxGoodDies).toBeGreaterThanOrEqual(siliconEdgeDPW);
 	});
 });

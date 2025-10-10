@@ -413,7 +413,6 @@ function App() {
 							label="Auto-optimize die placement"
 							onChange={handleAutoOptimizeChange}
 							checked={autoOptimize}
-							disabled={!reticleLimit}
 						/>
 					</div>
 					<div className="input-row--two-col">

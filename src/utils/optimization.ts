@@ -65,8 +65,8 @@ export function optimizeDieOffset(
 	// Stage 1: Coarse grid search with 0.5mm step
 	const coarseStep = 0.5;
 
-	for (let transVert = 0; transVert <= dieHeight; transVert += coarseStep) {
-		for (let transHoriz = 0; transHoriz <= dieWidth; transHoriz += coarseStep) {
+	for (let transVert = -0.75 * dieHeight; transVert <= 0.75 * dieHeight; transVert += coarseStep) {
+		for (let transHoriz = -0.75 * dieWidth; transHoriz <= 0.75 * dieWidth; transHoriz += coarseStep) {
 			const testValues: InputValues = {
 				...values,
 				transHoriz: parseFloat(transHoriz.toFixed(3)),
@@ -85,12 +85,12 @@ export function optimizeDieOffset(
 
 	// Stage 2: Fine grid search with 0.1mm step around coarse optimum
 	const fineStep = 0.1;
-	const fineRadius = 0.5;
+	const fineRadius = 1;
 
-	const fineHorizMin = Math.max(0, optimalTransHoriz - fineRadius);
-	const fineHorizMax = Math.min(dieWidth, optimalTransHoriz + fineRadius);
-	const fineVertMin = Math.max(0, optimalTransVert - fineRadius);
-	const fineVertMax = Math.min(dieHeight, optimalTransVert + fineRadius);
+	const fineHorizMin = optimalTransHoriz - fineRadius;
+	const fineHorizMax = optimalTransHoriz + fineRadius;
+	const fineVertMin = optimalTransVert - fineRadius;
+	const fineVertMax = optimalTransVert + fineRadius;
 
 	for (let transVert = fineVertMin; transVert <= fineVertMax; transVert += fineStep) {
 		for (let transHoriz = fineHorizMin; transHoriz <= fineHorizMax; transHoriz += fineStep) {
