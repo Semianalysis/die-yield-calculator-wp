@@ -13,6 +13,12 @@ describe("App", () => {
 		render(<App />);
 		const user = userEvent.setup();
 
+		// Disable auto-optimize for this test - we're only testing die count calculation
+		const autoOptimizeCheckbox = screen.getByRole("checkbox", {
+			name: /Auto-optimize die placement/,
+		});
+		await user.click(autoOptimizeCheckbox);
+
 		await user.click(
 			screen.getByRole("radio", {
 				name: /Panel/,
