@@ -116,7 +116,7 @@ function App() {
 	const [scribeVert, setScribeVert] = useState<string>("0.2");
 	const [transHoriz, setTransHoriz] = useState<string>("0");
 	const [transVert, setTransVert] = useState<string>("0");
-	const [autoOptimize, setAutoOptimize] = useState(false);
+	const [autoOptimize, setAutoOptimize] = useState(true);
 	const [substrateShape, setSubstrateShape] = useState<SubstrateShape>("Wafer");
 	const [panelSize, setPanelSize] = useState<keyof typeof panelSizes>("s300mm");
 	const [waferSize, setWaferSize] = useState<keyof typeof waferSizes>("s300mm");

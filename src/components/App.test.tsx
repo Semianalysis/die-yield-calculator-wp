@@ -312,6 +312,12 @@ describe("App", () => {
 			name: /Auto-optimize die placement/,
 		});
 
+		// Auto-optimize is enabled by default, disable it first
+		expect(autoOptimizeCheckbox).toBeChecked();
+		await user.click(autoOptimizeCheckbox);
+		expect(autoOptimizeCheckbox).not.toBeChecked();
+
+		// Get baseline full dies count without optimization
 		let fullDiesWithoutOptimization = 0;
 		await waitFor(() => {
 			const fullDiesNode = screen.getByText(/Full Dies/);
@@ -321,9 +327,11 @@ describe("App", () => {
 			expect(fullDiesWithoutOptimization).toBeGreaterThan(0);
 		});
 
+		// Re-enable auto-optimize
 		await user.click(autoOptimizeCheckbox);
 		expect(autoOptimizeCheckbox).toBeChecked();
 
+		// Verify full dies count increased
 		await waitFor(() => {
 			const fullDiesNode = screen.getByText(/Full Dies/);
 			const countStr = within(fullDiesNode).getByText(/\d+/);
@@ -350,6 +358,11 @@ describe("App", () => {
 		const edgeLossInput = screen.getByRole("spinbutton", { name: /Edge Loss/ });
 		const notchKeepOutInput = screen.getByRole("spinbutton", { name: /Notch keep-out/ });
 		const waferSizeSelect = screen.getByRole("combobox", { name: /Diameter/ });
+
+		// Auto-optimize is enabled by default, disable it first
+		expect(autoOptimizeCheckbox).toBeChecked();
+		await user.click(autoOptimizeCheckbox);
+		expect(autoOptimizeCheckbox).not.toBeChecked();
 
 		// Try to enter a die size larger than reticle limit, see validation error
 		await user.clear(dieWidthInput);
@@ -381,7 +394,7 @@ describe("App", () => {
 		await user.clear(notchKeepOutInput);
 		await user.type(notchKeepOutInput, "10");
 
-		// Ensure we get some full dies
+		// Ensure we get some full dies without optimization
 		let fullDiesBeforeOptimization = 0;
 		await waitFor(() => {
 			const fullDiesNode = screen.getByText(/Full Dies/);
@@ -391,7 +404,7 @@ describe("App", () => {
 			expect(fullDiesBeforeOptimization).toBeGreaterThanOrEqual(4);
 		});
 
-		// Check auto-optimize, ensure we get more full dies
+		// Re-enable auto-optimize, ensure we get more full dies
 		await user.click(autoOptimizeCheckbox);
 		expect(autoOptimizeCheckbox).toBeChecked();
 
