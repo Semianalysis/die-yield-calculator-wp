@@ -103,6 +103,7 @@ function App() {
 	const [dieHeight, setDieHeight] = useState<string>("8");
 	const [maintainAspectRatio, setMaintainAspectRatio] = useState(false);
 	const [criticalArea, setCriticalArea] = useState<string>("64");
+	const [criticalAreaUnit, setCriticalAreaUnit] = useState<"mm2" | "percent">("mm2");
 	const [defectRate, setDefectRate] = useState<string>("0.1");
 	const [lossyEdgeWidth, setLossyEdgeWidth] = useState<string>("3");
 	const [notchKeepOutHeight, setNotchKeepOutHeight] = useState<string>("5");
@@ -499,12 +500,48 @@ function App() {
 							</div>
 							<div className="input-row">
 								<NumberInput
-									label="Critical Die Area (mm²)"
-									value={criticalArea}
+									label={`Critical Die Area (${criticalAreaUnit === "mm2" ? "mm²" : "%"})`}
+									value={criticalAreaUnit === "mm2"
+										? criticalArea
+										: `${((parseFloat(criticalArea) / (parseFloat(dieWidth) * parseFloat(dieHeight))) * 100) || 0}`
+									}
 									isDisabled={allCritical}
-									onChange={(event) => setCriticalArea(event.target.value)}
-									max={parseFloat(criticalArea)}
+									onChange={(event) => {
+										if (criticalAreaUnit === "percent") {
+											const percent = Math.min(parseFloat(event.target.value) || 0, 100);
+											const totalDieArea = parseFloat(dieWidth) * parseFloat(dieHeight);
+											setCriticalArea(`${(percent / 100) * totalDieArea}`);
+										} else {
+											setCriticalArea(event.target.value);
+										}
+									}}
+									max={criticalAreaUnit === "mm2" ? (parseFloat(dieWidth) * parseFloat(dieHeight)) || undefined : 100}
+									min={0}
 								/>
+								<fieldset>
+									<div className="radio-group">
+										<label className="radio-item">
+											<input
+												type="radio"
+												name="criticalAreaUnit"
+												checked={criticalAreaUnit === "mm2"}
+												onChange={() => setCriticalAreaUnit("mm2")}
+												disabled={allCritical}
+											/>
+											<span>mm²</span>
+										</label>
+										<label className="radio-item">
+											<input
+												type="radio"
+												name="criticalAreaUnit"
+												checked={criticalAreaUnit === "percent"}
+												onChange={() => setCriticalAreaUnit("percent")}
+												disabled={allCritical}
+											/>
+											<span>%</span>
+										</label>
+									</div>
+								</fieldset>
 							</div>
 							<div className="input-row">
 								<NumberInput
