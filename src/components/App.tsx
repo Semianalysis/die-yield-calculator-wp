@@ -508,7 +508,7 @@ function App() {
 							</div>
 							<div className="input-row">
 								<NumberInput
-									label="Defect Rate (#/cm²)"
+									label={selectedModel === "bose-einstein" ? "DD (#/cm²)" : "D0 (#/cm²)"}
 									value={defectRate}
 									min={0}
 									onChange={(event) => setDefectRate(event.target.value)}

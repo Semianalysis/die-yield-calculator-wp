@@ -430,7 +430,7 @@ describe("App", () => {
 					case "Moore's Model":
 					case "Seeds Model":
 						expect(
-							screen.queryByRole("spinbutton", { name: /Defect Rate/ }),
+							screen.queryByRole("spinbutton", { name: /D0/ }),
 						).toBeInTheDocument();
 						expect(
 							screen.queryByRole("spinbutton", { name: /Critical Die Area/ }),
@@ -444,7 +444,7 @@ describe("App", () => {
 						break;
 					case "Bose-Einstein Model":
 						expect(
-							screen.queryByRole("spinbutton", { name: /Defect Rate/ }),
+							screen.queryByRole("spinbutton", { name: /DD/ }),
 						).toBeInTheDocument();
 						expect(
 							screen.queryByRole("spinbutton", { name: /Critical Die Area/ }),
@@ -461,7 +461,7 @@ describe("App", () => {
 							screen.queryByRole("spinbutton", { name: /Yield/ }),
 						).toBeInTheDocument();
 						expect(
-							screen.queryByRole("spinbutton", { name: /Defect Rate/ }),
+							screen.queryByRole("spinbutton", { name: /D0/ }),
 						).not.toBeInTheDocument();
 						expect(
 							screen.queryByRole("spinbutton", { name: /Critical Die Area/ }),
