@@ -42,6 +42,15 @@ describe("App", () => {
 		});
 		const edgeLossInput = screen.getByRole("spinbutton", { name: /Edge Loss/ });
 
+		// Reset translation offsets (auto-optimize may have set non-zero values
+		// before we disabled it)
+		const horizOffsetInput = screen.getByRole("spinbutton", { name: /Reticle Offset Horizontal/ });
+		const vertOffsetInput = screen.getByRole("spinbutton", { name: /Reticle Offset Vertical/ });
+		await user.clear(horizOffsetInput);
+		await user.type(horizOffsetInput, "0");
+		await user.clear(vertOffsetInput);
+		await user.type(vertOffsetInput, "0");
+
 		// Disable Reticle Limit FIRST to allow full panel coverage
 		await user.click(reticleLimitCheckbox);
 		// Remove Edge Loss to count dice to the edge

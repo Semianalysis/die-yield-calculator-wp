@@ -175,7 +175,12 @@ function rectangleIsInsideRectangle(
 
 /**
  * Given a circle with the provided diameter, determine the maximum number of
- * rectangles of a given width and height would fit inside it
+ * rectangles of a given width and height would fit inside it.
+ *
+ * Uses a full-grid scan rather than quadrant mirroring. This correctly handles
+ * non-zero offsets where the quadrant approach could miss valid positions near
+ * the circle edge (the old loop range of 0..radius was insufficient when
+ * offsets shifted the grid asymmetrically).
  *
  * @param diameter size of the circle
  * @param rectWidth width of each rectangle
@@ -197,46 +202,39 @@ export function rectanglesInCircle(
 	includePartials: boolean,
 ): Position[] {
 	const radius = diameter / 2;
+	const stepX = rectWidth + gapX;
+	const stepY = rectHeight + gapY;
 	const positions: Position[] = [];
 
-	// Traverse each row, starting at the center
-	for (let y = 0; y <= radius; y += rectHeight + gapY) {
-		// Traverse each column, starting at the center
-		for (let x = 0; x <= radius; x += rectWidth + gapX) {
-			// Draw four rectangles, one in each quadrant (se, sw, nw, ne)
-			for (let i = 0; i < 4; i++) {
-				const rectX = i % 2 === 0 ? x : -x - rectWidth - gapX;
-				const rectY = i % 3 === 0 ? y : -y - rectHeight - gapY;
-				// Apply the offset - used for centering
-				const offsetRectX = rectX + offsetX;
-				const offsetRectY = rectY + offsetY;
-				const corners = getRectCorners(
-					offsetRectX,
-					offsetRectY,
-					rectWidth,
-					rectHeight
-				);
-				const center = getRectCenter(
-					offsetRectX,
-					offsetRectY,
-					rectWidth,
-					rectHeight
-				);
-				const pointsWithinCircle = [...corners, center].filter((point) =>
-					isInsideCircle(point.x, point.y, 0, 0, radius)
-				);
+	// Compute the full range of grid indices whose rectangles could overlap
+	// with the circle. Grid positions are in circle-centered coordinates
+	// (origin at center of circle), then shifted by +radius for output.
+	const minCol = Math.floor((-radius - offsetX - rectWidth) / stepX);
+	const maxCol = Math.ceil((radius - offsetX) / stepX);
+	const minRow = Math.floor((-radius - offsetY - rectHeight) / stepY);
+	const maxRow = Math.ceil((radius - offsetY) / stepY);
 
-				// If partials are allowed, only one point must overlap, otherwise all must.
-				const minOverlappingPoints = includePartials ? 1 : 5;
+	// If partials are allowed, only one point must overlap, otherwise all must.
+	const minOverlappingPoints = includePartials ? 1 : 5;
 
-				// If the rectangle fits within the circle, add it to the result
-				if (pointsWithinCircle.length >= minOverlappingPoints) {
-					positions.push({
-						// Add the radius back to the final coordinates so all are positive integers
-						x: offsetRectX + radius,
-						y: offsetRectY + radius
-					});
-				}
+	for (let row = minRow; row <= maxRow; row++) {
+		for (let col = minCol; col <= maxCol; col++) {
+			const x = col * stepX + offsetX;
+			const y = row * stepY + offsetY;
+
+			const corners = getRectCorners(x, y, rectWidth, rectHeight);
+			const center = getRectCenter(x, y, rectWidth, rectHeight);
+			const pointsWithinCircle = [...corners, center].filter((point) =>
+				isInsideCircle(point.x, point.y, 0, 0, radius)
+			);
+
+			// If the rectangle fits within the circle, add it to the result
+			if (pointsWithinCircle.length >= minOverlappingPoints) {
+				positions.push({
+					// Add the radius back to the final coordinates so all are positive
+					x: x + radius,
+					y: y + radius
+				});
 			}
 		}
 	}
