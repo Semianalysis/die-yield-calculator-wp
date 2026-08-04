@@ -1,45 +1,51 @@
 {
-	"name": "die-yield-calculator-wp",
-	"version": "0.5.0",
-	"description": "Gutenberg block for embedding the SemiAnalysis die yield calculator React application in posts and pages.",
-	"author": "SemiAnalysis",
-	"license": "GPL-2.0-or-later",
-	"main": "build/index.js",
-	"files": [
-		"die-yield-calculator.php",
-		"build"
-	],
-	"scripts": {
-		"build": "wp-scripts build --webpack-copy-php --experimental-modules",
-		"format": "wp-scripts format",
-		"lint:css": "wp-scripts lint-style",
-		"lint:js": "wp-scripts lint-js",
-		"packages-update": "wp-scripts packages-update",
-		"plugin-zip": "wp-scripts plugin-zip",
-		"start": "wp-scripts start --webpack-copy-php --experimental-modules",
-		"test:types": "tsc --noEmit",
-		"test:unit": "npx jest",
-		"test": "npm run test:types && npm run test:unit"
-	},
-	"devDependencies": {
-		"@testing-library/jest-dom": "^6.5.0",
-		"@testing-library/react": "^16.0.1",
-		"@testing-library/user-event": "^14.5.2",
-		"@types/jest": "^29.5.13",
-		"@types/react": "^18.3.6",
-		"@wordpress/scripts": "^29.0.0",
-		"fork-ts-checker-webpack-plugin": "^9.0.2",
-		"identity-obj-proxy": "^3.0.0",
-		"jest": "^29.7.0",
-		"jest-canvas-mock": "^2.5.2",
-		"jest-environment-jsdom": "^29.7.0",
-		"jest-transform-stub": "^2.0.0",
-		"prettier": "3.3.3",
-		"ts-jest": "^29.2.5",
-		"ts-loader": "^9.5.1"
-	},
-	"dependencies": {
-		"react": "^18.3.1",
-		"react-parallax-tilt": "^1.7.243"
-	}
+  "name": "die-yield-calculator-wp",
+  "version": "0.5.0",
+  "description": "Gutenberg block for embedding the SemiAnalysis die yield calculator React application in posts and pages.",
+  "author": "SemiAnalysis",
+  "license": "GPL-2.0-or-later",
+  "main": "build/index.js",
+  "files": [
+    "die-yield-calculator.php",
+    "build"
+  ],
+  "scripts": {
+    "build": "wp-scripts build --webpack-copy-php --experimental-modules",
+    "format": "wp-scripts format",
+    "lint:css": "wp-scripts lint-style",
+    "lint:js": "wp-scripts lint-js",
+    "packages-update": "wp-scripts packages-update",
+    "plugin-zip": "wp-scripts plugin-zip",
+    "start": "wp-scripts start --webpack-copy-php --experimental-modules",
+    "test:types": "tsc --noEmit",
+    "test:unit": "npx jest",
+    "test": "npm run test:types && npm run test:unit"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.5.0",
+    "@testing-library/react": "^16.0.1",
+    "@testing-library/user-event": "^14.5.2",
+    "@types/jest": "^29.5.13",
+    "@types/react": "^18.3.6",
+    "@wordpress/scripts": "^29.0.0",
+    "fork-ts-checker-webpack-plugin": "^9.0.2",
+    "identity-obj-proxy": "^3.0.0",
+    "jest": "^29.7.0",
+    "jest-canvas-mock": "^2.5.2",
+    "jest-environment-jsdom": "^29.7.0",
+    "jest-transform-stub": "^2.0.0",
+    "prettier": "3.3.3",
+    "ts-jest": "^29.2.5",
+    "ts-loader": "^9.5.1"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-parallax-tilt": "^1.7.243"
+  },
+  "overrides": {
+    "basic-ftp": "5.2.2",
+    "form-data": "4.0.6",
+    "shell-quote": "1.9.0",
+    "websocket-driver": "0.7.5"
+  }
 }
