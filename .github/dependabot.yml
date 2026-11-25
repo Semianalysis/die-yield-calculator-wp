@@ -1,6 +1,7 @@
 # Groups Dependabot output into a few reviewable PRs per repo.
 # Added 2026-08-04: this repo had no dependabot.yml, so security updates
 # were arriving as one ungrouped PR per alert.
+# open-pull-requests-limit: 0 turns off version-update PRs; security updates still open.
 version: 2
 updates:
   - package-ecosystem: "npm"
@@ -8,7 +9,7 @@ updates:
     schedule:
       interval: "weekly"
       day: "monday"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 0
     groups:
       security-updates:
         applies-to: security-updates
